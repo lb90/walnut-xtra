@@ -360,7 +360,7 @@ typedef struct _MoaXtraMagicCookie * MoaXtraMagicCookie;
 #define _MOA_VSPRINTF_(buf, msg) \
 	do { \
 		va_list __args__; \
-		va_start(__args__, (msg)); \
+		va_start(__args__, msg); \
 		moa_wvsprintf((buf), (msg), __args__); \
 		va_end(__args__); \
 	} while (0)
