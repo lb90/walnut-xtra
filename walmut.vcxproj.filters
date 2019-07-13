@@ -13,34 +13,70 @@
       <UniqueIdentifier>{edfb3292-348a-414d-a0d4-c7f847675877}</UniqueIdentifier>
       <Extensions>ico;cur;bmp;dlg;rc2;rct;bin;cnt;rtf;gif;jpg;jpeg;jpe</Extensions>
     </Filter>
+    <Filter Include="Source Files\Xtra">
+      <UniqueIdentifier>{4b3fb363-23e9-4bdc-90e6-0e32c3f8b82a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Xtra">
+      <UniqueIdentifier>{b507766f-e00d-4a9e-b7a3-209f5aa7eb39}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Xtra\Cregster.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Xtra</Filter>
     </ClCompile>
     <ClCompile Include="Xtra\Cscript.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Xtra</Filter>
     </ClCompile>
     <ClCompile Include="Xtra\Xtra.cpp">
+      <Filter>Source Files\Xtra</Filter>
+    </ClCompile>
+    <ClCompile Include="biosdate_wmi.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="disksn_wmi.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="disksn_ioctl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="util.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="common_wmi.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Xtra\cregster.h">
+      <Filter>Header Files\Xtra</Filter>
+    </ClInclude>
+    <ClInclude Include="Xtra\cscript.h">
+      <Filter>Header Files\Xtra</Filter>
+    </ClInclude>
+    <ClInclude Include="biosdate_wmi.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="disksn_wmi.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="disksn_ioctl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="common_wmi.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="util.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
     <ResourceCompile Include="Xtra\XDK\Include\win32\dversion.rc">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Xtra</Filter>
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="walmut.def">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Xtra</Filter>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Xtra\cregster.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Xtra\cscript.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>

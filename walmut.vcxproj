@@ -135,6 +135,11 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="biosdate_wmi.cpp" />
+    <ClCompile Include="common_wmi.cpp" />
+    <ClCompile Include="disksn_ioctl.cpp" />
+    <ClCompile Include="disksn_wmi.cpp" />
+    <ClCompile Include="util.cpp" />
     <ClCompile Include="Xtra\Cregster.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Disabled</Optimization>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">WIN32;_DEBUG;_WINDOWS</PreprocessorDefinitions>
@@ -164,6 +169,11 @@
     <None Include="walmut.def" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="biosdate_wmi.h" />
+    <ClInclude Include="common_wmi.h" />
+    <ClInclude Include="disksn_ioctl.h" />
+    <ClInclude Include="disksn_wmi.h" />
+    <ClInclude Include="util.h" />
     <ClInclude Include="Xtra\cregster.h" />
     <ClInclude Include="Xtra\cscript.h" />
   </ItemGroup>
