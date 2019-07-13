@@ -70,13 +70,13 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="Xtra\XDK\Include\win32\dversion.rc">
-      <Filter>Source Files\Xtra</Filter>
-    </ResourceCompile>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="walmut.def">
       <Filter>Source Files\Xtra</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Xtra\XDK\Include\win32\dversion.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>
