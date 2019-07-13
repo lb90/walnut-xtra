@@ -1,0 +1,959 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>IMoaDrMovie2</title>
+<link href="../xdk.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+
+<A HREF = "../drdg/index.htm">DR Developer's Guide</A><BR>
+<A HREF = "index.htm">DR Interfaces</A> | 
+<A HREF = "drmthndx.htm">DR Methods</A> | 
+<A HREF = "drtypndx.htm">DR Types and Misc API</A>
+<hr width=45% align=left>
+
+<h3><A name = "IMoaDrMovie2"></A>IMoaDrMovie2</h3>
+
+Interface ID: <span class="code">IID_IMoaDrMovie2</span><BR>
+Pointer type: <span class="code">PIMoaDrMovie2</span><BR>
+Inheritance: <span class="code">IMoaDrMovie</span><BR>
+Header file: <A HREF = "../../include/driservc.h">driservc.h</A><BR>
+
+<DL>
+<DT class="heading4">Description</DT>
+<DD>
+    The <span class="code">IMoaDrMovie2</span> interface is an extension of <span class="code">IMoaDrMovie</span> which represents open movies in Director. 
+	You acquire an <span class="code">IMoaDrMovie</span> interface by calling the <span class="code">IMoaDrPlayer</span> 
+      methods <span class="code">GetActiveMovie()</span> or <span class="code">GetNthMovie()</span>.
+	  This returns to you an <span class="code">IMoaDrMovie</span> interface. 
+      You can use the <span class="code">QueryInterface</span> method off this interface to retrieve an <span class="code">IMoaDrMovie2</span> interface.
+	  <span class="code">IMoaDrMovie2</span> has a few additional methods - for convenience the rest of the methods of these two interfaces are exactly the same.</DD>
+</DL>
+
+<DL>
+<DT class="heading4"><a name="RTFToC2"></a>Movie properties</DT>
+    <DD><span class="code">IMoaDrMovie</span> inherits from the <span class="code">IMoaMmPropOwner</span> interface, 
+	providing for access to data through the properties 
+      mechanism described in the &quot;<a href="../mmdg/mmdgc5.htm">Multimedia Services</a>&quot; chapter in the <em>Development Guide</em> document. 
+	  See the &quot;<a href="drtypndx.htm#MOVPROPS">Properties</a>&quot; 
+      section for information on the properties defined for objects providing the MoaDrMovie interfaces.</DD>
+</DL>
+
+<DL>
+<DT class="heading4"><a name="RTFToC3"></a>Movie media</DT>
+    <DD>The <span class="code">IMoaDrMovie</span> interfaces inherit from the <span class="code">IMoaDrMediaOwner</span> interface, providing for access to media through 
+      the media owner mechanism described in the &quot;<a href="../drdg/index.htm#RTFToC6">Director Services</a>&quot; chapter in the <em>Development Guide</em> document. Movies 
+      have one kind of media: scores. Scores are editable through the <span class="code">IMoaDrScoreAccess</span> interface. You acquire a 
+      movie's score data by calling either <span class="code">GetMedia()</span>, which returns a handle to the score data, or<span class="code"> 
+      GetScoreAccess()</span>, which returns an <span class="code">IMoaDrScoreAccess</span> interface to the score data. </DD>
+</DL>
+
+<h4>Methods</h4>
+<DL>
+<DT class="heading5">Property owner methods</DT>
+
+<DD><A HREF = "#GetProp">GetProp()</A><BR>
+<A HREF = "#SetProp">SetProp()</A><BR>
+</DD>
+</DL>
+
+<DL>
+<DT class="heading5">Media owner methods</DT>
+<DD><A HREF = "#GetMedia">GetMedia()</A><BR>
+<A HREF = "#SetMedia">SetMedia()</A><BR>
+<A HREF = "#AttachMedia">AttachMedia()</A><BR>
+</DD>
+</DL>
+
+<DL>
+<DT class="heading5">Scripting support</DT>
+<DD><A HREF = "#CallHandler">CallHandler()</A><BR>
+<A HREF = "#SendSpriteMessage">SendSpriteMessage()</A><BR>
+</DD>
+</DL>
+
+<DL>
+<DT class="heading5">Managing casts</DT>
+<DD><A HREF = "#GetCastCount">GetCastCount()</A><BR>
+<A HREF = "#GetNthCast">GetNthCast()</A><BR>
+<A HREF = "#GetCastFromName">GetCastFromName()</A><BR>
+<A HREF = "#GetCastIndexFromName">GetCastIndexFromName()</A><BR>
+<A HREF = "#NewCast">NewCast()</A><BR>
+<A HREF = "#AddExternalCast">AddExternalCast()</A><BR>
+<A HREF = "#RemoveCast">RemoveCast()</A><BR>
+</DD>
+</DL>
+
+<DL>
+<DT class="heading5">Working with cast members</DT>
+<DD><A HREF = "#GetCastMemFromCMRef">GetCastMemFromCMRef()</A><BR>
+<A HREF = "#GetCMRefFromMemberName">GetCMRefFromMemberName()</A><BR>
+<A HREF = "#GetCMRefFromCMId">GetCMRefFromCMId()</A> only in IMoaDrMovie2<BR>
+<A HREF = "#GetCMIdFromCMRef">GetCMIdFromCMRef()</A> only in IMoaDrMovie2<BR>
+<A HREF = "#MoveCastMember">MoveCastMember()</A> only in IMoaDrMovie2<BR>
+</DD>
+</DL>
+
+<DL>
+<DT class="heading5">Imaging support</DT>
+<DD><A HREF = "#UpdateStageRect">UpdateStageRect()</A><BR>
+<A HREF = "#GetStageWindowGC">GetStageWindowGC()</A><BR>
+<A HREF = "#GetStageBufferGC">GetStageBufferGC()</A><br>
+</DD>
+</DL>
+
+<DL>
+<DT class="heading5">Accessing frame labels</DT>
+<DD><A HREF = "#GetFrameIndexFromLabel">GetFrameIndexFromLabel()</A>
+<BR><A HREF = "#GetFrameLabelFromIndex">GetFrameLabelFromIndex()</A>
+<BR><A HREF = "#SetFrameLabel">SetFrameLabel()</A><br>
+</DD>
+</DL>
+
+<DL>
+<DT class="heading5">Acquiring IMoaDrScoreAccess</DT>
+<DD><A HREF = "#GetScoreAccess">GetScoreAccess()</A><br>
+</DD>
+</DL>
+
+<DL>
+<DT class="heading5">Managing movies</DT>
+<DD><A HREF = "#Save">Save()</A><br>
+</DD>
+</DL>
+
+<hr width=45% align=left>
+<h4><A NAME="AddExternalCast">AddExternalCast()</a></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">AddExternalCast(PMoaChar <em>pCastName</em>, PMoaChar <em>pPathName</em>, PMoaDrCastIndex <em>pNewCastIndex</em>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">pCastName</DT>
+<DD>The user reference name for the cast</DD>
+<DT class="codearg">pPathName</DT>
+<DD>The full path name for an external cast </DD>
+<DT class="codearg">pNewCastIndex</DT>
+<DD>Gets the index for the position in the cast list</DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DT class="code">MoaError</DT>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>
+Adds an existing external cast to the movie's cast list. 
+Returns in <span class="codearg">pNewCastIndex</span> the position of the cast in the movie's cast list.</DD>
+</DL>
+
+<hr width=45% align=left>
+<h4><A NAME="AttachMedia">AttachMedia()</a></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">AttachMedia(PMoaDrMediaInfo <em>pMediaInfo</em>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">pMediaInfo</DT>
+<DD>Pointer to a caller-owned media information structure</DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DD class="code">MoaError</DD>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>Attaches media to a movie, releasing it from the caller.
+This is the same as <span class="code">SetMedia()</span> except instead of copying the data, it is moved to the movie.
+(In effect, a <span class="code">SetMedia()</span> call followed by <span class="code">ReleaseMedia()</span>.)
+Before making this call, use <span class="code">IMoaDrUtils::NewMediaInfo()</span> to fill out the structure, specifying NULL for the
+<span class="code">aux</span> field and <span class="code">kMoaDrMediaOpts_None</span> for the <span class="code">options</span> field.
+<BR>
+<BR>
+On enter, the <span class="code">labelSymbol</span> and <span class="code">formatSymbol</span> fields should be populated with symbols indicating which chunk of media is to be attached
+(<span class="code">labelSymbol</span>), and what format the media is supplied in (<span class="code">formatSymbol</span>).
+The <span class="code">mediaData</span> field should hold the data itself (typically a <span class="code">MoaHandle</span>, Macintosh Handle, or Windows global handle) <BR>
+<BR>
+Upon return, if there is no error, the media has changed ownership and belongs to the host application, and should no longer be referenced by the caller. 
+This method is provided to allow the host application to optimize media-transfer if possible, preventing an extra copy of the media data, which may occur with separate <span class="code">SetMedia()
+</span>and <span class="code">ReleaseMedia()</span> calls).</DD>
+</DL>
+
+<hr width=45% align=left>
+<h4><A NAME="CallHandler">CallHandler()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">CallHandler(MoaMmSymbol <em>name</em>, MoaLong <em>nArgs</em>, PMoaMmValue <em>pArgs</em>, PMoaMmValue <em>pResult</em>) </DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">name</DT>
+<DD> Symbol of the handler name to call</DD>
+<DT class="codearg">nArgs</DT>
+<DD>Number of arguments to pass</DD>
+<DT class="codearg">pArgs</DT>
+<DD>Array of <span class="code">MoaMmValues</span> containing the arguments to the call</DD>
+<DT class="codearg">pResult</DT>
+<DD>Pointer to a caller-owned <span class="code">MoaMmValue</span> to receive the return value</DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DD class="code">MoaError</DD>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>Calls the Lingo handler <span class="codearg">name</span> in the movie. 
+The <span class="codearg">nArgs</span> argument is the number of arguments to the handler, the <span class="codearg">pArgs</span> argument is a reference to the start of the array of arguments as <span class="code">MoaMmValues</span>. 
+You can pass in NULL to <span class="codearg">pResult</span> if you do not expect a result. 
+You must pass in a valid pointer if you do expect a result.</DD>
+</DL>
+
+<hr width=45% align=left>
+<h4><A NAME="GetCastCount">GetCastCount()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">GetCastCount(MoaLong * <em>pCastCount</em>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">pCastCount</DT>
+<DD>Pointer to a <span class="code">MoaLong</span> to receive the number of casts</DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DD class="code">MoaError</DD>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>Obtains the number of casts in the movie.</DD>
+</DL>
+
+<hr width=45% align=left>
+<h4><A NAME="GetCastFromName">GetCastFromName()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">GetCastFromName(PMoaChar <em>pCastName</em>, PIMoaDrCast * <em>ppIMoaDrCast</em>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">pCastName</DT>
+<DD>Pointer to a null-terminated C string containing the cast name of interest</DD>
+<DT class="codearg">ppIMoaDrCast</DT>
+<DD>Pointer to a <span class="code">PIMoaDrCast</span> to receive a pointer to the cast interface</DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DD class="code">MoaError</DD>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>Obtains an interface to one of the movie's casts by name, as it appears in the Cast Properties dialog. 
+The interface is then owned by the caller, and the caller is responsible for releasing it when it is no longer needed.</DD>
+</DL>
+
+<hr width=45% align=left>
+<h4><A NAME="GetCastIndexFromName">GetCastIndexFromName()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">GetCastIndexFromName(PMoaChar <em>pCastName</em>, MoaDrCastIndex * <em>pCastIndex</em>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">pCastName</DT>
+<DD>Pointer to a null-terminated C string containing the cast name of interest</DD>
+<DT class="codearg">pCastIndex</DT>
+<DD>Pointer to a <span class="code">MoaDrCastIndex</span> to receive the index</DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DD class="code">MoaError</DD>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>Obtains the movie cast index associated with a named cast.
+This is a value from 1 to <span class="code">GetCastCount()</span>.</DD>
+</DL>
+
+<hr width=45% align=left>
+<h4><A NAME="GetCastMemFromCMRef">GetCastMemFromCMRef()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">GetCastMemFromCMRef(PMoaDrCMRef <em>pCastMemRef</em>, PIMoaDrCastMem * <em>ppIMoaDrCastMem</em>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">pCastMemRef</DT>
+<DD>Pointer to a <span class="code">MoaDrCMRef</span> which specifies the cast member of interest</DD>
+<DT class="codearg">ppIMoaDrCastMem</DT>
+<DD>Pointer to a <span class="code">PIMoaDrCastMem</span> to receive the interface for the cast member</DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DD class="code">MoaError</DD>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>Obtains the <span class="code">IMoaDrCastMem</span> interface for the cast member with the supplied cast member reference.
+The cast member reference specifies the <span class="code">movieCastIndex </span>(index to cast in the movie) and <span class="code">memberIndex </span>(index to cast member slot position within the cast);
+use the CMRef_ macros in drtypes.h to create and access a <span class="code">MoaDrCMRef</span>.
+The caller owns the returned interface and is responsible for releasing it when it is no longer needed.</DD>
+</DL>
+
+<hr width=45% align=left>
+<h4><A name = "GetCMIdFromCMRef">GetCMIdFromCMRef()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">GetCMIdFromCMRef(PMoaDrCMRef <em>pCastMemRef</em>, PMoaDrCMId <em>pCastMemId</em>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">pCastMemRef</DT>
+<DD> Pointer to a <span class="code">MoaDrCMRef</span> identifying the cast member we want a unique ID from</DD>
+<DT class="codearg">pCastMemId</DT>
+<DD> Pointer to a <span class="code">MoaDrCMId</span> to recieve the unique cast member identifier</DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DD class="code">MoaError</DD>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>This method is only available in <span class="code">IMoaDrMovie2</span>.
+Obtains a unique identifier (<span class="code">MoaDrCMId</span>) for the cast member referred to by <span class="codearg">pCastMemRef</span>.  
+This identifer can be used to retrieve the <span class="code">MoaDrCMRef</span> for this cast member at a later time, even if the cast member has been moved across cast boundaries.</DD>
+</DL>
+
+<hr width=45% align=left>
+<h4><A name = "GetCMRefFromCMId">GetCMRefFromCMId()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">GetCMRefFromCMId(PMoaDrCMId <em>pCastMemId</em>, PMoaDrCMRef <em>pCastMemRef</em>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">pCastMemId</DT> 
+<DD>Pointer to a <span class="code">MoaDrCMId</span> identifying the cast member to search for</DD>
+<DT class="codearg">pCastMemRef</DT>
+<DD>Pointer to a <span class="code">MoaDrCMRef</span> to receive cast member reference</DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DD>
+<TABLE BORDER="2">
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=229><span class="code">kMoaErr_NoErr</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=361>Successful</TD>
+</TR>
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=229><span class="code">kMoaDrErr_CastMemNotFound</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=361>Cast member not found</TD>
+</TR>
+</TABLE></DD>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>This method is only available in <span class="code">IMoaDrMovie2</span>.
+Obtains the cast member reference (<span class="code">MoaDrCMRef</span>) for a cast member from its unique identifier.  
+This method scans all of the casts for the movie, and returns the <span class="code">MoaDrCMRef</span> for the cast member whose id matches the one supplied.  
+If no cast member is found with the specified id, <span class="code">kMoaDrErr_CastMemNotFound</span> is returned and <span class="codearg">pCastMemRef</span> is set to a null reference.  
+Use <span class="code">CMRef_IsNull()</span> to test the result.</DD>
+</DL>
+
+<hr width=45% align=left>
+<h4><A NAME="GetCMRefFromMemberName">GetCMRefFromMemberName()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">GetCMRefFromMemberName(PMoaChar <em>pMemberName</em>, PMoaDrCMRef <em>pCastMemRef</em>)
+</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">pMemberName</DT>
+<DD>Pointer to a null-terminated C string containing the cast member name of interest</DD>
+<DT class="codearg">pCastMemRef</DT>
+<DD>Pointer to a <span class="code">MoaDrCMRef</span> to receive cast member reference</DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DD>
+<TABLE width="619" BORDER="2">
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=196><span class="code">kMoaErr_NoErr</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=308>Successful</TD>
+</TR>
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=196><span class="code">kMoaDrErr_CastMemNotFound</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=308>Cast member not found</TD>
+</TR>
+</TABLE>
+</DD>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>Obtains the cast member reference (<span class="code">MoaDrCMRef</span>) for a cast member from its name. 
+This method scans all of the casts for the movie, and returns the <span class="code">MoaDrCMRef</span> for the first cast member whose name matches the one supplied.
+If no cast member is found with the specified name, <span class="code">kMoaDrErr_CastMemNotFound</span> is returned and <span class="codearg">pCastMemRef</span> is set to a null reference. 
+Use <span class="code">CMRef_IsNull()</span> to test the result.</DD>
+</DL>
+
+<hr width=45% align=left>
+<h4><A NAME="GetFrameIndexFromLabel">GetFrameIndexFromLabel()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">GetFrameIndexFromLabel(PMoaChar <em>pLabelName</em>, PMoaDrFrameIndex <em>pFrameIndex</em>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">pLabelName</DT>
+<DD>Pointer to a null-terminated C-string containing the name of the marker associated with the score frame (case-insensitive)</DD>
+</DL>
+<DL>
+<DT class="codearg">pFrameIndex</DT>
+<DD>Pointer to a <span class="code">MoaDrFrameIndex</span> to receive the frame number of the label (marker)</DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DD>
+<TABLE BORDER="2">
+<TR>
+<TD><span class="code">kMoaErr_NoErr</span></TD>
+<TD>if successful</TD>
+</TR>
+<TR>
+<TD><span class="code">kMoaDrErr_LabelNotFound</span></TD>
+<TD>if marker doesn't exist.</TD>
+</TR>
+</TABLE></DD>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>Obtains the frame number from a label (marker) name.</DD>
+</DL>
+
+<hr width=45% align=left>
+<h4><A NAME="GetFrameLabelFromIndex">GetFrameLabelFromIndex()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<dt class="code">GetFrameLabelFromIndex(MoaDrFrameIndex <em>frameIndex</em>, PMoaChar <em>pLabelName</em>, MoaLong <em>maxLen</em>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">frameIndex</DT>
+<DD>A <span class="code">MoaDrFrameIndex</span> holding the frame number of interest</DD>
+<DT class="codearg">pLabelName</DT>
+<DD> Pointer to a string buffer to receive the name of the marker associated with the given score frame</DD>
+<DT class="codearg">maxLen</DT>
+<DD>The length in bytes of the caller's C string buffer</DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DD class="code">MoaError</DD>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>Obtains the name of the label (marker) at a given score frame number. 
+Returns an empty string if no marker exists for the frame.</DD>
+</DL>
+
+<hr width=45% align=left>
+<h4><A NAME="GetMedia">GetMedia()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">PMoaDrMediaInfo <em>pMediaInfo</em>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">pMediaInfo</DT>
+<DD>Pointer to a caller-owned media information structure</DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DD class="code">MoaError</DD>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>Gets movie media data by obtaining a copy of the media associated with a movie. 
+This is how one obtains the score data associated with a movie. 
+Before making this call, use <span class="code">IMoaDrUtils::NewMediaInfo() </span>to fill out the structure, specifying NULL for the <span class="code">aux </span>field and <span class="code">kMoaDrMediaOpts_None </span>for the <span class="code">options </span>field.
+The caller partially populates a <span class="code">MoaDrMediaInfo </span>structure with symbols indicating the requested chunk of media (<span class="code">labelSymbol</span>) and the requested format (<span class="code">formatSymbol</span>).
+After the call, the <span class="code">mediaData</span> field is populated with the requested data. 
+The type of this field depends on the format requested. 
+The caller owns the data and is responsible for disposing it, if applicable. 
+Typically, this data is either a <span class="code">MoaHandle</span>, a Macintosh handle or pointer, or a Windows global handle. 
+See Director property.rtf for a table of <span class="code">mediaLabels</span> and <span class="code">mediaFormats</span> supported for movies.</DD>
+</DL>
+
+<hr width=45% align=left>
+<h4><A NAME="GetNthCast">GetNthCast()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">GetNthCast(MoaDrCastIndex <em>movieCastIndex</em>, PIMoaDrCast * <em>ppIMoaDrCast</em>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">movieCastIndex</DT>
+<DD> Index of the cast (from 1 to <span class="code">GetCastCount()</span>) of interest</DD>
+<DT class="codearg">ppIMoaDrCast</DT>
+<DD> Pointer to a <span class="code">PIMoaDrCast</span> to receive a pointer to the cast interface</DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DD class="code">MoaError</DD>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>Obtains an interface to one of the movie's casts by index.
+The interface is then owned by the caller, and the caller is responsible
+for releasing it when it is no longer needed.</DD>
+</DL>
+
+<hr width=45% align=left>
+<h4><A NAME="GetProp">GetProp()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">GetProp(MoaMmSymbol <em>symbol</em>, PMoaMmValue <em>pPropValue</em>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">symbol</DT>
+<DD> The <span class="code">MoaMmSymbol</span> for the property of interest</DD>
+<DT class="codearg">pPropValue</DT>
+<DD> Pointer to a <span class="code">MoaMmValue</span> to receive the value</DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DD>
+<TABLE BORDER="2">
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=232><span class="code">kMoaErr_NoErr</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=403>Property exists and value was returned</TD>
+</TR>
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=232><span class="code">kMoaErr_BadParam</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=403>Invalid <span class="codearg">pPropValue</span> passed in</TD>
+</TR>
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=232><span class="code">kMoaMmErr_PropertyNotFound</span> </TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=403>Property isn't supported by this class</TD>
+</TR>
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=232><span class="code">kMoaMmErr_InternalError</span> </TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=403>Property exists but couldn't get due to internal error</TD>
+</TR>
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=232><span class="code">kMoaMmErr_NoMemForString</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=403>Couldn't allocate memory for string value data</TD>
+</TR>
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=232><span class="code">kMoaErr_OutOfMem</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=403>Couldn't allocate memory for other value data</TD>
+</TR>
+</TABLE></DD>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>Obtains the value of the specified movie property. 
+To get the symbol from a string, use the <span class="code">IMoaMmUtils::StringToSymbol()</span>.
+The caller is responsible for releasing the value at <span class="codearg">pPropValue</span> with <span class="code">IMoaMmUtils::ValueRelease()</span> when it is no longer needed.
+The properties defined for objects providing the <span class="code">IMoaDrMovie2</span>  interface are listed <a href="drtypndx.htm#MOVPROPS">here</a>.</DD>
+</DL>
+
+<hr width=45% align=left>
+<h4><A NAME="GetScoreAccess">GetScoreAccess()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">GetScoreAccess(PIMoaDrScoreAccess * <em>ppScore</em>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">ppScore</DT>
+<DD class="code">PIMoaDrScoreAccess *</DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DD class="code">MoaError</DD>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>Gets a ScoreAccess interface provider for the movie's score.</DD>
+</DL>
+
+<hr width=45% align=left>
+<h4><A NAME="GetStageBufferGC">GetStageBufferGC()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">GetStageBufferGC(PIMoaMmGC * <em>ppBufferGC</em>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">ppBufferGC</DT>
+<DD>Pointer to a <span class="code">IMoaMmGC</span> interface for the stage offscreen buffer</DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DD class="code">MoaError</DD>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>Obtains the graphics context for the stage offscreen buffer.
+This includes the bounds rectangle, pixel depth, as well as platform-specific information (such as the WindowPtr of the window on the Macintosh or the HWND on Windows). 
+This information is valid only for the duration of the current call into your Xtra method, because the stage window can change in depth or size at any time (and may be disposed of and reallocated in the process). 
+You must release the graphics context when done by calling its <span class="code">Release()</span> method.</DD>
+</DL>
+<DL>
+<dt class="heading5"><A NAME="RTFToC20">Important note about graphic contexts</A></dt>
+<DD>This method should only be called by Lingo and Tool Xtras to do temporary drawing into the stage window. 
+It should be called just before doing your drawing, and the acquired interface should be released before returning control to the calling application.
+This is because <span class="code">nativeGCInfo</span> for the stage buffer can become invalid at any time. 
+For example, the buffer may be dumped and recreated if window size, monitor
+depth, or other display characteristics change.<BR><BR>
+It's not always possible to obtain the a graphics context for the stage buffer.
+During registration, startup, and shut-down, internal movie data structures may not be initialized, thus trying to get the GC for it will return the err <span class="code">kMoaDrErr_MovieNotOpen</span>.
+Xtra developers should never attempt to acquire a graphics context and hold onto it; instead, you should acquire the interface each time you need to draw and release it before your method returns.<BR><BR>
+Finally, this method should not be called to get a context for sprite or transition drawing.
+Instead, use the graphic context passed to you explicitly in <span class="code">IMoaMmSpriteActor::Image()</span> or <span class="code">IMoaDrTransitionActor::Continue()</span>.
+If you attempt to use this context, your Xtra will not work correctly in MIAWs, export, or other applications such as Authorware.</DD>
+</DL>
+
+<hr width=45% align=left>
+<h4><A NAME="GetStageWindowGC">GetStageWindowGC()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">GetStageWindowGC(PIMoaMmGC * <em>ppWindowGC</em>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">ppWindowGC</DT>
+<DD>Pointer to a <span class="code">IMoaMmGC</span> interface for the stage window</DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DD class="code">MoaError</DD>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>Obtains the graphics context for the stage window. 
+This includes the bounds rectangle, pixel depth, as well as platform-specific information (such as the WindowPtr of the window on the Macintosh, or the HWND on Windows). 
+This information is valid only for the duration of the current call into your Xtra method, because the stage window can change in depth or size at any time (and may be disposed of and reallocated in the process). 
+You must release the graphics context when done by calling its <span class="code">Release()
+</span>method.</DD>
+</DL>
+<DL>
+<dt class="heading5"><A NAME="RTFToC22">Important note about graphic contexts</A></dt>
+<DD>
+This method should only be called by Lingo and Tool Xtras to do temporary drawing into the stage window. 
+It should be called just before doing your drawing, and the acquired interface should be released before returning control to the calling application.
+This is because <span class="code">nativeGCInfo</span> for the stage buffer can become invalid at any time. 
+For example, the buffer may be dumped and recreated if window size, monitor depth, or other display characteristics change.<BR><BR>
+It's not always possible to obtain the a graphics context for the stage window.
+During registration, startup, and shut-down, internal movie data structures may not be initialized, thus trying to get the GC for it will return the err <span class="code">kMoaDrErr_MovieNotOpen</span>.
+Xtra developers should never attempt to acquire a graphics context and hold onto it; instead, you should acquire the interface each time you need to draw and release it before your method returns.<BR><BR>
+Also, <span class="code">GetStageWindowGC()</span> should not be used to get a parent window for Windows(TM) dialogs.
+The correct procedure is to use the <span class="code">IMoaMmUtils</span> Windows API cover methods such as <span class="code">WinDialogBox()</span> and <span class="code">WinDialogBoxParam()</span>.
+If you're putting up a system dialog on Windows, use <span class="code">WinGetParent()</span> to get the parent HWND to use, and bracket your dialog call with <span class="code">WinPrepareDialogBox()</span> and <span class="code">WinUnprepareDialogBox()</span>.<BR><BR>
+Finally, these calls should not be used for sprite or transition drawing.
+Instead, use the graphic context passed to you explicitly in <span class="code">IMoaMmSpriteActor::Image()</span> or <span class="code">IMoaDrTransitionActor::Continue()</span>.
+If you do attempt to use this context, your Xtra will not work correctly in MIAWs, export, or other applications such as Authorware.</DD>
+</DL>
+
+<hr width=45% align=left>
+<h4><A name = "MoveCastMember">MoveCastMember()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">MoveCastMember(PMoaDrCMRef <em>pSrcMemRef</em>, PMoaDrCMRef <em>pDestMemRef</em>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">pSrcMemRef</DT>
+<DD>Pointer to <span class="code">MoaDrCMRef</span> containing cast member to move</DD>
+<DT class="codearg">pDestMemRef</DT>
+<DD>Pointer to <span class="code">MoaDrCMRef</span> containing location to move to</DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DD class="code">MoaError</DD>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>This method is only available in <span class="code">IMoaDrMovie2</span>.
+Moves the cast member in the location referred to by <span class="codearg">pSrcMemRef</span> to the location referred to by <span class="codearg">pDestMemRef</span>.  
+If there is an existing cast member in the destination slot, it will be removed.</DD>
+</DL>
+
+<hr width=45% align=left>
+<h4><A NAME="NewCast">NewCast()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">NewCast(PMoaChar <em>pCastName</em>, MoaBoolParam <em>bExternal</em>, PMoaDrCastIndex <em>pNewCastIndex</em>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">pCastName</DT>
+<DD>Pointer to the name to use for the cast</DD>
+<DT class="codearg">bExternal</DT>
+<DD>Pass in <span class="code">TRUE</span> if the cast is external or <span class="code">FALSE</span> if it will be internal</DD>
+<DT class="codearg">pNewCastIndex</DT>
+<DD>Gets the position of the new cast in the movie</DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DD class="code">MoaError</DD>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>Creates a new cast and add it to the movie's cast list. 
+Returns the position of the new cast in the <span class="codearg">pNewCastIndex</span> argument.</DD>
+</DL>
+
+<hr width=45% align=left>
+<h4><A NAME="RemoveCast">RemoveCast()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">MoaDrCastIndex <em>castIndexToRemove</em>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">castIndexToRemove</DT>
+<DD><span class="code">MoaDrCastIndex</span> for the cast to remove</DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DD class="code">MoaError</DD>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>Removes the cast specified by <span class="codearg">castToRemove</span> from the movie's cast list.</DD>
+</DL>
+
+
+<hr width=45% align=left>
+<h4><A NAME="Save">Save()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">Save(PMoaChar <em>pNewPathName</em>, MoaBoolParam <em>bSaveExtCasts</em>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">pNewPathName</DT>
+<DD> Null-terminated C string for the path</DD>
+<DT class="codearg">bSaveExtCasts</DT>
+<DD>MoaBoolParam</DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DD>
+<TABLE BORDER="2">
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=149><span class="code">kMoaErr_NoErr</span> </TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=410>Successful</TD>
+</TR>
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=149><span class="code">kMoaDrErr_DiskIO</span> </TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=410>IO error during file access</TD>
+</TR>
+</TABLE></DD>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>Saves the movie to the path.
+Specify the complete path, including file name, to save the movie to a new file.
+Pass NULL as <span class="codearg">pNewPathName</span> to save the movie in its previous file.</DD>
+</DL>
+
+<hr width=45% align=left>
+<h4><A NAME="SendSpriteMessage">SendSpriteMessage()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">SendSpriteMessage(MoaDrSpriteChanIndex <em>chanIndex</em>, MoaMmSymbol <em>handlerName</em>, MoaLong <em>nArgs</em>, PMoaMmValue <em>pArgs</em>, PMoaMmValue <em>pResult</em>, MoaBool * <em>pHandled</em>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">chanIndex</DT>
+<DD>Channel number of sprite to which to send the message.</DD>
+<DT class="codearg">handlerName</DT>
+<DD>Symbol for the handler (message) name</DD>
+<DT class="codearg">nArgs</DT>
+<DD>Number of arguments you're passing</DD>
+<DT class="codearg">pArgs</DT>
+<DD>Pointer to an array of <span class="code">MoaMmValues</span> containing arguments</DD>
+<DT class="codearg">pResult</DT>
+<DD>Pointer to a <span class="code">MoaMmValue</span> to receive a result</DD>
+<DT class="codearg">pHandled</DT>
+<DD> arguments to a <span class="code">MoaBool</span> to receive TRUE if the message was handled somewhere down the chain or FALSE if it was not.</DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DD class="code">MoaError</DD>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>Sends a sprite message to be passed through the standard Director sprite message hierarchy beginning with the sprite script of the sprite in the specified channel. 
+This method is similar to <span class="code">IMoaDrSpriteCallback::SendSpriteMessage()</span>.
+You must pass in NULL to <span class="codearg">pResult</span> if you do not expect a result; you must pass in a valid pointer if you do expect a result.</DD>
+</DL>
+
+<hr width=45% align=left>
+<h4><A NAME="SetFrameLabel">SetFrameLabel()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">SetFrameLabel(MoaDrFrameIndex <em>frameIndex</em>, PMoaChar <em>pLabelName</em>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">frameIndex</DT>
+<DD>A <span class="code">MoaDrFrameIndex</span> holding the number of the frame</DD>
+<DT class="codearg">pLabelName</DT>
+<DD> Pointer to a <span class="code">MoaChar</span> to receive the name of the marker associated with the given score frame</DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DD class="code">MoaError</DD>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>Adds, modifies, or deletes a score label (marker) or a frame. 
+You pass in the frame number and a C string for the new label. 
+If a label doesn't exist for that frame, one will be added. 
+If one does exist, it'll be replaced with the new one you specify. 
+If you pass in NULL for <span class="codearg">pLabelName</span>, any current label for that frame is deleted.</DD> 
+</DL>
+
+<hr width=45% align=left>
+<h4><A NAME="SetMedia">SetMedia()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">SetMedia(PMoaDrMediaInfo <em>pMediaInfo</em>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">pMediaInfo</DT>
+<DD>Pointer to a caller-owned media information structure</DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DD class="code">MoaError</DD>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>Sets movie media data.
+This is how one replaces the score data associated with a movie.
+This method copies caller-supplied media data and associates it with the movie. 
+Before making this call, use <span class="code">IMoaDrUtils::NewMediaInfo() </span>to fill out the structure, specifying NULL for the <span class="code">aux </span>field and <span class="code">kMoaDrMediaOpts_None </span>for the <span class="code">options </span>field.
+The caller populates a <span class="code">MoaDrMediaInfo </span>structure with symbols indicating the supplied chunk of media (<span class="code">labelSymbol</span>) and the supplied format (<span class="code">formatSymbol</span>), and the media data itself (<span class="code">mediaData</span>).
+If the label and format are supported by the movie, a call to this method copies the caller's data and replaces any existing media data for the supplied label for the movie. 
+Since the data is copied, the caller retains ownership of the media data passed in. 
+Typically this data is either a <span class="code">MoaHandle</span>, a Macintosh handle or pointer, or a Windows global handle. 
+See Director property.rtf for a table of <span class="code">mediaLabels </span>and <span class="code">mediaFormats </span>supported for movies.</DD>
+</DL>
+
+<hr width=45% align=left>
+<h4><A NAME="SetProp">SetProp()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">SetProp(MoaMmSymbol <em>symbol</em>, ConstPMoaMmValue <em>pPropValue</em>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">symbol</DT>
+<DD>The <span class="code">MoaMmSymbol</span> for the property of interest</DD>
+<DT class="codearg">pPropValue</DT>
+<DD> Pointer to a caller-owned <span class="code">ConstPMoaMmValue</span> structure from which to copy the new value</DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DD><TABLE BORDER="2">
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=240><span class="code">kMoaErr_NoErr</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=401>Property exists and value was set</TD>
+</TR>
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=240><span class="code">kMoaErr_BadParam</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=401>Invalid <span class="codearg">pPropValue</span> passed in</TD>
+</TR>
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=240><span class="code">kMoaMmErr_PropertyNotFound</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=401>Property isn't supported by this class</TD>
+</TR>
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=240><span class="code">kMoaMmErr_InternalError</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=401>Property exists, value ok, couldn't set--internal error</TD>
+</TR>
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=240><span class="code">kMoaMmErr_NoMemForString</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=401>Couldn't allocate memory for setting string value data</TD>
+</TR>
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=240><span class="code">kMoaErr_OutOfMem</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=401>Couldn't allocate memory for setting other value data</TD>
+</TR>
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=240><span class="code">kMoaMmErr_IntegerExpected</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=401>Type mismatch: integer value expected</TD>
+</TR>
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=240><span class="code">kMoaMmErr_SymbolExpected</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=401>Type mismatch: symbol value expected</TD>
+</TR>
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=240><span class="code">kMoaMmErr_FloatExpected</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=401>Type mismatch: float value expected</TD>
+</TR>
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=240><span class="code">kMoaMmErr_StringExpected</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=401>Type mismatch: string value expected</TD>
+</TR>
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=240><span class="code">kMoaMmErr_PointExpected</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=401>Type mismatch: point value expected</TD>
+</TR>
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=240><span class="code">kMoaMmErr_RectExpected</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=401>Type mismatch: rect value expected</TD>
+</TR>
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=240><span class="code">kMoaMmErr_ValueTypeMismatch</span> </TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=401>Type mismatch: other value expected (non-specific) </TD>
+</TR>
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=240><span class="code">kMoaDrErr_CastMemberExpected</span> </TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=401>Type mismatch: <span class="code">CMRef</span> value expected </TD>
+</TR>
+</TABLE></DD>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>Sets the value of the specified property.
+To get the symbol froma string, use the <span class="code">IMoaMmUtils::StringToSymbol()</span> method. 
+The caller continues to maintain ownership of the value passed in, and should release it using <span class="code">IMoaMmUtils::ValueRelease()</span> when it is no longer needed.
+The properties defined for objects providing the <span class="code">IMoaDrMovie2</span>  interface are listed <a href="drtypndx.htm#MOVPROPS">here</a>.</DD>
+</DL>
+
+<hr width=45% align=left>
+<h4><A NAME="UpdateStageRect">UpdateStageRect()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">UpdateStageRect(MoaRect * <em>pWindowRect</em>, MoaRect * <em>pBufferRect</em>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">pWindowRect</DT>
+<DD>Pointer to a <span class="code">MoaRect</span> describing the area of the stage window to update</DD>
+<DT class="codearg">pBufferRect</DT>
+<DD>Pointer to a <span class="code">MoaRect</span> describing the area of the offscreen buffer from where to update</DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DD class="code">MoaError</DD>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>Updates a rectangular area of the stage window from a rectangular area of the stage's offscreen buffer. 
+Stretching or shrinking of parts of the image can be achieved by using a <span class="code">windowRect</span> which differs in size from the <span class="code">bufferRect</span>.
+Note that this call does not cause all sprites on the stage to be reimaged; it simply refreshes the stage window from Director's offscreen compositing buffer.</DD>
+</DL>
+
+<hr width=45% align=left>
+<A HREF = "../copyrite.htm">Copyright &#169; 1995-2008 Adobe Macromedia Software LLC, Inc.</A>
+</body></html>

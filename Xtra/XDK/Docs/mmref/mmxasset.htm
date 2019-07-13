@@ -1,0 +1,1566 @@
+<HTML>
+<HEAD>
+<TITLE>IMoaMmXAsset</TITLE>
+<link href="../xdk.css" rel="stylesheet" type="text/css">
+</HEAD>
+<body>
+
+ <A HREF="../mmdg/index.htm">MM Developer's Guide</A> <BR>
+  <A HREF="index.htm" >MM Interfaces</A> | <A HREF="mmmthndx.htm" >MM Methods</A> | <A HREF="mmtypndx.htm">MM Types and Misc API</A>
+<hr width=45% align=left>
+
+<h3>IMoaMmXAsset</h3>
+ Interface ID: <span class="code">IID_IMoaMmXAsset<BR>
+  </span>Pointer type: <span class="code">PIMoaMmXAsset<BR>
+  </span>Inheritance: <A HREF="mmprpown.htm">IMoaMmPropOwner</A> <BR>
+  Header file: <A HREF = "../../include/mmixasst.h">mmixasst.h</A> <BR>
+
+<h3>Description</h3>
+<DL>
+  <DD>
+    Use this Xtra interface to represent a particular type of media
+    asset in a multimedia presentation. <span class="code">IMoaMmXAsset</span> is an application-independent MOA Xtra interface. Because it inherits
+    from the <span class="code">IMoaMmPropOwner</span> interface, it includes methods for accessing various properties
+    of the media represented by a particular implementation. <br><br>
+    This interface is closely associated with the <span class="code">IMoaMmXSpriteActor</span> and <span class="code">IMoaMmXTransition</span> Xtra interfaces. For each media asset in a multimedia piece, there
+    may be several presentations of that asset. Thus, an <span class="code">IMoaMmXAsset </span>provider represents the asset itself, and an <span class="code">IMoaMmSpriteActor</span> provider represents each distinct presentation of the asset. <br><br>
+    For asset Xtras to work correctly on both Macintosh and Windows,
+    you must handle byte-swapping in your streaming code. The processors
+    supporting thes systems use different byte ordering of ints, longs,
+    and other multibyte data types. Unless you manage byte-swapping,
+    movies (including your Xtras that are saved on one platform and
+    played on another) will produce unpredictable results.</DD>
+</DL>
+
+<h3>Methods</h3>
+<h4>Scripting support </h4>
+<DL>
+  <DD><A HREF = "#GetProp">GetProp()</A><br>
+   <A HREF = "#SetProp">SetProp()</A><br>
+   <A HREF = "#CallFunction">CallFunction()</A><br>
+   <A HREF = "#GetInMemPropsSize">GetInMemPropsSize()</A><br>
+   <A HREF = "#FinishPropsEditor">FinishPropsEditor()</A></DD>
+</DL>
+<h4>Intialization </h4>
+<DL>
+  <DD><A HREF = "#SetCallback">SetCallback()</A></DD>
+</DL>
+<h4>Actor Management </h4>
+<DL>
+  <DD><A HREF = "#Notify">Notify()</A><br>
+   <A HREF = "#NewXActor">NewXActor()</A></DD>
+</DL>
+<h4>Data Management </h4>
+<DL>
+  <DD><A HREF = "#GetDefaultRect">GetDefaultRect()</A><br>
+   <A HREF = "#StreamOutMedia">StreamOutMedia()</A><br>
+   <A HREF = "#StreamInMedia">StreamInMedia()</A><br>
+   <A HREF = "#FreeMedia">FreeMedia()</A><br>
+   <A HREF = "#GetInMemMediaSize">GetInMemMediaSize()</A><br>
+   <A HREF = "#GetStreamOutMediaSize">GetStreamOutMediaSize()</A><br>
+   <A HREF = "#StreamOutProps">StreamOutProps()</A><br>
+   <A HREF = "#StreamInProps">StreamInProps()</A><br>
+   <A HREF = "#FreeProps">FreeProps()</A><br>
+   <A HREF = "#GetStreamOutPropsSize">GetStreamOutPropsSize()</A></DD>
+</DL>
+<h4>Initalization </h4>
+<DL>
+  <DD><A HREF = "#PrepareNewContent">PrepareNewContent()</A></DD>
+</DL>
+<h4>Authoring support </h4>
+<DL>
+  <DD><A HREF = "#InvokeMediaEditor">InvokeMediaEditor()</A><br>
+   <A HREF = "#InvokePropsEditor">InvokePropsEditor()</A><br>
+   <A HREF = "#InvokeAboutBox">InvokeAboutBox()</A><br>
+   <A HREF = "#ImageStaticThumb">ImageStaticThumb()</A><br>
+   <A HREF = "#BeginImageAnimThumb">BeginImageAnimThumb()</A><br>
+   <A HREF = "#ServiceImageAnimThumb">ServiceImageAnimThumb()</A><br>
+   <A HREF = "#EndImageAnimThumb">EndImageAnimThumb()</A></DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="BeginImageAnimThumb">BeginImageAnimThumb()</A></h3>
+<h4>Syntax</h4>
+<DL>
+<DT class="code">BeginImageAnimThumb(PIMoaMmGC <I>pGC</I>, ConstPMoaRect<I>pImageRect</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+  <DT><span class="code"><I>pGC</I></span></DT>
+  <DD>Pointer to <span class="code">IMoaMmGC </span>interface for graphics context in which to draw </DD>
+<DT><span class="code"><I>pImageRect</I></span></DT>
+  <DD>Pointer to <span class="code">MoaRect</span> specifying location and size of thumbnail </DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD>
+    <TABLE BORDER="2">
+      <TR>
+        <TD><span class="code">kMoaErr_NoErr</span> </TD>
+        <TD>Successful, ready to begin anim thumb drawing </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaMmErr_NotImplemented</span>Class </TD>
+        <TD>doesn't have an anim thumb </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaMmErr_GCTypeNotSupported</span> </TD>
+        <TD>Doesn't support supplied graphics context </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaErr_OutOfMem</span> </TD>
+        <TD>Couldn't prepare due to memory error </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaMmErr_InternalError</span> </TD>
+        <TD>Couldn't prepare due to internal error </TD>
+      </TR>
+    </TABLE></DD>
+</DL>
+<h4>Description</h4>
+<DL>
+<DD>    Implement this method to prepare to draw an animated thumbnail
+    into the specified rectangle in the specified graphics context. <span class="code">BeginImageAnimThumb() </span>does
+    not actually draw anything into this rectangle; it merely signals
+    the asset that the thumbnail imaging sequence is about to start.
+    Imaging should occur in the <span class="code">IMoaMmXAsset::ServiceImageAnimThumb()</span> method. 
+    When animation is to cease, the host application
+    should call <span class="code">EndImageAnimThumb()</span>. <span class="code">BeginImageAnimThumb()</span> gets
+    called by the host application only if the <span class="code">kMoaMmAssetCaps_CanImageAnimThumb</span> flag is 
+    set in the asset capabilities stored in the registry.
+    The supplied graphics context interface is owned by the caller
+    and should not be released by this method.</DD>    
+<DD>Director 5.0 requires the ability to image animated thumbmails
+    to screen graphics contexts; no caching is attempted for animated
+    thumbmails. Therefore, it is not important that you support offscreen
+    drawing for animated thumbnails; you need only support static
+    thumbnails. Regardless of how you support thumbnails, you can
+    claim to support both static and animated thumbmail drawing, then
+    return <span class="code">kMoaMmErr_GCTypeNotSupported</span> when called to draw if you find that you can't draw
+    into the supplied GC. <br><br>
+    If your Xtra requires that media data be loaded in order to image
+    the animated thumbnails, set the <span class="code">kMoaMmAssetCaps_AnimThumbNeedsMedia</span> asset 
+    capabilities flag in your registry entry. <br><br> 
+    When drawing in the native environment, be careful not to change
+    any native drawing context settings, such as brush or pen type,
+    colors, clip regions, and so on. Drawing outside of the supplied
+    rectangle is not supported and may have unpredictable results.</DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="CallFunction">CallFunction()</A></h3>
+<h4>Syntax</h4>
+<DL>
+<DT class="code">CallFunction(MoaMmSymbol <I>methodName</I>, MoaLong <I>nArgs</I>, ConstPMoaMmValue <I>pArgs</I>, PMoaMmValue <I>pResult</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+  <DT><span class="code"><I>methodName</I></span></DT>
+  <DD>Symbol representing the scripting function to call. </DD>
+<DT><span class="code"><I>nArgs</I></span></DT>
+  <DD>Number of arguments, excluding the reserved value in <span class="code">pArgs[0]</span> </DD>
+<DT><span class="code"><I>pArgs</I></span></DT>
+  <DD>Pointer to an argument array, with the first valid argument at <span class="code">pArgs[1]</span> </DD>
+<DT><span class="code"><I>pResult</I></span></DT>
+  <DD>Pointer to a <span class="code">MoaMmValue</span> instance to receive a result value, if any </DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD>
+    <TABLE BORDER="2">
+      <TR>
+        <TD><span class="code">kMoaErr_NoErr</span> </TD>
+        <TD>Function exists, operation successful </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaErr_BadParam</span> </TD>
+        <TD>Invalid <span class="code"><I>nArgs</I></span>, <span class="code"><I>pArgs</I></span>, or <span class="code"><I>pResult</I></span> </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaMmErr_FunctionNotFound</span> </TD>
+        <TD>Function not supported by this class </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaErr_OutOfMem</span> </TD>
+        <TD>Couldn't allocate memory to execute function </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaMmErr_InternalError</span> </TD>
+        <TD>Function exists, arguments ok, but couldn't execute </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaMmErr_NoArgExpected</span> </TD>
+        <TD>Wrong number of args: 0 expected </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaMmErr_OneArgExpected</span> </TD>
+        <TD>Wrong number of args: 1 expected </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaMmErr_TwoArgsExpected</span> </TD>
+        <TD>Wrong number of args: 2 expected </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaMmErr_ThreeArgsExpected</span> </TD>
+        <TD>Wrong number of args: 3 expected </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaMmErr_FourArgsExpected</span> </TD>
+        <TD>Wrong number of args: 4 expected </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaMmErr_WrongNumberOfArgs</span> </TD>
+        <TD>Wrong number of arguments, non- specific </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaMmErr_IntegerExpected</span> </TD>
+        <TD>Type mismatch: integer value argument expected </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaMmErr_SymbolExpected</span> </TD>
+        <TD>Type mismatch: symbol value argument expected </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaMmErr_FloatExpected</span> </TD>
+        <TD>Type mismatch: float value argument expected </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaMmErr_StringExpected</span> </TD>
+        <TD>Type mismatch: string value argument expected </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaMmErr_PointExpected</span> </TD>
+        <TD>Type mismatch: point value argument expected </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaMmErr_RectExpected</span> </TD>
+        <TD>Type mismatch: rect value argument expected </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaMmErr_ValueTypeMismatch</span> </TD>
+        <TD>Type mismatch: (non-specific) </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaDrErr_CastMemberExpected</span> </TD>
+        <TD>Director only. Type mismatch: <span class="code">CMRef</span> expected </TD>
+      </TR>
+    </TABLE>
+</DL>
+<h4>Description</h4>
+<DL>
+<DD>Implement this method to provide asset scripting. This method
+    is invoked by the host application to call an asset function.
+    This method allows assets to export arbitrary functions to use
+    in the host application's scripting or expression language. The
+    caller passes the symbol of the function to call in the <span class="codearg">methodName</span> parameter, 
+    along with the argument count (<span class="codearg">nArgs</span>),
+    the argument array (<span class="codearg">pArgs</span>),
+    and, optionally, a pointer to a <span class="code">MoaMmValue</span> to receive any result value. <br><br>    
+    The argument array, <span class="codearg">pArgs</span>,
+    contains an array of <span class="code">MoaMmValues</span> corresponding to the function arguments. 
+    <span class="codearg">pArgs[0]</span> is a reserved value and should not be referenced.
+    The real function parameters are supplied in <span class="codearg">pArgs[1]</span> 
+    through <span class="codearg">pArgs[nArgs]</span>.
+    These <span class="code">MoaMmValues</span> are
+    owned by the caller and should not be released by this method.
+    If the method has a return value, it should populate <span class="codearg">pResult</span> with a 
+    new <span class="code">MoaMmValue</span> containing the result. If the Xtra does not support
+    the function specified by <span class="codearg">methodName</span>,
+    it returns the error code <span class="code">kMoaMmErr_FunctionNotFound</span>.
+    If the number or types of the arguments are incorrect, the function
+    returns an appropriate <span class="code">MoaMmError</span> (see mmtypes.h). </DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="EndImageAnimThumb">EndImageAnimThumb()</A></h3>
+<h4>Syntax</h4>
+<DL>
+<DT class="code">EndImageAnimThumb(PIMoaMmGC <I>pGC</I>, ConstPMoaRect <I>pImageRect</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+  <DT><span class="code"><I>pGC</I></span></DT>
+  <DD>Pointer to the <span class="code">IMoaMmGC</span> interface for graphics context in which to draw </DD>
+<DT><span class="code"><I>pImageRect</I></span></DT>
+  <DD>Pointer to a <span class="code">MoaRect</span> specifying location and size of thumbnail </DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD>
+    <TABLE BORDER="2">
+      <TR>
+        <TD><span class="code">kMoaErr_NoErr</span> </TD>
+        <TD>Successful, animation thumbnail sequence ended </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaMmErr_NotImplemented</span> </TD>
+        <TD>Asset doesn't have animated thumbnail </TD>
+      </TR>
+    </TABLE>
+</DL>
+<h4>Description</h4>
+<DL>
+<DD>Implement this method to finish the thumbnail animation sequence.
+    This call does not draw into the graphics context; it merely signals
+    the end of the thumbnail animation sequence. The host application,
+    not the asset, is responsible for erasing the thumbnail image
+    area, if necessary. No erasing should be done by the asset. </DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="FinishPropsEditor">FinishPropsEditor()</A></h3>
+<h4>Syntax</h4>
+<DL>
+<DT class="code">FinishPropsEditor(MoaBoolParam <I>commitChanges</I>, PMoaMmModifyFlags <I>pModifyFlags</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+  <DT><span class="code"><I>commitChanges</I></span></DT>
+  <DD>Value reflecting whether user accepted or canceled modifications to properties </DD>
+<DT><span class="code"><I>pModifyFlags</I></span></DT>
+  <DD>Flag representing property modification state of the Xtra </DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD>
+    <TABLE BORDER="2">
+      <TR>
+        <TD><span class="code">kMoaErr_NoErr</span> </TD>
+        <TD>Editing complete, changes committed (if appropriate) </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaMmErr_NotImplemented</span> </TD>
+        <TD>Asset doesn't have a property editor </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaErr_OutOfMem</span> </TD>
+        <TD>Couldn't commit due to memory error </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaMmErr_InternalError</span> </TD>
+        <TD>Couldn't commit due to an internal error </TD>
+      </TR>
+    </TABLE>
+</DL>
+<h4>Description</h4>
+<DL>
+<DD>This method is called after the asset's <span class="code">InvokePropsEditor()</span> method has returned to complete any changes made through that
+    method. This method informs the media asset that the host application
+    properties editor has been closed by the user. The parameter <span class="code"><I>commitChanges</I></span> 
+    reflects whether the user accepted or canceled
+    modifications to the Xtra's properties. If accepted, the Xtra
+    can finalize changes to its properties; if canceled, the Xtra
+    retains the properties in effect before <span class="code">InvokePropsEditor()</span> was called. <br><br>
+    The following flags are valid for <span class="code"><I>pModifyFlags</I></span>:
+    <TABLE BORDER="2">
+      <TR>
+        <TH><B>Value</B></TH>
+        <TH><B>Description</B> </TH>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaMmModifyFlags_None</span> </TD>
+        <TD>No media or properties have changed </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaMmModifyFlags_Media</span> </TD>
+        <TD>Media data has been modified </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaMmModifyFlags_Props</span> </TD>
+        <TD>Properties data has been modified </TD>
+      </TR>
+    </TABLE></DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="FreeMedia">FreeMedia()</A></h3>
+<h4>Syntax</h4>
+<DL>
+<DT class="code">FreeMedia()</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD>
+    <TABLE BORDER="2">
+      <TR>
+        <TD><span class="code">kMoaErr_NoErr</span> </TD>
+        <TD>Media freed from memory (or no media to free) </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaMmErr_FreeFailed</span> </TD>
+        <TD>Media not freed. Host assumes media still in memory. </TD>
+      </TR>
+    </TABLE>
+</DL>
+<h4>Description</h4>
+<DL>
+<DD>Implement this method to release any memory in use by your asset
+    for its media data. Typically, this method is called when the
+    host application needs to purge an asset from memory. After this
+    call, the host application assumes that the media data is no longer
+    loaded; it calls <span class="code">IMoaMmXAsset::StreamInMedia()</span> again
+    if the media is needed). Return <span class="code">kMoaMmErr_FreeFailed</span> if you failed to free your media data.
+    Typically you should never
+    return an error when freeing data, unless it's in use by another thread. </DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="FreeProps">FreeProps()</A></h3>
+<h4>Syntax</h4>
+<DL>
+<DT class="code">FreeProps()</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD>
+    <TABLE BORDER="2">
+      <TR>
+        <TD><span class="code">kMoaErr_NoErr</span> </TD>
+        <TD>Properties freed from memory (or no props to free) </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaMmErr_FreeFailed</span> </TD>
+        <TD>Properties not freed. Host assumes still in memory. </TD>
+      </TR>
+    </TABLE>
+</DL>
+<h4>Description</h4>
+<DL>
+<DD>Implement this method to release any memory in use by your asset
+    for its property data. Typically, this method is called when the
+    host application needs to purge an asset from memory. After this
+    call, the host application assumes that your property data is
+    no longer loaded; it calls <span class="code">IMoaMmXAsset::StreamInMedia()</span> if
+    property data is needed. <br><br>
+    If you have no data or if it's already freed, 
+    return <span class="code">kMoaErr_NoErr</span>.
+    The host then assumes that data needs to be loaded if it is needed
+    in a subsequent operation. Return <span class="code">kMoaMmErr_FreeFailed</span> if you failed to free your data;
+    this notifies the host application that your data is still in memory. </DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="GetDefaultRect">GetDefaultRect()</A></h3>
+<h4>Syntax</h4>
+<DL>
+<DT class="code">GetDefaultRect(PMoaRect <I>pRect</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+  <DT><span class="code"><I>pRect</I></span></DT>
+  <DD>Pointer to a <span class="code">MoaRect</span> to receive the default rectangle </DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD>
+    <TABLE BORDER="2">
+      <TR>
+        <TD><span class="code">kMoaErr_NoErr</span> </TD>
+        <TD>Successful</TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaMmErr_NotImplemented</span> </TD>
+        <TD>Asset doesn't require default rectangle (e.g., transition) </TD>
+      </TR>
+    </TABLE>
+</DL>
+<h4>Description</h4>
+<DL>
+<DD>Implement this method to provide the default bounding rectangle
+    for the asset. This bounding rectangle is used by the host application
+    when creating new sprites for the asset in the playback window.
+    The coordinates (0,0) indicate the registration point of the asset.
+    If the asset does not have a variable registration point, the
+    default rectangle should always be supplied centered around (0,0),
+    rather than top-left at (0,0). </DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="GetInMemMediaSize">GetInMemMediaSize()</A></h3>
+<h4>Syntax</h4>
+<DL>
+<DT class="code">GetInMemMediaSize(MoaUlong * <I>pSizeBytes</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+  <DT><span class="code"><I>pSizeBytes</I></span></DT>
+  <DD>Pointer to a <span class="code">MoaUlong</span> to receive the in- memory size of the media asset </DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD>
+    <TABLE BORDER="2">
+      <TR>
+        <TD><span class="code">kMoaErr_NoErr</span> </TD>
+        <TD>Successful, value at <span class="code"><I>pSizeBytes </I></span>set </TD>
+      </TR>
+    </TABLE>
+</DL>
+<h4>Description</h4>
+<DL>
+<DD>Implement this method to inform the host application of the current
+    memory use of your media asset in bytes. Upon return, the parameter <span class="codearg">pSizeBytes</span> contains
+    the size, in bytes, of memory currently occupied by the media
+    data. If media is unloaded, return 0. </DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="GetInMemPropsSize">GetInMemPropsSize()</A></h3>
+<h4>Syntax</h4>
+<DL>
+<DT class="code">GetInMemPropsSize(MoaUlong * <I>pSizeBytes</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+  <DT><span class="code"><I>pSizeBytes</I></span></DT>
+  <DD><span class="code">MoaUlong *</span>Pointer to a <span class="code">MoaUlong</span> to receive in- memory size of property data </DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD>
+    <TABLE BORDER="2">
+      <TR>
+        <TD><span class="code">kMoaErr_NoErr</span> </TD>
+        <TD>Successful, value at <span class="code"><I>pSizeBytes </I></span>set </TD>
+      </TR>
+    </TABLE>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD>Implement this method to inform the host application of the
+    current memory use of your media asset in bytes. Upon return,
+    the parameter <span class="codearg">pSizeBytes</span> contains
+    the size, in bytes, of memory currently occupied by the property
+    data. If props are unloaded, you should return 0.</DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="GetProp">GetProp()</A></h3>
+<h4>Syntax</h4>
+<DL>
+<DT class="code">GetProp(MoaMmSymbol <I>symbol</I>, PMoaMmValue <I>pPropValue</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+  <DT><span class="code"><I>symbol</I></span></DT>
+  <DD><span class="code">MoaMmSymbol</span>representing the property to get </DD>
+<DT><span class="code"><I>pPropValue</I></span></DT>
+  <DD>Pointer to <span class="code">MoaMmValue </span>to receive the value requested </DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD>
+    <TABLE BORDER="2">
+      <TR>
+        <TD><span class="code">kMoaErr_NoErr</span> </TD>
+        <TD>Property exists, value returned </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaErr_BadParam</span> </TD>
+        <TD>Invalid<span class="code"> <I>pPropValue</I></span> </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaMmErr_PropertyNotFound</span> </TD>
+        <TD>Property not supported by this asset </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaMmErr_InternalError</span> </TD>
+        <TD>Property exists but couldn't get due to internal error </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaMmErr_NoMemForString</span> </TD>
+        <TD>Couldn't allocate memory for string value data </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaErr_OutOfMem</span> </TD>
+        <TD>Couldn't allocate memory for other value data </TD>
+      </TR>
+    </TABLE>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD>Implement this method to return values for any custom properties
+    supported by your media asset. The <span class="codearg">symbol</span> represents the requested property. 
+    Your Xtra should include an
+    instance variable containing an array of symbols for the properties
+    you support. You can then look up the value passed in to your
+    Xtra, and use the index in the array to determine the property
+    to access. If your asset supports the specified property, you
+    should create the corresponding value, and place the results in
+    the <span class="codearg">pPropValue</span> parameter.
+    The host application then assumes ownership of the value and is
+    responsible for releasing it. <span class="code">GetProp()</span> returns the error code 
+    <span class="code">kMoaMmErr_PropertyNotFound</span> if it does not support the property represented 
+    by <span class="codearg">symbol</span>.</DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="GetStreamOutMediaSize">GetStreamOutMediaSize()</A> </h3>
+<h4>Syntax</h4>
+<DL>
+<DT class="code">GetStreamOutMediaSize(MoaUlong * <I>pSizeBytes</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+  <DT><span class="code"><I>pSizeBytes</I></span></DT>
+  <DD>Pointer to a <span class="code">MoaUlong</span> to receive the storage size of the media asset </DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD>
+    <TABLE BORDER="2">
+      <TR>
+        <TD><span class="code">kMoaErr_NoErr</span> </TD>
+        <TD>Successful, value at <span class="code"><I>pSizeBytes </I></span>set </TD>
+      </TR>
+    </TABLE>
+</DL>
+<h4>Description</h4>
+<DL>
+<DD>Implement this method to inform the host application of the total
+    amount of media data, in bytes, streamed out when your <span class="code">IMoaMmXAsset::StreamOutMedia()</span> method 
+    is called. The host application uses this value to determine
+    the optimal file layout when saving a file and to test for available
+    memory when streaming out to memory, for example for copy and
+    paste operations. If the asset has no media data to stream out,
+    set the value at <span class="codearg">pSizeBytes</span> to 0. If it is not possible to determine the size
+    of the media data to be streamed out, you can set the value at <span class="codearg">pSizeBytes</span> to
+    -1. (The only disadvantage to supplying -1 is that the host application
+    may not be able to store your media data as efficiently on disk
+    when an in-place save operation occurs.)</DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="GetStreamOutPropsSize">GetStreamOutPropsSize()</A> </h3>
+<h4>Syntax</h4>
+<DL>
+<DT class="code">GetStreamOutPropsSize(MoaUlong * <I>pSizeBytes</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+<DT><span class="code"><I>pSizeBytes</I></span></DT>
+  <DD>Pointer to a <span class="code">MoaUlong</span> to receive the total amount of property data </DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD>
+    <TABLE BORDER="2">
+      <TR>
+        <TD><span class="code">kMoaErr_NoErr</span> </TD>
+        <TD>Successful, value at <span class="code"><I>pSizeBytes </I></span>set </TD>
+      </TR>
+    </TABLE>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD>Implement this method to inform the host application of the
+    total amount of properties data, in bytes, streamed out when the
+    application calls your <span class="code">IMoaMmXAsset::StreamOutProps()</span> method. 
+    The host application uses this value to determine the
+    optimal file layout when saving a file and to test for available
+    memory when streaming out to memory, for example for copy and
+    paste operations. If the cast member has no properties data to
+    stream out, set the value at <span class="codearg">pSizeBytes</span> to 0. 
+    You cannot use the special -1 value for <span class="codearg">pSizeBytes</span> for
+    properties data. You must supply the actual data size that would
+    be streamed out in a subsequent call to <span class="code">IMoaMmXAsset::StreamOutProps()</span>.</DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="ImageStaticThumb">ImageStaticThumb()</A></h3>
+<h4>Syntax</h4>
+<DL>
+<DT class="code">ImageStaticThumb(PIMoaMmGC <I>pGC</I>, ConstPMoaRect <I>pImageRect</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+  <DT><span class="code"><I>pGC</I></span></DT>
+  <DD>Pointer to <span class="code">IMoaMmGC</span> interface for graphics context in which to draw </DD>
+<DT><span class="code"><I>pImageRect</I></span></DT>
+  <DD>Pointer to <span class="code">MoaRect</span> specifying location and size of thumbnail </DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD>
+    <TABLE BORDER="2">
+      <TR>
+        <TD><span class="code">kMoaErr_NoErr</span> </TD>
+        <TD>Successful, static thumb drawn </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaMmErr_NotImplemented</span> </TD>
+        <TD>Asset doesn't have a static thumb </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaMmErr_GCTypeNotSupported</span> </TD>
+        <TD>Doesn't support supplied GC type </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaErr_OutOfMem</span> </TD>
+        <TD>Couldn't draw due to memory error </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaMmErr_InternalError</span> </TD>
+        <TD>Couldn't draw due to an internal error </TD>
+      </TR>
+    </TABLE>
+</DL>
+<h4>Description</h4>
+<DL>
+<DD>Optionally implement this method to draw a static thumbnail image
+    for an asset into the specified rectangle in the specified graphics
+    context. This method gets called by the host application only
+    if the cast member's capabilities <span class="code">kMoaMmAssetCaps_CanImageStaticThumb</span> flag is set. 
+    <span class="codearg">pImageRect</span> can
+    contain a rectangle of any size or aspect ratio, however, thumbnails
+    should be optimized for drawing speed and look their best at a
+    4 (horizontal) x 3 (vertical) aspect ratio. The supplied graphics
+    context interface is owned by the caller and should not be released
+    by this method. <br><br>
+    Director 5.0 requires the ability to image animated thumbmails
+    to screen graphics contexts; no caching is attempted for animated
+    thumbmails. Therefore, it is not important that you support offscreen
+    drawing for animated thumbnails; you need only support static
+    thumbnails. Regardless of how you support thumbnails, you can
+    claim to support both static and animated thumbmail drawing, then
+    return <span class="code">KMoaMmErr_GCTypeNotSupported</span> when called to draw if you find that you can't 
+    draw into the supplied GC. <br><br>    
+    It is recommended that you support offscreen thumbnail imaging
+    for static thumbnails so these thumbnails can be cached. Caching
+    static thumbs isn't performed in 5.0, but will be implemented
+    in a future release. Support offscreen static thumbnail imaging
+    for future compatibility. <br><br>
+    If the Xtra requires media data be loaded in order to image the
+    static thumbnail, set the <span class="code">kMoaMmAssetCaps_StaticThumbNeedsMedia</span> asset capabilities 
+    flag in your asset capabilities registry entry. <br><br>    
+    When drawing in the native environment, be careful not to change
+    any native drawing context settings, such as brush or pen type,
+    colors, clip regions, and so on. Drawing outside of the supplied
+    rectangle is not supported and may have unpredictable results. </DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="InvokeAboutBox">InvokeAboutBox()</A></h3>
+<h4>Syntax</h4>
+<DL>
+<DT class="code">InvokeAboutBox()</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD>
+    <TABLE BORDER="2">
+      <TR>
+        <TD><span class="code">kMoaErr_NoErr</span> </TD>
+        <TD>Successful, property editor invoked. </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaMmErr_NotImplemented</span> </TD>
+        <TD>Class doesn't have a property editor </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaErr_OutOfMem</span> </TD>
+        <TD>Couldn't invoke due to memory error </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaMmErr_InternalError</span> </TD>
+        <TD>Couldn't invoke due to an internal error </TD>
+      </TR>
+    </TABLE>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD>Optionally implement this method if to display an About Box
+    dialog for your asset. Currently, it is assumed that the About
+    Box dialog is modal, and that this method returns after the user
+    presses OK. Typically, this method is called from Director when
+    the user presses the &quot;About Box|&quot; button in the Xtra
+    Cast Member or Transition Properties Dialog.</DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="InvokeMediaEditor">InvokeMediaEditor()</A></h3>
+<h4>Syntax</h4>
+<DL>
+<DT class="code">InvokeMediaEditor(PMoaMmModifyFlags <I>pModifyFlags</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+  <DT><span class="code"><I>pModifyFlags</I></span></DT>
+  <DD>Pointer to a <span class="code">MoaMmModifyFlags </span>to receive modify flags </DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD>
+    <TABLE BORDER="2">
+      <TR>
+        <TD><span class="code">kMoaErr_NoErr</span> </TD>
+        <TD>Successful, media editor invoked </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaMmErr_NotImplemented</span> </TD>
+        <TD>Class doesn't have a media editor </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaErr_OutOfMem</span> </TD>
+        <TD>Couldn't invoke due to memory error </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaMmErr_InternalError</span> </TD>
+        <TD>Couldn't invoke due to internal error </TD>
+      </TR>
+    </TABLE>
+</DL>
+<h4>Description</h4>
+<DL>
+<DD>Optionally implement this method if your asset displays a media
+    editor user interface. Currently, it is assumed that this is a
+    modal dialog, and that this method returns when the user presses
+    the OK or CANCEL buttons. This method is responsible for updating
+    the value at <span class="codearg">pModifyFlags</span> to
+    describe what changes, if any, where made to the media or properties
+    for the asset. Typically, this method is called from Director
+    when a user double-clicks on a cast member thumbnail in the cast. <br><br>
+    The following flags are valid for <span class="code">modifyFlags</span>:
+    <TABLE BORDER="2">
+      <TR>
+        <TH><B>Value</B></TH>
+        <TH ALIGN="LEFT"  VALIGN="TOP" WIDTH=308><B>Description</B> </TH>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaMmModifyFlags_None</span> </TD>
+        <TD>No media or properties have changed </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaMmModifyFlags_Media</span> </TD>
+        <TD>Media data has been modified </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaMmModifyFlags_Props</span> </TD>
+        <TD>Properties data has been modified </TD>
+      </TR>
+    </TABLE></DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="InvokePropsEditor">InvokePropsEditor()</A></h3>
+<h4>Syntax</h4>
+<DL>
+<DT class="code">InvokePropsEditor()</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD>
+    <TABLE BORDER="2">
+      <TR>
+        <TD><span class="code">kMoaErr_NoErr</span> </TD>
+        <TD>Successful, property editor invoked. </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaMmErr_NotImplemented</span> </TD>
+        <TD>Class doesn't have a property editor </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaErr_OutOfMem</span> </TD>
+        <TD>Couldn't invoke due to memory error </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaMmErr_InternalError</span> </TD>
+        <TD>Couldn't invoke due to an internal error </TD>
+      </TR>
+    </TABLE>
+</DL>
+<h4>Description</h4>
+<DL>
+<DD>Optionally implement this method to display the property editor
+    user interface for the cast member. Currently it is assumed that
+    this is a modal dialog, and that this method returns when the
+    user presses the OK or CANCEL buttons. However, changes to properties
+    should not be committed until the <span class="code">FinishPropsEditor()</span> method is called--this informs your Xtra 
+    if the user has cancelled
+    changes through the host application's own properties panel. Typically,
+    this method is called from Director when the user presses the
+    &quot;Options ... &quot; button in the Xtra Cast Member or Transition
+    Properties Dialog.</DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="NewXActor">NewXActor()</A></h3>
+<h4>Syntax</h4>
+<DL>
+<DT class="code">NewXActor(PMoaVoid * <I>ppXActor</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+  <DT><span class="code"><I>ppXActor</I></span></DT>
+  <DD>Pointer to either a <span class="code">PIMoaMmXSpriteActor</span> or <span class="code">PIMoaMmXTransitionActor</span> 
+  to receive the interface for the new actor </DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD>
+    <TABLE BORDER="2">
+      <TR>
+        <TD><span class="code">kMoaErr_NoErr</span> </TD>
+        <TD>Successful, actor created and initialized </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaErr_OutOfMem</span> </TD>
+        <TD>Couldn't create actor due to memory error </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaMmErr_InternalError</span> </TD>
+        <TD>Couldn't create actor due to internal error </TD>
+      </TR>
+    </TABLE>
+</DL>
+<h4>Description</h4>
+<DL>
+<DD>Implement this method to create a new actor instance for the asset.
+    This method creates a new object supporting either <span class="code">IMoaMmXSpriteActor</span> or 
+    <span class="code">IMoaMmXTransitionActor</span>,
+    depending on whether the actor type is <span class="code">kMoaMmActorType_Sprite</span> or 
+    <span class="code">kMoaMmActorType_Transition</span>.
+    The interface is returned to the caller in <span class="codearg">ppXActor</span> 
+    You must supply either a <span class="code">PIMoaMmXSpriteActor</span> or a <span class="code">PIMoaMmTransitionActor</span>.
+    Do not supply a <span class="code">PIUnknown</span>. In both cases, the calling host application owns the returned
+    actor instance and is responsible for disposing it through its <span class="code">Release()</span> method. </DD>
+</DL>
+
+<H5><A NAME="RTFToC19">Sprite Actors</A> </H5>
+<DL>
+<DD>For sprite-based asset types, this method is typically called
+    by Director when playing or scrubbing a movie and the beginning
+    of a new sprite span for your asset has been encountered. 
+    It is the responsibility of <span class="code">NewXActor()</span> to create a new instance of a class supporting the 
+    <span class="code">IMoaMmXSpriteActor</span> interface, 
+    initialize the instance (typically calling its <span class="code">Init()</span> method), 
+    and return a <span class="code">PIMoaMmXSpriteActor</span> for it in <span class="codearg">ppXActor</span>.</DD>
+</DL>
+<H5><A NAME="RTFToC20">Transition Actors</A> </H5>
+<DL>
+  <DD>For transition-based asset types, this method is typically
+    called by Director when a transition is encountered in the transition
+    channel in the score, when a Lingo <span class="code">puppetTransition</span> command is issued, 
+    or when displaying the transition dialog.
+    In these cases, it is the responsibility
+    of <span class="code">NewXActor()</span> to
+    create a new instance of a class supporting the <span class="code">IMoaMmXTransitionActor</span> interface, 
+    initialize the instance, and return a <span class="code">PIMoaMmXTransitionActor</span> for it 
+    in it <span class="codearg">ppXActor</span>. </DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="Notify">Notify()</A></h3>
+<h4>Syntax</h4>
+<DL>
+<DT class="code">Notify(MoaLong <I>msgCode</I>, PMoaVoid <I>refCon</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+  <DT><span class="code"><I>msgCode</I></span></DT>
+  <DD>MoaLong</DD>
+<DT><span class="code"><I>refCon</I></span></DT>
+  <DD>PMoaVoid</DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD>
+    <TABLE BORDER="2">
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=227><span class="code">kMoaErr_NoErr</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=278>Notification successful </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=227><span class="code">kMoaMmErr_UnknownNotifyMsgCode</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=278>Notify message code not supported </TD>
+      </TR>
+    </TABLE>
+</DL>
+<h4>Description</h4>
+<DL>
+<DD>Optionally implement this method to provide communication from
+    actors to their assets. The sprite callback method lets you send
+    arbitrary messages from your actor to its asset through this method. <br><br>   
+    <B>Note:</B> Xtra developers may specify values in the range of
+    0 to 65535 for their notification codes. Higher values are reserved
+    by Adobe for future use. </DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="PrepareNewContent">PrepareNewContent()</A></h3>
+<h4>Syntax</h4>
+<DL>
+<DT class="code">PrepareNewContent(MoaMmNewFlags <I>newFlags</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+  <DT><span class="code"><I>newFlags</I></span></DT>
+  <DD>MoaMmNewFlags</DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD>
+    <TABLE BORDER="2">
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=221><span class="code">kMoaErr_NoErr</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=283><span class="code">S</span>uccessful. </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=221><span class="code">kMoaErr_OutOfMem</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=283>Couldn't initialize due to memory error </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=221><span class="code">kMoaMmErr_AssetCreationFailed</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=283>User canceled or internal error </TD>
+      </TR>
+    </TABLE>
+</DL>
+<h4>Description</h4>
+<DL>
+<DD>Prepares new content for the asset. This method is called when
+    a new asset is created in the host application. This method is
+    called after the <span class="code">IMoaMmXAsset</span> instance is created, whether the user chooses to create
+    a new asset in the authoring environment or a new asset is created
+    programatically. This method allows Xtras to prepare default media
+    and properties for a new asset. After calling this function, the
+    host application assumes that the property and media data for
+    the object is loaded, so that it is not necessary to call <span class="code">StreamInProps()</span> 
+    or <span class="code">StreamInMedia()</span> to load any data from disk (because there isn't any on disk yet).
+    Note that when a previously-saved asset is read-in when a document
+    is opened, this method is not called. The method is used only
+    when new assets are created in the authoring environment or when
+    created programatically at playback time.<br><br>
+    There are times when an Xtra should not invoke the user interface
+    with this method, for example, when a Lingo programmer is creating
+    a new asset programatically and does not want to display the asset
+    creation or to preview the user interface. In this case, the asset
+    should initialize itself with default properties and media without
+    requiring any input from the user. <br><br>
+    The bits in <span class="codearg">newFlags</span> specify
+    whether the asset can display a user interface for editing properties
+    and media, and whether it was created through the user interface
+    of an authoring tool or programatically (for example, with Lingo
+    in Director).<br><br>
+    In Director 5.0, these two values always are the same value, however
+    in the future they may be independent to allow for such things
+    as the programmatic creation of assets with user interfaces invoked
+    for each asset.<br><br>
+    The following flags are valid for <span class="codearg">newFlags</span>:  
+    <TABLE BORDER="2">
+      <TR>
+        <TH ALIGN="LEFT" VALIGN="TOP" WIDTH=252><B>Value</B></TH>
+        <TH ALIGN="LEFT" VALIGN="TOP" WIDTH=501><B>Description</B> </TH>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=252><span class="code">kMoaMmNewFlags_None</span> </TD>
+        <TD ALIGN="LEFT"    VALIGN="TOP" WIDTH=501>No bits are set. If not specified, this field can be a combination of the following flags: </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=252><span class="code">kMoaMmNewFlags_UiPermitted</span> </TD>
+        <TD ALIGN="LEFT"    VALIGN="TOP" WIDTH=501>If set, the host application permits the display o f UI (such as a modal dialog) during this method call, which might be used to supply a preview or set initial values for the Xtra. If not set, <span class="code">PrepareNewContent()</span> should not invoke any UI, and instead silently set-up the initial default properties and media for the asset. </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=252><span class="code">kMoaMmNewFlags_AuthorInvoked</span> </TD>
+        <TD ALIGN="LEFT"    VALIGN="TOP" WIDTH=501>If set, the host application calls this method in response to a request from the user initiated through the host application's user interface (that is, the user selected your menu item). If not set, your asset is being created programatically or as a side-effect of some internal operation in the host application (such as duplicating an asset). </TD>
+      </TR>
+    </TABLE>
+    </DD>
+    <DD> This method returns the following values:
+    <UL>
+      <LI><span class="code">kMoaErr_NoErr</span>: <span class="code">PrepareNewContent()</span> was successful. 
+      The asset was initialized either silently or through
+        the user interface and the user committed. This return value indicates
+        to the host application that this asset's media data has been
+        successfully loaded; the default data was prepared, although no
+        data exists on disk.</LI>
+      <LI><span class="code">kMoaMmErr_AssetCreationFailed</span>:
+        The creation of the asset failed. It could not initialize new
+        content for some reason, or the user chose CANCEL: in the asset
+        creation dialog. Returning this code causes the asset to be deleted
+        and the asset instance to be disposed.</LI>
+    </UL>
+    </DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="ServiceImageAnimThumb">ServiceImageAnimThumb()</A> </h3>
+<h4>Syntax</h4>
+<DL>
+<DT class="code">ServiceImageAnimThumb(PIMoaMmGC <I>pGC</I>, ConstPMoaRect <I>pImageRect</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+  <DT><span class="code"><I>pGC</I></span></DT>
+  <DD>Pointer to <span class="code">IMoaMmGC</span> interface for graphics context in which to draw </DD>
+<DT><span class="code"><I>pImageRect</I></span></DT>
+  <DD>Pointer to <span class="code">MoaRect</span> specifying location and size of thumbnail </DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD>
+    <TABLE BORDER="2">
+      <TR>
+        <TD><span class="code">kMoaErr_NoErr</span> </TD>
+        <TD>Successful, animation thumb serviced </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaMmErr_NotImplemented</span> </TD>
+        <TD>Class doesn't have an animation thumb </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaMmErr_GCTypeNotSupported</span> </TD>
+        <TD>Doesn't support supplied GC type </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaErr_OutOfMem</span> </TD>
+        <TD>Couldn't update due to memory error </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaMmErr_InternalError</span> </TD>
+        <TD>Couldn't update due to internal error </TD>
+      </TR>
+    </TABLE>
+</DL>
+<h4>Description</h4>
+<DL>
+<DD>Optionally implement this method to service an asset's thumbnail
+    animation. For assets that register the ability to display animated
+    thumbnails, this method is called repeatedly after calling <span class="code">BeginImageAnimThumb()</span>.
+    This method may be called at variable rates up to 60 times per
+    second, so assets that need to regulate the speed of their animations
+    should use system clock routines to check timing, and return from
+    this method immediately when not imaging. A call to <span class="code">ServiceImageAnimThumb()</span> doesn't
+    necessarily have to image a frame of the thumbnail animation;
+    it can simply return if it is not yet time to draw the next frame.
+    Servicing may occur at a rate of less than 60 times per second
+    depending on the speed of the processor and the time this method
+    takes to execute. Service time should not exceed 100 ms. Typical
+    thumbnail animation speed should be at the rate of 5 to 15 frames
+    per second for graphics, and up to 30 frames per second for video.
+    The animation sequence is terminated by the host application with
+    a call to <span class="code">EndImageAnimThumb()</span>.
+    The supplied graphics context interface is owned by the caller
+    and should not be released by this method. <br><br>
+    Director 5.0 requires the ability to image animated thumbmails
+    to screen graphics contexts; no caching is attempted for animated
+    thumbmails. Therefore, it is not important that you support offscreen
+    drawing for animated thumbnails; you need only support static
+    thumbnails. Regardless of how you support thumbnails, you can
+    claim to support both static and animated thumbmail drawing, then
+    return <span class="code">KMoaMmErr_GCTypeNotSupported</span> when called to draw if you find that you can't draw
+    into the supplied GC. <br><br>
+    It is recommended that you support offscreen thumbnail imaging
+    for static thumbnails so these thumbnails can be cached. Caching
+    static thumbs isn't performed in 5.0, but will be implemented
+    in a future release. Support offscreen static thumbnail imaging
+    for future compatibility. <br><br>    
+    If your Xtra requires that media data be loaded in order to image
+    the animated thumbnails, set the <span class="code">kMoaMmAssetCaps_AnimThumbNeedsMedia</span> asset
+    capabilities flag in your asset capabilities registry entry. <br><br>    
+    When drawing in the native environment, be careful not to change
+    any native drawing context settings, such as brush or pen type,colors,
+    clip regions, and so on. Drawing outside of the supplied rectangle
+    is not supported and may have unpredictable results. </DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="SetCallback">SetCallback()</A></h3>
+<h4>Syntax</h4>
+<DL>
+<DT class="code">SetCallback(PIMoaMmAssetCallback <I>pAssetCallback</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+  <DT><span class="code"><I>pAssetCallback</I></span></DT>
+  <DD>Pointer to an <span class="code">IMoaMmAssetCallback </span>interface </DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD>
+    <TABLE BORDER="2">
+      <TR>
+        <TD><span class="code">kMoaErr_NoErr</span> </TD>
+        <TD>Callback interface set </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaMmErr_NotImplemented</span> </TD>
+        <TD>Callback interface not used </TD>
+      </TR>
+    </TABLE>
+</DL>
+<h4>Description</h4>
+<DL>
+<DD>Receives a <span class="code">PIMoaMmAssetCallback</span> interface containing callback methods for the asset.
+    In Director, this class also supports the <span class="code">IMoaDrAssetCallback</span> interface 
+    providing Director-specific callbacks.
+    This is called when the host application places an instance of
+    the asset into its asset library (for example, the cast in Director). <br><br>
+    To hold on to the callback interface, call <span class="code">AddRef()</span> on the interface
+    and store it in an instance variable. <br><br>
+    For transitions, the asset instance may be created by the Transition
+    Dialog, but the asset won't be placed in the cast (and thus, <span class="code">SetCallback()</span> called) 
+    until the user presses the OK button and the transition
+    cast member is created. </DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="SetProp">SetProp()</A></h3>
+<h4>Syntax</h4>
+<DL>
+<DT class="code">SetProp(MoaMmSymbol <I>symbol</I>, ConstPMoaMmValue <I>pPropValue</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+  <DT><span class="code"><I>symbol</I></span></DT>
+  <DD><span class="code">MoaMmSymbol</span>representing the property to get </DD>
+<DT><span class="code"><I>pPropValue</I></span></DT>
+  <DD>Pointer to <span class="code">MoaMmValue </span>to receive the value requested </DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD>
+    <TABLE BORDER="2">
+      <TR>
+        <TD><span class="code">kMoaErr_NoErr</span> </TD>
+        <TD>Property exists and value was set </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaErr_BadParam</span> </TD>
+        <TD>Invalid <span class="code"><I>pPropValue</I></span> </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaMmErr_PropertyNotFound</span> </TD>
+        <TD>Property not supported by this asset </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaMmErr_InternalError</span> </TD>
+        <TD>Property exists, value ok, can't set due to other error </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaMmErr_NoMemForString</span> </TD>
+        <TD>Can't allocate memory for string value data </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaErr_OutOfMem</span> </TD>
+        <TD>Can't allocate memory for setting other value data </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaMmErr_IntegerExpected</span> </TD>
+        <TD>Type mismatch: integer value expected </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaMmErr_SymbolExpected</span> </TD>
+        <TD>Type mismatch: symbol value expected </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaMmErr_FloatExpected</span> </TD>
+        <TD>Type mismatch: float value expected </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaMmErr_StringExpected</span> </TD>
+        <TD>Type mismatch: string value expected </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaMmErr_PointExpected</span> </TD>
+        <TD>Type mismatch: point value expected </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaMmErr_RectExpected</span> </TD>
+        <TD>Type mismatch: rect value expected </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaMmErr_ValueTypeMismatch</span> </TD>
+        <TD>Type mismatch: other value expected (non-specific) </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaDrErr_CastMemberExpected</span> </TD>
+        <TD>Type mismatch: <span class="code">CMRef</span> expected (Director only) </TD>
+      </TR>
+    </TABLE>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD>Implement this method to set the values for any properties
+    supported by your media asset. <span class="code"><I>symbol</I></span> represents the property being accessed. 
+    Your Xtra should include
+    an instance variable containing an array of symbols for the properties
+    you support. You can then look up the value passed in to your
+    Xtra, and use the index in the array to determine the property
+    to access. The host application owns the instance <span class="code"><I>pPropValue</I></span>.
+    If your implementation keeps this instance in its unconverted
+    form, you must call <span class="code">IMoaMmUtils::ValueAddRef()</span> on it. 
+    The <span class="code">IMoaMmXAsset::GetProp()</span> method returns the error 
+    code <span class="code">kMoaMmErr_PropertyNotFound</span> if it does not support the property represented 
+    by <span class="code"><I>symbol</I></span>.</DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="StreamInMedia">StreamInMedia()</A></h3>
+<h4>Syntax</h4>
+<DL>
+<DT class="code">StreamInMedia(PIMoaStream <I>pInStream</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+  <DT><span class="code"><I>pInStream</I></span></DT>
+  <DD>Pointer to <span class="code">IMoaStream</span> interface to use for streaming in data </DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD>
+    <TABLE BORDER="2">
+      <TR>
+        <TD><span class="code">kMoaErr_NoErr</span> </TD>
+        <TD>Successful, media streamed in (or none to stream) </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaErr_OutOfMem</span> </TD>
+        <TD>Failed, media not streamed due to memory error </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaMmErr_StreamInFailed</span> </TD>
+        <TD>Failed, media not streamed due to internal error. </TD>
+      </TR>
+    </TABLE>
+</DL>
+<h4>Description</h4>
+<DL>
+<DD>Implement this method to stream in your asset's media data by
+    utilizing methods of the supplied <span class="code">IMoaStream</span> interface. 
+    The stream interface allows you to read the media data
+    from an opaque storage object (typically a disk file or memory
+    block) in arbitrary-sized chunks. The host application owns the
+    stream interface, so you should not release it. Typically, streams
+    are used for reading and writing data to disk files and transferring
+    data between in-memory objects (such as copy and paste). </DD>    
+    <DD>If your asset instance does not have any media data, it can return
+    from this call (with <span class="code">kMoaErr_NoErr</span>)
+    without utilizing the stream. See the documentation for <span class="code">IMoaStream</span> for more details. 
+    Returning <span class="code">kMoaErr_NoErr</span> indicates to the host application that this asset's media data
+    has been successfully loaded. Returning <span class="code">kMoaMmErr_StreamInFailed</span> indicates to the 
+    host application that your media
+    are not loaded, causing it to call this method again the next
+    time the data is needed. If you cannot load your data due to a
+    broken link or some other problem not related to the amount of
+    free RAM, you should track this case internally in your asset
+    instance. Return <span class="code">kMoaErr_NoErr</span> to signal that you don't want to be called again to load, or the
+    host application calls this method repeatedly until data is streamed-in
+    data successfully. <br><br>
+    <B>Note:</B> Xtra developers should ensure proper byte ordering
+    of data as it is streamed in and out. Intel and Motorola processors
+    implement multibyte data types with different byte ordering. If
+    you create cross-platform assets, you must ensure that data written
+    on one platform and read on another is restored to the format
+    appropriate to the host. </DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="StreamInProps">StreamInProps()</A></h3>
+<h4>Syntax</h4>
+<DL>
+<DT class="code">StreamInProps(PIMoaStream <I>pInStream</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+  <DT><span class="code"><I>pInStream</I></span></DT>
+  <DD>Pointer to <span class="code">IMoaStream</span> interface to use for streaming in property data </DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD>
+    <TABLE BORDER="2">
+      <TR>
+        <TD><span class="code">kMoaErr_NoErr</span> </TD>
+        <TD>Successful, properties streamed in (or none to stream) </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaErr_OutOfMem</span> </TD>
+        <TD>Failed, properties not streamed due to memory error </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaMmErr_StreamInFailed</span> </TD>
+        <TD>Failed, properties not streamed due to internal error </TD>
+      </TR>
+    </TABLE>
+</DL>
+<h4>Description</h4>
+<DL>
+<DD>Streams in your asset property data by utilizing the supplied <span class="code">IMoaStream</span> interface.
+    The stream interface allows you to read property data from an
+    opaque storage object (typically a disk file or memory) in arbitrary-sized
+    chunks. The host application owns the stream interface, so you
+    should not release it. Streams are typically used for reading
+    and writing data to disk files and transferring data between in-memory
+    objects (such as copy and paste). If the asset instance does not
+    have any property data, it can return from this call (with <span class="code">kMoaErr_NoErr</span>)
+    without utilizing the stream. <br><br>
+    See the documentation for <span class="code">IMoaStream</span> for more details. 
+    Return <span class="code">kMoaErr_NoErr</span> to indicate to the host application that the asset properties
+    data have been loaded successfully <br><br>    
+    Return <span class="code">kMoaMmErr_StreamInFailed</span> to indicate to the host application that your 
+    properties are not loaded. This causes the host application to call this method again
+    the next time the properties are needed. If you cannot load your
+    data because of a broken link or some other problem not related
+    to amount of free RAM, you should track this case internally in
+    your asset instance. Return <span class="code">kMoaErr_NoErr</span> to
+    signal that you don't want to be called again to load, otherwise,
+    the host application calls repeatedly until you stream-in data
+    successfully. <br><br>
+    <B>Note:</B> Xtra developers should ensure proper byte ordering
+    of data as it is streamed in and out. Intel and Motorola processors
+    implement multibyte data types with different byte ordering. If
+    you create cross-platform assets, you must ensure that data written
+    on one platform and read on another is restored to the format
+    appropriate to the host. </DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="StreamOutMedia">StreamOutMedia()</A></h3>
+<h4>Syntax</h4>
+<DL>
+<DT class="code">StreamOutMedia(PIMoaStream <I>pOutStream</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+  <DT><span class="code"><I>pOutStream</I></span></DT>
+  <DD>Pointer to <span class="code">IMoaStream</span> interface to use for streaming out data </DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD>
+    <TABLE BORDER="2">
+      <TR>
+        <TD><span class="code">kMoaErr_NoErr</span> </TD>
+        <TD>Successful, media streamed out or no media to stream </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaMmErr_StreamOutFailed</span> </TD>
+        <TD>Failed, media not streamed out due to internal error </TD>
+      </TR>
+    </TABLE>
+</DL>
+<h4>Description</h4>
+<DL>
+<DD>Streams out the asset media data by utilizing the supplied <span class="code">IMoaStream</span> interface. 
+The stream interface allows you to write your media
+    data to an opaque storage object (typically a disk file or memory
+    block) in arbitrary-sized chunks. The host application owns the
+    stream interface, so you should not release it. Streams are typically
+    used for reading and writing data to disk files or transferring
+    data between in-memory objects (such as copy and paste). If your
+    asset instance does not have any media data, it can return from
+    this call (with <span class="code">kMoaErr_NoErr</span>)
+    without utilizing the stream. See the documentation for <span class="code">IMoaStream</span> for more details. <br><br>
+    Return <span class="code">kMoaMmErr_StreamOutFailed</span> from your 
+    <span class="code">IMoaMmXAsset::StreamOutMedia()</span> method if you were unable to stream out your data. 
+    The host application will post a user alert, if appropriate (but will not cancel streaming
+    out of other media elements if performing a save operation). By
+    returning this error from <span class="code">StreamOutMedia</span>,
+    you signal that your media data has not yet been saved. If the
+    host application is performing a save, it keeps your media data
+    non-purgeable if it was edited since the last save. <br><br>
+    <B>Director note:</B> The <span class="code">IMoaStream</span> instance passed to you supports backwards 
+    seeking in the stream,
+    but cannot subsequently resume writing data at the end of the
+    stream. Thus, you should only use seeking for special cases such
+    as writing a header at the beginning of the stream after all media
+    data has been written. <br><br>
+    <B>Note:</B> Xtra developers should ensure proper byte ordering
+    of data as it is streamed in and out. Intel and Motorola processors
+    implement multibyte data types with different byte ordering. If
+    you create cross-platform assets, you must ensure that data written
+    on one platform and read on another is restored to the format
+    appropriate to the host. </DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="StreamOutProps">StreamOutProps()</A></h3>
+<h4>Syntax</h4>
+<DL>
+<DT class="code">StreamOutProps(PIMoaStream <I>pOutStream</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+  <DT><span class="code"><I>pOutStream</I></span></DT>
+  <DD>Pointer to the <span class="code">IMoaStream</span> interface to use for streaming out property data </DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD>
+    <TABLE BORDER="2">
+      <TR>
+        <TD><span class="code">kMoaErr_NoErr</span> </TD>
+        <TD>Successful, static thumb drawn </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaMmErr_NotImplemented</span> </TD>
+        <TD>Asset doesn't have a static thumb </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaMmErr_GCTypeNotSupported</span> </TD>
+        <TD>Doesn't support supplied GC type </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaErr_OutOfMem</span> </TD>
+        <TD>Couldn't draw due to memory error </TD>
+      </TR>
+      <TR>
+        <TD><span class="code">kMoaMmErr_InternalError</span> </TD>
+        <TD>Couldn't draw due to an internal error </TD>
+      </TR>
+    </TABLE>
+</DL>
+<h4>Description</h4>
+<DL>
+<DD>Streams out the asset property data by utilizing the supplied <span class="code">IMoaStream</span> interface.
+    The stream interface allows you to write your property data to
+    an opaque storage object (typically a disk file or memory) in
+    arbitrary-sized chunks. The host application owns the stream interface,
+    so you should not release it. Streams are typically used for reading
+    and writing data to disk files or transferring data between in-memory
+    objects (such as copy and paste). If your asset instance does
+    not have any property data, it can return from this call (with <span class="code">kMoaErr_NoErr</span>) without
+    utilizing the stream. <br><br>    
+    See the documentation for <span class="code">IMoaStream</span> for more details. <br><br>
+    <B>Director note:</B> The <span class="code">IMoaStream</span> instance passed to you supports backwards 
+    seeking in the stream,
+    but cannot subsequently resume writing data at the end of the
+    stream. Thus, you should only use seeking for special cases such
+    as writing a header at the beginning of the stream after all media
+    data has been written. <br><br>
+    <B>Note:</B> Xtra developers should ensure proper byte ordering
+    of data as it is streamed in and out. Intel and Motorola processors
+    implement multibyte data types with different byte ordering. If
+    you create cross-platform assets, you must ensure that data written
+    on one platform and read on another is restored to the format
+    appropriate to the host. <br><br>  
+    <B>Important</B>: You must supply the exact size of the property
+    data to be streamed out in a subsequent call to <span class="code">IMoaMmXAsset::StreamOutProps()</span>.
+    The -1 value, which is acceptable for media data size, is not
+    supported here. <br><br>
+    Return <span class="code">kMoaMmErr_StreamOutFailed</span> from your 
+    <span class="code">IMoaMmXAsset::StreamOutProps()</span> method if you were unable to stream out your data. 
+    The host application
+    will post a user alert, if appropriate, but will not cancel streaming
+    out of other media elements if doing a save. By returning this
+    error from <span class="code">IMoaMmXAsset::StreamOutMedia</span>,
+    you signal that your media data has not yet been saved out. If
+    the host application is performing a save, it keeps your media
+    data non-purgeable if it was edited since the last save.</DD>
+</DL>
+<hr width=45% align=left>
+<A HREF = "../copyrite.htm">Copyright &#169; 1995-2008 Adobe Macromedia Software LLC, Inc.</A>
+</BODY>
+</html>

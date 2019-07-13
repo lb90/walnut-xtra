@@ -1,0 +1,109 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>IMuiPropertyPageInstance</title>
+<link href="../xdk.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+
+<A HREF = "../drdg/index.htm">DR Developer's Guide</A><br>
+<A HREF = "index.htm"> DR Interfaces</A> | 
+<A HREF = "drmthndx.htm">DR Methods</A> | 
+<A HREF = "drtypndx.htm">DR Types and Misc API</A>
+<hr width=45% align=left>
+
+<h3><A name = "IMuiPropertyPageInstance">IMuiPropertyPageInstance</A></h3>
+
+Interface ID: <span class="code">IID_IMuiPropertyPageInstance</span><br>
+Class ID: <span class="code">CID_IMuiPropertyPageInstance</span><br>
+Pointer type: <span class="code">PIMuiPropertyPageInstance</span><br>
+Inheritance: <span class="code">IMoaUnknown</span><br>
+Header file: <A HREF = "../../include/muippage.h">muippage.h</A>
+
+<h4>Description</h4>
+<DL>
+<DD>The <span class="code">IMuiPropertyPageInstance</span> interface is a support interface for the 
+<a class="code" href="drproppage.htm">IMuiPropertyPage</a> interface, 
+and represents the current state of the instantiated Property page generated from the VDL data provided 
+by the Xtra or the data in the Xtra's VDL file in the props folder. 
+Use the methods of the <span class="code">IMuiPropertyPageInstance</span> interface to get or set the state 
+or value of specific controls in the <span class="code">UpdateItem</span> or 
+<span class="code">ItemClicked</span> methods of the <span class="code">IMuiPropertyPage</span> interface.<br>
+<br>
+You can use the <span class="code">SetControlProp</span> and 
+<span class="code">GetControlProp</span> methods to set and retrieve the value of a 
+control on the Property page. The developer passes in a symbol specifying a control to query and set, 
+as well as a symbol identifying which control property they wish to set or receive.</DD>
+</DL>
+
+<h4>Methods</h4>
+<DL>
+<DD><A HREF = "#GetControlProp">GetControlProp()</A> Retrieves the value of a particular property for all currently targeted objects.<br>
+<A HREF = "#SetControlProp">SetControlProp()</A> Sets the value for a particular property for all currently targeted objects.</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A NAME="GetControlProp">GetControlProp()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">GetControlProp(MoaMmSymbol <em>controlID</em>, MoaMmSymbol <em>property</em>, MoaMmValue <em>pResult</em>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">controlID</DT>
+<dd>The <span class="code">MoaMmSymbol</span> identifying the control to query. 
+This symbol is specified in the VDL information provided by the Xtra, or in the Xtra's VDL file in the props folder.</dd>
+<DT class="codearg">property</DT>
+<dd>The <span class="code">MoaMmSymbol</span> identifying the property to retrieve. 
+Predefined properties include: <span class="code">#value</span>, <span class="code">#enabled</span>, 
+<span class="code">#visible</span>, <span class="code">#range</span>, <span class="code">#min</span> and 
+<span class="code">#max</span>.</dd>
+<DT class="codearg">pResult</DT>
+<dd>Returns the value of the requested control's property. 
+If the <span class="code">#value</span> property is requested, and the control state cannot be determined, 
+<span class="codearg">pResult</span> is of type void.</dd>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DT class="code">MoaError</DT>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>Call this method to retrieve the state/value information on the Property page for the specified property.</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A NAME="SetControlProp">SetControlProp()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">SetControlProp(MoaMmSymbol <em>controlID</em>, MoaMmSymbol <em>property</em>, ConstPMoaMmValue <em>pValue</em>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">controlID</DT>
+<dd>The <span class="code">MoaMmSymbol</span> identifying the control to be set.
+This symbol is specified in the VDL information provided by the Xtra, or in the Xtra's VDL file in the props folder.</dd>
+<DT class="codearg">property</DT>
+<dd>The <span class="code">MoaMmSymbol</span> identifying the property to retrieve.
+Predefined properties include: <span class="code">#value</span>, <span class="code">#enabled</span>, 
+<span class="code">#visible</span>, <span class="code">#range</span>, <span class="code">#min</span> and 
+<span class="code">#max</span>.</dd>
+<DT class="codearg">pValue</DT>
+<dd>A pointer to the value of the property being set.</dd>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DT class="code">MoaError</DT>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>Call this method to set the state/value of a control on the Property page. 
+This method is typically called from the <a href="drproppage.htm#UpdateItems" class="code">UpdateItems</a> method.</DD>
+</DL>
+
+<hr width=45% align=left>
+<A HREF = "../copyrite.htm">Copyright &#169; 1995-2008 Adobe Macromedia Software LLC, Inc.</A>
+
+</body></html>

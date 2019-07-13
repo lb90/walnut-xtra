@@ -1,0 +1,334 @@
+<HTML>
+<HEAD>
+<TITLE>IMoaStream</TITLE>
+<link href="../xdk.css" rel="stylesheet" type="text/css">
+</HEAD>
+<body>
+<A HREF="../moadg/index.htm">MOA Developer's Guide</A> <BR>
+<A HREF="index.htm">MOA Interfaces</A> | <A HREF="momthndx.htm">MOA Methods</A> | <A HREF="motypndx.htm">MOA Types and Misc API</A>
+<hr width=45% align=left>
+<h3>IMoaStream</h3>
+<P> Interface ID: <span class="code">IID_IMoaStream<BR>
+  </span>Pointer type: <span class="code">PIMoaStream<BR>
+  </span>Inheritance: <A HREF = "unknown.htm">IMoaUnknown</A> <BR>
+  Header file: <A HREF = "../../include/moastdif.h">moastdif.h</A> <BR>
+<h3>Description</h3>
+<DL>
+  <DD>
+    The <span class="code">IMoaStream</span> interface
+    is designed as a universal interface for streaming data to all
+    MOA-enabled documents. This interface may be implemented for accessing
+    data in a disk file, memory structure, internet site, etc. The <span class="code">IMoaStream</span> interface
+    is designed to totally encapsulate the nature of the data being
+    read or written. It provides techniques for random access of the
+    data, though specific implementations may not enable these random
+    access techniques.<BR>
+    <BR>
+    Note: Specific providers of this interface may include certain
+    implementation details worth noting. These distinctions are documented
+    with the XDK for a specific implementation.</DD>
+</DL>
+<h3>See also</h3>
+<DL>
+  <DD><A href="motypndx.htm#MOSTRMTYPE">IMoaStream types</A>, <A href="motypndx.htm#MOSTRMCONST">IMoaStream constants</A>, <A href="motypndx.htm#MOSTRMERRS">IMoaStream errors</A>
+</DL>
+<h3>Methods</h3>
+<h4>Opening and closing </h4>
+<DL>
+  <DD><A HREF = "#Open">Open()</A> <BR>
+    <A HREF = "#Close">Close()</A>
+</DL>
+<h4>Accessing data </h4>
+<DL>
+  <DD><A HREF = "#Read">Read()</A> <BR>
+    <A HREF = "#ReadAhead">ReadAhead()</A>
+</DL>
+<h4>Writing data </h4>
+<DL>
+  <DD><A HREF = "#Write">Write()</A> <BR>
+    <A HREF = "#Flush">Flush()</A>
+</DL>
+<h4>Positioning </h4>
+<DL>
+  <DD><A HREF = "#GetPosition">GetPosition()</A> <BR>
+    <A HREF = "#SetPosition">SetPosition()</A> <BR>
+    <A HREF = "#GetEnd">GetEnd()</A>
+</DL>
+<h4>Determining capabilities </h4>
+<DL>
+  <DD><A HREF = "#GetModes">GetModes()</A>
+</DL>
+<hr width=45% align=left>
+<h3><A NAME="Close">Close()</A></h3>
+<h4>Syntax</h4>
+<DL>
+  <DT class="code">Close()
+</DL>
+<h4>Parameters</h4>
+<DL>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD><span class="code">MoaError</span>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD>Call this method when through using the stream. It does not
+    necessarily flush the stream; you should explicitly call <span class="code">Flush()</span>to
+    force a write of all data. <BR>
+</DL>
+<hr width=45% align=left>
+<h3><A NAME="Flush">Flush()</A></h3>
+<h4>Syntax</h4>
+<DL>
+  <DT class="code">Flush()
+</DL>
+<h4>Parameters</h4>
+<DL>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD><span class="code">MoaError</span>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD>Flushes any buffered data stored in the stream. Call this
+    to ensure that data written to the stream is passed all the way
+    through. <BR>
+</DL>
+<hr width=45% align=left>
+<h3><A NAME="GetEnd">GetEnd()</A></h3>
+<h4>Syntax</h4>
+<DL>
+  <DT class="code">GetEnd(MoaStreamPosition *<I>pPos</I>)
+</DL>
+<h4>Parameters</h4>
+<DL>
+<DT><span class="code"><I>pPos</I></span>
+  <DD>Offset of the end of the data </DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD><span class="code">MoaError</span>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD>The <span class="code">GetEnd()</span> method
+    gets the position of the current end-of-stream. Attempting to
+    read past this position will fail. Attempting to write past this
+    position may or may not succeed, depending on the nature of the
+    media. Streams opened with <span class="code">kMoaStreamSetPositionType_None</span> may return <span class="code">kMoaStreamErr_NoSetPosition</span>. <BR>
+</DL>
+<hr width=45% align=left>
+<h3><A NAME="GetModes">GetModes()</A></h3>
+<h4>Syntax</h4>
+<DL>
+  <DT class="code">GetModes(MoaLong *<I>pAccessMode</I>, MoaLong *<I>pSetPositionType</I>)
+</DL>
+<h4>Parameters</h4>
+<DL>
+<DT><span class="code"><I>pAccessMode</I></span>
+  <DD>Returns the access mode <BR>
+    <BR>
+  <DT><span class="code"><I>pSetPositionType</I></span>
+  <DD>Returns the seek type <BR>
+    <BR>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD><span class="code">MoaError</span>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD>Call this method to get the access mode (in <span class="code"><I>pAccessMode</I></span>)
+    and seek mode (in <span class="code"><I>pSetPositionType</I></span>)
+    that were specified when <span class="code">Open()</span> was called on the <span class="code">IMoaStream <I>This</I></span>. <BR>
+</DL>
+<hr width=45% align=left>
+<h3><A NAME="GetPosition">GetPosition()</A></h3>
+<h4>Syntax</h4>
+<DL>
+  <DT>GetPosition(MoaStreamPosition * <I>pPos</I>)
+  </DL>
+<h4>Parameters</h4>
+<DL>
+<DT><span class="code"><I>pPos</I></span>
+  <DD>Returns current position </DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD><span class="code">MoaError</span>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD>Call this method to acquire, in <span class="code"><I>pPos</I></span>,
+    the current position in the stream from which reads or writes
+    will take place. Note that this is a 32-bit unsigned integer that
+    is always an absolute offset from the start of the stream. <BR>
+</DL>
+<hr width=45% align=left>
+<h3><A NAME="Open">Open()</A></h3>
+<h4>Syntax</h4>
+<DL>
+  <DT class="code">Open(MoaLong <I>accessMode</I>, MoaLong <I>setPositionType</I>)
+</DL>
+<h4>Parameters</h4>
+<DL>
+<DT><span class="code"><I>accessMode</I></span>
+  <DD>Constant specifying the access mode </DD>
+  <DT><span class="code"><I>setPositionType</I></span>
+  <DD>Constant specifying the seek type </DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD><span class="code">MoaError</span>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD>
+    The <span class="code">Open()</span> method
+    opens the stream for reading or writing. You must open the stream
+    before calling other methods on it. The parameter <span class="code"><I>pAccessMode</I></span> specifies the access mode (read, write, or read/write). Use one
+    of the access mode constants described below for this parameter. <BR>
+    <BR>
+    The <span class="code"><I>pSetPositionType</I></span> parameter specifies the seekability provided by <span class="code">SetPosition()</span>.
+    Use one of the set position constants described below for this
+    parameter. Providing the appropriate constant enables the stream
+    to optimize for particular seeking needs. However, not all streams
+    support all seekability modes. More specifically, a stream may
+    not support seeking at all, or may support only &quot;expensive&quot;
+    seeking. If you specify an unavailable seek mode, Open() returns
+    an error. </DD>
+</DL>
+<hr width=45% align=left>
+<h3><A NAME="Read">Read()</A></h3>
+<h4>Syntax</h4>
+<DL>
+  <DT class="code">Read(PMoaVoid <I>pBuf</I>, MoaStreamCount <I>numToRead</I>, MoaStreamCount * <I>pNumActuallyRead</I>)
+</DL>
+<h4>Parameters</h4>
+<DL>
+<DT><span class="code"><I>pBuf</I></span>
+  <DD>Buffer to read data into </DD>
+  <DT><span class="code"><I>numToRead</I></span>
+  <DD>Data size requested </DD>
+  <DT><span class="code"><I>pNumActuallyRead</I></span>
+  <DD>Data size delivered </DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD><span class="code">MoaError</span>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD>
+    Call this method to read data from the stream. This method has
+    slightly different semantics depending on the <span class="code"><I>pNumActuallyRead</I></span> parameter:<BR>
+    <BR>
+    If you pass NULL for <span class="code"><I>pNumActuallyRead</I></span>,
+    then <span class="code">Read()</span> attempts
+    to read exactly <span class="code">numToRead</span> bytes from the current position in the stream and copy them into
+    the buffer. If there aren't enough bytes remaining (i.e., you
+    read past the end), <span class="code">kMoaStreamErr_ReadPastEnd</span> is returned (whether or not data is copied into the buffer is
+    undefined).<BR>
+    <BR>
+    If you pass a value for <span class="code"><I>pNumActuallyRead</I></span>,
+    then <span class="code">Read()</span> will read
+    as much as can be read &quot;quickly&quot;, perhaps returning <span class="code"><I>pNumActuallyRead</I></span> &lt; <span class="code"><I>numToRead</I></span> without an error indication. Reading past the end of the stream
+    will return <span class="code">kMoaStreamErr_ReadPastEnd</span> with <span class="code"><I>pNumActuallyRead</I></span> set correctly. Note that &quot;quickly&quot; is implementation-defined. <BR>
+    <BR>
+    In all cases, if the return value is <span class="code">kMoaErr_NoErr</span> or <span class="code">kMoaStreamErr_ReadPastEnd</span>,
+    the stream position is set to the first byte past the data read;
+    otherwise, the stream position is unchanged. <BR>
+    <BR>
+</DL>
+<hr width=45% align=left>
+<h3><A NAME="ReadAhead">ReadAhead()</A></h3>
+<h4>Syntax</h4>
+<DL>
+  <DT>ReadAhead(PMoaVoid <I>pBuf</I>, MoaStreamCount <I>numToRead</I>, MoaStreamCount * <I>pNumActuallyRead</I>)
+  </DL>
+<h4>Parameters</h4>
+<DL>
+<DT><span class="code"><I>pBuf</I></span>
+  <DD>Buffer to read data into </DD>
+  <DT><span class="code"><I>numToRead</I></span>
+  <DD>Data size requested </DD>
+  <DT><span class="code"><I>pNumActuallyRead</I></span>
+  <DD>Data size delivered </DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD><span class="code">MoaError</span>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD>This method is similar to <span class="code">Read()</span>,
+    except that the stream position is never advanced, even if the
+    read is successful. This call is particularly useful with non-seek
+    (or expensive-seek) streams. Note that you are only guaranteed
+    to be able to read amounts of <span class="code">kMoaStreamReadAheadLimit</span> or less (defined as 32); some streams may allow more, but it is
+    not guaranteed. If you ask for more than the stream supports,
+    it will return <span class="code">kMoaStreamErr_ReadAheadToo</span>. <BR>
+</DL>
+<hr width=45% align=left>
+<h3><A NAME="SetPosition">SetPosition()</A></h3>
+<h4>Syntax</h4>
+<DL>
+  <DT>SetPosition(MoaStreamPosition <I>pos</I>)
+  </DL>
+<h4>Parameters</h4>
+<DL>
+<DT><span class="code"><I>pos</I></span>
+  <DD>New position requested </DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD><span class="code">MoaError</span>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD>Call this method to set the position in the stream from which
+    subsequent reads or writes will begin. 
+    The <span class="code"><I>pos</I></span> specified is a 32-bit unsigned integer that is always an absolute
+    offset from the start of the stream. Note: it is legal to set
+    the position outside the end of the stream; however, an attempt
+    to read from such a position will return an error. Note: streams
+    opened with <span class="code">kMoaStreamSetPositionType_None</span> 
+    will always return <span class="code">kMoaStreamErr_NoSetPosition</span>. </DD>
+</DL>
+<hr width=45% align=left>
+<h3><A NAME="Write">Write()</A></h3>
+<h4>Syntax</h4>
+<DL>
+  <DT class="code">Write(PMoaVoid <I>pBuf</I>, MoaStreamCount <I>numToWrite</I>, MoaStreamCount * <I>pNumActuallyWritten</I>)
+</DL>
+<h4>Parameters</h4>
+<DL>
+<DT><span class="code"><I>pBuf</I></span>
+  <DD>Buffer to write data from </DD>
+  <DT><span class="code"><I>numToWrite</I></span>
+  <DD>Data size to be delivered </DD>
+  <DT><span class="code"><I>pNumActuallyWritten</I></span>
+  <DD>Data size delivered </DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD><span class="code">MoaError</span>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD>Call this method to write data to the stream associated with this object.
+    This method attempts to write <span class="code"><I>numToWrite</I></span> bytes to the current position in the stream and 
+    advances the stream
+    position by that number of bytes. An attempt to write past the
+    end of the stream extends the stream length before writing (if
+    possible). If the write is successful, the stream position is
+    set to the first byte past the data written. If the write is unsuccessful,
+    the stream position is unchanged. If <span class="code"><I>pNumActuallyWritten</I></span> is not NULL, 
+    it will be set to the number of bytes actually written. </DD>
+</DL>
+<hr width=45% align=left>
+<A HREF = "../copyrite.htm">Copyright &#169; 1995-2008 Adobe Macromedia Software LLC, Inc.</A>
+</BODY>
+</html>

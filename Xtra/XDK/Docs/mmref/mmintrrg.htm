@@ -1,0 +1,66 @@
+<HTML>
+<HEAD>
+<TITLE>IMoaMmInterrogator</TITLE>
+<link href="../xdk.css" rel="stylesheet" type="text/css">
+</HEAD>
+<body>
+<P> <A HREF="../mmdg/index.htm">MM Developer's Guide</A> <BR>
+  <A HREF="index.htm" >MM Interfaces</A> | <A HREF="mmmthndx.htm" >MM Methods</A> | <A HREF="mmtypndx.htm">MM Types and Misc API</A>
+<hr width=45% align=left>
+<h3>IMoaMmInterrogator</h3>
+<P> Interface ID: <span class="code">IID_IMoaMmInterrogator<BR>
+  </span>Pointer type: <span class="code">PIMoaMmInterrogator<BR>
+  </span>Inheritance: <A HREF = "../moref/unknown.htm">IMoaUnknown</A> <BR>
+  Header file: <A HREF = "../../include/mmiservc.h">mmiservc.h</A> <BR>
+<h3>Description</h3>
+<DL>
+  <DD>
+    All classes supporting this interface are instantiated at start-up,
+    after all Xtras have been registered. The <span class="code">IMoaMmInterrogator::Interrogate()</span>
+    method of each class is called immediately. This allows
+    Xtras to perform their own start-up and global initialization. <BR>
+    <BR>
+    The instances are released before the application quits. However,
+    for notification when the application quits, implement the complementary <span class="code">IMoaMmTerminator</span> interface
+    in the same class. 
+    You shouldn't rely on the class's <span class="code">MoaDestroy</span> function being called when the application quits. <BR>
+    <BR>
+    Implement <span class="code">IMoaMmInterrogator</span> and <span class="code">IMoaMmTerminator</span> 
+    only when absolutely necessary to make your Xtra work. Using these
+    interfaces means that your Xtra is always called at start-up,
+    which eliminates the benefits of having an Xtra registry.<BR>
+    <BR>
+    <B>Important</B>: You must register any class that implements <span class="code">IMoaMmInterrogator</span>for
+    it to be instantiated at startup. 
+    You do this by calling <span class="code">AddRegistryEntry()</span> with the class and interface in 
+    the <span class="code">Register()</span> method of your Xtra's registsration class. <BR>
+    <BR>
+    If you support both <span class="code">IMoaMmInterrogator</span> and <span class="code">IMoaMmTerminator</span> on the same class, 
+    two instances are created--one at start-up and one at shut-down.</DD>
+</DL>
+<h3>Methods</h3>
+<DL>
+  <DD><A HREF = "#Interrogate">Interrogate()</A>
+</DL>
+<hr width=45% align=left>
+<h3><A NAME="Interrogate">Interrogate()</A></h3>
+<h4>Syntax</h4>
+<DL>
+  <DD>
+  <DT>Interrogate()
+  </DL>
+<h4>Parameters</h4>
+<DL>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD><span class="code">void</span>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD>This method is called at application startup on any Xtra that registers this interface.
+</DL>
+<hr width=45% align=left>
+<A HREF = "../copyrite.htm">Copyright &#169; 1995-2008 Adobe Macromedia Software LLC, Inc.</A>
+</BODY>
+</html>

@@ -1,0 +1,561 @@
+
+<html>
+<head>
+<title>Director VDL Syntax</title>
+<link href="../xdk.css" rel="stylesheet" type="text/css">
+</head>
+<body link="#333399" vlink="#660033" alink="#000000" bgcolor="#FFFFFF">
+      <p> <b>View Description 
+        List Files </b> 
+      <p> &nbsp;<br>
+        Starting with Director 8, developers can customize tabs in the Property 
+        Inspector by editing the <b>VDL</b> (View Description List) files in the 
+        props folder. You can also create new VDL files and add them to the props 
+        folder. 
+      <HR width=45% align=left>
+      <b>View Description List 
+      File Syntax </b> 
+      <br><br>
+        <b>Overview</b>
+      <p> The VDL (View 
+        Description List) file format is used by the Property Inspector to display 
+        the tabs that appear in the Property Inspector when a particular type 
+        of object is targeted. The VDL file describes the name of the view that 
+        appears on the tab, the properties of the targeted object, and layout 
+        information defining the types of controls that appear in the view and 
+        their arrangement.
+      <p> The following 
+        sections provide information about the location and format of VDL files, 
+        as well as sample a VDL file for reference purposes. 
+      <p> &nbsp;<br>
+        <b>VDL file location</b>
+      <p> In order 
+        to be recognized and parsed when Director is launched, all VDL files must 
+        be located in the props folder at the root of the Director application 
+        folder. Their full location within the props folder determines how they 
+        are used in the Property Inspector. Inside the props folder, there are 
+        there are sub-folders representing types of objects that can be targeted 
+        by the Property Inspector: Sprite, Member, Movie, and Cast. There is also 
+        a Publish folder, that is not relevant to this discussion.
+      <p> Inside each 
+        sub-folder, there is a special default.txt VDL file. This VDL file is 
+        always read in when Director is launched, and is instantiated whenever 
+        an object of the specific type is targeted. For example, selecting a cast 
+        member of any type in the cast window will instantiate the VDL Props:Member:default.txt 
+        file. 
+      <p> You can specify 
+        additional tabs/views for a particular member type by placing a VDL file 
+        with the appropriate filename in the Props:Member folder. For example, 
+        to specify additional tabs for bitmap members, you would create a VDL 
+        file called Props:Member:bitmap.txt. 
+      <p> <a name="28808"></a>&nbsp;<br>
+        <b>VDL file format</b>
+      <p> At the top 
+        level, the VDL file format is a lingo property list. This top-level list 
+        is called a View Description List. Each item in the VDL is a single view 
+        that will appear when that VDL is instantiated. 
+      <p> The VDL file 
+        syntax consists of a property name, a series of property lists: <span class="code">viewDescription</span>,<span class="code"> 
+        propertyDescriptionList</span>, 
+        and <span class="code">itemDescriptionList.</span>
+      <p> <a name="29337">&nbsp;</a><br>
+        <b>The property name</b><br>
+        The property 
+        name of the view is a symbol used to identify the view. For example, a 
+        bitmap VDL file that has a Bitmap tab and a Compression tab, might look 
+        like this: 
+      <p> 
+      <pre class="code">
+[&#32;#bitmapTab: &lt;bitmap viewDescription&gt;,
+#compressionTab: &lt;compression viewDescription&gt;&#32;]
+</pre>
+      <p> <a name="29376">&nbsp;</a><br>
+        <b>The viewDescription property 
+        list</b><br>
+        The <span class="code">viewDescription</span> 
+        property list describes the general properties of a tab in the Property 
+        Inspector. For example, the <span class="code">viewDescription</span> 
+        property list for the bitmap tab might look like this:
+      <p> 
+      <pre class="code">
+[&#32;#comment: "bitmap", &lt;note: this can be localized&gt;
+#symbol: #bitmap,
+#propertyDescriptionList: &lt;bitmap PDL&gt;,
+#itemDescriptionList: &lt;item descriptionList&gt;&#32;]
+</pre>
+      <p> The following table lists the properties of <span class="code">viewDescription</span>.
+      <p> 
+      <table width="97%" border="0" cellpadding="6" cellspacing="0">
+        <tr valign=top bgcolor="#ff6600"> 
+          <td><b>Property</b></td>
+          <td><b>Description</b></td>
+        </tr>
+        <tr valign=top bgcolor="#eeeeee"> 
+          <td><span class="code">#comment</span>
+            <p>
+          </td>
+          <td>A string 
+            identifying the name of the view to appear on the tab in the Property 
+            Inspector.
+            <p>
+          </td>
+        </tr>
+        <tr valign=top> 
+          <td><span class="code">#symbol</span>
+            <p>
+          </td>
+          <td>A symbol 
+            identifier used to locate the view internally, or used by the Property 
+            Inspector to match VDL files in the props folder to internally implemented 
+            views. When the user tries to view cast member properties, the Property 
+            Inspector looks for the view with the symbol that matches the member 
+            type. If you have defined multiple views in your VDL file, make sure 
+            the primary view's symbol matches the type symbol of the member it 
+            targets.
+            <p>
+          </td>
+        </tr>
+        <tr valign=top bgcolor="#eeeeee"> 
+          
+      <td><span class="code">#propertyDescriptionList</span> 
+        <p>
+          </td>
+          <td>A property 
+            list (PropList) that describes the properties of the targeted object 
+            t visible on this tab. See below
+            <p>
+          </td>
+        </tr>
+        <tr valign=top> 
+          <td><span class="code">#itemDescriptionList</span>
+            <p>
+          </td>
+          <td>A property 
+            list (PropList) that describes the user interface items that appear 
+            when this tab is selected. See below.
+            <p>
+          </td>
+        </tr>
+        <tr valign=top bgcolor="#eeeeee"> 
+          <td><span class="code">#picture</span>
+            <p>
+          </td>
+          <td>A glyph 
+            id specifying the glyph used on the tab for the view. The glyph can 
+            be a straight glyph ID, or a lingo list consisting of a resource ID 
+            and an index into the resource ID.
+            <p>
+          </td>
+        </tr>
+      </table>
+      <br>
+      <p> <a name="29446">&nbsp;</a><br>
+        <b>The propertyDescriptionList 
+        property list</b><br>
+        The <span class="code">propertyDescriptionList</span> 
+        uses a format that is similar to the format used by the Behavior Inspector. 
+        If the format in the <span class="code">propertyDescriptionList</span> 
+        is different from the actual format of the property, the Property Inspector 
+        will attempt to convert it. For lingo types that are not in this list, 
+        do not specify a format property: the Property Inspector will show the 
+        value by its lingo representation, and try to choose the correct value 
+        when the user sets the property value. If the format is any of the special 
+        types defined by the Behavior Inspector (member type symbols, cursor, 
+        palette, transition, graphic, etc.) the Property Inspector selects the 
+        appropriate value type, and sets the range to the default generator. The 
+        range can be overridden.
+      <p> Each item 
+        in the <span class="code">propertyDescriptionList</span> 
+        is identified by the symbol of the property of the target object being 
+        described. The item itself is a lingo property list, specifying the properties 
+        listed in the following table.
+      <p> 
+      
+      <p> 
+      <table width="97%" border="0" cellpadding="6" cellspacing="0">
+        <tr valign=top bgcolor="#ff6600"> 
+          <td><b>Property</b></td>
+          <td><b>Description</b></td>
+        </tr>
+        <tr valign=top bgcolor="#eeeeee"> 
+          <td><span class="code">#format</span>
+            <p>
+          </td>
+          <td>A symbol 
+            identifying the type/format of the property. This can be one of the 
+            standard types defined by the Behavior Inspector (BI), or an extended 
+            type that provides additional formatting: #string, #integer, #filename 
+            (a string), #boolean (can be an integer() symbol, member, memory (an 
+            integer), float, color, percent (an integer() ink (an integer() point, 
+            cursor(an integer).
+            <p>
+          </td>
+        </tr>
+        <tr valign=top> 
+          <td><span class="code">#comment</span>
+            <p>
+          </td>
+          <td>A string 
+            describing the property. used as a data tip in the table view of the 
+            Property Inspector.
+            <p>
+          </td>
+        </tr>
+        <tr valign=top bgcolor="#eeeeee"> 
+          <td><span class="code">#range</span>
+            <p>
+          </td>
+          <td>A symbol 
+            or lingo list. You can specify the ranges provided by the Behavior 
+            Inspector, or if the range specified is in the form [#min: #max], 
+            you can specify #granularity which indicates how much to step the 
+            slider by.
+            <p>The 
+              Behavior Inspector accepts a lingo list as a list of possible values 
+              for a range. The Property Inspector also accepts a property list, 
+              where each property name is a format type, and the property value 
+              is a lingo value.
+            <p>
+          </td>
+        </tr>
+        <tr valign=top> 
+          <td><span class="code">#editable</span>
+            <p>
+          </td>
+          <td>A Boolean 
+            specifying whether or not the property can be edited in the Director 
+            program. If not specified, this property defaults to true.
+            <p>
+          </td>
+        </tr>
+        <tr valign=top bgcolor="#eeeeee"> 
+          <td><span class="code">#getprop:</span>
+            <p>
+          </td>
+          <td>A Boolean 
+            specifying whether or not the Property Inspector retrieves the property 
+            value to display it regularly. For large or slow properties, or properties 
+            with no meaningful representation, specifying false for this property 
+            forces the Property Inspector to show a placeholder string instead 
+            of retrieving the value every time it updates. In this case the Property 
+            Inspector only retrieves the value for the data tip if the user mouses 
+            over the placeholder string. If not specified this property defaults 
+            to true.
+            <p>
+          </td>
+        </tr>
+        <tr valign=top> 
+          <td><span class="code">#title</span>
+            <p>
+          </td>
+          <td>A Boolean 
+            flag instructing the Property Inspector. Specify true to instruct 
+            the Property Inspector use #comment to display a descriptive title 
+            entry in the property table. This property can be used to group properties 
+            logically. If not specified this property defaults to false.
+            <p>
+          </td>
+        </tr>
+      </table>
+      <br>
+      
+      <p> The itemDescriptionList 
+        properties
+      <p> The <span class="code">itemDescriptionList</span> 
+        describes the items that appear in the view when the Property Inspector 
+        is set to graphical (non-table) mode. Like a <span class="code">propertyDescriptionList</span>, 
+        an <span class="code">itemDescriptionList</span> 
+        is a lingo property list where each entry is a single item in the view. 
+        The name of the property is a symbol used to identify the item. The value 
+        of the entry is a lingo property list describing the item. The following 
+        table lists the properties of a single item descriptor.
+      <p> 
+      
+      <p> 
+      <table width="97%" border="0" cellpadding="6" cellspacing="0">
+        <tr valign=top bgcolor="#ff6600"> 
+          <td><b>Property</b></td>
+          <td><b>Description</b></td>
+        </tr>
+        <tr valign=top bgcolor="#eeeeee"> 
+          <td><span class="code">#property</span>
+            <p>
+          </td>
+          <td>A symbol 
+            specifying the name/identifier of the property associated with a specific 
+            control/item. If a property is specified, the Property Inspector attempts 
+            to synchronize the value of the control and the value of the target 
+            property. This property is optional.
+            <p>
+          </td>
+        </tr>
+        <tr valign=top> 
+          <td><span class="code">#type</span>
+            <p>
+          </td>
+          <td>A symbol 
+            specifying the type of the control/item to be created. Possible values 
+            include: #button (creates a simple text-pushbutton), #label (creates 
+            a static text item, #field (creates an editable text field), #picture 
+            (creates a simple picture icon), #line (creates an etched separator 
+            line), #checkbox (creates a boolean checkbox), #radio (creates a radio 
+            button), and #list: creates a drop-list.
+            <p>
+          </td>
+        </tr>
+        <tr valign=top bgcolor="#eeeeee"> 
+          <td><span class="code">#loc</span>
+            <p>
+          </td>
+          <td>A point 
+            specifying the location of the control/item in the view.
+            <p>
+          </td>
+        </tr>
+        <tr valign=top> 
+          <td><span class="code">#size</span>
+            <p>
+          </td>
+          <td>A point 
+            specifying the size of the control/item in the view.
+            <p>
+          </td>
+        </tr>
+        <tr valign=top bgcolor="#eeeeee"> 
+          <td><span class="code">#comment</span>
+            <p>
+          </td>
+          <td>A string 
+            used as the tooltip message for the item.
+            <p>
+          </td>
+        </tr>
+      </table>
+      <br>
+      
+      <p> If both <span class="code">#type</span> 
+        and <span class="code">#property</span> 
+        are specified, the Property Inspector attempts to convert the format of 
+        the data between the property and the item. If #<span class="code">property</span>, 
+        but not <span class="code">#type</span> 
+        is specified, the Property Inspector attempts to select the type of the 
+        item according to the following rules:
+      <p> 
+      <table cellspacing="0" cellpadding="4">
+        <tr> 
+          
+    <td valign="top" width="14"><img src="tri.gif" width="14" height="10" vspace="2"></td>
+          <td valign="top">If 
+            the specified property has a symbol or list type range, the control 
+            is a drop-list. </td>
+        </tr>
+        <tr> 
+          
+    <td valign="top" width="14"><img src="tri.gif" width="14" height="10" vspace="2"></td>
+          <td valign="top">If 
+            the property has a min/max type range, the control is a slider.</td>
+        </tr>
+        <tr> 
+          
+    <td valign="top" width="14"><img src="tri.gif" width="14" height="10" vspace="2"></td>
+          <td valign="top">If 
+            the property is a Boolean, the control is a check box.</td>
+        </tr>
+        <tr> 
+          
+    <td valign="top" width="14"><img src="tri.gif" width="14" height="10" vspace="2"></td>
+          <td valign="top">If 
+            the property is a color, the control is a color chip.</td>
+        </tr>
+      </table>
+      <p> For any other 
+        type, if the property is editable, the control is an edit-text field; 
+        if it is not editable, it will be a static text label. 
+      <p> In addition 
+        to properties listed in the previous table, you can specify the properties 
+        in the following table for specific item types.
+      <p> 
+      
+      <p> 
+      <table width="97%" border="0" cellpadding="6" cellspacing="0">
+        <tr valign=top bgcolor="#ff6600"> 
+          <td><b>Property</b></td>
+          <td><b>Interface 
+            item type</b></td>
+          <td><b>Description</b></td>
+        </tr>
+        <tr valign=top bgcolor="#eeeeee"> 
+          <td><span class="code">#text</span>
+            <p>
+          </td>
+          <td>Button, 
+            radio button, checkbox or label for field
+            <p>
+          </td>
+          <td>A string 
+            of text for the interface item. 
+            <p>
+          </td>
+        </tr>
+        <tr valign=top> 
+          <td><span class="code">#picture</span>
+            <p>
+          </td>
+          <td>Button, 
+            checkbox, picture
+            <p>
+          </td>
+          <td>A glyph 
+            ID representing the icon used for the interface an item control. Buttons 
+            and checkboxes that specify a picture property, are created as icon 
+            buttons or toggles, if the picture property is not specified, they 
+            appear as traditional buttons/checkboxes.
+            <p>The 
+              picture property can be a full glyph id, or a lingo list consisting 
+              of a picture resource id and an index into the resource. Pictures 
+              must be of standard size and spacing (20w by 18h icons with a 4 
+              pixel strip in between).
+            <p>
+          </td>
+        </tr>
+        <tr valign=top bgcolor="#eeeeee"> 
+          <td><span class="code">#scroll</span>
+            <p>
+          </td>
+          <td>Field
+            <p>
+          </td>
+          <td>The scroll 
+            property on a field item determines whether it is single- or multi-line 
+            entry. By default, it is single line.
+            <p>
+          </td>
+        </tr>
+        <tr valign=top> 
+          <td><span class="code">#range</span>
+            <p>
+          </td>
+          <td>Drop-list 
+            
+            <p>
+          </td>
+          <td>The range 
+            property for drop-list items should be a lingo list with an equal 
+            number of items as the range on their associated property description. 
+            When a drop-list is displayed, it finds the current property value 
+            in the property range, and displays the corresponding item in its 
+            own range. For example, if the purePriority cast member property has 
+            a range of [3, 2, 1, 0], the itemDescription for the purgePrority 
+            drop list has a range of: ["3 - Normal", "2-next","1-last","0-never"]. 
+            If the purgePriority of a cast member is currently 1, the drop list 
+            recognizes that '1' is the 3rd item in the property range, and displays 
+            the 3rd item in its display range, "1-last." When the user selects 
+            a value from the drop-list, it reverses the process and sets the current 
+            prop value to the appropriate value in the property range. 
+            <p>
+          </td>
+        </tr>
+        <tr valign=top bgcolor="#eeeeee"> 
+          <td><span class="code">#range</span>
+            <p>
+          </td>
+          <td>Radio 
+            button
+            <p>
+          </td>
+          <td>The range 
+            property for radio button items should be a single lingo value which 
+            is used to determine the state of the radio button. When the Property 
+            Inspector updates the radio button, it compares the value of the associated 
+            property to the range value of the radio button. If they match, the 
+            radio button is highlighted.
+            <p>
+          </td>
+        </tr>
+        <tr valign=top> 
+          <td><span class="code">#alignment</span>
+            <p>
+          </td>
+          <td>Label, 
+            field, or button
+            <p>
+          </td>
+          <td>Sets 
+            the alignment of the text attached to the item. Valid values for the 
+            alignment property are: #left, #center, and #right. The default setting 
+            is left for labels and fields is #left, and #right for buttons.
+            <p>
+          </td>
+        </tr>
+      </table>
+      <br>
+      
+      <p> <a name="31164"></a>&nbsp;<br>
+        <b>Sample View Description 
+        List (VDL) file</b>
+      <p> The following 
+        is a sample VDL file for a vectorShape member. The path of the VDL file 
+        is: (Application Path):Props:Member:VectorShape.txt 
+      <p> 
+      <pre class="code">
+[ 
+#vectorProps: 
+	[  
+	#comment: "vector", 
+	#propertyDescriptionList:    
+		[ 
+		#strokeColor: 
+			[ 
+			#format: #color, 
+			#comment: "line color", 
+			#range: [rgb(0,0,0),rgb(255,0,0),rgb(0,255,0),rgb(0,0,255)]    
+			] ,
+		#strokeWidth: 
+			[ 
+			#format: #float, 
+			#comment: "stroke width", 
+			#range: [ #min:0.0,#max:10.0,#granularity:    .5] 
+			] ,
+		#closed: 
+			[ 
+			#format: #boolean, 
+			#comment: "closed" 
+			] ,
+		#vertexList: 
+			[ 
+			#format:    #string, 
+			#comment: "vlist" 
+			] 
+		], 
+	#itemDescriptionList: 
+		[ 
+		#strokeColor: 
+			[ 
+			#type:    #editable, 
+			#property: #strokeColor, 
+			#loc: Point(30,30), 
+			#size: Point(150,16)	   
+			] ,
+		#strokeWidthSlider: 
+			[ 
+			#property: #strokeWidth, 
+			#loc: Point(30,45), 
+			#size:    Point(180,12) 
+			] ,
+		#strokeWidthValue: 
+			[ 
+			#type: #label, 
+			#property: #strokeWidth,    
+			#loc: Point(215,45), 
+			#size: Point(40,12) 
+			] 
+		] 
+	] 
+]
+
+</pre>
+<HR width=45% align=left>
+<A HREF = "../copyrite.htm">Copyright &#169; 1999-2008 Adobe Macromedia Software LLC, Inc.</A>
+
+</body>
+</html>

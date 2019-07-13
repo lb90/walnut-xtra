@@ -1,0 +1,131 @@
+<HTML>
+<HEAD>
+<TITLE>IMoaMmSpriteCallback</TITLE>
+<link href="../xdk.css" rel="stylesheet" type="text/css">
+</HEAD>
+<body>
+
+<A HREF="../mmdg/index.htm">MM Developer's Guide</A><BR>
+<A HREF="index.htm" >MM Interfaces</A> | <A HREF="mmmthndx.htm" >MM Methods</A> | <A HREF="mmtypndx.htm">MM Types and Misc API</A>
+
+<hr width=45% align=left>
+
+<h3>IMoaMmSpriteCallback</h3>
+
+Interface ID: <span class="code">IID_IMoaMmSpriteCallback</span><BR>
+Pointer type: <span class="code">PIMoaMmSpriteCallback</span><BR>
+Inheritance: <A HREF = "../moref/unknown.htm">IMoaUnknown</A><BR>
+Header file: <A HREF = "../../include/mmiservc.h">mmiservc.h</A>
+
+<h3>Description</h3>
+
+<DL>
+<DD>
+This interface is the callback interface for multimedia sprites.
+It is supplied to a sprite by calling the <span class="code">IMoaMmXSprite::SetCallback(</span>)
+method after the sprite has been instantiated.
+All multimedia host applications support the multimedia sprite callback.<BR>
+<BR>
+Director also supports application-specific sprite callbacks through the <A HREF="../drref/drsprtcl.htm"><span class="code">IMoaDrSpriteCallback</span></A> interface.
+This interface is provided by the same object that provides the <span class="code">IMoaMmSpriteCallback</span> interface.
+Call <span class="code">QueryInterface()</span> on this interface using the interface identifier <span class="code">IID_IMoaDrSpriteCallback</span> to get the Director-specific sprite callback.
+</DD>
+</DL>
+
+<h3>Methods</h3>
+
+<h4>Change notification </h4>
+<DL>
+<DD><A HREF = "#InvalSpriteRect">InvalSpriteRect()</A> <BR>
+<A HREF = "#InvalSpriteCaps">InvalSpriteCaps()</A></DD>
+</DL>
+
+<h4>Asset interaction </h4>
+<DL>
+<DD><A HREF = "#NotifyAsset">NotifyAsset()</A></DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h3><A NAME="InvalSpriteCaps">InvalSpriteCaps()</A></h3>
+<h4>Syntax</h4>
+<DL>
+<DT class="code">InvalSpriteCaps()</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+</DL>
+<h4>Returns</h4>
+<DL>
+<DD><span class="code">MoaError</span>
+</DL>
+<h4>Description</h4>
+<DL>
+<DD>Invalidates the sprite's capabilities. 
+Normally, a sprite's <span class="code">GetCaps()</span> method is called just after the instance is created.
+However, you might want to change the capabilities for the sprite in mid-span without destroying the instance and recreating it.
+Call this method to invalidate the sprite's capabilities.
+The next time the animation loop runs, the host application calls the <span class="code">GetCaps()</span> method to get the new capabilities.
+For example, use this when switching direct and offscreen image modes on-the-fly.
+You can also use this to change your event mask, for example, to turn on or off keyboard/focus events.</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h3><A NAME="InvalSpriteRect">InvalSpriteRect()</A></h3>
+<h4>Syntax</h4>
+<DL>
+<DT class="code">InvalSpriteRect()</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+</DL>
+<h4>Returns</h4>
+<DL>
+<DD><span class="code">MoaError</span>
+</DL>
+<h4>Description</h4>
+<DL>
+<DD>Invalidates the sprite rectangle on the display window (stage).
+At authoring time, this method may be called when the movie isn't playing and the sprite needs to be updated.
+Static sprites may call this method at any time if they need to have their image updated.
+The effect of this method is to cause the host application to call an asset's 
+<span class="code">CollectChanges()</span> and <span class="code">Image()</span> methods,
+which will also be called on any sprites intersecting the sprite's rectangle.</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h3><A NAME="NotifyAsset">NotifyAsset()</A></h3>
+<h4>Syntax</h4>
+<DL>
+<DT class="code">NotifyAsset(MoaLong <I>msgCode</I>, PMoaVoid <I>refCon</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+<DT class="codearg">msgCode</DT>
+<DD>MoaLong</DD>
+<DT class="codearg">refCon</DT>
+<DD>PMoaVoid</DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+<DD><span class="code">MoaError</span>
+</DL>
+<h4>Description</h4>
+<DL>
+<DD>
+Sends an arbitrary message to the parent asset.
+This calls the asset's <span class="code">Notify()</span> method with the <span class="codearg">msgCode</span> and
+<span class="codearg">refCon</span> you supply.
+You can make up your own message code constants. 
+<span class="codearg">refCon</span> is used to supply any additional data.<BR>
+<BR>
+<B>Note:</B> Xtra developers may specify values in the range of 0 to 65535 for their notification codes. 
+Higher values are reserved by Adobe for future use.</DD>
+</DL>
+
+<hr width=45% align=left>
+<A HREF = "../copyrite.htm">Copyright &#169; 1995-2008 Adobe Macromedia Software LLC, Inc.</A>
+</BODY>
+</html>

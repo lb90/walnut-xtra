@@ -1,0 +1,86 @@
+<HTML>
+<HEAD>
+<TITLE>IMoaMmMacEventHandler</TITLE>
+<link href="../xdk.css" rel="stylesheet" type="text/css">
+</HEAD>
+<body>
+<A HREF="../mmdg/index.htm">MM Developer's Guide</A> <BR>
+  <A HREF="index.htm" >MM Interfaces</A> | <A HREF="mmmthndx.htm" >MM Methods</A> | <A HREF="mmtypndx.htm">MM Types and Misc API</A>
+<hr width=45% align=left>
+
+<h3>IMoaMmMacEventHandler</h3>
+Interface ID: <span class="code">IID_IMoaMmMacEventHandler<BR>
+  </span>Pointer type: <span class="code">PIMoaMmMacEventHandler<BR>
+  </span>Inheritance: <A HREF = "../moref/unknown.htm">IMoaUnknown</A> <BR>
+  Header file: <A HREF = "../../include/mmiservc.h">mmiservc.h</A> <BR>
+<h3>Description</h3>
+<DL>
+  <DD>
+    Implement this interface to handle Macintosh events in modeless
+    windows. Pass an instance of this interface to the <span class="code">IMoaMmUtils::MacRegisterWindow()</span> method; the interface is passed back to you in the <span class="code">IMoaMmUtils::MacUnregisterWindow()</span> method. </DD>
+</DL>
+<h3>Methods</h3>
+<DL>
+  <DT>
+  <DD><A HREF = "#SetRegistered">SetRegistered()</A> <BR>
+    <A HREF = "#HandleEvent">HandleEvent()</A>
+</DL>
+<hr width=45% align=left>
+<h3><A NAME="HandleEvent">HandleEvent()</A></h3>
+<h4>Syntax</h4>
+<DL>
+<DT class="code">HandleEvent(PMoaVoid <I>pWindow</I>, PMoaVoid <I>pEventRecord</I>, PMoaVoid <I>refCon</I>) </DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+  <DT><span class="code"><I>pWindow</I></span></DT>
+  <DD><span class="code">WindowPtr</span> to the Macintosh window associated with <span class="code">IMoaMmMacEventHandler</span></DD>
+  <DT><span class="code"><I>pEventRecord</I></span></DT>
+  <DD>Pointer to a Macintosh <span class="code">EventRecord</span> structure </DD>
+  <DT><span class="code"><I>refCon</I></span></DT>
+  <DD>User data passed to <span class="code">MacRegisterWindow()</span> when the window was registered </DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD><span class="code">MoaError</span></DD>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD>
+    Handles a Macintosh event dispatched from the host application. <span class="codearg">pWindow</span> is
+    the Macintosh <span class="code">WindowPtr</span> for the Macintosh window associated with the <span class="code">IMoaMmMacEventHandler</span> through a call to <span class="code">IMoaMmUtils::MacRegisterWindow()</span>. <span class="code"><I>pEventRecord</I></span> is a pointer to a Macintosh <span class="code">EventRecord</span> structure. This is different from a <span class="code">MoaMmEventInfo</span> structure used by the <span class="code">IMoaMmXSpriteActor </span>interface. <span class="code"><I>refCon</I></span> is arbitrary user data passed to <span class="code">MacRegisterWindow()</span> when the window was registered. If you handled the event, return <span class="code">kMoaErr_NoErr</span>.<BR>
+    <BR>
+    The host application passes the <span class="code">kMoaMmMacEvent_CloseWindow</span> event when it wants you to close your window. Handle this event
+    in the same way you would if the user clicked in the goAway box. </DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="SetRegistered">SetRegistered()</A></h3>
+<h4>Syntax</h4>
+<DL>
+<DT class="code">SetRegistered(MoaBoolParam <I>registered</I>, PMoaVoid <I>refCon</I>) </DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+  <DT><span class="code"><I>registered</I></span></DT>
+  <DD>MoaBoolParam</DD>
+  <DT><span class="code"><I>refCon</I></span></DT>
+  <DD>User data passed to <span class="code">MacRegisterWindow()</span> when the window was registered </DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD><span class="code">MoaError</span></DD>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD>Called just after the event handler has been registered and
+    just before the event handler is unregistered. This is a simple
+    notification call and is intended for the convenience of the event
+    handler. Its implementation is optional. <span class="codearg">refCon</span> is arbitrary user data passed to <span class="code">MacRegisterWindow()</span> when the window was registered; it provides a simple way to initialize
+    or dispose data shared between the event handler and the object
+    that registered it.</DD>
+</DL>
+<hr width=45% align=left>
+<A HREF = "../copyrite.htm">Copyright &#169; 1995-2008 Adobe Macromedia Software LLC, Inc.</A>
+</BODY>
+</html>

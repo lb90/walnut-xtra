@@ -1,0 +1,423 @@
+<HTML>
+<HEAD>
+<TITLE>MOA File Access II Types and Miscellaneous API</TITLE>
+<link href="../xdk.css" rel="stylesheet" type="text/css">
+</HEAD>
+<BODY>
+<A HREF="../mfdg/index.htm">MF II Developer's Guide</A> <BR>
+  <A HREF="index.htm">MF II Interfaces</A> | <A HREF="mfmthndx.htm">MF II Methods</A>
+<HR width=45% align=left>
+<H3><A NAME="RTFToC2">Director Xtra Development Kit: MOA File Access II API Reference</A></H3>
+<H3>MOA File Access II Types and Miscellaneous API</H3>
+<P>This document contains the following sections:</P>
+<UL>
+  <LI><A HREF = "#MFTYPES">Moa File Types</A></LI>
+  <LI><A HREF = "#MFCONSTS">Moa File Constants and Enumerations</A></LI>
+  <LI><A HREF = "#MFERRS">Moa File Error Codes</A></LI>
+</UL>
+<HR width=45% align=left>
+<H3><A NAME="MFTYPES">Moa File Types</A></H3>
+<H4><A NAME="MoaFileEnumProc">MoaFileEnumProc</A> Prototype</H4>
+<PRE class="code">
+typedef STDPROCPTR(STDMETHODCALLTYPE, MoaError, MoaFileEnumProc)(
+        PIMoaPathName   pIMoaPathName,
+        MoaBoolParam    isDirectory, 
+        PMoaWide *      pLastModDate,
+        PMoaChar        pFileType,
+        PMoaVoid        pClientData
+);
+</PRE>
+<P> Prototype for function passed to <A HREF = "mffile2.htm#EnumFiles">IMoaFile2::EnumFiles()</A> method.
+<P> Defined in: moafile2.h<BR>
+
+<H4><A NAME="MoaPathDialect">MoaPathDialect</A> </H4>
+<P> <span class="code">MoaPathDialect</span>
+<P> Argument specifying path name style in <A HREF = "mfpthnm.htm#InitFromString">IMoaPathName::InitFromString()</A>,
+  with the following values:
+<TABLE BORDER=2>
+  <TR>
+    <TD WIDTH=252><span class="code">kMoaPathDialect_LOCAL</span></TD>
+    <TD WIDTH=252></TD>
+  </TR>
+  <TR>
+    <TD WIDTH=252><span class="code">kMoaPathDialect_CANON_STYLE</span></TD>
+    <TD WIDTH=252>Canonical style relative pathname</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=252><span class="code">kMoaPathDialect_MAC_STYLE</span></TD>
+    <TD WIDTH=252>Macintosh style pathname.</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=252><span class="code">kMoaPathDialect_DOS_STYLE</span></TD>
+    <TD WIDTH=252>MSDOS style pathname</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=252><span class="code">kMoaPathDialect_UNIX_STYLE</span></TD>
+    <TD WIDTH=252>Unix style pathname.</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=252><span class="code">kMoaPathDialect_URL_STYLE</span></TD>
+    <TD WIDTH=252>URL(RFC 1738) style pathname.</TD>
+  </TR>
+</TABLE>
+<P> Defined in: moapath.h<BR>
+
+<H4><A NAME="MoaStreamIOOperation">MoaStreamIOOperation</A></H4>
+<P> <span class="code">MoaStreamIOOperation,<BR>
+  PMoaStreamIOOperation</span>
+<P> Argument to <A HREF = "mfstrm2.htm#ReadOperation">IMoaStream2::ReadOperation()</A> and <A HREF = "mfstrm2.htm#WriteOperation">IMoaStream2::WriteOperation()</A> with the following 
+  fields:
+<PRE class="code">
+typedef struct MoaStreamIOOperation
+{
+  /* inputs */
+  MoaStreamCount              ioRequestCount;
+  PMoaVoid                    pClientBuffer;
+  MoaStreamIOFlags            ioFlags;
+  MoaStream2IOCompletionProc  pCompletionProc;
+
+  /* outputs */
+  MoaError                    ioResult;
+  MoaStreamCount              actualIOCount;
+  PMoaVoid                    pStreamBuffer;
+
+  /* both */
+  PMoaVoid                    pClientData;
+} MoaStreamIOOperation, *PMoaStreamIOOperation;
+</PRE>
+<P> Defined in: moastrm2.h<BR>
+
+<H4><A NAME="MoaStreamPositionMode">MoaStreamPositionMode</A></H4>
+<P> MoaStreamPositionMode
+<P> Argument to <A HREF = "mfstrm2.htm#SetPositionRelative">IMoaStream2::SetPositionRelative()</A>,
+  with the following values:
+<P> <span class="code">kMoaStreamPositionMode_FromStart<BR>
+  kMoaStreamPositionMode_FromCurrent <BR>
+  kMoaStreamPositionMode_FromEnd</span>
+<P> Defined in: moastr2.h<BR>
+
+<H4><A NAME="MoaStreamIOFlags">MoaStreamIOFlags</A> </H4>
+<P> MoaStreamIOFlags, <BR>
+  *PMoaStreamIOFlags;
+<P> Argument to MoaStreamIOOperation::SetInputs()
+<P> Defined in: moastr2.h<BR>
+<H4><A NAME="MoaStream2IOCompletionProc">MoaStream2IOCompletionProc</A></H4>
+<PRE class="code">
+typedef STDPROCPTR(STDMETHODCALLTYPE, MoaError, MoaStream2IOCompletionProc)(
+        PIMoaStreamIOOperation  pIStreamOp,
+        PMoaVoid                pClientData
+);
+</PRE>
+<P> Argument to MoaStreamIOOperation::SetInputs()
+<P> Defined in: moastr2.h<BR>
+<HR width=45% align=left>
+<H3><A NAME="MFCONSTS">Moa File Constants and Enumerations</A></H3>
+<H4>Access values</H4>
+<P> kMoaFileAccessPerm_Read<BR>
+  kMoaFileAccessPerm_Write
+<P> Values returned by <A HREF="mffile2.htm#GetAccess">MoaFile2::GetAccess()</A>
+<P> Defined in: moafile2.h<BR>
+<H4>Initialization constants </H4>
+<P> kMoaPath_DontResolveOnInit<BR>
+  kMoaPath_ResolveOnInit
+<P> Argument to <A HREF = "mfpthnm.htm#InitFromString">IMoaPathName::InitFromString()</A>
+<P> Defined in: moapath.h<BR>
+<H4>Resolve constants </H4>
+<P> kMoaPath_DontResolveWithDialog<BR>
+  kMoaPath_ResolveWithDialog
+<P> Argument to <A HREF = "mfpthnm.htm#Resolve">IMoaPathName::Resolve()</A>
+<P> Defined in: moapath.h<BR>
+
+<H4>ForMenu constants </H4>
+<P> kMoaPath_NotForMenu<BR>
+  kMoaPath_ForMenu
+<P> Argument to <A HREF = "mfpthnm.htm#GetDisplayPath">IMoaPathName::GetDisplayPath()</A> and <A HREF = "mfpthnm.htm#GetDisplayFileName">IMoaPathName::GetDisplayFileName()</A>
+<P> Defined in: moapath.h<BR>
+  <BR>
+  <BR>
+<H4>Stream IO flags </H4>
+<P> <span class="code">kMoaStreamIOFlag_UseAsyncIO<BR>
+  kMoaStreamIOFlag_UseBufferredIO<BR>
+  </span>
+<P> Defined in: moastr2.h<BR>
+<H4><A NAME="IOAttributes">Moa File IO Attributes</A> </H4>
+<P> These symbols represent categories of entry in the <A HREF ="mfioattr.htm">IMoaIoAttributes</A> interface provided by <A HREF="mffile2.htm" ><span class="code">IMoaFile2</span></A> and <A HREF="mfstrm2.htm" ><span class="code">IMoaStream2</span></A> implementations.
+<H5>Entry String Constants</H5>
+<PRE class="code">
+#define kMoaIOKey_StreamFlags			&quot;MIOKey_StreamFlags&quot;
+#define kMoaIOKey_StreamAccessMode		&quot;MIOKey_StreamAccessMode&quot;
+#define kMoaIOKey_StreamBufferSize		&quot;MIOKey_StreamBufferSize&quot;
+#define kMoaIOKey_StreamDataRate		&quot;MIOKey_StreamDataRate&quot;
+#define kMoaIOKey_StreamEnd				&quot;MIOKey_StreamEnd&quot;
+#define kMoaIOKey_StreamCurrentLength	&quot;MIOKey_StreamCurrentLength&quot;
+#define kMoaIOKey_StreamPosition		&quot;MIOKey_StreamPosition&quot;
+#define kMoaIOKey_StreamPositionType	&quot;MIOKey_StreamPositionType&quot;
+
+#define kMoaIOKey_FileFlags				&quot;MIOKey_FileFlags&quot;
+#define kMoaIOKey_FileAccessPerm		&quot;MIOKey_FileAccessPerm&quot;
+#define kMoaIOKey_FileLength			&quot;MIOKey_FileLength&quot;
+#define kMoaIOKey_FileType				&quot;MIOKey_FileType&quot;
+#define kMoaIOKey_FileEncoding			&quot;MIOKey_FileEncoding&quot;
+#define kMoaIOKey_FileCreator			&quot;MIOKey_FileCreator&quot;
+#define kMoaIOKey_FileCreateDate		&quot;MIOKey_FileCreateDate&quot;
+#define kMoaIOKey_FileModifyDate		&quot;MIOKey_FileModifyDate&quot;
+#define kMoaIOKey_FileAccessDate		&quot;MIOKey_FileAccessDate&quot;
+#define kMoaIOKey_FileCachePriority		&quot;MIOKey_FileCachePriority&quot;
+
+#define kMoaIOKey_VolumeFlags			&quot;MIOKey_VolumeFlags&quot;
+#define kMoaIOKey_VolumeBlockSize		&quot;MIOKey_VolumeBlockSize&quot;
+#define kMoaIOKey_VolumeSectorSize		&quot;MIOKey_VolumeSectorSize&quot;
+#define kMoaIOKey_VolumeFreeSpace		&quot;MIOKey_VolumeFreeSpace&quot;
+</PRE>
+<H5>Entry Index Enums</H5>
+<PRE class="code">
+enum {
+	kMoaIOKeyIndex_StreamFlags,
+	kMoaIOKeyIndex_StreamAccessMode,
+	kMoaIOKeyIndex_StreamBufferSize,
+	kMoaIOKeyIndex_StreamDataRate,
+	kMoaIOKeyIndex_StreamEnd,
+	kMoaIOKeyIndex_StreamCurrentLength,
+	kMoaIOKeyIndex_StreamPosition,
+	kMoaIOKeyIndex_StreamPositionType,
+
+	kMoaIOKeyIndex_FileFlags,
+	kMoaIOKeyIndex_FileAccessPerm,
+	kMoaIOKeyIndex_FileLength,
+	kMoaIOKeyIndex_FileType,
+	kMoaIOKeyIndex_FileEncoding,
+	kMoaIOKeyIndex_FileCreator,
+	kMoaIOKeyIndex_FileCreateDate,
+	kMoaIOKeyIndex_FileModifyDate,
+	kMoaIOKeyIndex_FileAccessDate,
+	kMoaIOKeyIndex_FileCachePriority,
+
+	kMoaIOKeyIndex_VolumeFlags,
+	kMoaIOKeyIndex_VolumeBlockSize,
+	kMoaIOKeyIndex_VolumeSectorSize,
+	kMoaIOKeyIndex_VolumeFreeSpace,
+
+	kMoaIOKeyIndex_LastPredefined
+};
+</PRE>
+<P>These entries represent specific capabilities
+  of the implementation, as described in the following table.
+<TABLE BORDER="2">
+  <TR>
+    <TD WIDTH=93><B>Stream Attributes</B></TD>
+    <TD WIDTH=71><B>Type</B> </TD>
+    <TD WIDTH=44><B>Size </B>(bytes)</TD>
+    <TD WIDTH=296><B>Value</B> </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=93>Flags</TD>
+    <TD WIDTH=71>PMoaLong</TD>
+    <TD WIDTH=44>4 </TD>
+    <TD WIDTH=296>logical OR of 0 or more of: <BR>
+      <span class="code">kMoaStreamFlag_HasAsyncIO</span>, <span class="code">kMoaStreamFlag_HasBufferredIO</span>, <span class="code">kMoaStreamFlag_HasDirectBufferAccess</span> </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=93>AccessMode</TD>
+    <TD WIDTH=71>PMoaLong</TD>
+    <TD WIDTH=44>4 </TD>
+    <TD WIDTH=296>One of <span class="code">kMoaStreamOpenAccess_ReadOnly, kMoaStreamOpenAccess_ReadWrite, kMoaStreamOpenAccess_WriteOnly</span> </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=93>BufferSize</TD>
+    <TD WIDTH=71>PMoaLong</TD>
+    <TD WIDTH=44>4 </TD>
+    <TD WIDTH=296>Bytes</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=93>DataRate</TD>
+    <TD WIDTH=71>PMoaLong</TD>
+    <TD WIDTH=44>4 </TD>
+    <TD WIDTH=296></TD>
+  </TR>
+  <TR>
+    <TD WIDTH=93>End</TD>
+    <TD WIDTH=71>PMoaLong</TD>
+    <TD WIDTH=44>4 </TD>
+    <TD WIDTH=296>Bytes</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=93>CurrentLength</TD>
+    <TD WIDTH=71>PMoaLong</TD>
+    <TD WIDTH=44>4</TD>
+    <TD WIDTH=296>Bytes</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=93>Position</TD>
+    <TD WIDTH=71>PMoaLong</TD>
+    <TD WIDTH=44>4 </TD>
+    <TD WIDTH=296>Bytes</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=93>PositionType</TD>
+    <TD WIDTH=71>PMoaLong</TD>
+    <TD WIDTH=44>4 </TD>
+    <TD WIDTH=296>One of <span class="code">kMoaStreamSetPositionType_None, kMoaStreamSetPositionType_Expensive, kMoaStreamSetPositionType_Cheap</span> </TD>
+  </TR>
+</TABLE>
+<TABLE BORDER="2">
+  <TR>
+    <TD WIDTH=93><B>File Attributes</B></TD>
+    <TD WIDTH=71><B>Type</B> </TD>
+    <TD WIDTH=44><B>Size<BR>
+      </B>(bytes)</TD>
+    <TD WIDTH=296><B>Values</B> </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=93>Flags</TD>
+    <TD WIDTH=71>PMoaLong</TD>
+    <TD WIDTH=44>4 </TD>
+    <TD WIDTH=296>Logical OR of 0 or more of: <BR>
+      <span class="code">kMoaFileFlag_IsExistant, <BR>
+      kMoaFileFlag_IsDirectory</span> </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=93>AccessPerm</TD>
+    <TD WIDTH=71>PMoaLong</TD>
+    <TD WIDTH=44>4 </TD>
+    <TD WIDTH=296>One of <span class="code">kMoaFileAccessPerm_Read, kMoaFileAccessPerm_Write</span> </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=93>Length</TD>
+    <TD WIDTH=71>PMoaLong</TD>
+    <TD WIDTH=44>4 </TD>
+    <TD WIDTH=296>Bytes</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=93>Type</TD>
+    <TD WIDTH=71>PMoaChar</TD>
+    <TD WIDTH=44>N/A </TD>
+    <TD WIDTH=296></TD>
+  </TR>
+  <TR>
+    <TD WIDTH=93>Encoding</TD>
+    <TD WIDTH=71>PMoaChar</TD>
+    <TD WIDTH=44>N/A </TD>
+    <TD WIDTH=296></TD>
+  </TR>
+  <TR>
+    <TD WIDTH=93>Creator</TD>
+    <TD WIDTH=71>PMoaChar</TD>
+    <TD WIDTH=44>N/A </TD>
+    <TD WIDTH=296></TD>
+  </TR>
+  <TR>
+    <TD WIDTH=93>CreateDate</TD>
+    <TD WIDTH=71>PMoaWide</TD>
+    <TD WIDTH=44>8 </TD>
+    <TD WIDTH=296></TD>
+  </TR>
+  <TR>
+    <TD WIDTH=93>ModifyDate</TD>
+    <TD WIDTH=71>PMoaWide</TD>
+    <TD WIDTH=44>8 </TD>
+    <TD WIDTH=296></TD>
+  </TR>
+  <TR>
+    <TD WIDTH=93>AccessDate</TD>
+    <TD WIDTH=71>PMoaWide</TD>
+    <TD WIDTH=44>8 </TD>
+    <TD WIDTH=296></TD>
+  </TR>
+  <TR>
+    <TD WIDTH=93>CachePriority</TD>
+    <TD WIDTH=71>PMoaLong</TD>
+    <TD WIDTH=44>4</TD>
+    <TD WIDTH=296></TD>
+  </TR>
+</TABLE>
+<TABLE BORDER="2">
+  <TR>
+    <TD WIDTH=93><B>Volume Attributes </B></TD>
+    <TD WIDTH=71><B>Type </B> </TD>
+    <TD WIDTH=44><B>Size </B>(bytes)</TD>
+    <TD WIDTH=296><B>Values</B> </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=93>Flags</TD>
+    <TD WIDTH=71>PMoaLong</TD>
+    <TD WIDTH=44>4 </TD>
+    <TD WIDTH=296>Logical OR of kMoaVolFlag_IsRemovable, kMoaVolFlag_IsCDROM, kMoaVolFlag_IsHardDisk, kMoaVolFlag_IsNetworkDrive </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=93>BlockSize</TD>
+    <TD WIDTH=71>PMoaLong</TD>
+    <TD WIDTH=44>4 </TD>
+    <TD WIDTH=296>Bytes</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=93>SectorSize</TD>
+    <TD WIDTH=71>PMoaLong</TD>
+    <TD WIDTH=44>4 </TD>
+    <TD WIDTH=296>Bytes</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=93>FreeSpace</TD>
+    <TD WIDTH=71>PMoaLong</TD>
+    <TD WIDTH=44>4 </TD>
+    <TD WIDTH=296>Bytes</TD>
+  </TR>
+</TABLE>
+<P> Defined in: mioattr.h
+<HR width=45% align=left>
+<H3><A NAME="MFERRS">Moa File Error Codes</A></H3>
+<H5>IMoaFile2 error codes</H5>
+<P> kMoaFileErr_IoError<BR>
+  kMoaFileErr_BufferTooSmall<BR>
+  kMoaFileErr_DuplicateSpec<BR>
+  kMoaFileErr_DiskFull<BR>
+  kMoaFileErr_FileBusy<BR>
+  kMoaFileErr_BadFileSpec
+<P> Defined in: moafile2.h<BR>
+  
+<H5>IMoaStream2 error codes</H5>
+<TABLE BORDER=2>
+  <TR>
+    <TD WIDTH=252><B>Code</B></TD>
+    <TD WIDTH=445><B>Error</B> </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=252><span class="code">kMoaStreamErr_DataNotAvail </span></TD>
+    <TD WIDTH=445>Non-blocking read: data hasn't yet arrived</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=252><span class="code">kMoaStreamErr_OpNotDone</span></TD>
+    <TD WIDTH=445>Op hasn't finished, so results not avail </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=252><span class="code">kMoaErr_AttrNoSuch </span></TD>
+    <TD WIDTH=445>IO Attrs: set/get of one which doesn't exist */ </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=252><span class="code">kMoaErr_AttrCantSet</span></TD>
+    <TD WIDTH=445>IO Attrs: not a settable attr </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=252><span class="code">kMoaErr_AttrPastLast </span></TD>
+    <TD WIDTH=445>IO Attrs: off end (from GetFirst/NextSelector) </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=252><span class="code">kMoaErr_ShMemLockError</span></TD>
+    <TD WIDTH=445>Sharedm memory: locked but shouldn't be; unlocked but should be </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=252><span class="code">kMoaErr_CacheIncompatible</span></TD>
+    <TD WIDTH=445>Running at same time as an app with incompatible version of our cache</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=252><span class="code">kMoaErr_CacheDownloadStopped</span></TD>
+    <TD WIDTH=445>Download: Transfer halted</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=252><span class="code">kMoaErr_CacheWrongState</span></TD>
+    <TD WIDTH=445>Client made a cache call at a bad time  </TD>
+  </TR>
+</TABLE>
+Defined in: moastr2.h
+<HR width=45% align=left>
+</BODY>
+</HTML>

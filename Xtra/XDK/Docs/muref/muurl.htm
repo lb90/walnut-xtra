@@ -1,0 +1,64 @@
+<HTML>
+<HEAD>
+<TITLE>IMuiUrl</TITLE>
+<link href="../xdk.css" rel="stylesheet" type="text/css">
+</HEAD>
+<BODY>
+<A HREF="../mudg/index.htm" >MUI Developer's Guide</A> <BR>
+<A HREF="index.htm" >MUI Interfaces</A> | <A HREF="mumthndx.htm" >MUI Methods</A> | <A HREF="mutypndx.htm" >MUI Types and Misc API</A>
+<HR width=45% align=left>
+<H3><A NAME="IMuiUrl">IMuiUrl</A></H3>
+<P> Interface ID: <span class="code">IID_IMuiUrl<BR>
+  </span>Pointer type: <span class="code">PIMuiUrl<BR>
+  </span>Inheritance: <span class="code">IMoaUnknown<BR>
+  </span>Header file: <A HREF = "../../include/mui.h">mui.h</A>
+<DL>
+  <DD>This interface displays a standard system dialog for requesting
+    URLs from the user. It is available by calling <span class="code">IMoaCallback::CreateInstance()</span> with the class identifier <span class="code">CLSID_CMuiURL</span> and the interface
+    identifier <span class="code">IID_IMuiURL</span>.<BR>
+    <BR>
+    See the <A HREF="../mudg/index.htm">MUI Developer's Guide</A> for a list of the applications that currently support <span class="code">IMuiURL</span>. <BR>
+    <BR>
+    Use this interface in conjunction with the <A HREF="../mfdg/index.htm">Moa File Support II API</A> to open the URL specified by the user.
+</DL>
+<H3>Methods</H3>
+<DL>
+  <DD><A HREF = "#ModalGetUrlPath">ModalGetUrlPath()</A><BR>
+    <A HREF="#MovableGetUrlPath">MovableGetUrlPath()</A><BR>
+</DL>
+<HR width=45% align=left>
+<H3><A NAME="ModalGetUrlPath">ModalGetUrlPath()</A>, <A NAME="MovableGetUrlPath">MovableGetUrlPath()</A></H3>
+<H4>Syntax<BR>
+  </H4>
+<DL>
+  <DT><span class="code">ModalGetUrlPath(PIMoaPathName * <I>ppMoaPath</I>)</span>
+  <DT><span class="code">MovableGetUrlPath(PIMoaPathName * <I>ppMoaPath</I>)</span>
+</DL>
+<H4>Parameters</H4>
+<DL>
+  <DT class="codearg">ppMoaPath</DT>
+  <DD>Pointer to <A HREF="../mfref/mfpthnm.htm" class="code">IMoaPathName</A> to return user's selection. </DD>
+</DL>
+<H4>Returns</H4>
+<DL>
+  <DD><span class="code">MoaError</span> <BR>
+</DL>
+<H4>Description</H4>
+<DL>
+  <DD>Call these methods to display a URL dialog box from your Xtra.
+    Call <span class="code">ModalGetURLPath()</span> to display a modal dialog
+    box, call <span class="code">MovableGetURLPath()</span> to display a movable
+    dialog. <BR>
+    <BR>
+    Allocate and pass an instance of the <A HREF="../mfref/mfpthnm.htm" class="code">IMoaPathName</A> interface 
+    to specify the default URL; otherwise, an instance will
+    be allocated for you and returned (caller owns). The instance
+    returned contains the selection from the user. <BR>
+    <BR>
+    Once the user has selected a file and dismissed the dialog, this
+    method returns. Use standard system calls to open the URL selected by the user. </DD>
+</DL>
+<HR width=45% align=left>
+<A HREF = "../copyrite.htm">Copyright &#169; 1995-2008 Adobe Macromedia Software LLC, Inc.</A>
+</BODY>
+</HTML>

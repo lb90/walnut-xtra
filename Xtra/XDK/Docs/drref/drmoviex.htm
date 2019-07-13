@@ -1,0 +1,311 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>IMoaDrMovieContext</title>
+<link href="../xdk.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+
+<A HREF = "../drdg/index.htm">DR Developer's Guide</A><br>
+<A HREF = "index.htm"> DR Interfaces</A> | 
+<A HREF = "drmthndx.htm">DR Methods</A> | 
+<A HREF = "drtypndx.htm">DR Types and Misc API</A>
+<hr width=45% align=left>
+
+<h3><A name = "IMoaDrMovieContext">IMoaDrMovieContext</A></h3>
+
+Interface ID: <span class="code">IID_IMoaDrMovieContext</span><br>
+Pointer type: <span class="code">PIMoaDrMovieContext</span><br>
+Inheritance: <span class="code">IMoaUnknown</span><br>
+Header file: <A HREF = "../../include/driservc.h">driservc.h</A>
+
+<DL>
+<DT class="heading4">Description</DT>
+<DD>
+The <span class="code">IMoaDrMovieContext</span> interface lets you set up the player's context so you can access the current movie. 
+This interface is especially important in Windows if you create your own windows and receive messages directly from Windows. 
+If the operating system calls your Xtra directly and you call the player, the player does not know what context you are executing in.
+<br><br>
+You do not need this interface if you do not have your own windows or use threads, 
+or if you are coding for the Macintosh (the threading and windowing model of the Macintosh is simpler than that of Windows). 
+However, this interface is available on both platforms--calling it unnecessarily is harmless.
+<br><br>
+<B>Note:</B> <span class="code">IMoaDrMovieContext</span> was introduced in Director 7 because of a change in behavior between Director 6 and Director 7. 
+In Director 6, the player used global variables to keep track of the current movie, and Xtras could callback into the player at any time. 
+However, in Director 7, the player uses stack contexts to track the current movie.
+<br><br>
+There are two issues that are inter-related:
+<OL>
+<LI>In Internet Explorer, Director runs in Apartment Model. Under Apartment Model, each control instance will always be called on the same thread, 
+but different instances may be called on different threads. And a window created by a thread will always have messages dispatched to it on that thread. 
+So, if you display two copies of a page with a Shockwave movie using your Xtra, your Xtra is likely to be called on different threads.</LI>
+<LI>In Internet Explorer or Navigator on Windows, if you create your own windows, the operating system sends messages to your window without the player knowing. 
+So when you call into the player, it does not know what movie the calls apply to. 
+In Navigator, Director is always called on the same thread, so threading is not a problem. 
+But not knowing what window a call applies to is a problem in both browsers.<br>
+<br>In Internet Explorer, if you have your own window, the operating system sends you messages without the player having any opportunity to control multiple threads. 
+Another movie in another window might be in the middle of a player operation when you get your message. 
+If you call into the player while the other movie is in there, the player is likely to crash.</li>
+</OL>
+<br>
+
+If you do not have your own windows or background threads, this will not matter. 
+You will always get control by the player calling you, and it makes sure that only one thread is executing in it at a time. 
+So you might be called on different threads, but you will never be executing your code on two threads at the same time. 
+When it calls you, the player also knows what movie the call applies to.</DD>
+</DL>
+
+<DL>
+<DT class="heading4">Pushing and popping contexts</DT>
+
+<DD>Whenever an Xtra might be calling the player back from a message sent directly to its window proc by Windows, 
+the player calls must be bracketed with calls to <span class="code">PushXtraContext()</span> and <span class="code">PopXtraContext()</span>. 
+The <span class="code">DrContextState</span> must be a local variable in the calling function.</DD>
+
+<DD>For example, <span class="code">m_pIDrMovieContext</span> is a <span class="code">IMoaDrMovieContext</span> member of the asset Xtra's object class:
+<pre class="code">
+/* This code is sometimes called directly from a Windows event
+/  received by the Xtra's wndproc. */
+DrContextState drContextState;
+if (m_pObj->m_pIDrMovieContext &&
+    !(m_pObj->m_pIDrMovieContext->PushXtraContext(&drContextState)))
+{
+    ... /* Call other Director interfaces at will */
+    m_pObj->m_pIDrMovieContext->PopXtraContext(&drContextState);
+}
+</pre>
+</DD>
+
+<DD>If the <span class="code">PushXtraContext()</span> call is not made or the <span class="code">PopXtraContext()</span> call is dropped, 
+the player may crash or produce other unexpected results. 
+These calls inform the player what movie context applies and, for the ActiveX control only, provide protection for multiple threads.<br></DD>
+
+<DD>The Xtra needs to acquire an <span class="code">IDrMovieContext</span> interface during a call from the player, 
+for example, during the sprite asset's constructor.<br></DD>
+
+<DD>Use a different instance of <span class="code">IMoaDrMovieContext</span> for each instance of your Xtra class. 
+The <span class="code">IMoaDrMovieContext</span> includes which movie you are being used in, so if you try to share a single copy between multiple instances, 
+you will get information about the wrong movie when you make calls to the player.<br></DD>
+
+<DD>Use <span class="code">IMoaDrPlayer</span> to get an <span class="code">IMoaDrMovie</span> interface to the active movie. 
+Then <span class="code">QueryInterface</span> that interface to get an <span class="code">IMoaDrMovieContext</span> interface. 
+Release the <span class="code">IMoaDrMovie</span> and <span class="code">IMoaDrPlayer</span> interfaces (unless you need them for other reasons), 
+and keep the <span class="code">IMoaDrMovieContext</span> as a member of your asset Xtra object. 
+The following C++ code snippet works:
+<pre class="code">
+/* m_pIDrMovieContext is a new member of the asset pObj class */
+m_pIDrMovieContext = NULL;
+PIMoaDrPlayer pIMoaDrPlayer = NULL;
+PIMoaDrMovie pIMoaDrMovie = NULL;
+if (!m_pICallback->QueryInterface(&IID_IMoaDrPlayer, (PPMoaVoid)&pIMoaDrPlayer))
+{
+    if (!pIMoaDrPlayer->GetActiveMovie(&pIMoaDrMovie))
+    {
+        pIMoaDrMovie->QueryInterface(&IID_IMoaDrMovieContext, (PPMoaVoid)&m_pIDrMovieContext);
+        pIMoaDrMovie->Release();
+    }
+    pIMoaDrPlayer->Release();
+}
+</pre>
+</DD>
+<DD>The destructor must release, of course:
+<pre class="code">
+if (m_pIDrMovieContext != NULL)
+{
+    m_pIDrMovieContext->Release();
+    m_pIDrMovieContext = NULL;
+}
+</pre>
+</DD>
+</DL>
+
+<DL>
+<DT class="heading4">Releasing and reacquiring threads</DT>
+<DD><span class="code">ReleaseExclusiveThread()</span> and <span class="code">ReacquireExclusiveThread()</span> should rarely be needed and are effective only in the ActiveX control. 
+You might need them in a situation such as the following.<br></DD>
+<DD>When a <span class="code">GoToNetPage</span> is issued, Internet Explorer requires services that happen to be implemented on its main thread. 
+There may be a Shockwave movie on that thread. 
+The following scenario can cause a deadlock because the thread of window 2 is waiting for services from the thread of window 1 and vice versa:
+<OL>
+<LI>Window 2 (running on a secondary thread) is executing player code.</li>
+<LI>Window 1 (running on the main thread) blocks at entry to the player.</li>
+<LI>Window 2 issues a <span class="code">GoToNetPage</span>, which calls Internet Explorer services.</li>
+<LI>Internet Explorer services send a message to the main thread and wait for a response.</li>
+</OL>
+</DD>
+
+<DD>If you encounter this type of situation in the ActiveX control only, use <span class="code">ReleaseExclusiveThread()</span> to give up the player, 
+make the system call that needs to run on the main thread, then call <span class="code">ReacquireExclusiveThread()</span>. 
+You <I>must</I> reacquire after you release -- there are counted resources in there, 
+and if you return to a caller who calls <span class="code">PopXtraContext()</span>, the system will crash.<br></DD>
+
+<DD>As of March 2006, of the Xtras written for Director by Adobe, the following xtras needed thread protection. 
+None of these xtras needed to release and reacquire the thread.
+<ul>
+<li>Flash Asset</li>
+<li>ActiveX Control Asset</li>
+<li>Real Media</li>
+<li>DVD</li>
+<li>Windows Media</li>
+<li>Sound Control</li>
+</ul>
+</DD>
+</DL>
+
+<DL>
+<DT class="heading4">Xtras with background threads</DT>
+<DD>On Windows, you must not call the player from threads you create, unless you are running within the ActiveX control.<br></DD>
+<DD>The Director ActiveX control includes thread protection, because of the use of Apartment Model. 
+So, if you are in the control, you can use <span class="code">IMoaDrMovieContext::PushXtraContext()</span> and <span class="code">PopXtraContext()</span> to call the player from a background thread. 
+Use the code described earlier for handling messages sent directly from Windows to your Xtra.<br></DD>
+<DD>None of the other environments--Authoring, Projectors, Netscape Plugin, or ShockMachine--include thread reentrancy protection. 
+The player must always be called on the main thread.<br></DD>
+<DD>If you have a background thread, you can handle this by using <span class="code">SendMessage()</span> to switch to the primary thread for player calls:
+<OL>
+<LI>On the primary thread (for example, in your Xtra class's constructor), create a window, hWnd. 
+Dispose of the window in the destructor.</li>
+<LI>Attach a window proc to the window.</li>
+<LI>Structure your code so that it contains a procedure or function with the logic you need to call from the background thread, 
+including <span class="code">PushXtraContext()</span> and <span class="code">PopXtraContext()</span> calls. 
+Package the parameters to the function so that they can be sent through the window proc. 
+The arguments can be a DWORD and a WORD, returning a DWORD. 
+The DWORDs might be pointers to structures.</li>
+<LI>Define a windows user message code, such as WM_BACKGROUND_TO_PRIMARY.</li>
+<LI>In the wndproc, handle WM_BACKGROUND_TO_PRIMARY by calling your proc from step 3, passing lParam and wParam, and returning the result.</li>
+<LI>On the background thread, instead of calling the proc from step 3, call SendMessage(hWnd, ...) to send the message to window created in step 1.</li>
+</OL></DD>
+<DD>Windows will switch to the thread that created the window, execute the message on that thread, 
+and resume the background thread only when the message has been processed and the result is returned from the wndproc.<br></DD>
+
+<DD>A couple of notes:
+<UL>
+<LI>Deadlock: If the primary thread is blocked waiting for the background thread to release a semaphore, 
+exit a critical section, or the like, <span class="code">SendMessage()</span> will not wake it up. 
+<span class="code">SendMessage()</span> will never return. (If the primary thread sent a message to the secondary, 
+the message will be processed. The primary thread will see it as a recursive call. 
+This does not cause problems, as the player is always ready to process messages when it does a <span class="code">SendMessage()</span>.)</li>
+<LI>Messages received during <span class="code">SendMessage()</span> from your background thread will not return until primary-thread wndproc returns. 
+If <span class="code">SendMessage()</span> is used to send a message to a window created by your background thread, 
+your background thread wnd proc will be called recursively from <span class="code">SendMessage()</span>.</li>
+</UL>
+</DD>
+</DL>
+
+<DL>
+<DT class="heading4">Use caution with threads and windows</DT>
+<DD>Code carefully to <I>never</I> pop without a push or vice-versa. 
+If you use exceptions, make sure your catch pops if it needs to. 
+Never release without reacquiring. 
+Protect your global variables and any other data that is shared between instances with push/pop to make sure multiple threads do not find their way into the same code at the same time. 
+Test your Xtra in several movies at the same time in Internet Explorer/Windows, and stress all the instances at the same time. 
+That should uncover any lingering code that needs to be protected.</DD>
+</DL>
+
+<h4>Methods</h4>
+<DL>
+<DD>
+<A HREF = "#PushXtraContext">PushXtraContext()</A><BR>
+<A HREF = "#PopXtraContext">PopXtraContext()</A><BR>
+<A HREF = "#ReleaseExclusiveThread">ReleaseExclusiveThread()</A><BR>
+<A HREF = "#ReacquireExclusiveThread">ReacquireExclusiveThread()</A>
+</DD></DL>
+
+<hr width=45% align=left>
+<h4><A NAME="PopXtraContext">PopXtraContext()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">PopXtraContext(PDrContextState <em>pDrContextState</em>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="code"><em>pDrContextState</em></DT>
+<DD>Address of the <span class="code">DrContextState</span> local variable that was provided to <span class="code"><A HREF = "#PushXtraContext">PushXtraContext()</A></span></DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DT class="code">MoaError</DT>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>
+This method leaves the context established by <span class="code">PushXtraContext()</span>.</DD>
+</DL>
+
+<!------------------------------------------------> 
+<hr width=45% align=left>
+<h4><A NAME="PushXtraContext">PushXtraContext()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">PushXtraContext(PDrContextState <em>pDrContextState</em>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="code"><em>pDrContextState</em></DT>
+<DD>Address of a <span class="code">DrContextState</span> that is a local variable in the calling procedure</DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DT class="code">MoaError</DT>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>
+This method establishes a movie context for subsequent calls to the player. 
+In the ActiveX control, this method also blocks multiple threads from simultaneous execution. 
+<span class="code"><em>pDrContextState</em></span> must be a local variable in the calling function. 
+Before returning to its caller, 
+that function must leave the established context by calling <span class="code"><A HREF = "#PopXtraContext">PopXtraContext()</A></span> 
+with the same <span class="code"><em>pDrContextState</em></span>.
+</DD>
+</DL>
+
+
+<!------------------------------------------------> 
+<hr width=45% align=left>
+<h4><A NAME="ReacquireExclusiveThread">ReacquireExclusiveThread()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">ReacquireExclusiveThread(PDrContextState <em>pDrContextState</em>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="code"><em>pDrContextState</em></DT>
+<DD>Address of the <span class="code">DrContextState</span> local variable that was provided to 
+<span class="code"><A HREF = "#ReacquireExclusiveThread">ReacquireExclusiveThread()</a></span></DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DT class="code">MoaError</DT>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>This method reacquires the context released by <span class="code"><A HREF = "#ReleaseExclusiveThread">ReleaseExclusiveThread()</A></span>. 
+This method is rarely used.</DD>
+</DL>
+
+<!------------------------------------------------> 
+<hr width=45% align=left>
+<h4><A NAME="ReleaseExclusiveThread">ReleaseExclusiveThread()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">ReleaseExclusiveThread(PDrContextState <em>pDrContextState</em>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="code"><em>pDrContextState</em></DT>
+<DD>Address of a <span class="code">DrContextState</span> that is a local variable in the calling procedure</DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DT class="code">MoaError</DT>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>In the ActiveX control only, this method releases the player so it can be called from other threads. 
+This method must be followed by a <span class="code"><A HREF = "#ReacquireExclusiveThread">ReacquireExclusiveThread()</A></span> call using the same <span class="code"><I>pDrContextState</I></span>. <span class="code"><I>pDrContextState</I></span> must be the address of a local variable in the calling function. 
+This method is rarely used.</DD>
+</DL>
+
+<hr width=45% align=left>
+<A HREF = "../copyrite.htm"> Copyright(c) 1995-2008 Adobe Macromedia Software LLC, Inc.</A> 
+</body></html>

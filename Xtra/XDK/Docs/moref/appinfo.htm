@@ -1,0 +1,130 @@
+<HTML>
+<HEAD>
+<TITLE>IMoaAppInfo</TITLE>
+<link href="../xdk.css" rel="stylesheet" type="text/css">
+</HEAD>
+<body>
+<A HREF="../moadg/index.htm">MOA Developer's Guide</A><BR>
+<A HREF="index.htm">MOA Interfaces</A> | <A HREF="momthndx.htm">MOA Methods</A> | <A HREF="motypndx.htm">MOA Types and Misc API</A>
+<hr width=45% align=left>
+<h3>IMoaAppInfo</h3>
+ Interface ID: <span class="code">IID_IMoaAppInfo<BR>
+</span>Pointer type: <span class="code">PIMoaAppInfo<BR>
+</span>Inheritance: <A HREF = "unknown.htm">IMoaUnknown</A> <BR>
+Header file: <A HREF = "../../include/moastdif.h">moastdif.h</A>
+<h3>Description</h3>
+<DL>
+  <DD> This interface consists of one method that provides information
+    about the host application to Xtras. This information can be used
+    at registration time to determine if the characteristics of the
+    host match the capabilities of the Xtra. For example, an Xtra
+    can determine whether the application is in authoring or playback
+    mode (where applicable) and apply the appropriate behavior. An
+    Xtra can also implement security mechanisms using information
+    provided by this interface. For example, you can require the user
+    to enter a serial number for the Xtra at registration time by
+    implementing the <span class="code">IMoaRegister</span> interface. You could then use the <span class="code">IMoaCache</span> interface to store the serial number of the application provided
+    by <span class="code">IMoaAppInfo</span>, Finally,
+    you could implement the <span class="code">IMoaInitFromDict</span> interface to check the cached entry against that provided by <span class="code">IMoaAppInfo</span> at Xtra initialization time.
+</DL>
+<h3>See also</h3>
+<DL>
+  <DD><A href="motypndx.htm#MOINFOCONST">IMoaAppInfo constants</A>
+</DL>
+<h3>Methods</h3>
+<DL>
+  <DD><A HREF = "#GetInfo">GetInfo()</A>
+</DL>
+<hr width=45% align=left>
+<h3><A NAME="GetInfo">GetInfo()</A></h3>
+<h4>Syntax</h4>
+<DL>
+  <DT> <span class="code">MoaError GetInfo(MoaLong <I>desiredInfo</I>, PMoaChar <I>pInfoBuffer</I>, MoaLong <I>infoBufferLen</I>)</span>
+</DL>
+<h4>Parameters</h4>
+<DL>
+  <DT><span class="code"><I>desiredInfo</I></span>
+  <DD>Indicates what info you want</DD>
+  <DT><span class="code"><I>pInfoBuffer</I></span>
+  <DD>Pointer to a buffer where the info will get stored</DD>
+  <DT><span class="code"><I>infoBufferLen</I></span>
+  <DD>Length of buffer you are providing</DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD> <span class="code">kMoaErr_BadParam</span> If buffer passed is too small to contain information <BR>
+    <span class="code">kMoaErr_NoSuchKey</span> If app doesn't support the desiredInfo <BR>
+    <span class="code">kMoaErr_NoErr</span> Everything OK
+</DL>
+<h4>Description</h4>
+<DL>
+  <DT>
+  <DD>Get information about the Xtra's host application. The <span class="codearg">desiredInfo</span> parameter specifies the type of information being requested; it
+    can be one of the following enumerated constants:
+</DL>
+<TABLE border="2">
+  <TR>
+    <TH align="center" valign="middle"> <B>Constant</B> </TH>
+    <TH align="center" valign="middle"> <B>Description</B> </TH>
+  </TR>
+  <TR>
+    <TD align="left" valign="top" class="code">kMoaAppInfo_SerialNumber </TD>
+    <TD align="left"    valign="top">Application serial number as a string. Format of a serial number is unspecified, except 
+      that it is guaranteed to be less than 256 bytes long. An empty string may be returned. </TD>
+  </TR>
+  <TR>
+    <TD align="left" valign="top" class="code">kMoaAppInfo_RunMode</TD>
+    <TD align="left"    valign="top">RunMode of the host environment as a string. Defined modes are:<br>
+      &quot;Author&quot; 
+      authoring application<br>
+      &quot;Projector&quot; projector-only application<br>
+      &quot;Plugin&quot; browser plug-in or 
+      ActiveX control<br>
+      &quot;Exporter&quot; special exporter application that supports xtras<br>
+      These values are not localized. </TD>
+  </TR>
+  <TR>
+    <TD align="left" valign="top" class="code">kMoaAppInfo_UserName </TD>
+    <TD align="left"    valign="top">the user name entered at registration. </TD>
+  </TR>
+  <TR>
+    <TD align="left" valign="top" class="code">kMoaAppInfo_OrganizationName </TD>
+    <TD align="left" valign="top">the company/organization name entered at registration. </TD>
+  </TR>
+  <TR>
+    <TD align="left" valign="top" class="code">kMoaAppInfo_AppFileSpec </TD>
+    <TD align="left"    valign="top">a MoaSystemFileSpec to the application/projector executable. This is a MoaSystemFileSpec, 
+      not a character string, thus on the Macintosh you will receive an FSSpec. </TD>
+  </TR>
+  <TR>
+    <TD align="left" valign="top" class="code">kMoaAppInfo_ProductName </TD>
+    <TD align="left"    valign="top">The name of the product, minus version information. This is not localized. Currently 
+      defined are &quot;Director&quot;, &quot;SoundEdit&quot;, &quot;FreeHand&quot; </TD>
+  </TR>
+  <TR>
+    <TD align="left" valign="top" class="code">kMoaAppInfo_ProductVersion </TD>
+    <TD align="left"    valign="top">Version of the product, generally a character string representing a number, though it 
+      may include letters as well, e.g., &quot;5.0&quot;,&quot;5.0a&quot;, &quot;5.5&quot; </TD>
+  </TR>
+  <TR>
+    <TD align="left" valign="top" class="code">kMoaAppInfo_UILanguage</TD>
+    <TD align="left"    valign="top">The language of the authoring application, (if known), otherwise the language of the 
+      currently running OS.</TD>
+  </TR>
+  <TR>
+    <TD align="left" valign="top" class="code">kMoaAppInfo_OSLanguage</TD>
+    <TD align="left"    valign="top">The language of the currently running OS</TD>
+  </TR>
+  <TR>
+    <TD align="left" valign="top" class="code">kMoaAppInfo_ConfigFolder </TD>
+    <TD align="left"    valign="top">a MoaSystemFileSpec to the application's user-writable configuration folder (Director 
+      MX 2004)</TD>
+  </TR>
+</TABLE>
+<P> Note that not all apps will support all these; you must be prepared for an app to return kMoaErr_NoSuchKey for any or 
+  all of these. Additional values may be added in the future.
+<P> The parameters <span class="code"><I>pInfoBuffer</I></span> and <span class="code"><I>infoBufferLen</I></span> provide the application with a buffer to write the corresponding information to.
+<hr width=45% align=left>
+<A HREF = "../copyrite.htm">Copyright &#169; 1995-2008 Adobe Macromedia Software LLC, Inc.</A>
+</BODY>
+</html>

@@ -1,0 +1,467 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>IMoaDrPlayer</title>
+<link href="../xdk.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+
+<A HREF = "../drdg/index.htm">DR Developer's Guide</A><br>
+<A HREF = "index.htm"> DR Interfaces</A> | 
+<A HREF = "drmthndx.htm">DR Methods</A> | 
+<A HREF = "drtypndx.htm">DR Types and Misc API</A>
+<hr width=45% align=left>
+
+<h3><A name = "IMoaDrPlayer">IMoaDrPlayer</A></h3>
+
+Interface ID: <span class="code">IID_IMoaDrPlayer</span><br>
+Pointer type: <span class="code">PIMoaDrPlayer</span><br>
+Inheritance: <A HREF = "../mmref/mmprpown.htm" class="code">IMoaMmPropOwner</A><br>
+Header file: <A HREF = "../../include/driservc.h">driservc.h</A>
+
+<h4>Methods</h4>
+
+<span class="heading5">Property owner methods</span>
+<DL>
+  <DD><A HREF = "#GetProp">GetProp()</A><BR>
+    <A HREF = "#SetProp">SetProp()</A></DD>
+</DL>
+<span class="heading5">Scripting support</span>
+<DL>
+  <DD><A HREF = "#CallHandler">CallHandler()</A><BR>
+    <A HREF = "#GetGlobalVarValue">GetGlobalVarValue()</A><BR>
+    <A HREF = "#SetGlobalVarValue">SetGlobalVarValue()</A></DD>
+</DL>
+<span class="heading5">Movie access</span>
+<DL>
+  <DD><A HREF = "#GetActiveMovie">GetActiveMovie()</A> <BR>
+    <A HREF = "#GetMovieCount">GetMovieCount()</A> <BR>
+    <A HREF = "#GetNthMovie">GetNthMovie()</A></DD>
+</DL>
+<span class="heading5">Accessing files</span>
+<DL>
+  <DD><A HREF = "#ResolveFileName">ResolveFileName()</A> A change to a parameter type was made for D7 and later.</DD>
+  </DL>
+<span class="heading5">Cast member access</span>
+<DL>
+  <DD><A HREF = "#GetCastMemTypeCount">GetCastMemTypeCount()</A><BR>
+    <A HREF = "#GetNthCastMemTypeSymbol">GetNthCastMemTypeSymbol()</A><BR>
+    <A HREF = "#GetCastMemTypeDisplayName">GetCastMemTypeDisplayName()</A></DD>
+</DL>
+
+<hr width=45% align=left>
+
+
+<h4><A NAME="CallHandler">CallHandler()</A></h4>
+<dl>
+<dt class="heading5">Syntax</dt>
+<dt class="code">CallHandler(MoaMmSymbol <em>name</em>, MoaLong <em>nArgs</em>, PMoaMmValue <em>pArgs</em>, PMoaMmValue <em>pResult</em>)</dt>
+</dl>
+<dl>
+<dt class="heading5">Parameters</dt>
+<dt class="codearg">name</dt>
+<dd>The <span class="code">MoaMmSymbol</span> for the name of the method to call </dd>
+<dt class="codearg">nArgs</dt>
+<dd>The number of arguments you are passing to the handler</dd>
+<dt class="codearg">pArgs</dt>
+<dd>The array of <span class="code">MoaMmValue</span> arguments </dd>
+<dt class="codearg">pResult</dt>
+<dd>Pointer to a caller-owned <span class="code">MoaMmValue</span> to receive a result value from the handler</dd>
+</dl>
+<dl>
+<dt class="heading5">Returns</dt>
+<dt class="code">MoaError</dt>
+</dl>
+<dl>
+<dt class="heading5">Description</dt>
+<dd>Calls the Lingo handler <span class="codearg">name</span> in the currently active movie. The <span class="codearg">nArgs</span> argument is the number of arguments 
+    to the handler, the pArgs argument is a reference to the start of the array of arguments as <span class="code">MoaMmValues</span>.
+    You must pass in NULL to <span class="codearg">pResult</span> if you do not expect a result. You must pass in a valid pointer
+    if you do expect a result. <BR>
+    <BR>
+    This method has the same behavior as obtaining the active movie
+    interface by calling <span class="code">GetActiveMovie()</span>,
+    and then calling <span class="code">IMoaDrMovie::CallHandler()</span>.
+    This method is supplied as a convenience, as it eliminates the
+    extra call needed to <span class="code">GetActiveMovie()</span> for this common operation.</dd>
+</dl>
+
+<hr width=45% align=left>
+
+<h4><A NAME="GetActiveMovie">GetActiveMovie()</A></h4>
+<dl>
+<dt class="heading5">Syntax</dt>
+<dt class="code">GetActiveMovie(PIMoaDrMovie * <em>ppIMoaDrMovie</em>)</dt>
+</dl>
+<dl>
+<dt class="heading5">Parameters</dt>
+<dt class="codearg">ppIMoaDrMovie</dt>
+<dd>Pointer to a <span class="code">PIMoaDrMovie</span> to receive new interface</dd>
+</dl>
+<dl>
+<dt class="heading5">Returns</dt>
+<dt class="code">MoaError</dt>
+</dl>
+<dl>
+<dt class="heading5">Description</dt>
+<dd>Gets an interface to the currently active movie. The active
+    movie may vary depending upon the context in which this method
+    is called. If there are no MIAWs executing, the active movie is
+    the single main movie currently being played. If MIAWs are present,
+    the active movie can be a MIAW. This is the case if a Lingo Xtra
+    is being called by a MIAW Lingo script; if an asset Xtra is being
+    used by a MIAW; or if a Transition Xtra is being called on behalf of a MIAW. 
+	The caller is responsible for releasing the movie interface when it is no longer needed.</dd>
+</dl>
+
+<hr width=45% align=left>
+
+<h4><A NAME="GetCastMemTypeCount">GetCastMemTypeCount()</A></h4>
+<dl>
+<dt class="heading5">Syntax</dt>
+<dt class="code">GetCastMemTypeCount(MoaLong * <em>pTypeCount</em>)</dt>
+</dl>
+<dl>
+<dt class="heading5">Parameters</dt>
+<dt class="codearg">pTypeCount</dt>
+<dd>Pointer to a <span class="code">MoaLong</span> to receive the count</dd>
+</dl>
+<dl>
+<dt class="heading5">Returns</dt>
+<dt class="code">MoaError</dt>
+</dl>
+<dl>
+<dt class="heading5">Description</dt>
+<dd>Obtains the number of currently registered cast member types.
+    This value is the sum of Director's built-in types and any types registered by external asset Xtras.</dd>
+</dl>
+
+<hr width=45% align=left>
+
+
+<h4><A NAME="GetCastMemTypeDisplayName">GetCastMemTypeDisplayName()</A></h4>
+<dl>
+<dt class="heading5">Syntax</dt>
+<dt class="code">GetCastMemTypeDisplayName(MoaMmSymbol <em>typeSymbol</em>, PMoaChar <em>pName</em>, MoaLong <em>maxLen</em>)</dt>
+</dl>
+<dl>
+<dt class="heading5">Parameters</dt>
+<dt class="codearg">typeSymbol</dt>
+<dd>The symbol of the type of interest </dd>
+<dt class="codearg">pName</dt>
+<dd>Pointer to buffer to receive null-terminated C string text of the display name </dd>
+<dt class="codearg">maxLen</dt>
+<dd>Size of the caller's name buffer</dd>
+</dl>
+<dl>
+<dt class="heading5">Returns</dt>
+<dt class="code">MoaError</dt>
+</dl>
+<dl>
+<dt class="heading5">Description</dt>
+<dd>Obtains the user-readable text string associated with a cast member type.
+This is the same string that appears in the Insert submenu in Director. 
+You can obtain <span class="code">typeSymbol</span> using <span class="code">StringToSymbol()</span> or <span class="code">GetNthCastMemTypeSymbol()</span>.</dd>
+</dl>
+
+<hr width=45% align=left>
+
+
+<h4><A NAME="GetGlobalVarValue">GetGlobalVarValue()</A></h4>
+<dl>
+<dt class="heading5">Syntax</dt>
+<dt class="code">GetGlobalVarValue(MoaMmSymbol <em>globalVarName</em>, PMoaMmValue <em>pValue</em>)</dt>
+</dl>  
+<dl>
+<dt class="heading5">Parameters</dt>
+<dt class="codearg">globalVarName</dt>
+<dd>The symbol of the global variable of interest </dd>
+<dt class="codearg">pValue</dt>
+<dd>Pointer to a <span class="code">MoaMmValue</span> to receive the value</dd>
+</dl>
+<dl>
+<dt class="heading5">Returns</dt>
+<dt class="code">MoaError</dt>
+</dl>
+<dl>
+<dt class="heading5">Description</dt>
+<dd>Obtains the value of a Lingo global variable. 
+Use <span class="code">IMoaMmUtils::StringToSymbol()</span> to get a symbol from a string for <span class="codearg">globalVarName</span>.
+The caller is responsible for releasing the value with <span class="code">IMoaMmUtils::ValueRelease()</span> when it is no longer needed.</dd>
+</dl>
+
+<hr width=45% align=left>
+
+<h4><A NAME="GetMovieCount">GetMovieCount()</A></h4>
+<dl>
+<dt class="heading5">Syntax</dt>
+<dt class="code">GetMovieCount(MoaLong * <em>pMovieCount</em>)</dt>
+</dl>
+<dl>
+<dt class="heading5">Parameters</dt>
+<dt class="codearg">pMovieCount</dt>
+<dd>Pointer to a <span class="code">MoaLong</span> to receive count of open movies</dd>
+</dl>
+<dl>
+<dt class="heading5">Returns</dt>
+<dt class="code">MoaError</dt>
+</dl>
+<dl>
+<dt class="heading5">Description</dt>
+<dd>Obtains the current number of movies open in the player. In
+    Director 5.0, there is always at least one open movie, the main
+    stage movie. Each open movie in a window also contributes to the
+    movie count. Using <span class="code">GetNthMovie()</span>,
+    you can access any open movie directly.</dd>
+</dl>
+
+<hr width=45% align=left>
+
+<h4><A NAME="GetNthCastMemTypeSymbol">GetNthCastMemTypeSymbol()</A></h4>
+<dl>
+<dt class="heading5">Syntax</dt>
+<dt class="code">GetNthCastMemTypeSymbol(MoaLong <em>typeIndex</em>, PMoaMmSymbol <em>pSymbol</em>)</dt>
+</dl>
+<dl>
+<dt class="heading5">Parameters</dt>
+<dt class="codearg">typeIndex</dt>
+<dd>Index (from 1 to <span class="code">GetCastMemTypeCount()</span>) of the cast member type of interest</dd>
+<dt class="codearg">pSymbol</dt>
+<dd>Pointer to a <span class="code">MoaMmSymbol</span> to receive the type's symbol</dd>
+</dl>
+<dl>
+<dt class="heading5">Returns</dt>
+<dt class="code">MoaError</dt>
+</dl>
+<dl>
+<dt class="heading5">Description</dt>
+<dd>Obtains the unique run-time symbol for the specified cast
+    member type by index. This symbol is then passed as a parameter
+    to callback methods operating on cast member types, such as <span class="code">GetCastMemTypeDisplayName()</span>.</dd>
+</dl>
+
+<hr width=45% align=left>
+
+<h4><A NAME="GetNthMovie">GetNthMovie()</A></h4>
+<dl>
+<dt class="heading5">Syntax</dt>
+<dt class="code">GetNthMovie(MoaLong <em>movieIndex</em>, PIMoaDrMovie * <em>ppIMoaDrMovie</em>)</dt>
+</dl>
+<dl>
+<dt class="heading5">Parameters</dt>
+<dt class="codearg">movieIndex</dt>
+<dd>Index of movie to obtain interface for; ranges from 1 to the number of open movies</dd>
+<dt class="codearg">ppIMoaDrMovie</dt>
+<dd>Pointer to a <span class="code">PIMoaDrMovie</span> to receive new interface</dd>
+</dl>
+<dl>
+<dt class="heading5">Returns</dt>
+<dt class="code">MoaError</dt>
+</dl>
+<dl>
+<dt class="heading5">Description</dt>
+<dd>Gets an interface to the nth movie in the player's
+    movie list. There's always at least one open movie in Director
+    5.0, the main stage movie. Use <span class="code">GetMovieCount()</span> to determine the number of open movies. Using this
+    method, you could, for example, access data in a Movie In A Window
+    even though you're currently being called in the context of the
+    main stage movie. The caller is responsible for releasing the
+    movie interface when it is no longer needed.</dd>
+</dl>
+
+<hr width=45% align=left>
+
+<h4><A NAME="GetProp">GetProp()</A></h4>
+<dl>
+<dt class="heading5">Syntax</dt>
+<dt class="code">GetProp(MoaMmSymbol <em>symbol</em>, PMoaMmValue <em>pPropValue</em>)</dt>
+</dl>
+<dl>
+<dt class="heading5">Parameters</dt>
+<dt class="codearg">symbol</dt>
+<dd>The <span class="code">MoaMmSymbol</span> for the property of interest </dd>
+<dt class="codearg">pPropValue</dt>
+<dd>Pointer to a caller-owned <span class="code">MoaMmValue</span> structure to receive the value of the property</dd>
+</dl>
+<dl>
+<dt class="heading5">Returns</dt>
+<dt class="code">MoaError</dt>
+  <DD>
+    <TABLE BORDER="2">
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=252><span class="code">kMoaErr_NoErr</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=489>Property exists and value was returned </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=252><span class="code">kMoaErr_BadParam</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=489>Invalid<span class="codearg"> pPropValue</span> passed in </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=252><span class="code">kMoaMmErr_PropertyNotFound</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=489>Property isn't supported by this class </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=252><span class="code">kMoaMmErr_InternalError</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=489>Property exists but couldn't get due to internal error </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=252><span class="code">kMoaMmErr_NoMemForString</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=489>Couldn't allocate memory for string value data </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=252><span class="code">kMoaErr_OutOfMem</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=489>Couldn't allocate memory for other value data </TD>
+      </TR>
+    </TABLE>
+</DD>
+</dl>
+<dl>
+<dt class="heading5">Description</dt>
+<dd>Obtains the value of the specified player property. 
+To get the symbol from a string, use the <span class="code">IMoaMmUtils::StringToSymbol()</span>.
+The caller is responsible for releasing the value with <span class="code">IMoaMmUtils::ValueRelease()</span> when it is no longer needed.</dd>
+</dl>
+
+<hr width=45% align=left>
+
+<h4><A NAME="ResolveFileName">ResolveFileName()</A></h4>
+<dl>
+<dt class="heading5">Syntax</dt>
+<dt class="code">ResolveFileName(ConstPMoaChar <em>pFileName</em>, PMoaChar <em>pPathName</em>, MoaLong  <em>maxLen</em>)</dt>
+</dl>
+<dl>
+<dt class="heading5">Parameters</dt>
+<dt class="codearg">pFileName</dt>
+<dd>Pointer to C string of filename in native platform format to resolve. Prior to D7, this parameter was a PMoaChar.</dd>
+<dt class="codearg">pPathName</dt>
+<dd>Pointer to C string to receive resolved full pathname</dd>
+<dt class="codearg">maxLen</dt>
+<dd>Size of the caller's <span class="codearg">pPathName </span>buffer</dd>
+</dl>
+<dl>
+<dt class="heading5">Returns</dt>
+<dt class="code">MoaError</dt>
+</dl>
+<dl>
+<dt class="heading5">Description</dt>
+<dd>Resolves a file name to a full path name using Director's
+    standard filename resolution algorithm. This can include scanning
+    the searchPaths, and so on, for the appropriate file. Director's
+    &quot;@:&quot; filename notation is also supported here.</dd>
+</dl>
+
+<hr width=45% align=left>
+
+
+<h4><A NAME="SetGlobalVarValue">SetGlobalVarValue()</A></h4>
+<dl>
+<dt class="heading5">Syntax</dt>
+<dt class="code">SetGlobalVarValue(MoaMmSymbol <em>globalVarName</em>, PMoaMmValue <em>pValue</em>)</dt>
+</dl>
+<dl>
+<dt class="heading5">Parameters</dt>
+<dt class="codearg">globalVarName</dt>
+<dd>The symbol of the global variable of interest </dd>
+<dt class="codearg">pValue</dt>
+<dd>Pointer to a <span class="code">MoaMmValue</span> to copy the new value from</dd>
+</dl>
+<dl>
+<dt class="heading5">Returns</dt>
+<dt class="code">MoaError</dt>
+</dl>
+<dl>
+<dt class="heading5">Description</dt>
+<dd>Sets the value of a Lingo global variable.
+Use <span class="code">IMoaDrUtils-&gt;StringToSymbol()</span> to get a symbol from a string for <span class="codearg">globalVarName</span>.
+The caller maintains ownership of the value passed in, 
+and should release it using <span class="code">IMoaMmUtils::ValueRelease()</span> when it is no longer needed.</dd>
+</dl>
+
+<h4><A NAME="SetProp">SetProp()</A></h4>
+<dl>
+<dt class="heading5">Syntax</dt>
+<dt class="code">SetProp(MoaMmSymbol <em>symbol</em>, ConstPMoaMmValue <em>pPropValue</em>)</dt>
+</dl>
+<dl>
+<dt class="heading5">Parameters</dt>
+<dt class="codearg">symbol</dt>
+<dd>The <span class="code">MoaMmSymbol</span> for the property of interest </dd>
+<dt class="codearg">pPropValue</dt>
+<dd>Pointer to a caller-owned <span class="code">MoaMmValue</span> structure from which to copy the value</dd>
+</dl>
+<dl>
+<dt class="heading5">Returns</dt>
+<dt class="code">MoaError</dt>
+  <DD>
+    <TABLE BORDER="2">
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=277><span class="code">kMoaErr_NoErr</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=484>Property exists and value was set </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=277><span class="code">kMoaErr_BadParam</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=484>Invalid <span class="codearg">pPropValue</span> passed in </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=277><span class="code">kMoaMmErr_PropertyNotFound</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=484>Property isn't supported by this class </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=277><span class="code">kMoaMmErr_InternalError</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=484>Property exists, value ok, can't set--internal error </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=277><span class="code">kMoaMmErr_NoMemForString</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=484>Can't allocate memory for setting string value data </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=277><span class="code">kMoaErr_OutOfMem</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=484>Can't allocate memory for setting other value data </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=277><span class="code">kMoaMmErr_IntegerExpected</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=484>Type mismatch: integer value expected </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=277><span class="code">kMoaMmErr_SymbolExpected</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=484>Type mismatch: symbol value expected </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=277><span class="code">kMoaMmErr_FloatExpected</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=484>Type mismatch: float value expected </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=277><span class="code">kMoaMmErr_StringExpected</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=484>Type mismatch: string value expected </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=277><span class="code">kMoaMmErr_PointExpected</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=484>Type mismatch: point value expected </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=277><span class="code">kMoaMmErr_RectExpected</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=484>Type mismatch: rect value expected </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=277><span class="code">kMoaMmErr_ValueTypeMismatch</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=484>Type mismatch: other value expected (non-specific) </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=277><span class="code">kMoaDrErr_CastMemberExpected</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=484>Type mismatch: <span class="code">CMRef</span> value expected </TD>
+      </TR>
+    </TABLE>
+</DD>
+</dl>
+<dl>
+<dt class="heading5">Description</dt>
+<dd>Sets a player property to a new value. To get the symbol from
+    a string, use the <span class="code">IMoaMmUtils::StringToSymbol()</span>.
+    The caller continues to maintain ownership of the value passed
+    in, and should release it using <span class="code">IMoaMmUtils::ValueRelease()</span> when it is no longer needed.</dd>
+</dl>
+
+<hr width=45% align=left>
+<A HREF = "../copyrite.htm">Copyright &#169; 1995-2008 Adobe Macromedia Software LLC, Inc.</A>
+</BODY>
+</html>

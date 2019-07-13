@@ -1,0 +1,56 @@
+<HTML>
+<HEAD>
+<TITLE>IMuiAlert</TITLE>
+<link href="../xdk.css" rel="stylesheet" type="text/css">
+</HEAD>
+<body>
+<A HREF="../mudg/index.htm" >MUI Developer's Guide</A> <BR>
+<A HREF="index.htm" >MUI Interfaces</A> | <A HREF="mumthndx.htm" >MUI Methods</A> | <A HREF="mutypndx.htm" >MUI Types and Misc API</A>
+<HR width=45% align=left>
+<h3><A NAME="IMuiAlert">IMuiAlert</A></h3>
+<P> Interface ID: <span class="code">IID_IMuiAlert<BR>
+  </span>Class ID: <span class="code">CLSID_MuiAlert<BR>
+  </span>Pointer type: <span class="code">PIMuiAlert<BR>
+  </span>Inheritance: <span class="code">IMoaUnknown<BR>
+  </span>Header file: <A HREF = "../../include/mui.h">mui.h</A>
+<h4>Methods</h4>
+<DL>
+  <DD><A HREF = "#Alert">Alert()</A>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DT>
+  <DD>Platform independent interface for displaying alert boxes,
+    provided by the Mui Xtra.
+</DL>
+<hr width=45% align=left>
+<h4><A NAME="Alert">Alert()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+  <DT class="code">Alert(PMoaChar <I>message</I>, PMoaChar <I>title</I>, TMuiAlertButtonType <I>buttons</I>, 
+  MoaLong <I>defaultButton</I>, TMuiAlertIcon <I>icon </I>)</DT></DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+  <DT class="codearg">message</DT>
+  <DD>String for alert message</DD>
+  <DT class="codearg">title</DT>
+  <DD>String for window title </DD>
+  <DT class="codearg">buttons</DT>
+  <DD><A HREF="mutypndx.htm#TMuiAlertButtonType">TMuiAlertButtonType</A> value for the button combination to display</DD>
+  <DT class="codearg">defaultButton</DT>
+  <DD>Value to select the default button by position (1 for left-most, etc.)</DD>
+  <DT class="codearg">icon</DT>
+  <DD><A HREF="mutypndx.htm#TMuiAlertIcon">TMuiAlertIcon</A> value for the icon type</DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+  <DD class="code">MoaError</DD>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+  <DD>Displays a platform-independent dialog box.</DD>
+</DL>
+<hr width=45% align=left>
+<A HREF = "../copyrite.htm">Copyright &#169; 1995-2008 Adobe Macromedia Software LLC, Inc.</A>
+</body>
+</html>

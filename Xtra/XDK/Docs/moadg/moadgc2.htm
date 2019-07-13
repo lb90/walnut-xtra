@@ -1,0 +1,1133 @@
+<HTML>
+<HEAD>
+<TITLE>Implementing MOA Xtras</TITLE>
+<link href="../xdk.css" rel="stylesheet" type="text/css">
+</HEAD>
+<body>
+<A HREF="index.htm">MOA Developer's Guide</A><BR>
+<A HREF="../moref/index.htm" >MOA Interfaces</A> | <A HREF="../moref/momthndx.htm" >MOA Methods</A> | <A HREF="../moref/motypndx.htm" >MOA Types and Misc API</A>
+<HR width=45% align=left>
+<H3><A NAME="RTFToC2">Director Xtra Development Kit: MOA Developer's Guide</A></H3>
+<h3>Implementing MOA Xtras </h3>
+
+<HR width=45% align=left>
+    <h3>Introduction </h3>
+<DL>
+  <DD>This chapter describes coding details for implementing MOA Xtras.
+    The first part describes how to code a MOA Xtra. It presents a
+      complete coding example of an Xtra implementing the hypothetical
+      Xtra interface, <span class="code">IMoaHello.</span> This discussion includes details
+      about how to code Xtras in both C and C++. The second section
+      discusses some standard calling conventions used in implementing
+      MOA Xtras. The final part provides a synopsis of the MOA standard
+      interfaces.</DD></DL>
+    <h3><A NAME="RTFToC4">Implementing a MOA Xtra</A> </h3>
+    <P>
+  In general, there are three things you do to implement Xtras.
+    First, you identify the interfaces to use--both the Xtra interfaces
+    to implement and the callback interfaces to call in the application.
+    Next, you define a class, specifying its name, instance variables,
+    and the Xtra interfaces it implements. Finally, you write implementations
+    for each method in those interfaces. Identifying an interface
+    and defining a class both require MOA identifiers, which are discussed
+    first. The sections that follow describe how to actually code
+    MOA objects.
+    <h4><A NAME="RTFToC5">MOA identifiers</A> </h4>
+    <P> For a provider and user to agree on an interface, they need a
+      common way to identify it. MOA uses MOA identifiers (type <span class="code">MoaID</span>),
+      an implementation detail shared with COM (which refers to them
+      as globally unique identifiers or GUIDs). In addition to unique
+      interface identifiers, MOA uses unique identifiers for each class.
+      The class identifier provides a hook for an application to access
+      your Xtra implementation.
+    <P> MOA identifiers are large (128 bit) values unique to each interface
+      and class. MOA identifiers are assigned to globals shared by the
+      providers and users of an interface.
+    <P> Your Xtra code uses MOA identifiers in several ways:
+    <UL>
+      <LI>Define a unique <span class="code">MoaID</span> for any interface you define
+        in your code</LI>
+      <LI>Define a unique <span class="code">MoaID</span> for each class you define in
+        your code</LI>
+      <LI>Acquire the previously defined <span class="code"> MoaID </span>for each interface
+        you implement in a class</LI>
+      <LI>Acquire the <span class="code">MoaID</span> for any classes you explicitly
+        instantiate in your code</LI>
+      <LI>Acquire a <span class="code">MoaID</span> for any interfaces your method implementations
+        will need to use</LI>
+    </UL>
+    <P> The various uses of MOA identifiers are discussed in the sections that follow. To define a <span class="code">MoaID</span> for an interface 
+      or class, you use a standard utility program. On Macintosh OS 9 the program GenUID.app is provided with the MOA XDK 
+      for this purpose; on Macintosh OSX use the uuidgen command in the terminal window; on Windows use the Microsoft utility 
+      GUIDGEN.EXE, which is provided with the Visual C++ compiler.
+    <h4><A NAME="RTFToC6">Acquiring an interface</A> </h4>
+    <P> In implementing an Xtra, both the Xtra interfaces you provide
+      and the callback interfaces you use are defined by Adobe.
+      Thus, Xtras can be programmed entirely without defining interfaces
+      of their own. In some cases, you may choose to define a MOA interface
+      to represent behavior shared by your objects but not specified
+      by Adobe. In any case, understanding how an interface is
+      defined will help you understand how to implement a class.
+    <P> Each interface has a distinct <span class="code">MoaID</span>--referred to as the
+      interface identifier or IID--used to acquire instances of the
+      interface. Each interface has a name, used to represent the specific
+      type of the interface. An interface also includes the names, parameters,
+      and return types for its methods. The following example shows
+      these details, looking at the definition of a simple interface--<span class="code">IMoaHello</span>--with
+      just one method, <span class="code">Hello()</span>.
+    <P> Note that in MOA, as in COM, all interfaces are typed using a
+      name with the prefix <span class="code">I</span>. Interface types are used to identify
+      an interface when it is specified as a parameter of a function
+      or method, or as the type of a variable.
+    <P> The following code demonstrates the minimal definition of a simple
+      interface, <span class="code">IMoaHello</span>. This code would appear in a .h
+      file, for example moahello.h:
+    <PRE class="code">
+#include &quot;moaxtra.h&quot;
+#define INTERFACE IMoaHello
+
+DEFINE_GUID(IID_IMoaHello, 0xAC3590A6L, 0x0062, 0xE623, 0x00, 0x00, 
+		0x08, 0x00, 0x07, 0x57, 0xFC, 0x90);
+
+DECLARE_INTERFACE_(IMoaHello, IMoaUnknown)
+{
+        STD_IUNKNOWN_METHODS
+        STDMETHOD(Hello) (THIS_ PIMoaStream pStream) PURE;
+};
+</PRE>
+    <P> To understand what this definition does, take a closer look at the code, line by line:
+    <P> <span class="code">#include &quot;moaxtra.h&quot; </span><BR>
+      <span class="code">#define INTERFACE</span>
+    <P> The first line of code includes the standard header for defining
+      MOA Xtras. The file moaxtra.h provides a set of macros used to
+      define MOA interfaces and classes, and contains the IIDs for some
+      standard MOA interfaces. The second line defines a macro, INTERFACE,
+      which must be defined for the macros used in the subsequent declarations.
+      The lines following this preamble provide the actual interface
+      declaration.
+    <h5><A NAME="RTFToC7">Declaring the interface identifier</A> </h5>
+    <P> To declare the interface identifier, you create a unique 128-bit
+      value and identify it to MOA, using the <span class="code">DEFINE_GUID</span> macro.
+      Interface identifiers are assigned to global variables, whose
+      name is the name of the interface with the prefix <span class="code">IID_</span>.
+      This is demonstrated for <span class="code">IMoaHello</span> in the following code:
+    <PRE class="code">
+DEFINE_GUID(IID_IMoaHello, 0xAC3590A6L, 0x0062, 0xE623, 0x00, 0x00, 
+		0x08, 0x00, 0x07, 0x57, 0xFC, 0x90);
+</PRE>
+    <P> This identifier must be defined with the same value in every module
+      that implements or uses this interface. For interfaces defined
+      by MOA or an application, interface identifiers are provided by
+      the standard header files provided with the Xtra Development Kit.
+      For interfaces you define yourself, you use a utility program
+      to generate a unique <span class="code">MoaID</span>. On Macintosh OS 9 the program GenUID.app is provided with the MOA XDK 
+      for this purpose; on Macintosh OSX use the uuidgen command in the terminal window;on Windows use the Microsoft utility 
+      GUIDGEN.EXE, which is provided with the Visual C++ compiler.
+    <P> Users of this interface use the interface identifier, in this
+      case <span class="code">IID_IMoaHello</span>, to request the interface from a provider.
+      Users of your Xtra objects similarly use interface identifiers
+      to request the interfaces you implement. MOA provides a standard
+      technique for requesting interfaces from objects, through the <span class="code">QueryInterface()</span> method inherited by all MOA interfaces.
+    <h5><A NAME="RTFToC8">Declaring interface methods</A></h5>
+    <P> As described earlier, an interface is a set of methods, or function
+      prototypes, for a complete, specific behavior. The heart of an
+      interface definition is its method declarations.
+    <P> In the case of <span class="code">IMoaHello</span>, the interface has just one
+      method, <span class="code">Hello()</span>. Every class that implements <span class="code">IMoaHello</span> will provide its own implementation of this method. Here is the
+      code declaring the <span class="code">IMoaHello</span> interface:
+    <PRE class="code">
+DECLARE_INTERFACE_(IMoaHello, IMoaUnknown)
+{
+        STD_IUNKNOWN_METHODS
+
+        STDMETHOD_(void, Hello) (THIS_ PIMoaStream pStream) PURE;
+};
+</PRE>
+    <P> In the first line, the <span class="code">DECLARE_INTERFACE_</span> macro describes
+      the name of the interface and the interface it inherits from.
+      Inheritance in this case simply means that the first interface, <span class="code">IMoaHello</span>, includes the methods defined in the second
+      interface, <span class="code">IMoaUnknown</span>. All MOA interfaces inherit from <span class="code">IMoaUnknown</span>, which provides the standard method QueryInterface()
+      for requesting interfaces from an object.
+    <P> Note that some object models such as C++ provide for one class
+      to inherit from another, thus allowing implementations to be inherited.
+      In MOA, as in COM, there is no inheritance of implementations.
+      Inheritance is limited to the abstract behavior defined by an
+      interface. (However, MOA provides a default implementation of
+      the methods defined by <span class="code">IMoaUnknown</span>.)
+    <P> In the second line, the <span class="code">STD_IUNKNOWN_METHODS</span> macro declares
+      the default MOA implementation of the <span class="code">IMoaUnknown</span> interface.
+      This is required to complete the inheritance specified for <span class="code">IMoaHello</span>.
+    <P> In the third line, the <span class="code">STDMETHOD_</span> macro is used to declare
+      the sole method in the <span class="code">IMoaHello</span> interface. Within the
+      parentheses of the macro itself, the return type and name of the
+      method <span class="code">(void, Hello)</span> are declared. The next parentheses
+      contain the type and parameter of any arguments to the method.
+      There are two arguments to the <span class="code">Hello</span> method, <span class="code">THIS</span> and <span class="code">pStream</span>. <span class="code">THIS</span> is always the first argument
+      to a method, and represents the interface itself. The meaning
+      of <span class="code">THIS</span> is described in greater detail in &quot;Writing
+      method implementations&quot; later in this section. The <span class="code">pStream</span> parameter represents a pointer to an instance of the <span class="code">IMoaStream</span> interface. This parameter provides the application's interface
+      to the stream used to write the Xtra's greeting.
+    <P> <B>Note:</B> In declaring a MOA interface, all method parameters
+      must be exactly 4 bytes in length. Parameters smaller than this
+      (e.g., chars, Booleans) must be expanded into an explicit 4-byte
+      parameter. Parameters larger than this must be passed by pointer.
+      There is one exception: type MoaDouble (8-byte floating point)
+      may always be passed by value.
+    <P> Note that the macro <span class="code">PURE</span> is provided for compatibility
+      with C++. This macro is described in the section &quot;Implementing
+      Xtras in C++,&quot; later in this chapter.
+    <h4><A NAME="RTFToC9">Defining a class</A> </h4>
+    <P> To provide a specific Xtra interface, your Xtra defines a class
+      that implements that interface. To define a class, you provide
+      a <span class="code">MoaID</span>--referred to as the class identifier or <span class="code">CLSID</span>--for
+      that class, similar to the interface identifier. You then specify
+      the instance variables, private data available within the method
+      implementations of your class. You also specify interfaces implemented
+      by the class. Finally, you specify method implementations for
+      each method in each interface provided by the class.
+    <P> Here's the code defining a simple class, the <span class="code">World</span> class,
+      that implements just one interface, the <span class="code">IMoaHello</span> interface.
+    <PRE class="code">
+#include &quot;moahello.h&quot;
+
+DEFINE_GUID(CLSID_World, 0xAC3593FFL, 0x0063, 0xAF65,
+0x00, 0x00, 0x08, 0x00, 0x07, 0x57, 0xFC, 0x90);
+
+EXTERN_BEGIN_DEFINE_CLASS_INSTANCE_VARS( World )
+        char * greeting; 
+EXTERN_END_DEFINE_CLASS_INSTANCE_VARS
+
+EXTERN_BEGIN_DEFINE_CLASS_INTERFACE( World, IMoaHello)
+        EXTERN_DEFINE_METHOD( void, Hello, (THIS_ PIMoaStream pStream))
+EXTERN_END_DEFINE_CLASS_INTERFACE
+
+EXTERN_BEGIN_DEFINE_CLASS_INTERFACE( World, IMoaRegister)
+        EXTERN_DEFINE_METHOD( void, Hello, (THIS_ PIMoaCache pCache, PIMoaDict pDict) 
+EXTERN_END_DEFINE_CLASS_INTERFACE
+</PRE>
+    <P> The first line includes the previously defined interface <span class="code">IMoaHello</span>,
+      contained in the file moahello.h. The following discussions describe
+      the significant details of this code sample.
+    <h5><A NAME="RTFToC10">Defining the class identifier</A></h5>
+    <P> Each class has a unique identifier, which is defined in exactly
+      the same way you define an interface identifier. The only distinction
+      is that the global name is given the prefix <span class="code">CLSID</span>.
+    <PRE class="code">
+DEFINE_GUID(CLSID_World, 0xAC3593FFL, 0x0063, 0xAF65, 0x00,
+0x00, 0x08, 0x00, 0x07, 0x57, 0xFC, 0x90); 
+</PRE>
+    <P> As with interface identifiers, class identifiers must be distinct
+      from the identifiers of any interfaces or classes. Unique class
+      identifier values are created using a utility application. On Macintosh OS 9 the program GenUID.app is provided with the MOA XDK 
+      for this purpose; on Macintosh OSX use the uuidgen command in the terminal window;on Windows use the Microsoft utility 
+      GUIDGEN.EXE, which is provided with the Visual C++ compiler.
+    <h5><A NAME="RTFToC11">Declaring instance variables</A></h5>
+    <P> The instance variables represent private data that is allocated
+      for each instance of the class. The <span class="code">World</span> class has a
+      single instance variable, <span class="code">greeting</span>, intended to contain
+      a string used by an object to greet its users. This instance variable
+      is declared as follows:
+    <PRE class="code">
+EXTERN_BEGIN_DEFINE_CLASS_INSTANCE_VARS( World )
+        PMoaChar greeting; 
+EXTERN_END_DEFINE_CLASS_INSTANCE_VARS
+</PRE>
+    <P> The <span class="code">greeting</span> instance variable can be accessed only within
+      the method implementations of the <span class="code">World</span> class. Use of
+      the <span class="code">greeting</span> instance variable is demonstrated in the
+      discussion &quot;Writing method implementations&quot; later in
+      this section.
+    <h5><A NAME="RTFToC12">Declaring interface methods</A></h5>
+    <PRE class="code">
+EXTERN_BEGIN_DEFINE_CLASS_INTERFACE(World, IMoaHello )
+EXTERN_DEFINE_METHOD( void, Hello, (THIS_ PIMoaStream pStream) )
+EXTERN_END_DEFINE_CLASS_INTERFACE
+</PRE>
+    <P> The final set of macros in this code declares the single method
+      of the <span class="code">IMoaHello</span> interface and identifies it with the <span class="code">World</span> class.
+    <P> The Xtra code includes a similar declaration for each interface
+      implemented by a class. As in this example, all Xtras should provide
+      at least one class that implements the <span class="code">IMoaRegister</span> interface.
+      This interface is implemented in a way that's specific to the
+      type of functionality being implemented by the Xtra. For example,
+      Transition Xtras implement <span class="code">IMoaRegister</span> in one way, SoundEdit
+      Xtras implement <span class="code">IMoaRegister</span> in another.
+    <h4><A NAME="RTFToC13">Writing method implementations</A> </h4>
+    <P> A method implementation represents a class's specific code for
+      a method in an interface. The method implementation is associated
+      with a method through the virtual function table, which is set
+      up in the same source file as the method implementations. Writing
+      method implementations is the bulk of the work in implementing
+      Xtras. This section looks at a simple example of a method implementation.
+    <h5><A NAME="RTFToC14">Implementing the World class</A></h5>
+    <P> The following code sample is a complete implementation of the <span class="code">World</span> class:
+    <PRE class="code">
+#define INITGUID 1 /*at least one file defines this macro*/
+
+#include &quot;worldcls.h&quot; /* MoaID and globals for class*/
+
+BEGIN_DEFINE_CLASS_INTERFACE( World, IMoaHello )
+        DEFINE_METHOD( Hello, World_Hello )
+END_DEFINE_CLASS_INTERFACE
+
+BEGIN_DEFINE_CLASS_INTERFACE( World, IMoaRegister )
+        DEFINE_METHOD( Register, World_Register )
+END_DEFINE_CLASS_INTERFACE
+
+BEGIN_XTRA
+        BEGIN_XTRA_DEFINES_CLASS( World, 1 )
+                CLASS_DEFINES_INTERFACE( World, IMoaHello, 1 )
+                CLASS_DEFINES_INTERFACE( World, IMoaRegister, 1 )
+        END_XTRA_DEFINES_CLASS
+END_XTRA
+
+/* class creator and destructor */
+
+STDMETHODIMP_(MoaError) MoaCreate_World(World * This &gt; 
+{
+X_ENTER
+        char    *theString = &quot;Hello, world&quot;
+        long    theSize = strlen(theString) + 1
+        if (This-&gt;greeting = \
+                This-&gt;pCalloc-&gt;lpVtbl-&gt;NRAlloc(This-&gt;pCalloc, theSize))
+        {
+                strcpy(This-&gt;greeting, theString);
+                X_RETURN( MoaError, kMoaErr_NoErr ); 
+        }
+        X_RETURN( MoaError, kMoaErr_OutOfMem );
+X_EXIT
+}
+
+STDMETHODIMP_(void) MoaDestroy_World(World * This) 
+{
+X_ENTER
+
+        if (This-&gt;greeting)
+        {
+                This-&gt;pCalloc-&gt;lpVtbl-&gt; NRFree(This-&gt;pCalloc, This-&gt;greeting); 
+        }
+        X_RETURN_VOID; 
+X_EXIT
+}
+
+/* interface creator and destructor functions */
+
+STDMETHODIMP_(MoaError) MoaCreate_World_IMoaHello(World_IMoaHello* This) 
+{
+X_ENTER
+        X_RETURN( MoaError, kMoaErr_NoErr );
+X_EXIT
+}
+
+STDMETHODIMP_(void) MoaDestroy_World_IMoaHello(World_IMoaHello* This)
+{
+X_ENTER
+        X_RETURN_VOID;
+X_EXIT
+}
+
+/*
+implement IMoaRegister creator and destructor here
+*/
+
+
+/* interface method implementation */
+
+
+STDMETHODIMP_(MoaError) World_Hello (World_IMoaHello * This,
+PIMoaStream pStream)
+{X_ENTER
+pStream-&gt;lpVtbl-&gt;write(pStream, this-&gt;pObj-&gt;greeting, strlen(this-&gt;pObj-&gt;greeting) + 1, NULL);
+        X_RETURN( MoaError, kMoaErr_NoErr );
+X_EXIT
+}
+
+STDMETHODIMP_(MoaError) World_Register (World_IMoaRegister * This,
+PIMoaCache pCache, PIMoaDict pDict)
+(
+/* see description of Register() implementation */
+}
+</PRE>
+    <P> While <span class="code">World</span> implements only two interfaces, each with
+      a single method, this sample demonstrates that a complete implementation
+      requires some additional code.
+    <h5><A NAME="RTFToC15">Setting up virtual function tables</A> </h5>
+    <P> A class implements an interface by defining a function for each
+      method, the method implementation. Each method implementation
+      has a name distinct from its actual method name. In this example,
+      the method implementation for the <span class="code">Hello</span> method is named <span class="code">World_Hello</span>. The virtual function table is an internal
+      MOA structure that records the relationship between methods and
+      implementations. The tables for <span class="code">IMoaHello</span> and <span class="code">IMoaRegister </span>are set up at the beginning of the file, with the code for <span class="code">World</span>'s <span class="code">IMoaHello</span> function table as follows: <span class="code">BEGIN_DEFINE_CLASS_INTERFACE( World, IMoaHello )</span> <span class="code">DEFINE_METHOD(
+      Hello, World_Hello )</span> <span class="code">END_DEFINE_CLASS_INTERFACE</span>
+    <h5><A NAME="RTFToC16">Declaring implemented interfaces</A></h5>
+    <P> Next, the class declares all the interfaces it implements. In
+      this case, the <span class="code">World</span> class implements both <span class="code">IMoaHello</span> and <span class="code">IMoaRegister</span>. The following block specifies this:
+    <PRE class="code">
+BEGIN_XTRA
+        BEGIN_XTRA_DEFINES_CLASS( World, 1 ) 
+                CLASS_DEFINES_INTERFACE( World, IMoaHello, 1 )
+                CLASS_DEFINES_INTERFACE( World, IMoaRegister, 1 )
+        END_XTRA_DEFINES_CLASS
+END_XTRA
+</PRE>
+    <P> The <span class="code">BEGIN_XTRA_DEFINES_CLASS</span> macro specifies the name
+      of the class being defined and the version number. Xtra developers
+      are responsible for tracking and incrementing class version numbers
+      with new releases of their Xtras. When MOA finds multiple versions
+      of the same class among its Xtras, it selects the one with the
+      highest version number to instantiate. The <span class="code">CLASS_DEFINES_INTERFACE</span> macro specifies an interface being implemented. The Xtra developer
+      also supplies a version number for each interface of a class,
+      and MOA similarly selects the interface with the highest version
+      number to instantiate.
+    <P> Since the World class implements two interfaces, each is listed
+      using the <span class="code">CLASS_DEFINES_INTERFACE</span> macro. If the Xtra
+      implemented more than one class, each would be declared in this
+      block using the <span class="code">BEGIN_XTRA_DEFINES_CLASS</span> and <span class="code">END_XTRA_DEFINES_CLASS</span> macros.
+    <h5><A NAME="RTFToC17">Creator and destructor functions</A></h5>
+    <P> For each Xtra, an application needs the ability to create new
+      instances of its classes, and to acquire interfaces to those instances.
+      Applications also need to manage the presence of external code
+      resources--such as Xtras--in their allocated memory space, and
+      to purge those resources when they are no longer in use. The creator
+      and destructor functions provide the mechanism.
+    <P> Class creator and destructor functions are similar in several
+      ways. The creator initializes the object by allocating memory,
+      acquiring handles to interfaces, and assigning values to instance
+      variables; the destructor deallocates memory and disposes of handles.
+      The names of the two functions are formed using standard prefixes
+      (<span class="code">MoaCreate_</span> or <span class="code">MoaDestroy_</span>) and the class name.
+    <P> You never call a creator or destructor function directly. The <span class="code">IMoaCallback</span> method <span class="code">MoaCreateInstance()</span> is provided
+      to create instances of specific classes; this method in turns
+      calls the creator function after the instance has been allocated.
+      An allocated object stays in memory as long as there are references
+      to any of its interfaces. When all interface handles for the object
+      have been dropped, MOA can call the destructor function to purge
+      it from memory.
+    <P> Note that creator and destructor functions don't implement methods
+      in an interface. Instead, they provide standard entry points to
+      your Xtra for use by MOA.
+    <P> <span class="code">World</span>'s creator function, <span class="code">MoaCreate_World()</span>,
+      allocates memory for a greeting string, then assigns the address
+      of the string to the <span class="code">greeting</span> instance variable:
+    <PRE class="code">
+STDMETHODIMP_(MoaError) MoaCreate_World(World * This)
+{
+X_ENTER
+        char    *theString = &quot;Hello, world&quot;
+        long    theSize = strlen(theString) + 1
+
+        if (This-&gt;greeting = \
+                This-&gt;pCalloc-&gt;lpVtbl-&gt;NRAlloc(This-&gt;pCalloc, theSize))
+        {
+                strcpy(This-&gt;greeting, theString);
+                X_RETURN( MoaError, kMoaErr_NoErr );
+        }
+        X_RETURN_VOID;
+X_EXIT
+}
+</PRE>
+    <P> This code allocates memory for the greeting string using a standard
+      MOA interface, IMoaCalloc. The pointer <span class="code">pCalloc</span> refers
+      to this interface, while <span class="code">NRAlloc()</span> is a method in this
+      interface. Xtras always use memory allocation provided by an application
+      through this interface and another, handle-based allocation interface, <span class="code">IMoaHandle</span>.
+    <P> The <span class="code">World</span> class's destructor function, <span class="code">MOADestroy_World()</span>,
+      is implemented to deallocate the string allocated in the creator:
+    <PRE class="code">
+STDMETHODIMP_(void) MoaDestroy_World(World * This)
+{
+X_ENTER
+        if (This-&gt;greeting)
+        {
+                This-&gt;pCalloc-&gt;lpVtbl-&gt; \
+                        NRFree(This-&gt;pCalloc, This-&gt;greeting);
+        }
+        X_RETURN_VOID;
+X_EXIT
+}
+</PRE>
+    <P> Again, the IMoaCalloc interface is used to free the memory it
+      previously allocated.
+    <P> In addition to an object's instance variables, memory needs to
+      be allocated for each interface of an object. The virtual function
+      table requires memory, provided automatically by MOA. MOA also
+      defines some standard instance variables for interfaces, such
+      as <span class="code">pObj</span>, a pointer to the object providing the interface.
+    <P> The interface creator and destructor functions are implemented
+      in much the same ways as the corresponding functions for the class.
+      The example above shows the creator and destructor for IMoaHello;
+      similar code would be used for the IMoaRegister interface.
+    <h5><A NAME="RTFToC18">Implementing the Hello() method</A></h5>
+    <P> World's <span class="code">Hello()</span> method implementation, <span class="code">World_Hello()</span>,
+      is very straightforward, highlighting several MOA coding conventions.
+    <PRE class="code">
+STDMETHODIMP_(MoaError) World_Hello (World_IMoaHello * This,
+PIMoaStream pStream)
+{
+X_ENTER
+        pStream-&gt;lpVtbl-&gt;write(pStream, 
+                               This-&gt;pObj-&gt;greeting, 
+                               strlen(This-&gt;pObj-&gt;greeting) + 1,
+                               NULL);
+        X_RETURN( MoaError, kMoaErr_NoErr );
+X_EXIT
+}
+</PRE>
+    <P> First, the macro STDMETHODIMP_ is used to identify the implementation
+      and declare its return type. Following the function name, the
+      parameters are listed in standard C-language declarations. The
+      first parameter to C-language method implementation is a pointer
+      to the interface itself, referred to by <span class="code">This</span>. (A C++
+      implementation differs slightly with regard to this argument.
+      See &quot;Implementing Xtras in C++,&quot; the next section in
+      this document, for more information.)
+    <P> In the implementation of <span class="code">IMoaHello</span>, the first parameter
+      is a pointer to an instance of the <span class="code">IMoaHello</span> interface.
+      Note that the type of <span class="code">This</span>, <span class="code">World_IMoaHello</span>,
+      is a subtype of the interface itself. <span class="code">This</span> must be typed
+      in this way in order to provide access to the instance variables
+      declared in its class. The second parameter is a pointer to an
+      instance of the IMoaStream interface. When the application calls
+      an the <span class="code">Hello()</span> method, it passes in a stream where the
+      greeting can be written.
+    <P> The code for writing the string calls the <span class="code">write()</span> method
+      in the <span class="code">IMoaStream</span> interface. To call <span class="code">write()</span>,
+      the code goes through <span class="code">pStream</span>'s <span class="code">lpVtbl</span> instance
+      variable, representing the stream object's virtual function table.
+      To access its own greeting instance variable, the code uses the
+      reference <span class="code">This-&gt;pObj-&gt;greeting</span>. <span class="code">pObj</span> provides
+      access to an object from an interface, which in turn provides
+      access to the instance variables of the object.
+    <P> Note that this code assumes all characters are written to the
+      stream. To determine how many characters were actually written,
+      the method call would pass a pointer to a MoaStreamCount rather
+      than NULL as the last argument.
+    <h5><A NAME="RTFToC19">Implementing the Register() method</A> </h5>
+    <P> In addition to implementing a specific Xtra interface, at least
+      one class in each Xtra must implement the <span class="code">IMoaRegister</span> interface. This interface is called by an application the first
+      time it detects your Xtra in one of the standard Xtra folders.
+      Its purpose is to add information about your Xtra to the application
+      cache, from which the application gets information about the Xtras
+      it has available.
+    <P> The <span class="code">IMoaRegister</span> interface consists of one method, <span class="code">Register()</span>.
+      In implementing this method, your Xtra must provide the IDs of
+      classes that provide interfaces of interest to the application.
+      Each MOA application specifies which interfaces it needs to register.
+      The declaration of the Xtra interface should include a specification
+      of keys that Xtras need to add to the cache. For example, the
+      earlier declaration of the <span class="code">IMoaHello</span> interface might
+      have included a definition of a key such as <span class="code">key_IMoaHello_Menu</span> that would specify the name of the menu entry to associate with
+      your Xtra, such as:
+    <PRE class="code">
+/* registry entry */
+#define key_IMoaHello_Menu &quot;key_IMoaHello_Menu&quot; 
+
+/* 
+ * all implementations of IMoaHello should use this key to
+ * register a C string to display in the menu 
+ */
+
+</PRE>
+    <P> In addition to specifying the interfaces of interest to it, a
+      MOA application may specify other registry entries for its Xtras,
+      such as menu items or other data. See the documentation for a
+      particular Xtra interface for any such entries and the corresponding
+      key definitions. In addition to the information required by MOA
+      and a specific interface, you may cache your own information to
+      use in initializing your Xtra, or at any time during the life
+      of your Xtra.
+    <P> Caching capabilities to support these requirements are provided
+      through several interfaces, including the callback interfaces
+      IMoaCache and <span class="code">IMoaDict</span>, and the Xtra interfaces <span class="code">IMoaRegister</span> and <span class="code">IMoaInitFromDict</span>.
+    <P> The following example shows <span class="code">World</span>'s implementation of <span class="code">IMoaRegister</span>. It uses <span class="code">IMoaCache</span> and <span class="code">IMoaDict</span> to register the class and interface IDs of the World Xtra. It
+      also registers an item with the key <span class="code">key_IMoaHello_Menu</span> to be displayed by the application.
+    <PRE class="code">
+STDMETHODIMP_(MoaError) StdHelloWorld_IMoaRegister_Register(
+        StdHelloWorld_IMoaRegister * This, 
+        PIMoaCache pCache, 
+        PIMoaXtraEntryDict pXtraDict)
+{
+X_ENTER
+        MoaError err;
+        PIMoaRegistryEntryDict pRegDict;
+
+/* 
+ * standard for all Xtras:
+ * register classes and interfaces provided
+ */
+        err = pCache-&gt;lpVtbl-&gt;AddRegistryEntry(pCache,
+                pXtraDict,
+                &amp;CLSID_World,
+                &amp;IID_IMoaHello,
+                &amp;pRegDict );
+        if (err) X_RETURN(MoaError, err);
+
+/* 
+ * specific to IMoaHello interface:
+ * specify a menu entry using the defined key
+ */
+        err = pRegDict-&gt;lpVtbl-&gt;Put(pRegDict, 
+                kMoaDictType_CString,
+                &quot;World&quot;,
+                0, 
+                key_IMoaHello_Menu);
+        if (err) X_RETURN(MoaError, err);
+        X_STD_RETURN(kMoaErr_NoErr);
+X_EXIT
+}
+</PRE>
+    <h4><A NAME="RTFToC20">Providing Resources</A> </h4>
+      MOA applications automatically provide the appropriate icon for
+      all Xtras.
+    <h4><A NAME="RTFToC21">Implementing Xtras in C++</A> </h4>
+    <P> MOA is written in C for compatibility on platforms that offer
+      only C-language compilers. However, in creating Xtras for particular
+      platforms, the developer may choose to use either C or C++. The
+      previous example demonstrated conventions for coding Xtras in
+      C.
+    <P> C++ provides a useful programming model for implementing MOA objects.
+      The main differences between coding Xtras with C and C++ is in
+      the way interfaces are declared and implemented. This section
+      explores these differences.
+    <h5><A NAME="RTFToC22">Declaring an interface in C++</A></h5>
+    <P> In C++, a MOA interface is declared as an abstract class. The
+      methods in an interface are declared as pure virtual functions.
+      The MOA macros for declaring interfaces provide the implementation
+      automatically when you specify C++ as your coding model. Look
+      again at how the <span class="code">IMoaHello</span> interface is declared:
+    <PRE class="code">
+DECLARE_INTERFACE_(IMoaHello, IMoaUnknown)
+{
+        STD_IUNKNOWN_METHODS
+        STDMETHOD (Hello) (THIS) PURE;
+};
+</PRE>
+    <P> The first macro of interest, DECLARE_INTERFACE_, evaluates in
+      C++ as:
+    <PRE class="code">
+struct IMoaHello: public IMoaUnknown
+</PRE>
+    <P> This provides a standard C++ declaration for the interface IMoaHello,
+      declaring it as a class that inherits from the class <span class="code">IMoaUnknown</span>.
+    <P> The second macro of interest, <span class="code">PURE</span>, evaluates as <span class="code">=
+      0</span> in C++ (it evaluates to a null string in C). This represents
+      the C++ initializer for a pure virtual function. Pure virtual
+      functions are member functions with no implementation in the class
+      being declared. A class that declares only pure virtual functions
+      is an abstract class. Thus the interface is declared as an abstract
+      C++ class.
+    <h5><A NAME="RTFToC23">Implementing an interface in C++</A></h5>
+    <P> A MOA class implements an interface using a C++ class. The implementing
+      C++ class inherits from the abstract class of the interface. In
+      effect, a MOA object in C++ is a collection of C++ objects, each
+      representing an interface of the object.
+    <P> The name of the implementing C++ class takes a standard form,
+      combining the MOA class name and the interface name. For example,
+      the name of the C++ class for <span class="code">World</span>'s implementation
+      of the <span class="code">IMoaHello</span> interface is <span class="code">World_IMoaHello</span>.
+    <P> The method implementations for a MOA interface are C++ member
+      functions. The names of the method implementations conform to
+      standard C++ naming conventions. For example, world's implementation
+      of the <span class="code">Hello</span> method takes the name <span class="code">World_IMoaHello::Hello</span>.
+    <P> In C++, the local variable <span class="code">this</span> is provided implicitly
+      within a method implementation. Thus, there is no need explicitly
+      declare <span class="code">this</span> as a function parameter. However, this implementation
+      detail doesn't apply to the MOA class creator and destructor functions,
+      which are standard C functions, coded exactly as in the previous
+      example.
+    <P> Note that <span class="code">this</span> (with a lowercase `t') is a C++ keyword
+      and is used rather than <span class="code">This</span> within a C++ method implementation. <span class="code">This </span>(with a lowercase `T') is used in C-language MOA
+      code, including the class creators and destructors, to avoid conflict
+      with <span class="code">this</span> when compiled with a C++ compiler.
+    <P> Here's a source file that implements the <span class="code">World</span> class
+      and its <span class="code">IMoaHello</span> interface using C++:
+    <PRE class="code">
+#define INITGUID 1 /*at least one file defines this macro*/
+#define CPLUS
+
+#include &quot;worldcls.h&quot; /* MoaID and globals for class*/
+
+BEGIN_DEFINE_CLASS_INTERFACE( World, IMoaRegister )
+        DEFINE_METHOD( Register, World_IMoaRegister::Register )
+END_DEFINE_CLASS_INTERFACE
+
+BEGIN_DEFINE_CLASS_INTERFACE( World, IMoaHello )
+        DEFINE_METHOD( Hello, World_IMoaHello::Hello )
+END_DEFINE_CLASS_INTERFACE
+
+BEGIN_XTRA
+        BEGIN_XTRA_DEFINES_CLASS( World, 1)
+                CLASS_DEFINES_INTERFACE( World, IMoaHello, 1 )
+                CLASS_DEFINES_INTERFACE( World, IMoaRegister, 1 )
+        END_XTRA_DEFINES_CLASS
+END_XTRA
+
+/* class creator and destructor */
+
+/* note that This is passed as the first parameter */
+/* in the MOA class creator and destructor functions, */
+/* This is a MOA object, not an interface */
+
+STDMETHODIMP_(MoaError) MoaCreate_World(World * This)
+{
+X_ENTER
+        char    *theString = &quot;Hello, world&quot;
+        long    theSize = strlen(theString) + 1
+        if (This-&gt;greeting = This-&gt;pCalloc-&gt;NRAlloc(theSize))
+        {
+                strcpy(This-&gt;greeting, theString);
+                X_RETURN( MoaError, kMoaErr_NoErr );
+        }
+        X_RETURN( MoaError, kMoaErr_OutOfMem );
+X_EXIT
+}
+
+STDMETHODIMP_(void) MoaDestroy_World(World * This)
+{
+X_ENTER
+        if (This-&gt;greeting)
+        {
+                This-&gt;pCalloc-&gt;NRFree(This-&gt;greeting);
+        }
+        X_RETURN_VOID;
+X_EXIT
+}
+
+/* C++ interface creator and destructor */
+
+/* note that these function names follow C++ conventions */
+/* for class creator and destructors */ 
+/* also note this is not passed as first parameter */
+
+World_IMoaHello::World_IMoaHello (MoaError * pErr)
+{
+X_ENTER
+        *pErr = kMoaErr_NoErr;
+X_EXIT
+}
+
+World_IMoaHello::~World_IMoaHello (void)
+{
+X_ENTER
+        X_RETURN_VOID;
+X_EXIT
+}
+
+/* creators and destructors for IMoaRegister go here */
+/* method implementation */
+/* note that function name follows C++ conventions */
+/* and that this is not passed as the first parameter */
+
+STDMETHODIMP_(MoaError) World_IMoaHello::Hello (PIMoaStream pStream) 
+{
+X_ENTER
+
+        /* Calling from C++: no need to go through lpVtbl or pass &quot;this&quot; */
+
+        pStream-&gt;Write(strlen(this-&gt;pObj-&gt;greeting) + 1, NULL);
+        X_RETURN( MoaError, kMoaErr_NoErr );
+
+X_EXIT
+}
+
+/* implement World_IMoaRegister::Register() here */
+
+</PRE>
+
+    <h3><A NAME="RTFToC24">Implementing well-behaved Xtras</A> </h3>
+  <DD>In writing an Xtra, it's important to remember that
+    your code may not always be invoked by a particular MOA
+    application. Xtras are potentially clients of all MOA applications.
+    This means that they may be called by applications that provide
+    different callback interfaces than described in a particular XDK.
+    It's your responsibility to ensure that you interact appropriately,
+    whatever the host application, and that you handle all errors
+    raised in your Xtra code.</DD>
+    
+    <h4><A NAME="RTFToC25">Error check method calls</A> </h4>
+    The standard return for MOA methods is a <span class="code">MoaError</span> value.
+      You should take advantage of this feature and error test calls
+      to MOA methods. This is particuarly important in calling the <span class="code">IMoaUnknown::QueryInterface() </span>method provided by all interfaces. If you request an interface
+      that an object doesn't provide, you'll get the error <span class="code">kMoaErr_BadInterface</span>.
+      If your Xtra ignores this return value and calls a method in the
+      requested interface, your Xtra may cause MOA and the host application
+      to fail.
+    <h4><A NAME="RTFToC26">Bullet proof your registration class</A> </h4>
+    <P> One critical section of Xtra code is the creator function for
+      the class providing your Xtra's <span class="code">IMoaRegister</span> interface.
+      This code is invoked by every MOA application that finds your
+      Xtra. You should write the class creator function
+      in a way that doesn't depend on a specific application or set
+      of callback interfaces. In general, be sure to perform error checking
+      when using any interfaces provided by the host application. One
+      way to avoid trouble in this section of code is to create a separate
+      class specifically to provide the <span class="code">IMoaRegister</span>interface.
+      This avoids initializing instance variables for the Xtra at registration
+      time.
+    <h4><A NAME="RTFToC27">Write re-entrant code</A> </h4>
+    Xtras should be written to be re-entrant. Specifically, you should
+      avoid the use of global variables. If you use static variables
+      in function implementations, be sure to include a &quot;lock&quot;
+      variable that is set when a caller enters the code and reset upon
+      exit. This ensures that two processes won't attempt to access
+      the same code and alter the same static variables simultaneously.
+
+    <h3><A NAME="RTFToC28">MOA standard API</A> </h3>
+  <DD>This section details some of the API used in programming with
+    MOA. MOA defines a small set of calling conventions and a handful
+    of standard interfaces that can be used in coding Xtras for any
+    MOA application.
+    <h4><A NAME="RTFToC29">MOA calling conventions</A> </h4>
+    <P> The World examples demonstrate a very simple implementation of
+      a MOA Xtra. When coding method implementations for a MOA Xtra,
+      you frequently use the following four basic operations for accessing
+      MOA API:
+    <UL>
+      <LI>Call a method in an interface
+      <LI>Access one interface from another
+      <LI>Access an object from an interface implementation
+      <LI>Access instance variables from an object
+    </UL>
+    <P> The calling conventions for these operations are described in
+      the following sections.
+    <h5><A NAME="RTFToC30">Calling a method in an interface</A></h5>
+    <P> In MOA objects, methods are organized in a virtual function table
+      belonging to the interface, referenced through the <span class="code">lpVtbl</span> instance variable of all interfaces. To access this structure,
+      assuming <span class="code">pInterface</span> is the pointer to a MOA interface,
+      use the following form:
+    <PRE class="code">
+pInterface-&gt;lpVtbl 
+</PRE>
+    <P> <span class="code">To call a specific method in an interface, you reference the
+      method through the virtual function table. For example, the following
+      represents a method call for the oneArgMethod</span> of the interface <span class="code">pInterface</span>:
+    <PRE class="code">
+pInterface-&gt;lpVtbl-&gt;oneArgMethod(pInterface)
+</PRE>
+    <P> <span class="code">In this example, the oneArgMethod</span> has just one argument.
+      In MOA, the first argument to a method is the interface to which
+      the method belongs, and is represented by the parameter <span class="code">This</span>.
+      (Note that you don't need to know whether the particular implementation
+      of an interface is coded in C or C++; you can always supply the
+      interface as the first parameter to a method.) Returning to the
+      earlier example, you could access a <span class="code">World</span> object's <span class="code">Hello</span> method through a pointer to the <span class="code">IMoaHello</span> interface.
+      In the following code fragment, a local variable <span class="code">pHello</span> provides such a pointer:
+    <PRE class="code">
+pHello-&gt;lpVtbl-&gt;Hello(pHello)
+</PRE>
+    <P> The interface pointer is used both to reference the method and
+      as the first argument to the method.
+    <h5><A NAME="RTFToC31">Requesting one interface from another</A> </h5>
+    <P> All MOA interfaces inherit the <span class="code">QueryInterface()</span> method
+      of the <span class="code">IMoaUnknown</span> interface, and MOA provides a standard
+      implementation of this method to all classes. This method is used
+      to request any interface belonging to an object.
+    <P> Take the case of an object that provides two hypothetical interfaces, <span class="code">IMoaReason</span> and <span class="code">IMoaEmotion</span>. In the following
+      example, <span class="code">pReason</span> is an existing pointer to the object's <span class="code">IMoaReason</span> interface. <span class="code">IID_IMoaEmotion</span> is the <span class="code">MoaID</span> of the <span class="code">IMoaEmotion</span> interface. <span class="code">pEmotion</span> is a freshly allocated pointer of type <span class="code">IMoaEmotion</span>. This
+      code fragment calls <span class="code">QueryInterface()</span> on the <span class="code">IMoaReason</span> interface to get a pointer to the <span class="code">IMoaEmotion</span>:
+    <PRE class="code">
+pReason-&gt;lpVtbl-&gt;QueryInterface(pReason, IID_IMoaEmotion, pEmotion) 
+</PRE>
+    <P> When the call returns, <span class="code">pEmotion</span> has a pointer to the
+      object's <span class="code">IMoaEmotion</span> interface.
+    <P> You can use the <span class="code">QueryInterface()</span> method to get access
+      to interfaces provided by the callback object. The <span class="code">QueryInterface()</span> method uses the interface identifier (described earlier) to specify
+      the interface being requested.
+    <P> After you have finished using a particular interface, you explicitly
+      release it, using the <span class="code">Release()</span> method. Like <span class="code">QueryInterface()</span>, <span class="code">Release()</span> is also inherited from <span class="code">IMoaUnknown</span>.
+    <PRE class="code">
+pInterface-&gt;lpVtbl-&gt;Release(pInterface)
+</PRE>
+    <P> Calling <span class="code">Release()</span> on an interface drops the reference
+      to it. MOA provides the application with ways to purge an object
+      when there are no longer any references to any of its interfaces.
+    <h5><A NAME="RTFToC32">Accessing an object from a method implementation</A> </h5>
+    <P> All MOA method implementations are passed a parameter, <span class="code">This</span>,
+      providing a pointer to the interface they belong to. (This is
+      provided explicitly in C; the corresponding this is provided implicitly
+      in C++). All interfaces, in turn, have a pointer to the MOA object
+      they belong to, represented by the pObj member of the interface
+      structure. To access an object within a method implementation,
+      use the following reference:
+    <PRE class="code">
+This-&gt;pObj // in plain C
+this-&gt;pObj // in C++
+</PRE>
+    <P> You only access an object directly from within the implementation
+      of a method in a class. Since interfaces are the fundamental units
+      of behavior in MOA, interaction with other objects is performed
+      solely through the interfaces provided by those objects.
+    <h5><A NAME="RTFToC33">Accessing instance variables from an object</A> </h5>
+    <P> The instance variables defined by a class are private to its instances.
+      To access an instance variable within the implementation of a
+      method, you go through the object. Thus, to access a variable
+      named <span class="code">myVariable, use the following reference: </span>
+    <PRE class="code">
+This-&gt;pObj-&gt;myVariable // in plain C 
+this-&gt;pObj-&gt;myVariable // in C++ 
+</PRE>
+    <P> If you define instance variables for your Xtra object, you use
+      this calling convention to access them. For example, to access
+      World's greeting instance variable, the <span class="code">World</span> class uses
+      the following code:
+    <PRE class="code">
+This-&gt;pObj-&gt;greeting // in plain C
+this-&gt;pObj-&gt;greeting // in C++
+</PRE>
+    <h4><A NAME="RTFToC34">MOA instance variables</A> </h4>
+    <P> All MOA objects are provided with certain instance variables automatically. Variables of interest to the MOA Xtra programmer 
+      are:
+    <DL>
+      <DT><span class="code">pCallback</span>
+      <DD><span class="code">IMoaCallback</span> interface provided by callback object
+      <DT><span class="code">pCalloc</span>
+      <DD><span class="code">IMoaCalloc</span> interface provided by calloc object
+      <DT><span class="code">pClassID</span>
+      <DD>Pointer to object's class identifier (<span class="code">CLSID</span>)
+    </DL>
+    <P> The interfaces provided by the <span class="code">pCallback</span> and <span class="code">pCalloc</span> instance variables are described in the next section.
+    <h4><A NAME="RTFToC35">MOA interfaces</A> </h4>
+    <P> Every MOA application implements several standard callback interfaces
+      provided for use by your Xtra. These interfaces provide access
+      to the application, representing MOA and system services through
+      platform-independent API
+    <DL>
+      <DT><span class="code">IMoaCallback</span>
+      <DD>General purpose MOA interface
+      <DT><span class="code">IMoaCalloc</span>
+      <DD>Fixed memory allocation interface
+      <DT><span class="code">IMoaHandle</span>
+      <DD>Relocatable memory allocation interface
+      <DT><span class="code">IMoaCache</span>
+      <DD>Provides the application's registry of Xtras
+      <DT><span class="code">IMoaDict</span>
+      <DD>Provides individual entries within the application's registry
+      <DT><span class="code">IMoaStream</span>
+      <DD>Provides access to memory or file buffers (optional)
+      <DT><span class="code">IMoaProgressBox</span>
+      <DD>Report progress of data processing from callback object (optional)
+    </DL>
+    <P> The <span class="code">IMoaCallback</span> and <span class="code">IMoaCalloc</span> interfaces are
+      automatically supplied through the standard instance variables <span class="code">pCallback</span> and <span class="code">pCalloc</span>. To access the <span class="code">IMoaHandle</span> interface of an application, you call the <span class="code">QueryInterface</span> method on the <span class="code">pCallback</span> instance variable.
+    <P> The following demonstrates a complete call of <span class="code">QueryInterface</span> to get access to the <span class="code">IMoaHandle </span>interface: <span class="code">PIMoaCallback </span>
+    <PRE class="code">
+pCallback = This-&gt;pObj-&gt;pCallback; 
+PIMoaHandle pHandle; 
+err = pCallback-&gt;lpVtbl-&gt;QueryInterface(pCallback, IID_IMoaHandle, (PPMoaVoid)&amp;pHandle); 
+/* check for errors| */
+/* use pHandle */ 
+pHandle-&gt;lpVtbtl-&gt;Release(pHandle); 
+</PRE>
+    <P> In this example, the callback object's <span class="code">IMoaCallback</span> interface
+      is queried for access to the <span class="code">IMoaHandle</span> interface. The
+      location of the <span class="code">IMoaHandle</span> interface is assigned to the
+      previously declared variable <span class="code">pHandle</span>. You can then use <span class="code">pHandle</span> to call methods in the <span class="code">IMoaHandle</span> interface.
+      The following discussions summarize methods provided by each of
+      the standard MOA interfaces.
+    <h5><A NAME="RTFToC36">IMoaCache interface</A></h5>
+    <P> Every application provides the <span class="code">IMoaCache</span> interface to
+      its Xtras. This interface provides methods for caching registration
+      information about the Xtra. An application's <span class="code">IMoaCache</span> interface is provided to an Xtra through its implementation of
+      the <span class="code">IMoaRegister</span> and <span class="code">IMoaInitFromCache </span>interfaces.
+      You may get the application cache at any time by calling the method <span class="code">MoaGetCache()</span> on an object's <span class="code">pCallback</span> instance
+      variable.
+    <DL>
+      <DT><span class="code">AddRegistryEntry() </span>
+      <DD>Adds new interface entry to cache
+      <DT><span class="code">CreateNewInstanceFromRegistry()</span>
+      <DD>Creates new instance
+      <DT><span class="code">EnumerateFileEntries()</span>
+      <DD>Lists dictionaries for files
+      <DT><span class="code">EnumerateRegistryEntries() </span>
+      <DD>Lists dictionaries for specific interfaces
+      <DT><span class="code">EnumerateRegistryEntriesFromFile()</span>
+      <DD><span class="code">Lists all registry entries for a file </span>
+      <DT><span class="code">EnumerateXtraEntries</span> <span class="code">()</span>
+      <DD>Lists dictionaries for Xtras
+      <DT><span class="code">GetFileSpecFromFileDict()</span>
+      <DD>Lists file specs for all files
+      <DT><span class="code">GetInstanceFromRegistry() </span>
+      <DD>Creates or retrieves single instance
+      <DT><span class="code">SetXtraEntryNoncacheable() </span>
+      <DD>Prevents Xtra from being cached<BR>
+    </DL>
+    <h5><A NAME="RTFToC37">IMoaCallback interface</A></h5>
+    <P> The callback object provides the <span class="code">IMoaCallback</span> interface
+      to your Xtra. This interface provides several methods for interacting
+      with MOA classes, and for accessing and releasing the resources
+      belonging to your Xtra.
+    <DL>
+      <DT><span class="code">MoaCreateInstance()</span>
+      <DD>Create instance of specified class and interface
+      <DT><span class="code">MoaGetCache()</span>
+      <DD>Get the IMoaCache interface
+      <DT><span class="code">MoaBeginUsingResources()</span>
+      <DD>Returns a reference to the Xtra's resource file
+      <DT><span class="code">MoaEndUsingResources()</span>
+      <DD>Deletes reference to the Xtra's resource file
+    </DL>
+    <P> All MOA objects have a <span class="code">pCallback</span> instance variable to
+      refer to this interface.
+    <h5><A NAME="RTFToC38">IMoaCalloc interface</A></h5>
+    <P> The calloc object provides the <span class="code">IMoaCalloc</span> interface to
+      your Xtra. This interface provides a pair of methods for allocating
+      non-relocatable memory:
+    <DL>
+      <DT><span class="code">NRAlloc()</span>
+      <DD>Allocate memory for use by the Xtra
+      <DT><span class="code">NRFree()</span>
+      <DD>Free memory allocated with NRAlloc
+    </DL>
+    <P> All MOA objects have a <span class="code">pCalloc</span> instance variable to refer
+      to this interface. This instance variable is set when the object
+      is first instantiated.
+    <h5><A NAME="RTFToC39">IMoaDict interface</A></h5>
+    <P> Every application provides implementations of the <span class="code">IMoaDict</span> interface to its Xtras. This interface provides methods for registering
+      and accessing the capabilities of your Xtra. The <span class="code">IMoaDict</span> interface is provided to you through your implementation of the <span class="code">IMoaRegister</span> and <span class="code">IMoaInitFromCache</span> interfaces.
+      You may get specific dictionaries at any time by calling methods
+      of the IMoaCache interface.
+    <DL>
+      <DT><span class="code">Count</span>
+      <DD><span class="code">()</span> Returns the number of entries in a dictionary
+      <DT><span class="code">FindKey()</span>
+      <DD>Returns the value for a specified key
+      <DT><span class="code">Get()</span>
+      <DD>Gets an entry from a dictionary
+      <DT><span class="code">GetInfo()</span>
+      <DD>Returns information about a dictionary entry
+      <DT><span class="code">GetNth()</span>
+      <DD>Gets the specified entry in a dictionary
+      <DT><span class="code">MakeDict()</span>
+      <DD>Makes a new dictionary belonging to the current dictionary
+      <DT><span class="code">Put()</span>
+      <DD>Puts an entry in a dictionary
+      <DT><span class="code">Remove()</span>
+      <DD>Removes an entry from a dictionary
+      <DT><span class="code">SetSize()</span>
+      <DD>Sets the size of the dictionary
+    </DL>
+    <P> For more on the API of this interface, see chapter 3, &quot;MOA
+      API Reference.&quot;
+    <h5><A NAME="RTFToC40">IMoaHandle interface</A></h5>
+    <P> The callback object provides the <span class="code">IMoaHandle</span> interface
+      to your Xtra. This interface provides a number of methods for
+      allocating relocatable memory:
+    <DL>
+      <DT><span class="code">Alloc</span>
+      <DD><span class="code">()</span> Allocate relocatable memory block
+      <DT><span class="code">Free()</span>
+      <DD>Free previously allocated handle
+      <DT><span class="code">GetLargestFreeBlock() </span>
+      <DD>Optionally implemented to return free space available
+      <DT><span class="code">GetSize()</span>
+      <DD>Return logical size of handle
+      <DT><span class="code">Lock()</span>
+      <DD>Lock handle and return starting address pointer
+      <DT><span class="code">Resize()</span>
+      <DD>Attempt to resize previously allocated handle
+      <DT><span class="code">Unlock()</span>
+      <DD>Unlock handle
+      <DT><span class="code">ZeroAlloc()</span>
+      <DD>Allocate zeroed-out relocatable memory block
+    </DL>
+    <P> This interface is a standard MOA interface, provided by all Xtra-capable
+      applications. To access this interface, you call <span class="code">QueryInterface</span> on the <span class="code">pCallback</span> instance variable of any MOA object.
+    <h5><A NAME="RTFToC41">IMoaInitFromDict interface</A></h5>
+    <P> Your Xtra may optionally provide the <span class="code">IMoaInitFromDict</span> interface to a MOA application. This standard interface provides
+      one method for retrieving information from the application's registration
+      dictionary when objects are initialized. Each Xtra determines
+      whether or not to implement this interface and what type of information
+      to retrieve from the registration dictionary on initialization.
+      Information retrieved from the dictionary by this interface must
+      be placed there through the <span class="code">IMoaRegister</span> interface.
+    <DL>
+      <DT><span class="code">InitFromDict()</span>
+      <DD>Initialize an object using registry information
+    </DL>
+    <P> Implementations of the <span class="code">IMoaInitFromDict</span> interface use
+      the <span class="code">IMoaCache</span> and <span class="code">IMoaDict</span> interfaces provided
+      through the <span class="code">InitFromDict()</span> method. The <span class="code">IMoaInitFromDict</span> interface is an optional MOA interface that may be provided by
+      any Xtra.
+    <h5><A NAME="RTFToC42">IMoaProgressBox interface</A></h5>
+    <P> The callback object optionally provides the <span class="code">IMoaProgressBox </span>interface to your Xtra. This standard interface provides
+      methods for interacting with the user to report progress while
+      an Xtra processes data.
+    <DL>
+      <DT><span class="code">OpenProgress()</span>
+      <DD>Display progress dialog box
+      <DT><span class="code">SetCaption</span> <span class="code">()</span>
+      <DD>Set caption displayed by progress dialog box
+      <DT><span class="code">SetUserMessage()</span>
+      <DD>Set message to user while dialog box is displayed
+      <DT><span class="code">SetProgress()</span>
+      <DD>Set completion value displayed by progress bar
+      <DT><span class="code">TestUserCanceled()</span>
+      <DD>Test for user clicking Cancel button
+      <DT><span class="code">CloseProgress()</span>
+      <DD>Hide progress dialog box
+    </DL>
+    <h5><A NAME="RTFToC43">IMoaRegister interface</A></h5>
+    <P> Your Xtra provides the <span class="code">IMoaRegister</span> interface to a MOA
+      application. This standard interface provides one method for describing
+      the capabilities of the Xtra to the application. Each application
+      defines specific information to be supplied by the Xtra as it
+      is registered.
+    <DL>
+      <DT><span class="code">Register()</span>
+      <DD>Registers capabilities of Xtra
+    </DL>
+    <P> Implementations of the <span class="code">IMoaRegister</span> interface use the <span class="code">IMoaCache</span> and <span class="code">IMoaDict</span> interfaces provided by
+      the application. The <span class="code">IMoaRegister</span> interface is a standard
+      MOA interface, provided by all Xtras.
+    <h5><A NAME="RTFToC44">IMoaStream interface</A></h5>
+    <P> Certain MOA applications provide the <span class="code">IMoaStream</span> interface
+      to enable Xtra objects to archive and retrieve data. This interface
+      is designed to be independent of the storage media, and thus equally
+      useful for accessing data through disk files, memory buffers,
+      network sockets, and other mechanisms. It is useful in applications
+      that generate output files containing a mixture of internal and
+      Xtra objects, such as movies created by Director. This interface
+      defines several methods for reading and writing data
+    <DL>
+      <DT><span class="code">Open()</span>
+      <DD>Opens the stream
+      <DT><span class="code">Close()</span>
+      <DD>Closes the stream
+      <DT><span class="code">Read()</span>
+      <DD>Reads data from the stream
+      <DT><span class="code">ReadAhead()</span>
+      <DD>Reads data from the stream without seeking
+      <DT><span class="code">Write()</span>
+      <DD>Writes data to the stream
+      <DT><span class="code">GetPosition()</span>
+      <DD>Gets the current position in the stream
+      <DT><span class="code">SetPosition()</span>
+      <DD>Sets the current position in the stream
+      <DT><span class="code">GetEnd()</span>
+      <DD>Gets the size of the stream
+      <DT><span class="code">Flush()</span>
+      <DD>Flushes the stream
+      <DT><span class="code">GetModes()</span>
+      <DD>Gets the read/write modes of the stream
+    </DL>
+    <h5><A NAME="RTFToC45">IMoaUnknown interface</A></h5>
+    <P> All MOA objects provide the base interface <span class="code">IMoaUnknown</span>.
+      This is the interface you use to request other interfaces an object
+      provides and to dispose of interfaces when you're done with them.
+      The <span class="code">IMoaUnknown</span> interface is inherited by all other interfaces
+      implemented in MOA. It consists of three methods of interest:
+    <DL>
+      <DT><span class="code">QueryInterface()</span>
+      <DD>Query an object for a particular interface
+      <DT><span class="code">AddRef()</span>
+      <DD>Increment the reference count for an interface
+      <DT><span class="code">Release() </span>
+      <DD>Decrement the reference count for an interface
+    </DL>
+    This interface is standard in MOA as in COM. The MOA macros provide
+    a default implementation of the methods in this interface.
+</DL>
+<hr width=45% align=left>
+<A HREF = "../copyrite.htm">Copyright &#169; 1995-2007 Adobe Macromedia Software LLC, Inc.</A>
+</BODY>
+</html>

@@ -1,0 +1,167 @@
+<HTML>
+<HEAD>
+<TITLE>IMoaMmAssetCallback2</TITLE>
+<link href="../xdk.css" rel="stylesheet" type="text/css">
+</HEAD>
+<body>
+<P> <A HREF="../mmdg/index.htm">MM Developer's Guide</A> <BR>
+  <A HREF="index.htm" >MM Interfaces</A> | <A HREF="mmmthndx.htm" >MM Methods</A> | <A HREF="mmtypndx.htm">MM Types and Misc API</A>
+<hr width=45% align=left>
+<h3><A NAME="IMoaMmAssetCallback2"></A>IMoaMmAssetCallback2</h3>
+<P> Interface ID: <span class="code">IID_IMoaMmAssetCallback2<BR>
+  </span>Pointer type: <span class="code">PIMoaMmAssetCallback2<BR>
+  </span>Inheritance: <span class="code">IMoaMmAssetCallback<BR>
+  </span>Header file: <A HREF = "../../include/mmiservc.h">mmiservc.h</A> <BR>
+<h3>Description</h3>
+<DL>
+  <DD> Callback interface for asset Xtras, supplied to an asset when
+    the host application calls the <A HREF="mmxasset.htm#SetCallback">IMoaMmXAsset::SetCallback()</A> method, soon after the asset has been instantiated. This interface
+    supercedes the IMoaMmAssetCallback interface from which it inherits. <BR>
+    <BR>
+    Director supplies the <A HREF="../drref/drasstcl.htm">IMoaDrAssetCallback</A> interface
+    to support application-specific callback
+    through the object providing the <span class="code">IMoaDrAssetCallback2</FONT></span> interface. Call <span class="code">QueryInterface()</FONT></span> on this interface, using the interface identifier <span class="code">IID_IMoaDrAssetCallback</FONT></span> to get this asset callback.</span>
+</DL>
+<h3>Methods</h3>
+<h4>Change notification </h4>
+<DL>
+  <DD><A HREF = "#GetModified">GetModified()</A> <BR>
+    <A HREF = "#SetModified">SetModified()</A> <BR>
+    <A HREF = "#InvalDefaultRectValue">InvalDefaultRectValue()</A>
+</DL>
+<h4>Actor notification </h4>
+<DL>
+  <DD><A HREF = "#NotifySprites">NotifySprites()</A>
+</DL>
+<h4>Media management </h4>
+<DL>
+  <DD><A HREF = "#ForceMediaLoad">ForceMediaLoad()</A> <BR>
+    <A HREF = "#ForceMediaUnload">ForceMediaUnload()</A>
+</DL>
+<hr width=45% align=left>
+<h3><A NAME="ForceMediaLoad">ForceMediaLoad()</A></h3>
+<h4>Syntax</h4>
+<DL>
+  <DT class="code">ForceMediaLoad()
+</DL>
+<h4>Parameters</h4>
+<DL>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD><span class="code">MoaError</span>
+</DL>
+<hr width=45% align=left>
+<h3><A NAME="ForceMediaUnload">ForceMediaUnload()</A></h3>
+<h4>Syntax</h4>
+<DL>
+  <DT class="code">ForceMediaUnload()
+</DL>
+<h4>Parameters</h4>
+<DL>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD><span class="code">MoaError</span>
+</DL>
+<hr width=45% align=left>
+<h3><A NAME="GetModified">GetModified()</A></h3>
+<h4>Syntax</h4>
+<DL>
+  <DT><span class="code">GetModified(PMoaMmModifyFlags <I>pModifyFlags)</I></span>
+</DL>
+<h4>Parameters</h4>
+<DL>
+<DT><span class="code"><I>pModifyFlags</I></span>
+  <DD>PMoaMmModifyFlags </DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DT>
+  <DD><span class="code">MoaError</span>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DT>
+  <DD>Gets the <span class="code">modifyFlags </span>value
+    for the asset, which lets you see if the asset has been marked
+    as dirty or not. See the description of <span class="code">MoaMmModifyFlags</span> later in this chapter for details on specific entries in the flag. <BR>
+</DL>
+<hr width=45% align=left>
+<h3><A NAME="InvalDefaultRectValue">InvalDefaultRectValue()</A> </h3>
+<h4>Syntax</h4>
+<DL>
+  <DT class="code">InvalDefaultRectValue()
+</DL>
+<h4>Parameters</h4>
+<DL>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD><span class="code">MoaError</span>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD>To change your asset's default rectangle, you must notify
+    the host application using this asset callback method. After calling
+    this method, the host application calls your <span class="code">GetDefaultRect() </span>method again to get the updated rectangle the next
+    time the default rectangle is needed. <BR>
+</DL>
+<hr width=45% align=left>
+<h3><A NAME="NotifySprites">NotifySprites()</A></h3>
+<h4>Syntax</h4>
+<DL>
+  <DT>NotifySprites(MoaLong <I>msgCode</I>, PMoaVoid <I>refCon </I>)
+</DL>
+<h4>Parameters</h4>
+<DL>
+<DT><span class="code"><I>msgCode</I></span>
+  <DD>MoaLong </DD>
+  <DT><span class="code"><I>refCon</I></span>
+  <DD>PMoaVoid </DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DT>
+  <DD><span class="code">MoaError</span>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD>
+    Sends an arbitrary message to all currently instantiated sprite
+    actors. You can make up your own message code constants; <span class="code"><I>refCon</I></span> is used to supply any additional data. 
+    This will result with each
+    of your SpriteActor's <span class="code">Notify()</span> methods being called with 
+    the <span class="code"><I>msgCode</I></span> and <span class="code"><I>refCon</I></span> you supply.<BR>
+    <BR>
+    <B>Note: </B>Xtra developers may specify values in the range of
+    0 to 65535 for their notification codes. Higher values are reserved
+    by Adobe for future use. <BR>
+    <BR>
+</DL>
+<hr width=45% align=left>
+<h3><A NAME="SetModified">SetModified()</A></h3>
+<h4>Syntax</h4>
+<DL>
+  <DT class="code">SetModified(MoaMmModifyFlags <I>modifyFlags</I>)
+</DL>
+<h4>Parameters</h4>
+<DL>
+<DT><span class="code"><I>modifyFlags </I></span>
+  <DD>MoaMmModifyFlags </DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD><span class="code">MoaError</span>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD>Sets the <span class="code">modifyFlags </span>for
+    the asset. For example, if <span class="code">SetProp()</span> is called and you successfully change a property that you want
+    saved to disk, call this method to notify the application that
+    your properties need to be written out at save time.
+</DL>
+<hr width=45% align=left>
+<A HREF = "../copyrite.htm">Copyright &#169; 1995-2008 Adobe Macromedia Software LLC, Inc.</A>
+</BODY>
+</html>

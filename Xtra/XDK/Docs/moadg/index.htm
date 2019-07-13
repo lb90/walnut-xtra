@@ -1,0 +1,97 @@
+<HTML>
+<HEAD>
+<TITLE>MOA Developer's Guide</TITLE>
+<link href="../xdk.css" rel="stylesheet" type="text/css">
+</HEAD>
+<body>
+<P> <A HREF="../index.htm">Director XDK</A> <BR>
+  <A HREF="../moref/index.htm" >MOA Interfaces</A> | <A HREF="../moref/momthndx.htm" >MOA Methods</A> | <A HREF="../moref/motypndx.htm" >MOA Types and Misc API</A>
+<HR width=45% align=left>
+<H3><A NAME="RTFToC2">Director Xtra Development Kit </A></H3>
+<h3>MOA (Macromedia Open Architecture) Developer's Guide </h3>
+<HR width=45% align=left>
+<h3><A NAME="RTFToC1">Introduction</A> </h3>
+<DL>
+  <DT>
+  <DD>The Macromedia Open Architecture (MOA) provides a unified
+    mechanism for implementing code extensions--Xtras--to enhance
+    the capabilities of MOA-based applications. MOA allows Xtras
+    for all applications to conform to a single set of programming
+    constructs and conventions.
+    <P> The MOA object model is derived from the Microsoft Component Object
+      Model (COM), used to implement OLE (Object Linking and Embedding).
+      However, while COM is designed as a universal, system-level object
+      model, MOA is intended to be more task-specific. The scope of
+      MOA is those areas within Adobe applications that can benefit
+      from runtime extensions. The purpose of MOA is to provide a consistent,
+      modular way to define and implement those extensions. This restriction
+      benefits MOA programmers by allowing them to focus on specific
+      features rather than learning a large, general purpose system.
+    <P> MOA is in one sense a subset of COM, and MOA objects are binary
+      compatible with COM. However, no effort has been made to implement
+      all features of COM, such as certain interfaces required by OLE
+      objects. If you're familiar with COM, you should find many similarities
+      in this discussion. If you're not familiar with COM, this discussion
+      provides all the background you need to understand MOA. <BR>
+      <BR>
+</DL>
+<h4><A NAME="RTFToC2">MOA and XDKs</A> </h4>
+<DL>
+  <DT>
+  <DD>While MOA provides the general mechanism and some standard
+    API for implementing Xtras, specific Xtra functionality is implemented
+    through task-specific API. This API is developed in conjunction
+    with specific Adobe applications, and is made available through
+    Xtra Development Kits (XDKs) as the applications supporting these
+    Xtras become available. <BR>
+</DL>
+<h3><A NAME="RTFToC3">About this document</A> </h3>
+<DL>
+  <DT>
+  <DD>This document provides a general introduction to MOA. It supplements
+    the documentation for task and application-specific API provided
+    with an XDK. This document provides an overview of MOA and general
+    guidelines for coding MOA Xtras. <BR>
+    <BR>
+    <UL>
+      <LI><A HREF="moadgc1.htm" >&quot;MOA Technical Concepts&quot;</A> discusses concepts of the MOA object model, covering the general
+        relationship between applications and Xtras. <BR>
+        <BR>
+      <LI><A HREF="moadgc2.htm" >&quot;Implementing MOA Xtras&quot;</A> provides an example of how to code an Xtra using MOA, ending with
+        a summary of MOA API and calling conventions. <BR>
+        <BR>
+      <LI><A HREF="moadgc3.htm" >&quot;MOA Development Issues&quot;</A> describes some MOA programming details, including platform-specific
+        and compiler-specific issues.<BR>
+        <BR>
+      <LI><A HREF="../moref/index.htm" >&quot;MOA Interfaces&quot;</A> describes
+        the general MOA interfaces provided for implementing Xtras. <A HREF="../moref/momthndx.htm" >&quot;MOA Methods&quot;</A> provides an alphabetical listing of the methods of these interfaces.<BR>
+        <BR>
+      <LI><A HREF="../moref/motypndx.htm" >&quot;MOA Types and Miscellaneous API&quot;</A> lists the types, constants, error codes, and other API provided
+        by MOA. <BR>
+        <BR>
+      <LI><A HREF="moadgtg.htm" >&quot;Tips, Guidelines, and Gotchas&quot;</A> includes some general techniques useful in implementing Xtras.
+    </UL>
+    <P> This documentation also includes a <A HREF="moadggl.htm" >glossary</A> and a list of <A HREF="moadgfaq.htm" >frequently asked questions</A> about MOA.</P>
+
+  <DD>Throughout, this document assumes an understanding of basic
+    programming concepts. Examples and reference material require
+    familiarity with the C programming language. <BR>
+</DL>
+<h5><A NAME="RTFToC4">Note on type conventions </A> </h5>
+<DL>
+  <DT>
+  <DD>The following type conventions are used throughout this document: <BR>
+    <BR>
+    <I>Italic type</I> is used to identify new terms where they are
+    defined. <BR>
+    <BR>
+    <span class="code">Courier font</span> is used
+    to identify code fragments and API literals, including class names,
+    method names, function names, type names, macros. <BR>
+    <BR>
+    <span class="code"><I>Italic Courier font</I></span> is used to identify parameters to functions and methods.
+</DL>
+<hr width=45% align=left>
+<A HREF = "../copyrite.htm">Copyright &#169; 1995-2007 Adobe Macromedia Software LLC, Inc.</A>
+</BODY>
+</html>

@@ -1,0 +1,543 @@
+<HTML>
+<HEAD>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<TITLE>IMoaDrCast</TITLE>
+<link href="../xdk.css" rel="stylesheet" type="text/css">
+</HEAD>
+<body>
+
+<A HREF = "../drdg/index.htm">DR Developer's Guide</A> <BR>
+<A HREF = "index.htm"> DR Interfaces</A> | <A HREF = "drmthndx.htm">DR Methods</A> | <A HREF = "drtypndx.htm">DR Types and Misc API</A>
+<hr width=45% align=left>
+
+<h3><A name="IMoaDrCast">IMoaDrCast</A></h3>
+
+Interface ID: <span class="code">IID_IMoaDrCast</span><BR>
+Pointer type: <span class="code">PIMoaDrCast</span><BR>
+Inheritance: <A HREF = "../mmref/mmprpown.htm">IMoaMmPropOwner</A> <BR>
+Header file: <A HREF = "../../include/driservc.h">driservc.h</A> <BR>
+
+<DL>
+<DT class="heading4">Description</DT>
+<DD>
+    The <span class="code">IMoaDrCast</span> interface represents a cast in a movie. 
+	This interface can be acquired by calling the <span class="code"><a href="drmovie.htm">IMoaDrMovie</a></span><a href="drmovie.htm"></a> 
+	methods <span class="code">NewCast()</span>, 
+	<span class="code">GetCastFromName()</span> and <span class="code">GetNthCast()</span>.</DD>
+</DL>
+
+<DL>
+<DT class="heading4"><A NAME="RTFToC2">Cast properties</A></DT>
+<DD>
+    <span class="code">IMoaDrCast</span> inherits
+    from the <span class="code">IMoaMmPropOwner</span> interface, providing for access to data through the properties
+    mechanism described in the <A HREF="../mmref/mmprpown.htm" class="code">IMoaMmPropOwner</A> section. 
+	The properties defined for objects providing the <span class="code">IMoaDrCast</span> interface are listed 
+	<a href="drtypndx.htm#CASTPROPS">here</a>.</DD>
+</DL>
+
+<h4>Methods</h4>
+
+<DL>
+<DT class="heading5">Property owner methods</DT>
+<DD><A HREF = "#GetProp">GetProp()</A> <BR>
+    <A HREF = "#SetProp">SetProp()</A></DD>
+</DL>
+
+<DL>
+<DT class="heading5">Movie Interaction</DT>
+<DD><A HREF = "#GetIndexInMovie">GetIndexInMovie()</A></DD>
+</DL>
+
+<DL>
+<DT class="heading5">Cast member access</DT>
+<DD><A HREF = "#GetFirstUsedMemberIndex">GetFirstUsedMemberIndex()</A> <BR>
+    <A HREF = "#GetNextUsedMemberIndex">GetNextUsedMemberIndex()</A> <BR>
+    <A HREF = "#GetLastUsedMemberIndex">GetLastUsedMemberIndex()</A> <BR>
+    <A HREF = "#GetFirstFreeMemberIndex">GetFirstFreeMemberIndex()</A> <BR>
+    <A HREF = "#GetNextFreeMemberIndex">GetNextFreeMemberIndex()</A> <BR>
+    <A HREF = "#GetLastFreeMemberIndex">GetLastFreeMemberIndex()</A> <BR>
+    <A HREF = "#GetMemberIndexFromName">GetMemberIndexFromName()</A> <BR>
+    <A HREF = "#GetCastMem">GetCastMem()</A></DD>
+</DL>
+
+<DL>
+<DT class="heading5">Cast member management</DT>
+<DD><A HREF = "#CreateCastMem">CreateCastMem()</A> <BR>
+    <A HREF = "#DeleteCastMem">DeleteCastMem()</A> <BR>
+    <A HREF = "#DuplicateCastMem">DuplicateCastMem()</A></DD>
+</DL>
+
+<DL>
+<DT class="heading5">Cast management</DT>
+<DD><A HREF = "#Save">Save()</A></DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="CreateCastMem">CreateCastMem()</A></h3>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">CreateCastMem(MoaDrMemberIndex <I>memberIndex</I>, MoaMmSymbol <I>typeSymbol</I>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">memberIndex</DT>
+<DD>Index of the cast member slot into which the newly created cast member will be placed</DD>
+<DT class="codearg">typeSymbol</DT>
+<DD>The <span class="code">MoaMmSymbol</span> of the type of cast member to create</DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DT class="code">MoaError</DT>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>
+Creates a new cast member of the specified type in the specified cast member slot.
+The caller must provide the symbol of the type to create.
+Symbols of all registered types can be obtained from the Player cast member type methods (<span class="code">GetNthCastMemTypeSymbol</span>).
+If you know that the type is registered and the text string for the type, you can get the symbol directly using <span class="code">IMoaMmUtils::StringToSymbol()</span>.
+If the specified cast member slot is occupied, the existing cast member is deleted. 
+At the time of creation, the cast member probably will not have any media associated with it; 
+use the <span class="code">IMoaDrCastMem::SetMedia() </span>(or its media accessor interface) to supply it.</DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="DeleteCastMem">DeleteCastMem()</A></h3>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">DeleteCastMem(MoaDrMemberIndex <I>memberIndex</I>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">memberIndex</DT>
+<DD>Index of the cast member to delete</DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DT class="code">MoaError</DT>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>
+Deletes the cast member in the specified slot. 
+The cast member is removed immediately. 
+Any references to the cast member in the score will be dangling.</DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="DuplicateCastMem">DuplicateCastMem()</A></h3>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">DuplicateCastMem(MoaDrMemberIndex <I>sourceMemberIndex</I>, struct IMoaDrCast * <I>pDestCast</I>, MoaDrMemberIndex <I>destMemberIndex</I>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">sourceMemberIndex</DT>
+<DD>Index of the cast member in this cast to duplicate</DD>
+<DT class="codearg">pDestCast</DT>
+<DD>Pointer to a caller-owned <span class="code">IMoaDrCast</span> interface for the destination cast</DD>
+<DT class="codearg">destMemberIndex</DT>
+<DD>Index in <span class="codearg">pDestCast</span> of the cast member slot in which to place the copied cast member</DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DT class="code">MoaError</DT>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>
+Duplicates a cast member, placing the copy in the specified slot within the specified cast.
+The caller must pass in an interface to the destination cast; this interface continues to be owned by the caller.
+This method duplicates the cast member entirely, including its properties (name, and so on) and media data.
+If the destination cast member slot is occupied, the existing cast member is deleted.</DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="GetCastMem">GetCastMem()</A></h3>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">GetCastMem(MoaDrMemberIndex <I>memberIndex</I>, PIMoaDrCastMem * <I>ppIMoaDrCastMem</I>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">memberIndex</DT>
+<DD>Index of the cast member of interest.
+This must be an occupied cast member slot.</DD>
+<DT class="codearg">ppIMoaDrCastMem</DT>
+<DD>Pointer to a <span class="code">PIMoaDrCastMem</span> to receive a pointer to the cast member's interface. 
+Interface is then owned by caller which must dispose when no longer needed</DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DT class="code">MoaError</DT>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>
+Obtains a cast member interface for the specified cast member.
+The caller subsequently owns the interface and is responsible for releasing it when it is no longer needed.
+A cast member interface may no longer be valid if the associated cast member is moved or deleted from the cast.
+You should always release the cast member interface before returning from the method implementation that calls this method.</DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="GetFirstFreeMemberIndex">GetFirstFreeMemberIndex()</A> </h3>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">GetFirstFreeMemberIndex(MoaDrMemberIndex * <I>pMemberIndex</I>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">pMemberIndex</DT>
+<DD>Pointer to a <span class="code">MoaDrMemberIndex</span> to receive the memberIndex</DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DT class="code">MoaError</DT>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>
+Obtains the index of the first empty cast member slot in the cast.
+Returns a <span class="code">NULL </span>member index if there are no empty cast member slots remaining in the cast.</DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="GetFirstUsedMemberIndex">GetFirstUsedMemberIndex()</A> </h3>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">GetFirstUsedMemberIndex(MoaDrMemberIndex * <I>pMemberIndex</I>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">pMemberIndex</DT>
+<DD>Pointer to a <span class="code">MoaDrMemberIndex</span> to receive the <span class="code">memberIndex</span>.</DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DT class="code">MoaError</DT>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>
+Obtains the index of the first occupied (non-empty) cast member slot in the cast.
+Returns a <span class="code">NULL</span> member index if there are no cast members in the cast.</DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="GetIndexInMovie">GetIndexInMovie()</A></h3>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">GetIndexInMovie(struct IMoaDrMovie * <I>pIMoaDirMovie</I>, MoaDrCastIndex * <I>pCastIndex</I>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">pIMoaDirMovie</DT>
+<DD>Pointer to a caller-owned interface for the movie of interest.</DD>
+<DT class="codearg">pCastIndex</DT>
+<DD>Pointer to a <span class="code">MoaDrCastIndex</span> to receive the index of the cast in the specified movie</DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DT class="code">MoaError</DT>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>
+Obtains the index of the cast in the specified movie's cast list.
+Casts can be shared among several simultaneously-playing movies; each cast can have a different position within each movie's cast list.
+The caller must supply an interface to the movie of interest, which continues to be owned by the caller.</DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="GetLastFreeMemberIndex">GetLastFreeMemberIndex()</A> </h3>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">GetLastFreeMemberIndex(MoaDrMemberIndex * <I>pMemberIndex</I>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">pMemberIndex</DT>
+<DD>Pointer to a <span class="code">MoaDrMemberIndex</span> to receive the <span class="code">memberIndex</span></DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DT class="code">MoaError</DT>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>
+Obtains the index of the last empty cast member slot in the cast.
+ Returns a <span class="code">NULL</span> member index if there are no empty cast member slots remaining in the cast.</DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="GetLastUsedMemberIndex">GetLastUsedMemberIndex()</A> </h3>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">GetLastUsedMemberIndex(MoaDrMemberIndex * <I>pMemberIndex</I>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">pMemberIndex</DT>
+<DD>Pointer to a <span class="code">MoaDrMemberIndex</span> to receive the memberIndex</DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DT class="code">MoaError</DT>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>
+Obtains the index of the last occupied (non-empty) cast member slot in the cast.
+Returns a <span class="code">NULL</span> member index if there are no cast members in the cast.</DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="GetMemberIndexFromName">GetMemberIndexFromName()</A> </h3>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">GetMemberIndexFromName(PMoaChar <I>pCastMemName</I>, MoaDrMemberIndex * <I>pMemberIndex</I>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">pCastMemName</DT>
+<DD>Pointer to a C string buffer containing the name of the cast member of interest</DD>
+<DT class="codearg">pMemberIndex</DT>
+<DD>Pointer to a <span class="code">MoaDrMemberIndex</span> to receive the index of the cast member</DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DT class="code">MoaError</DT>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>
+Obtains the index of a cast member in the cast given the cast member name.
+Returns 0 if the cast member cannot be found in the cast.
+Name comparisons are case-insensitive.</DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="GetNextFreeMemberIndex">GetNextFreeMemberIndex()</A> </h3>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">GetNextFreeMemberIndex(MoaDrMemberIndex <I>afterMemberIndex</I>, MoaDrMemberIndex * <I>pMemberIndex</I>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">afterMemberIndex</DT>
+<DD>Index of cast member slot after which to begin searching for an empty cast member slot.</DD>
+<DT class="codearg">pMemberIndex</DT>
+<DD>Pointer to a <span class="code">MoaDrMemberIndex</span> to receive the member index</DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DT class="code">MoaError</DT>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>Obtains the index of the next empty cast member slot in the cast after the specified cast member slot.
+ Returns a <span class="code">NULL</span> member index if there are no empty cast member slots in the cast after <span class="codearg">afterMemberIndex</span>.</DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="GetNextUsedMemberIndex">GetNextUsedMemberIndex()</A> </h3>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">GetNextUsedMemberIndex(MoaDrMemberIndex <I>afterMemberIndex</I>, MoaDrMemberIndex * <I>pMemberIndex</I>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">afterMemberIndex</DT>
+<DD>Index of cast member slot after which to begin search for a non-empty cast member</DD>
+<DT class="codearg">pMemberIndex</DT>
+<DD>Pointer to a <span class="code">MoaDrMemberIndex</span> to receive the member index</DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DT class="code">MoaError</DT>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>
+Obtains the index of the next occupied (non-empty) cast member slot in the cast after the specified cast member slot.
+Returns a <span class="code">NULL</span> member index if there are no cast members in the cast after <span class="codearg">afterMemberIndex</span>.</DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="GetProp">GetProp()</A></h3>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">GetProp(MoaMmSymbol <I>symbol</I>, PMoaMmValue <I>pPropValue</I>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">symbol</DT>
+<DD>The <span class="code">MoaMmSymbol</span> for the property of interest</DD>
+<DT class="codearg">pPropValue</DT>
+<DD>Pointer to a <span class="code">MoaMmValue</span> structure to receive the value</DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+<DD>
+    <TABLE BORDER="2">
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=233><span class="code">kMoaErr_NoErr</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=432>Property exists and value was returned </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=233><span class="code">kMoaErr_BadParam</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=432>Invalid <span class="codearg">pPropValue</span> passed in </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=233><span class="code">kMoaMmErr_PropertyNotFound</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=432>Property isn't supported by this class </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=233><span class="code">kMoaMmErr_InternalError</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=432>Property exists but couldn't get due to internal err </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=233><span class="code">kMoaMmErr_NoMemForString</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=432>Couldn't allocate memory for string value data </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=233><span class="code">kMoaErr_OutOfMem</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=432>Couldn't allocate memory for other value data </TD>
+      </TR>
+    </TABLE></DD>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>
+Obtains the value of the specified cast property.
+To get the symbol from a string, use the <span class="code">IMoaMmUtils::StringToSymbol()</span>.
+The caller is responsible for releasing the value referenced by <span class="codearg">pPropValue</span> 
+with <span class="code">IMoaMmUtils::ValueRelease()</span >when it is no longer needed.
+The properties defined for objects providing the <span class="code">IMoaDrCast</span> interface are 
+listed <a href="drtypndx.htm#CASTPROPS">here</a>.</DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="Save">Save()</A></h3>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">Save(PMoaChar <I>pNewPathName</I>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">pNewPathName</DT>
+<DD>Pointer to a specified path</DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+<DD>
+    <TABLE BORDER="2">
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=171><span class="code">kMoaErr_NoErr</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=333>Successful</TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=171><span class="code">kMoaDrErr_DiskIO</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=333>IO error encountered during file access. </TD>
+      </TR>
+    </TABLE>
+</DD>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>
+Saves the cast to the specified path, which should include the filename.
+This method applies only to external cast members.</DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="SetProp">SetProp()</A></h3>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">SetProp(MoaMmSymbol <I>symbol</I>, ConstPMoaMmValue <I>pPropValue</I>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">symbol</DT>
+<DD>The <span class="code">MoaMmSymbol</span> for the property of interest</DD>
+<DT class="codearg">pPropValue</DT>
+<DD>Pointer to a caller-owned <span class="code">ConstPMoaMmValue</span> structure containing the new value</DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+<DD>
+    <TABLE BORDER="2">
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=266><span class="code">kMoaErr_NoErr</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=428>Property exists and value was set </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=266><span class="code">kMoaErr_BadParam</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=428>Invalid <span class="codearg">pPropValue</span> passed in </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=266><span class="code">kMoaMmErr_PropertyNotFound</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=428>Property isn't supported by this class </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=266><span class="code">kMoaMmErr_InternalError</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=428>Property exists, value ok, couldn't set--internal error </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=266><span class="code">kMoaMmErr_NoMemForString</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=428>Couldn't allocate memory for setting string value data </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=266><span class="code">kMoaErr_OutOfMem</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=428>Couldn't allocate memory for setting other value data </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=266><span class="code">kMoaMmErr_IntegerExpected</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=428>Type mismatch: integer value expected </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=266><span class="code">kMoaMmErr_SymbolExpected</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=428>Type mismatch: symbol value expected </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=266><span class="code">kMoaMmErr_FloatExpected</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=428>Type mismatch: float value expected </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=266><span class="code">kMoaMmErr_StringExpected</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=428>Type mismatch: string value expected </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=266><span class="code">kMoaMmErr_PointExpected</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=428>Type mismatch: point value expected </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=266><span class="code">kMoaMmErr_RectExpected</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=428>Type mismatch: rect value expected </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=266><span class="code">kMoaMmErr_ValueTypeMismatch</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=428>Type mismatch: other value expected (non-specific) </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=266><span class="code">kMoaDrErr_CastMemberExpected</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=428>Type mismatch: <span class="code">CMRef</span> value expected </TD>
+      </TR>
+    </TABLE>
+</DD>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>
+Sets a cast property to a new value.
+The caller continues to maintain ownership of the value passed in, and should release it using <span class="code">IMoaMmUtils::ValueRelease() </span>when it is no longer needed.
+The properties defined for objects providing the <span class="code">IMoaDrCast </span>interface are listed <a href="drtypndx.htm#CASTPROPS">here</a>.</DD>
+</DL>
+
+<hr width=45% align=left>
+<A HREF = "../copyrite.htm">Copyright &#169; 1995-2008 Adobe Macromedia Software LLC, Inc.</A>
+</BODY>
+</html>

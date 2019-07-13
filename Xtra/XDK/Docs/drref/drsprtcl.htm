@@ -1,0 +1,136 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<TITLE>IMoaDrSpriteCallback</TITLE>
+<link href="../xdk.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+
+<A HREF = "../drdg/index.htm">DR Developer's Guide</A><br>
+<A HREF = "index.htm"> DR Interfaces</A> | 
+<A HREF = "drmthndx.htm">DR Methods</A> | 
+<A HREF = "drtypndx.htm">DR Types and Misc API</A>
+<hr width=45% align=left>
+
+<h3><A name = "IMoaDrSpriteCallback">IMoaDrSpriteCallback</A></h3>
+
+Interface ID: <span class="code">IID_IMoaDrSpriteCallback</span><br>
+Pointer type: <span class="code">PIMoaDrSpriteCallback</span><br>
+Inheritance: <a HREF = "../moref/unknown.htm" class="code">IMoaUnknown</a><br>
+Header file: <a HREF = "../../include/driservc.h">driservc.h</a>
+
+<h4>Description</h4>
+<DL>
+  <DD>The <span class="code">IMoaDrSpriteCallback</span> interface is provided in Director by the class that implements <span class="code">IMoaMmSpriteCallback</span>,
+    which is provided through the sprite actor initialization method <span class="code">IMoaMmXSpriteActor::SetCallback()</span>.
+    To acquire <span class="code">IMoaDrSpriteCallback</span>, the asset can call <span class="code">QueryInterface()</span> on <span class="code">IMoaMmSpriteCallback</span>. <BR><BR>
+    This interface provides additional, Director-specific callback services to a media asset.</DD>
+</DL>
+
+<h4>Methods</h4>
+<span class="heading5">Acquiring IMoaDrMovie</span>
+<DL>
+  <DD><A HREF = "#GetMovie">GetMovie()</A></DD>
+</DL>
+<span class="heading5">Sprite access</span>
+<DL>
+  <DD><A HREF = "#GetSpriteChanIndex">GetSpriteChanIndex()</A></DD>
+</DL>
+<span class="heading5">Scripting support</span>
+<DL>
+  <DD><A HREF = "#SendSpriteMessage">SendSpriteMessage()</A></DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A NAME="GetMovie">GetMovie()</A></h4>
+<dl>
+<dt class="heading5">Syntax</dt>
+<dt class="code">GetMovie(PIMoaDrMovie * <em>ppIMoaDrMovie</em>)</dt>
+</dl>
+<dl>
+<dt class="heading5">Parameters</dt>
+<dt class="codearg">ppIMoaDrMovie</dt>
+<dd>Pointer to place to store the movie interface</dd>
+</dl>
+<dl>
+<dt class="heading5">Returns</dt>
+<dt class="code">MoaError</dt>
+</dl>
+<dl>
+<dt class="heading5">Description</dt>
+<dd>Gets the movie interface for the movie in which the sprite is appearing.
+	You are responsible for releasing this interface when you're done with it.</dd>
+</dl>
+
+<hr width=45% align=left>
+
+<h4><A NAME="GetSpriteChanIndex">GetSpriteChanIndex()</A></h4>
+<dl>
+<dt class="heading5">Syntax</dt>
+<dt class="code">GetSpriteChanIndex(PMoaDrSpriteChanIndex <em>pChanIndex</em>)</dt>
+</dl>
+<dl>
+<dt class="heading5">Parameters</dt>
+<dt class="codearg">pChanIndex</dt>
+<dd>Pointer to place to store the channel index</dd>
+</dl>
+<dl>
+<dt class="heading5">Returns</dt>
+<dt class="code">MoaError</dt>
+</dl>
+<dl>
+<dt class="heading5">Description</dt>
+<dd>Gets the sprite channel number for the Director sprite associated with this sprite instance.
+	Channel numbers are 1-based.</dd>
+</dl>
+
+<hr width=45% align=left>
+
+<h4><A NAME="SendSpriteMessage">SendSpriteMessage()</A></h4>
+<dl>
+<dt class="heading5">Syntax</dt>
+<dt class="code">SendSpriteMessage(MoaMmSymbol <em>handlerName</em>, MoaLong <em>nArgs</em>, PMoaMmValue <em>pArgs</em>, 
+PMoaMmValue <em>pResult</em>, MoaBool * <em>pHandled</em>)</dt>
+</dl>
+<dl>
+<dt class="heading5">Parameters</dt>
+<dt class="codearg">handlerName</dt>
+<dd>Symbol indicating the handler to call</dd>
+<dt class="codearg">nArgs</dt>
+<dd>Number of arguments passed to the handler</dd>
+<dt class="codearg">pArgs</dt>
+<dd>Pointer to first element of array with the arguments</dd>
+<dt class="codearg">pResult</dt>
+<dd>Pointer to place for the result of the call to be placed</dd>
+<dt class="codearg">pResult</dt>
+<dd>Pointer to place where it will be indicated if the call was handled by the sprite</dd>
+</dl>
+<dl>
+<dt class="heading5">Returns</dt>
+<dt class="code">MoaError</dt>
+</dl>
+<dl>
+<dt class="heading5">Description</dt>
+<dd>Sends a message along the standard message hierarchy starting with the sprite.
+The message proceeds along the path:<BR><BR>
+    sprite --&gt; cast member --&gt; frame --&gt; movie<BR><BR>
+    until it is consumed by a script at some level.
+	(If no such handler exists at a given level, the message proceeds to the next level.
+    Alternatively, a Lingo script can intentionally pass a message to the next level using the <span class="code">pass</span> Lingo command.<BR><BR>
+    The caller supplies symbol for handler to call (<span class="codearg">name</span>), the arguments (<span class="codearg">nArgs</span>, 
+	<span class="codearg">pArgs</span>), 
+	and a pointer to a <span class="code">MoaMmValue</span> to receive a result, if any, from the handler call.<BR><BR>
+    Upon return, <span class="codearg">pHandled</span> is set to <span class="code">TRUE</span> if the call was handled.
+	If the message is not handled, it silently disappears and <span class="code">FALSE</span> is returned in <span class="codearg">pHandled</span>.<BR><BR>
+    This method is ideal for implementing widget-type sprite Xtras.
+    For example, if you're implementing a button Xtra, you could send a <span class="code">buttonClicked</span> message whenever the button was clicked.
+	Developers could then handle this message by putting an <span class="code">on buttonClicked</span> handler in the sprite script for any object in the hierarchy: 
+	sprite, cast member, frame, movie).
+    The Xtra could, of course, emit multiple messages, which would be needed to implement a multi-part widget such as a scrollbar.</dd>
+</dl>
+
+<hr width=45% align=left>
+<A HREF = "../copyrite.htm">Copyright &#169; 1995-2008 Adobe Macromedia Software LLC, Inc.</A>
+</body>
+</html>

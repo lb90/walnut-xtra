@@ -1,0 +1,73 @@
+<HTML>
+<HEAD>
+<TITLE>IMoaCalloc</TITLE>
+<link href="../xdk.css" rel="stylesheet" type="text/css">
+</HEAD>
+<body>
+<A HREF="../moadg/index.htm">MOA Developer's Guide</A> <BR>
+<A HREF="index.htm">MOA Interfaces</A> | <A HREF="momthndx.htm">MOA Methods</A> | <A HREF="motypndx.htm">MOA Types and Misc API</A>
+<hr width=45% align=left>
+<h3>IMoaCalloc</h3>
+<P> Interface ID: <span class="code">IID_IMoaCalloc</span><BR>
+  Pointer type: <span class="code">PIMoaCalloc</span><BR>
+  Inheritance: <A HREF = "unknown.htm">IMoaUnknown</A><BR>
+  Header file: <A HREF = "../../include/moaxtra.h">moaxtra.h</A> <BR>
+<h3>Description</h3>
+<DL>
+<DD>This standard MOA callback interface is implemented by the
+every MOA application for the use of Xtras. It provides methods
+for use in allocating fixed memory. All MOA objects have an instance
+variable, <span class="code">pCalloc</span>,
+that refers to this interface.</DD>
+</DL>
+<h3>Methods</h3>
+<DL>
+<DD><A HREF = "#NRAlloc">NRAlloc()</A> <BR>
+<A HREF = "#NRFree">NRFree()</A></DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="NRAlloc">NRAlloc()</A></h3>
+<h4>Syntax</h4>
+<DL>
+<DT class="code">NRAlloc(MoaUlong <I>cb</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+<DT class="code">cb</DT>
+<DD>Integer representing the size of the memory block to allocate </DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+<DD>Pointer to allocated memory</DD>
+</DL>
+<h4>Description</h4>
+<DL>
+<DD>Returns a fixed block of memory at least cb bytes in size.
+The memory is zeroed out. 
+If the request cannot be satisfied, NULL is returned.</DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="NRFree">NRFree()</A></h3>
+<h4>Syntax</h4>
+<DL>
+<DT class="code">NRFree(PMoaVoid <I>pv</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+<DT class="codearg">pv</span>
+<DD>Pointer to the allocated memory block</DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+<DD class="code">void</DD>
+</DL>
+<h4>Description</h4>
+<DL>
+<DD>Frees memory previously allocated with the <span class="code">NRAlloc()</span> method.
+</DL>
+<hr width=45% align=left>
+<A HREF = "../copyrite.htm">Copyright &#169; 1995-2008 Adobe Macromedia Software LLC, Inc.</A>
+</BODY>
+</html>

@@ -1,0 +1,81 @@
+<HTML>
+<HEAD>
+<TITLE>IMoaMmXScript</TITLE>
+<link href="../xdk.css" rel="stylesheet" type="text/css">
+</HEAD>
+<body>
+<A HREF="../mmdg/index.htm">MM Developer's Guide</A> <BR>
+  <A HREF="index.htm" >MM Interfaces</A> | <A HREF="mmmthndx.htm" >MM Methods</A> | <A HREF="mmtypndx.htm">MM Types and Misc API</A>
+<hr width=45% align=left>
+<h3>IMoaMmXScript</h3>
+Interface ID: <span class="code">IID_IMoaDrXScript<BR>
+  </span>Pointer type: <span class="code">PIMoaMmXScript<BR>
+  </span>Inheritance: <A HREF = "../moref/unknown.htm">IMoaUnknown</A> <BR>
+  Header file: <A HREF="../../include/mmixscrp.h">mmixscrp.h</A> <BR>
+<h3>Description</h3>
+<DL>
+  <DD><span class="code">IMoaMmXScript </span>is the
+    interface for Scripting Xtras. Scripting Xtras provide the mechanism
+    for defining scripting language features to extend Lingo in Director. There is only one method
+    in this interface, <span class="code">Call()</span>.
+    The <I>Multimedia Developer's Guide</I> provides more
+    on <A HREF="../mmdg/mmdgc3.htm" >implementing scripting Xtras</A>. </DD>
+</DL>
+<h3>Methods</h3>
+<DL>
+  <DD><A HREF = "#Call">Call()</A></DD>
+</DL>
+<hr width=45% align=left>
+<h3><A NAME="Call">Call()</A></h3>
+<h4>Syntax</h4>
+<DL>
+  <DT class="code">Call(PMoaDrCallInfo<I>callPtr</I>) </DT>
+  </DL>
+<h4>Parameters</h4>
+<DL>
+  <DT class="code"><I>callPtr</I></DT>
+  <DD>Pointer to a <span class="code">MoaMmCallInfo</span> structure </DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD>
+    <TABLE BORDER="2">
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=228><span class="code">kMoaErr_NoErr</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=394>Method call successful </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=228><span class="code">kMoaMmErr_ArgOutOfRange</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=394>Method selector out of range </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=228><span class="code">kMoaErr_OutOfMem</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=394>Method call failed due to memory error </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=228><span class="code">kMoaMmErr_InternalError</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=394>Method call failed due to internal error </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=228><span class="code">kMoaMmErr_ValueTypeMismatch</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=394>Value supplied for <span class="code">&quot;any&quot;</span>-type argument not supported </TD>
+      </TR>
+    </TABLE></DD>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD>
+    Performs the call specified by the Scripting Xtra. Use the <span class="code">methodSelector</span> member of 
+    the <span class="codearg">callPtr</span> structure to determine the Scripting command being called. <BR>
+    <BR>
+    The <span class="code">MoaMmCallInfo</span> structure <span class="codearg">callPtr</span> contains information 
+    about the method being called and the arguments supplied with the call. Scripting Xtras implement this method
+    with a case statement based on the <span class="code">methodSelector</span> field of the call info structure, 
+    each case being the C-enumeration
+    name of one of the handlers implemented. The code within the case
+    represents the Xtras response to that particular handler.</DD>
+</DL>
+<hr width=45% align=left>
+<A HREF = "../copyrite.htm">Copyright &#169; 1995-2008 Adobe Macromedia Software LLC, Inc.</A>
+</BODY>
+</html>

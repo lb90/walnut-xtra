@@ -1,0 +1,275 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>IMoaDrSound2</title>
+<link href="../xdk.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+
+<A HREF = "../drdg/index.htm">DR Developer's Guide</A><BR>
+<A HREF = "index.htm"> DR Interfaces</A> | 
+<A HREF = "drmthndx.htm">DR Methods</A> | 
+<A HREF = "drtypndx.htm">DR Types and Misc API</A>
+<hr width=45% align=left>
+
+<p>This file documents the <span class="code">IMoaDrSound2</span> interface. 
+  <span class="code">IMoaDrSound2</span> has all of the methods of <span class="code">IMoaDrSound</span>, 
+  plus an additional PauseSound method.</p>
+  
+<h3><A name = "IMoaDrSound2">IMoaDrSound2</A></h3>
+
+Interface ID: <span class="code">IID_IMoaDrSound2</span><BR>
+Pointer type: <span class="code">PIMoaDrSound2</span><BR>
+Class ID: <span class="code">CID_IMoaDrSound2</span><BR>
+Inheritance: <span class="code">IMoaDrSound</span><BR>
+Header file:<a href="../../Include/driservc.h"> driservc.h</a><BR>
+
+<DL> 
+<DT class="heading4">Description</DT>
+  <DD> This callback interface provides platform-independent access to the sound 
+    mixing capabilities of Director. On the Macintosh, up to 8 sound channels 
+    are available, each of which can simultaneously play sounds independent of 
+    the others. There are also 8 sound channels available on Windows. On older 
+    Windows systems, up to 4 sound channels were available for playing independent 
+    sounds. Sound channel numbering is 1-based.</DD>
+</DL>
+
+<DL><DT class="heading4">Methods</DT>
+<DD><A HREF = "#GetSoundChannelCount">GetSoundChannelCount()</A> Determines the number of available sound channels.
+<BR><A HREF = "#GetSoundChannelStatus">GetSoundChannelStatus()</A> Returns the status of a specified sound channel.
+<BR><A HREF = "#GetFreeSoundChannel">GetFreeSoundChannel()</A> Returns the number of the next available sound channel.
+<BR><A HREF = "#PlaySoundFormat">PlaySoundFormat()</A> Plays the specified sound.
+<BR><A HREF = "#PlaySoundRaw">PlaySoundRaw()</A> Similar to <span class="codearg">PlaySoundFormat</span>, 
+but has an additional <span class="codearg">pRawSoundStream</span> parameter and cue point support.
+<BR><A HREF = "#StopSoundChannel">StopSoundChannel()</A> Stops the sound in the specified channel.
+<BR><A HREF = "#SetSoundChannelVolume">SetSoundChannelVolume()</A> Sets the volume for a particular sound channel.
+<BR><A HREF = "#GetTime">GetTime()</A> Returns the amount of time the sound in the specified channel has been playing.
+<BR><A HREF = "#PauseSound">PauseSound()</A> Pauses the sound currently playing. 
+</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A NAME="GetFreeSoundChannel">GetFreeSoundChannel()</A></h4>
+<dl>
+<dt class="heading5">Syntax</dt>
+<dt class="code">GetFreeSoundChannel(MoaUlong * <em>piChannel</em>)</dt>
+</dl>
+<dl>
+<dt class="heading5">Parameters</dt>
+<dt class="codearg">piChannel</dt>
+<dd>Pointer to place to store the sound channel number</dd>
+</dl>
+<dl>
+<dt class="heading5">Returns</dt>
+<dt class="code">MoaError</dt>
+</dl>
+<dl>
+<dt class="heading5">Description</dt>
+<dd>Call this method to get the next available sound channel.
+This method works from the highest-numbered sound channel down.</dd>
+</dl>
+
+<hr width=45% align=left>
+
+<h4><A NAME="GetSoundChannelCount">GetSoundChannelCount()</A></h4>
+<dl>
+<dt class="heading5">Syntax</dt>
+<dt class="code">GetSoundChannelCount(MoaUlong * <em>pCount</em>)</dt>
+</dl>
+<dl>
+<dt class="heading5">Parameters</dt>
+<dt class="codearg">pCount</dt>
+<dd>Pointer to place to store the number of channels</dd>
+</dl>
+<dl>
+<dt class="heading5">Returns</dt>
+<dt class="code">MoaError</dt>
+</dl>
+<dl>
+<dt class="heading5">Description</dt>
+<dd>Call this method to determine the number of sound channels available.
+There are 8 sound channels available on both Macintosh and Windows.</dd>
+</dl>
+
+<hr width=45% align=left>
+
+<h4><A NAME="GetSoundChannelStatus">GetSoundChannelStatus()</A></h4>
+<dl>
+<dt class="heading5">Syntax</dt>
+<dt class="code">GetSoundChannelStatus(MoaUlong <em>iChannel</em>)</dt>
+</dl>
+<dl>
+<dt class="heading5">Parameters</dt>
+<dt class="codearg">iChannel</dt>
+<dd>Sound channel number</dd>
+</dl>
+<dl>
+<dt class="heading5">Returns</dt>
+<dt class="code">MoaDrSoundChannelPlayStatus</dt>
+</dl>
+<dl>
+<dt class="heading5">Description</dt>
+<dd>Returns the current status of the specified sound channel.</dd>
+</dl>
+
+<hr width=45% align=left>
+
+<h4><A NAME="GetTime">GetTime()</A></h4>
+<dl>
+<dt class="heading5">Syntax</dt>
+<dt class="code">GetTime(MoaUlong <em>iChannel</em>, MoaUlong * <em>pTime</em>)</dt>
+</dl>
+<dl>
+<dt class="heading5">Parameters</dt>
+<dt class="codearg">iChannel</dt>
+<dd>Sound channel number</dd>
+<dt class="codearg">pTime</dt>
+<dd>Time from beginning of sound (in milliseconds)</dd>
+</dl>
+<dl>
+<dt class="heading5">Returns</dt>
+<dt class="code">MoaError</dt>
+</dl>
+<dl>
+<dt class="heading5">Description</dt>
+<dd>Returns the amount of time that the sound in the specified channel has been playing.</dd>
+</dl>
+
+<hr width=45% align=left>
+
+<h4><A NAME="PauseSound">PauseSound()</A></h4>
+<dl>
+<dt class="heading5">Syntax</dt>
+<dt class="code">PauseSound(MoaUlong <em>iChannel</em>, MoaBoolParam <em>bPauseState</em>)</dt>
+</dl>
+<dl>
+<dt class="heading5">Parameters</dt>
+<dt class="codearg">iChannel</dt>
+<dd>Sound channel number</dd>
+<dt class="codearg">bPauseState</dt>
+<dd>Boolean value specifying whether to pause the sound. Enter <span class="code">True</span> 
+        to pause sound playback, enter <span class="code">False</span> to resume sound playback</dd>
+</dl>
+<dl>
+<dt class="heading5">Returns</dt>
+<dt class="code">MoaError</dt>
+</dl>
+<dl>
+<dt class="heading5">Description</dt>
+<dd>This method was added to the <span class="code">IMoaDrSound2</span> interface.
+Pauses the sound in the specified channel.</dd>
+</dl>
+
+<hr width=45% align=left>
+
+<h4><A NAME="PlaySoundFormat">PlaySoundFormat()</A></h4>
+<dl>
+<dt class="heading5">Syntax</dt>
+<dt class="code">PlaySoundFormat(MoaUlong <em>iChannel</em>, PIMoaStream <em>pSoundStream</em>, ConstPMoaChar <em>psSoundFormat</em>, PMoaMmValue <em>pProxyChannel</em>)</dt>
+</dl>
+<dl>
+<dt class="heading5">Parameters</dt>
+<dt class="codearg">iChannel</dt>
+<dd>Sound channel number</dd>
+<dt class="codearg">pSoundStream</dt>
+<dd>Stream containing sound data</dd>
+<dt class="codearg">psSoundFormat</dt>
+<dd>String representing sound data format</dd>
+<dt class="codearg">pProxyChannel</dt>
+<dd>Sprite channel playing the sound.  This parameter can be set to NULL.</dd>
+</dl>
+<dl>
+<dt class="heading5">Returns</dt>
+<dt class="code">MoaError</dt>
+</dl>
+<dl>
+<dt class="heading5">Description</dt>
+<dd>Plays the sound provided by <span class="codearg">pSoundStream</span>. Playback 
+    conforms to the lifetime of the sprite referred to by <span class="codearg">pProxyChannel</span>. 
+    If a sound is already playing in the specified channel, this sound will supersede it.</dd>
+</dl>
+
+<hr width=45% align=left>
+
+<h4><A NAME="PlaySoundRaw">PlaySoundRaw()</A></h4>
+<dl>
+<dt class="heading5">Syntax</dt>
+<dt class="code">PlaySoundRaw(MoaUlong <em>iChannel</em>, PIMoaStream <em>pRawSoundStream</em>, PMoaSoundFormat <em>pSndFormat</em>,<br>
+&nbsp;&nbsp;PMoaMmCuePoint <em>pCuePointList</em>, MoaUlong <em>nCuePoints</em>, PMoaMmValue <em>pProxyChannel</em>)</dt>
+</dl>
+<dl>
+<dt class="heading5">Parameters</dt>
+<dt class="codearg">iChannel</dt>
+<dd>Sound channel number</dd>
+<dt class="codearg">pRawSoundStream</dt>
+<dd>Stream containing sound data</dd>
+<dt class="codearg">psSoundFormat</dt>
+<dd>Pointer to a Moa sound format structure containing information about the structure of the sound. This parameter cannot be left blank.</dd>
+<dt class="codearg">pCuePointList</dt>
+<dd>List of sound cue points</dd>
+<dt class="codearg">Number of items in <span class="codearg">pCuePointList</span></dt>
+<dd>Stream containing sound data</dd>
+<dt class="codearg">pProxyChannel</dt>
+<dd>Sprite channel playing the sound.  This parameter can be set to NULL.</dd>
+</dl>
+<dl>
+<dt class="heading5">Returns</dt>
+<dt class="code">MoaError</dt>
+</dl>
+<dl>
+<dt class="heading5">Description</dt>
+<dd>Plays the sound provided by <span class="codearg">pRawSoundStream</span>.  
+Playback conforms to the lifetime of the sprite referred to by <span class="codearg">pProxyChannel</span>.
+If a sound is already playing in the specified channel, this sound will supersede it.</dd>
+</dl>
+
+<hr width=45% align=left>
+
+<h4><A NAME="SetSoundChannelVolume">SetSoundChannelVolume()</A></h4>
+<dl>
+<dt class="heading5">Syntax</dt>
+<dt class="code">SetSoundChannelVolume(MoaUlong <em>iChannel</em>, MoaUshort <em>nVolume</em>)</dt>
+</dl>
+<dl>
+<dt class="heading5">Parameters</dt>
+<dt class="codearg">iChannel</dt>
+<dd>Sound channel number</dd>
+<dt class="codearg">nVolume</dt>
+<dd> Volume level setting (range: 0 - 255)</dd>
+</dl>
+<dl>
+<dt class="heading5">Returns</dt>
+<dt class="code">MoaError</dt>
+</dl>
+<dl>
+<dt class="heading5">Description</dt>
+<dd>Sets the volume of the sound in the specified channel.</dd>
+</dl>
+
+<hr width=45% align=left>
+  
+<h4><A NAME="StopSoundChannel">StopSoundChannel()</A></h4>
+<dl>
+<dt class="heading5">Syntax</dt>
+<dt class="code">StopSoundChannel(MoaUlong <em>iChannel</em>, MoaUlong * <em>pTime</em>)</dt>
+</dl>
+<dl>
+<dt class="heading5">Parameters</dt>
+<dt class="codearg">iChannel</dt>
+<dd>Sound channel number</dd>
+<dt class="codearg">pTime</dt>
+<dd>Time until sound stops (in milliseconds)</dd>
+</dl>
+<dl>
+<dt class="heading5">Returns</dt>
+<dt class="code">MoaError</dt>
+</dl>
+<dl>
+<dt class="heading5">Description</dt>
+<dd>Stops the sound in the specified channel at the specified time.</dd>
+</dl>
+
+<hr width=45% align=left>
+<A HREF = "../copyrite.htm">Copyright &#169; 1995-2008 Adobe Macromedia Software LLC, Inc.</A>
+</body></html>
+

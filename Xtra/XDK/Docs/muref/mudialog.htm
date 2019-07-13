@@ -1,0 +1,220 @@
+<HTML>
+<HEAD>
+<TITLE>IMuiDialog</TITLE>
+<link href="../xdk.css" rel="stylesheet" type="text/css">
+</HEAD>
+<BODY>
+<A HREF="../mudg/index.htm" >MUI Developer's Guide</A> <BR>
+<A HREF="index.htm" >MUI Interfaces</A> | <A HREF="mumthndx.htm" >MUI Methods</A> | <A HREF="mutypndx.htm" >MUI Types and Misc API</A>
+<HR width=45% align=left>
+<H3><A NAME="IMuiDialog">IMuiDialog</A> </H3>
+<P> Interface ID: <span class="code">IID_IMuiDialog<BR>
+  </span>Class ID: <span class="code">CLSID_IMui<BR>
+  </span>Pointer type: <span class="code">PIMuiDialog<BR>
+  </span>Inheritance: <span class="code">IMoaUnknown<BR>
+  </span>Header file: <A HREF = "../../include/mui.h">mui.h</A> <BR>
+<h4>Description</h4>
+<DL>
+  <DD>This interface, implemented in the Mui Xtra by the CMui class,
+    provides platform-independent dialog boxes for use by Xtras. For
+    more information on using this interface, see the <A HREF="../mudg/index.htm">MUI Developer's Guide</A>. <BR>
+</DL>
+<h4>Methods</h4>
+<DL>
+  <DD><A HREF = "#Initialize">Initialize()</A> <BR>
+    <A HREF = "#Run">Run()</A> <BR>
+    <A HREF = "#Stop">Stop()</A> <BR>
+    <A HREF = "#SetCallback">SetCallback()</A> <BR>
+    <A HREF = "#WindowOp">WindowOp()</A> <BR>
+    <A HREF = "#ItemUpdate">ItemUpdate()</A> <BR>
+    <A HREF = "#GetWindowGC">GetWindowGC()</A> <BR>
+    <A HREF = "#SetWindowParent">SetWindowParent()</A>
+</DL>
+<HR width=45% align=left>
+<h4><A NAME="GetWindowGC">GetWindowGC()</A> </h4>
+<H4>Syntax</H4>
+<DL>
+  <DT class="code">GetWindowGC(PMoaMmNativeGCInfo <I>pWindowInfo</I>)
+</DL>
+<H4>Parameters</H4>
+<DL>
+  <DT class="codearg">pWindowInfo</DT>
+  <DD><span class="code">PMoaMmNativeGCInfo</span> for the dialog window</DD>
+</DL>
+<H4>Returns</H4>
+<DL>
+  <DD><span class="code">MoaError</span>
+</DL>
+<H4>Description</H4>
+<DL>
+  <DD>This method is useful on Windows for getting the graphics context of the dialog window.
+</DL>
+<HR width=45% align=left>
+<h4><A NAME="Initialize">Initialize()</A></h4>
+<H4>Syntax</H4>
+<DL>
+  <DT class="code">Initialize(PTMuiWindow <I>PWindow</I>, MoaLong <I>iInputArraySize</I>, TMuiItem <I>PInputStrucArray[]</I>)
+</DL>
+<H4>Parameters</H4>
+<DL>
+  <DT class="codearg">PWindow</DT>
+  <DD><A HREF="mutypndx.htm#TMuiWindow">PTMuiWindow</A> structure containing information specifying window attributes</DD>
+  <DT class="codearg">iInputArraySize</DT>
+  <DD>MoaLong</DD>
+  <DT class="codearg">PInputStrucArray[]</DT>
+  <DD><A HREF="mutypndx.htm#TMuiItem">TMuiItem</A> array containing specifications for each widget presented by the dialog</DD>
+    </DL>
+<H4>Returns</H4>
+<DL>
+  <DD><span class="code">MoaError</span>
+</DL>
+<H4>Description</H4>
+<DL>
+  <DD>Initializes the dialog box by specifying attributes of the
+    window and the widgets displayed in the window.
+</DL>
+<HR width=45% align=left>
+<h4><A NAME="ItemUpdate">ItemUpdate()</A> </h4>
+<H4>Syntax</H4>
+<DL>
+  <DT class="code">ItemUpdate(MoaLong <I>iItemIndex</I>, PTMuiItem <I>PItemInitStructure</I>)
+</DL>
+<H4>Parameters</H4>
+<DL>
+  <DT><span class="codearg"><I><em>iItemIndex</em></I></span></DT>
+  <DD>MoaLong</DD>
+  <DT><span class="codearg">PItemInitStructure</span>
+  <DD>Handle to a <A HREF="mutypndx.htm#TMuiItem">TMuiItem</A> structure containing the updated information for the widget</DD>
+</DL>
+<H4>Returns</H4>
+<DL>
+  <DD><span class="code">MoaError</span>
+</DL>
+<H4>Description</H4>
+<DL>
+  <DD>Call this method from within your Xtra's <span class="code">IMoaNotificationClient::Notify()</span> method to update items in the dialog in response to user events.
+</DL>
+<HR width=45% align=left>
+<h4><A NAME="Run">Run()</A></h4>
+<H4>Syntax</H4>
+<DL>
+  <DT class="code">Run()
+</DL>
+<H4>Parameters</H4>
+<DL>
+</DL>
+<H4>Returns</H4>
+<DL>
+  <DD><span class="code">MoaError</span>
+</DL>
+<H4>Description</H4>
+<DL>
+  <DD>Displays the dialog box to the user and begins sending events
+    to the user. If the dialog is modal, this method returns only
+    when the user closes the dialog. If non-modal, this method returns
+    immediately, and its up to you to close the dialog as necessary
+    by calling <span class="code">IMoaDialog::Stop()</span> from your notification
+    client's <span class="code">Notify()</span> method.
+</DL>
+<HR width=45% align=left>
+<h4><A NAME="SetCallback">SetCallback()</A> </h4>
+<H4>Syntax</H4>
+<DL>
+  <DT class="code">SetCallback(PIMoaNotificationClient <I>notifyInterface</I>, PMoaVoid <I>clientDataReference</I>)
+</DL>
+<H4>Parameters</H4>
+<DL>
+  <DT><span class="codearg">notifyInterface</span></DT>
+  <DD><span class="code">IMoaNotificationClient</span> interface implemented
+    by an Xtra to handle events from a dialog box.</DD>
+  <DT><span class="codearg">clientDataReference </span>
+  <DD>PMoaVoid</DD>
+</DL>
+<H4>Returns</H4>
+<DL>
+  <DD><span class="code">MoaError</span>
+</DL>
+<H4>Description</H4>
+<DL>
+  <DD>Registers your Xtra's notification client with the dialog
+    Xtra, enabling the Xtra to send you events as the use manipulates
+    the dialog box.
+</DL>
+<HR width=45% align=left>
+<h4><A NAME="SetWindowParent">SetWindowParent()</A> </h4>
+<H4>Syntax</H4>
+<DL>
+  <DT class="code">SetWindowParent(MoaMmWinHdl32 <I>window</I>)
+</DL>
+<H4>Parameters</H4>
+<DL>
+  <DT class="codearg">window
+  <DD>MoaMmWinHdl32</DD>
+</DL>
+<H4>Returns</H4>
+<DL>
+  <DD><span class="code">MoaError</span>
+</DL>
+<H4>Description</H4>
+<DL>
+  <DD>Useful on Windows for setting the parent window of a particular
+    dialog box.
+</DL>
+<HR width=45% align=left>
+<h4><A NAME="Stop">Stop()</A> </h4>
+<H4>Syntax</H4>
+<DL>
+  <DT class="code">Stop(MoaError <I>statusCode </I>)
+</DL>
+<H4>Parameters</H4>
+<DL>
+  <DT><span class="code"><I>statusCode </I></span>
+  <DD>MoaError</DD>
+</DL>
+<H4>Returns</H4>
+<DL>
+  <DD><span class="code">MoaError</span>
+</DL>
+<H4>Description</H4>
+<DL>
+  <DD>Stops a non-modal dialog.</DD>
+</DL>
+<HR width=45% align=left>
+<h4><A NAME="WindowOp">WindowOp()</A> </h4>
+<H4>Syntax</H4>
+<DL>
+  <DT class="code">WindowOp(MoaLong <I>iWindowOp</I>)</DT>
+</DL>
+<H4>Parameters</H4>
+<DL>
+  <DT class="codearg">iWindowOp</DT>
+  <DD>MoaLong</DD>
+</DL>
+<H4>Returns</H4>
+<DL>
+  <DD><span class="code">MoaError</span>
+</DL>
+<H4>Description</H4>
+<DL>
+  <DD>This method controls the presentation of non-modal dialogs.
+    Values passed to the iWindowOp parameter determine the status
+    of a non-modal dialog.  These values can be:
+<TABLE BORDER="2">
+  <TR>
+    <TD WIDTH=257><span class="code">kMui_WindowOp_Hide</span></TD>
+    <TD WIDTH=257>Hide the dialog</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=257><span class="code">kMui_WindowOp_Show</span></TD>
+    <TD WIDTH=257>Show the dialog</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=257><span class="code">kMui_WindowOp_Center</span></TD>
+    <TD WIDTH=257>Center the dialog</TD>
+  </TR>
+</TABLE>
+</DL>
+<HR width=45% align=left>
+<A HREF = "../copyrite.htm">Copyright &#169; 1995-2008 Adobe Macromedia Software LLC, Inc.</A>
+</BODY>
+</HTML>

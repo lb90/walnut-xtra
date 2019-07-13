@@ -1,0 +1,787 @@
+<HTML>
+<HEAD>
+<TITLE>IMoaMmXSpriteActor</TITLE>
+<link href="../xdk.css" rel="stylesheet" type="text/css">
+</HEAD>
+<body>
+ <A HREF="../mmdg/index.htm">MM Developer's Guide</A> <BR>
+  <A HREF="index.htm" >MM Interfaces</A> | <A HREF="mmmthndx.htm" >MM Methods</A> | <A HREF="mmtypndx.htm">MM Types and Misc API</A>
+<hr width=45% align=left>
+<h3>IMoaMmXSpriteActor</h3>
+ Interface ID: <span class="code">IID_IMoaMmXSpriteActor</span><BR>
+  Pointer type: <span class="code">PIMoaMmXSpriteActor</span><BR>
+  Inheritance: <A HREF="mmprpown.htm">IMoaMmPropOwner</A> <BR>
+  Header file: <A HREF = "../../include/mmixasst.h">mmixasst.h</A>
+
+<h3>Description</h3>
+<DL>
+  <DD>The <span class="code">IMoaMmXSpriteActor</span> interface lets an asset Xtra implement
+    runtime behavior for presenting during playback of a multimedia piece.
+    The methods of this interface enable asset Xtras to describe their capabilities to an application, 
+    to draw themselves, to handle events, and to interact with their asset and the application.</DD>
+</DL>
+<h3>Methods</h3>
+<h4>Scripting support </h4>
+<DL>
+  <DD><A HREF = "#GetProp">GetProp()</A> <BR>
+    <A HREF = "#SetProp">SetProp()</A> <BR>
+    <A HREF = "#CallFunction">CallFunction()</A></DD>
+</DL>
+<h4>Asset interaction </h4>
+<DL>
+  <DD><A HREF = "#SetCallback">SetCallback()</A><BR>
+    <A HREF = "#Notify">Notify()</A></DD>
+</DL>
+<h4>Event handling </h4>
+<DL>
+  <DD><A HREF = "#GetCaps">GetCaps()</A> <BR>
+    <A HREF = "#ContainsPoint">ContainsPoint()</A><BR>
+    <A HREF = "#Event">Event()</A></DD>
+</DL>
+<h4>Imaging </h4>
+<DL>
+  <DD><A HREF = "#CollectChanges">CollectChanges()</A><BR>
+    <A HREF = "#Image">Image()</A></DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="CallFunction">CallFunction()</A></h3>
+<h4>Syntax</h4>
+<DL>
+<DT class="code">CallFunction(MoaMmSymbol <I>methodName</I>, MoaLong <I>nArgs</I>, ConstPMoaMmValue <I>pArgs</I>, PMoaMmValue <I>pResult</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+  <DT class="codearg">methodName</DT>
+  <DD>Symbol of the method (function) to call</DD>
+  <DT class="codearg">nArgs</DT>
+  <DD>Number of arguments, excluding reserved value in <span class="codearg">pArgs[0]</span></DD>
+  <DT class="codearg">pArgs</DT>
+  <DD>Array of arguments, with the first valid argument at <span class="codearg">pArgs[1]</span></DD>
+  <DT class="codearg">pResult</DT>
+  <DD>Pointer to a <span class="code">MoaMmValue</span> to receive a result value, if any</DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD>
+    <TABLE BORDER="2">
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=211><span class="code">kMoaErr_NoErr</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=510>Function exists and operation was successful </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=211><span class="code">kMoaErr_BadParam</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=510>Invalid <span class="codearg">nArgs</span>, <span class="codearg">pArgs</span>, or <span class="codearg">pResult</span> passed in</TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=211><span class="code">kMoaMmErr_FunctionNotFound</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=510>Function not supported by this actor </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=211><span class="code">kMoaErr_OutOfMem</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=510>Couldn't allocate memory needed to execute function </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=211><span class="code">kMoaMmErr_InternalError</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=510>Function exists, args ok, can't execute internal error </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=211><span class="code">kMoaMmErr_NoArgExpected</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=510>Wrong number of args: 0 expected </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=211><span class="code">kMoaMmErr_OneArgExpected</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=510>Wrong number of args: 1 expected </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=211><span class="code">kMoaMmErr_TwoArgsExpected</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=510>Wrong number of args: 2 expected </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=211><span class="code">kMoaMmErr_ThreeArgsExpected</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=510>Wrong number of args: 3 expected </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=211><span class="code">kMoaMmErr_FourArgsExpected</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=510>Wrong number of args: 4 expected </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=211><span class="code">kMoaMmErr_WrongNumberOfArgs</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=510>Wrong number of arguments, non- specific </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=211><span class="code">kMoaMmErr_IntegerExpected</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=510>Type mismatch: integer value argument expected </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=211><span class="code">kMoaMmErr_SymbolExpected</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=510>Type mismatch: symbol value argument expected </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=211><span class="code">kMoaMmErr_FloatExpected</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=510>Type mismatch: float value argument expected </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=211><span class="code">kMoaMmErr_StringExpected</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=510>Type mismatch: string value argument expected </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=211><span class="code">kMoaMmErr_PointExpected</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=510>Type mismatch: point value argument expected </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=211><span class="code">kMoaMmErr_RectExpected</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=510>Type mismatch: rect value argument expected </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=211><span class="code">kMoaMmErr_ValueTypeMismatch</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=510>Type mismatch: other value argument expected </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=211><span class="code">kMoaDrErr_CastMemberExpected</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=510>Type mismatch: <span class="code">CMRef</span> value argument expected (Director only) </TD>
+      </TR>
+    </TABLE>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD>Calls a sprite actor scripting function. This method allows
+    sprite actors to export arbitrary functions to be used in the
+    host application's scripting or expression language. The caller
+    passes the symbol of the function to call in the <span class="code">methodName</span> parameter, 
+    along with the argument count (<span class="codearg">nArgs</span>),
+    the argument array (<span class="codearg">pArgs</span>),
+    and optionally, a pointer to a <span class="code">MoaMmValue</span> to receive any result value. 
+    The argument array, <span class="codearg">pArgs</span>,
+    contains an array of <span class="code">MoaMmValues</span> corresponding to the function arguments. 
+    <span class="code"><I>pArgs</I>[0]</span> is a reserved value and should not be referenced.
+    The function parameters are supplied in <span class="code"><I>pArgs</I>[1]</span> through 
+    <span class="code"><I>pArgs</I>[<I>nArgs</I>]</span>.
+    These <span class="code">MoaMmValues</span> are
+    owned by the host application and should not be released by this
+    method. If the method has a return value, it should populate <span class="code"><I>pResult</I></span> with 
+    a new <span class="code">MoaMmValue</span> containing the result. If the Xtra does not support
+    the function specified by <span class="code"><I>methodName</I></span>,
+    it should return the error code <span class="code">kMoaMmErr_FunctionNotFound</span>.
+    If the number or types of arguments are incorrect, the function
+    should return one of the appropriate <span class="code">MoaMmErrors</span> (see mmtypes.h). </DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="CollectChanges">CollectChanges()</A></h3>
+<h4>Syntax</h4>
+<DL>
+<DT class="code">CollectChanges(ConstPMoaMmXSpriteInfo <I>pActorInfo</I>, PIMoaMmChangeCollector <I>pChangeCollector</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+  <DT class="codearag">pActorInfo</DT>
+  <DD>Pointer to an <span class="code">ActorInfo</span> structure for context in which actor is imaged</DD>
+  <DT class="code">pChangeCollector</DT>
+  <DD>Pointer to an <span class="code">IMoaMmChangeCollector</span> interface</DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD>
+    <TABLE BORDER="2">
+      <TR>
+        <TD class="code">kMoaErr_NoErr</TD>
+        <TD>Successful, change rects (if any) submitted </TD>
+      </TR>
+      <TR>
+        <TD class="code">kMoaMmErr_NotImplemented</TD>
+        <TD>Sprite is static, updates are requested using <span class="code">InvalSpriteRect().</span>
+        You must set the <span class="code">kMoaMmXSpriteCapsFlags_IsStatic</span> sprite caps flag in your <span class="code">GetCaps()</span>.</TD>
+      </TR>
+    </TABLE>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD>Obtains change rectangles for the actor. This method is called
+    for all actors that have not otherwise changed from the current
+    frame to the next (sprite rectangle, ink mode, color, and so on.
+    are the same). This gives the actor an opportunity to let the
+    host application know of any changes occurring within the actor's
+    bounding box, so that the actor can be called back to image those
+    changes. Using the supplied <span class="code">IMoaMmChangeCollector</span> interface, 
+    <span class="code">CollectChanges()</span> can submit multiple change rectangles. 
+    For each rectangle, call <span class="code">pChangeCollector-&gt;lpVtbl-&gt;AddChangeRect()</span>
+    with the rectangle to submit. Submitting an empty
+    rectangle has no effect. If there are no change rectangles, return <span class="code">kMoaErr_NoErr</span> without
+    calling <span class="code">pChangeCollector-&gt;lpVtbl-&gt;AddChangeRect()</span>.
+    To optimize compositing, you can call <span class="code">AddChangeRectAbove()</span> instead 
+    of <span class="code">AddChangeRect()</span>.
+    This should be used only if the rectangle specified is completely
+    opaque in your sprite; this tells the host application that it
+    is not necessary to redraw the area directly behind the supplied
+    rectangle. Even if the host application does not support this
+    optimization, it still accepts <span class="code">AddChangeRectAbove()</span>,
+    in this case, <span class="code">AddChangeRectAbove()</span> has the same effect 
+    as <span class="code">AddChangeRect()</span>. </DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="ContainsPoint">ContainsPoint()</A></h3>
+<h4>Syntax</h4>
+<DL>
+<DT class="code">ContainsPoint(ConstPMoaMmXSpriteInfo <I>pActorInfo</I>, ConstPMoaPoint <I>pTestPoint</I>, MoaBoolParam *<I> pTestResult</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+  <DT class="codearg">pActorInfo</DT>
+  <DD>Pointer to <span class="code">MoaMmXSpriteInfo</span> for context in which actor draw</DD>
+  <DT class="codearg">pTestPoint</DT>
+  <DD>Pointer to the point to test</DD>
+  <DT class="codearg">pTestResult</DT>
+  <DD>Pointer to <span class="code">MoaLong</span> for result: 0 if not within, non-0 if within</DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD>
+    <TABLE BORDER="2">
+      <TR>
+        <TD class="code">kMoaErr_NoErr</TD>
+        <TD>Successful, <span class="codearg">pTestResult</span> set</TD>
+      </TR>
+    </TABLE>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD>Queries the actor to determine if a given point lies within its visual region in the playback window.
+  The actor should use the information in <span class="codearg">pActorInfo</span> (sprite rectangle, ink mode, and so on) and the
+    point supplied in <span class="codearg">pTestPoint</span>, to perform the test.
+    The result of the test should be returned in <span class="codearg">pTestResult</span>:
+    0 if the point is not within the area occupied by the actor sprite; non-0 if it is.
+    If the actor's shape is non-rectangular, the test should take this into account and not use the sprite rectangle.
+    This is called by the host application when mouse hit-testing and rollover-testing is being performed.</DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="Event">Event()</A></h3>
+<h4>Syntax</h4>
+<DL>
+<DT class="code">Event(ConstPMoaMmEventInfo <I>pEventInfo</I>, ConstPMoaMmPlayerStateInfo <I>pPlayerStateInfo</I>, MoaBoolParam * <I>pHandled</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+  <DT class="codearg">pEventInfo</DT>
+  <DD>Pointer to a <span class="code">MoaMmEventInfo</span> structure containing information about the event</DD>
+  <DT class="codearg">pPlayerStateInfo</DT>
+  <DD>Pointer to a caller-owned structure containing various state information about the player</DD>
+  <DT class="codearg">pHandled</DT>
+  <DD>Pointer to a <span class="code">MoaBoolParam</span> to receive the handled status of the event</DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD>
+    <TABLE BORDER="2">
+      <TR>
+        <TD class="code">kMoaErr_NoErr</TD>
+        <TD>Successful, event handled or intentionally passed</TD>
+      </TR>
+      <TR>
+        <TD class="code">kMoaErr_OutOfMem</TD>
+        <TD>Wanted event but couldn't handle due to memory error </TD>
+      </TR>
+      <TR>
+        <TD class="code">kMoaMmErr_InternalError</TD>
+        <TD>Wanted event but couldn't handle due to an internal error </TD>
+      </TR>
+    </TABLE>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD><BR>
+    Notifies an actor that an event of interest has occurred.
+    The actor subscribes to sets of events by setting the appropriate
+    flags in the eventMask field of the <span class="code">MoaMmXSpriteCaps</span> structure returned by 
+    its <span class="code">IMoaMmXSpriteActor::GetCaps()</span> method.<BR>
+    <BR>
+    Events fall into the following categories:<BR>
+    <BR>
+    <UL>
+      <LI>mouse events</LI>
+      <LI>keyboard events</LI>
+      <LI>idle events</LI>
+      <LI>step events</LI>
+      <LI>span events</LI>
+      <LI>play events (received only at authoring time)</LI>
+      <LI>environment change events</LI>
+    </UL>
+    <BR>
+    See the description of the <A HREF="mmtypndx.htm#MoaMmEventInfo"><span class="code">MoaMmEventInfo</span></A> type and associated constants later in 
+    this chapter for more details on these event types.<BR>
+    <BR>
+    Each time the <span class="code">Event()</span> method is called, 
+    the <span class="codearg">pEventInfo</span> structure passed in contains the identity of the specific event type being sent.
+    A number of events include additional information, including time and mouse position. 
+    These include <span class="code">mouseDown</span>, 
+    <span class="code">mouseUp</span>, <span class="code">mouseUpOut</span>, <span class="code">mouseDblClick</span>, 
+    <span class="code">rightMouseDown</span>, <span class="code">rightMouseUp</span>, 
+    <span class="code">rightMouseUpOut</span>, <span class="code">rightMouseDblClick</span>, 
+    <span class="code">keyDown</span>, <span class="code">keyUp</span>, <span class="code">idle</span>, 
+    and <span class="code">step</span>. <BR>
+    <BR>
+    <B>Note:</B> in Director, the modify key fields of the event info
+    structure are not updated for events received while the mouse
+    button is down. To get the actual values of any modify keys, you'll
+    need to use native OS calls.<BR>
+    <BR>
+    The actor should set the value at <span class="codearg">pHandled</span> to 
+    <span class="code">kMoaMmSprEvent_Handled</span> if it handled the event, or 
+    <span class="code">kMoaMmSprEvent_Pass</span> if it wants to pass the event along to other objects
+    in the event hierarchy (such as sprite scripts in Director).<BR>
+    <BR>
+    <B>Important</B>: In almost all cases, imaging should only occur
+    in your <span class="code">Image()</span> method.
+    Only direct-to-screen actors, which need to image independently
+    of the animation tempo (such as digital video or other time-based
+    media) should image in response to events. In this case, only
+    the idle event should be used. Offscreen imaging or imaging in
+    response to any other events is not supported and may have unpredictable
+    results. <BR>
+    <BR>
+    The posting of idle events is application and CPU-dependent. Idle
+    events are posted when the host application has free cycles; you
+    are not guaranteed to get any idle events. Idle events should
+    be used only to perform optional background tasks such as the
+    servicing of time-based media. Time- based media should also be
+    serviced when receiving Step events, which are guaranteed to occur
+    once, and only once, per animation frame.<BR>
+    <BR>
+    If you need data from the actor information in your <span class="code">Event()</span> method 
+    (such as the sprite rectangle), save it in 
+    an instance variable from your last <span class="code">Image()</span> method. 
+    If you need a graphic context during an <span class="code">Event()</span>method 
+    call, (for example to image sprite direct-to-stage during idle events), 
+    save a native representation (for example, a <span class="code">WindowPtr</span>) 
+    obtained from the graphic context in your <span class="code">Image()</span> method. 
+    The <span class="code"><a name="WIndow">WindowPtr/HWND</a></span> may 
+    not be in existance for the entire life of an actor instance. Changing some window properties may cause a window to get 
+    destroyed and recreated. Starting with Director MX 2004 this is more likely to occur, 
+    as it happens when windows are docked/undocked 
+    in authoring, or when the display template properties associated with a window are changed.<BR>
+    <BR>
+    The events should be used only to set internal state information.
+    For example, rather than doing span initialization (that may require
+    the actor information and a graphic context) in your <span class="code">SpanBegin</span> code in 
+    an <span class="code">Event()</span> method,
+    set an internal state variable, then initialize it when your <span class="code">Image()</span> method is called, 
+    so you'll have actor information
+    and a graphic context available. <BR>
+    <BR>
+    Pass back the value <span class="code">kMoaMmSprEvent_Handled</span> as 
+    <span class="code"><I>pHandled</I></span> if the event is completely handled by your code and shouldn't
+    be passed to the next event handler. Pass back <span class="code">kMoaMmSprEvent_Pass</span> if the 
+    event should be passed to the next event handler.</DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="GetCaps">GetCaps()</A></h3>
+<h4>Syntax</h4>
+<DL>
+<DT class="code">GetCaps(PMoaMmXSpriteCaps <I>pActorCaps</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+  <DT class="codearg">pActorCaps</DT>
+  <DD>Pointer to a <span class="code">MoaMmXSpriteCaps</span> structure to receive actor capabilities</DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD>
+    <TABLE BORDER="2">
+      <TR>
+        <TD class="code">kMoaErr_NoErr</TD>
+        <TD>Successful</TD>
+      </TR>
+    </TABLE>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD>
+    Obtains the sprite actor capabilities for this sprite actor. This
+    method is called by the host application directly after the actor
+    instance is created. As it plays, a sprite may update its capabilities
+    by calling the <span class="code">IMoaMmSpriteCallback::InvalSpriteCaps()</span> method; 
+    this forces the host to call the <span class="code">GetCaps()</span> method again. <BR>
+    <BR>
+    This method should populate all of the fields of the supplied <a href="mmtypndx.htm#MoaMmXSpriteCaps"><span class="code">MoaMmXSpriteCaps</span></a> structure:
+    the <span class="code">eventMask</span>, flags, <span class="code">requiredImageMode</span>,
+    and <span class="code">preferredImageMode</span>.
+    The following tables describe these fields. For more information,
+    see mmtypes.h for the event masks, flags, and image modes.<BR>
+    <BR>
+    The <span class="code">eventMask</span> indicates
+    what classes of events the actor wishes to receive (such as mouse
+    events, keyboard events, and so on.)<BR>
+    <UL>
+      <LI class="code">kMoaMmEventMask_Every</LI>
+      <LI class="code">kMoaMmEventMask_Idle</LI>
+      <LI class="code">kMoaMmEventMask_Mouse</LI>
+      <LI class="code">kMoaMmEventMask_Key</LI>
+      <LI class="code">kMoaMmEventMask_Play (authoring only)</LI>
+      <LI class="code">kMoaMmEventMask_Step</LI>
+      <LI class="code">kMoaMmEventMask_Span</LI>
+      <LI class="code">kMoaMmEventMask_Environment</LI>
+    </UL>
+    The <span class="code">flags</span> field indicates
+    whether the actor supports various capabilities, such as auto-tab
+    keyboard focus handling and persistency across sprite spans.</DD>
+ </DL>
+<UL>
+  <LI><span class="code">kMoaMmXSpriteCapsFlags_IsStatic</span>
+  <ul><li>Specifies whether the actor can be animates or if it is always
+    a static image. This information can be used to optimize compositing
+    in the host application. When set, the sprite actor does not change
+    in appearance, play sound, or do anything else which would require
+    it to be serviced regularly. When not set, the sprite actor can
+    animate, play sound, and so on. In addition to setting this flag,
+    static actors should not subscribe to idle and step events for
+    optimum performance. This setting is valid only for offscreen
+    imaging actors, since it results in <span class="code">CollectChanges()</span> not being called. 
+    A static actor can call <span class="code">IMoaMmSpriteCallback::InvalSpriteRect()</span> method to force the 
+    call to its <span class="code">CollectChanges()</span>method. </li>
+    </ul></LI>
+    
+  <LI><span class="code">kMoaMmXSpriteCapsFlags_AutoTabEnabled</span>
+  <ul><li>Applies only to actors wanting keyboard events. This is accomplished
+    by setting the <span class="code">kMoaMmEventMask_Key </span>bit in the <span class="code">eventMask</span> 
+    part of the actor capabilities structure. When set, pressing the
+    TAB key while this actor has the focus causes the host application
+    to switch to the next focus-capable actor in the current frame,
+    removing focus from this actor. In this mode, the TAB key is not
+    passed to the actor and is absorbed by the host application instead.
+    When not set, pressing the TAB key causes the host application
+    to pass the key through to the actor through the <span class="code">Event()</span> method, like all other keys. 
+    In this mode, the TAB
+    key is not absorbed by the application and the actor does not
+    lose focus when it is pressed.</li>
+    <li>The <span class="code">requiredImageMode</span> field specifies which, if any, imaging modes are required for
+    the Xtra to function.
+    </li></ul></LI>
+    
+  <LI><span class="code">kMoaMmXSpriteImageMode_Any</span>
+  <ul><li>Both offscreen and direct-to-screen imaging are supported.
+    When set, you can specify <span class="code">preferredImageMode</span>.</li></ul></LI>
+    
+  <LI><span class="code">kMoaMmXSpriteImageMode_Offscreen</span>
+  <ul><li>Only offscreen imaging is supported</li></ul></LI>
+  
+  <LI><span class="code">kMoaMmXSpriteImageMode_DirectToScreen</span>
+  <ul><li>Only direct-to-screen imaging is supported.*</li>
+    <li>The <span class="code">preferredImageMode </span>field
+    is only relevant if the <span class="code">requiredImageMode</span> is set to 
+    <span class="code">kMoaMmXSpriteImageMode_Any</span>.
+    When set, <span class="code">preferredImageMode</span> specifies the default or optimal imaging mode for the actor.
+    </li></ul></LI>
+    
+  <LI><span class="code">kMoaMmXSpriteImageMode_Any</span>
+  <ul><li>Both offscreen and direct-to-screen imaging are equally supported;
+    the host application should use whatever default it sees fit.</li></ul></LI>
+    
+  <LI><span class="code">kMoaMmXSpriteImageMode_Offscreen</span>
+  <ul><li>Offscreen imaging is preferred; this mode should be used if possible.</li></ul></LI>
+  
+  <LI><span class="code">kMoaMmXSpriteImageMode_DirectToScreen</span>
+  <ul><li>Direct-to-screen imaging is preferred; this mode should be used if possible.*</li>
+    <li>*<B>Note:</B> sprites that draw direct-to-screen must always fill
+    their entire default rectangle (provided by the <span class="code">IMoaMmXAsset::GetDefaultRect()</span> method); 
+    otherwise, the host application may leave unexpected
+    artifacts in the unfilled areas of the sprite's bounds.</li></ul></LI>
+</UL>
+
+<hr width=45% align=left>
+<h3><A NAME="GetProp">GetProp()</A></h3>
+<h4>Syntax</h4>
+<DL>
+<DT class="code">GetProp(MoaMmSymbol <I>symbol</I>, PMoaMmValue <I>pPropValue</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+  <DT><span class="code"><I>symbol</I></span></DT>
+  <DD><span class="code">MoaMmSymbol</span> representing the requested property</DD>
+  <DT><span class="code"><I>pPropValue</I></span></DT>
+  <DD>Pointer to a <span class="code">MoaMmValue</span> to receive the value</DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD>
+    <TABLE BORDER="2">
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=202><span class="code">kMoaErr_NoErr</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=393>Property exists and value was returned </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=202><span class="code">kMoaErr_BadParam</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=393>Invalid<span class="code"> <I>pPropValue</I> </span>passed in </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=202><span class="code">kMoaMmErr_PropertyNotFound</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=393>Property isn't supported by this actor </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=202><span class="code">kMoaMmErr_InternalError</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=393>Property exists but couldn't get due to internal error </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=202><span class="code">kMoaMmErr_NoMemForString</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=393>Couldn't allocate memory for string value data </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=202><span class="code">kMoaErr_OutOfMem</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=393>Couldn't allocate memory for other value data </TD>
+      </TR>
+    </TABLE>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD>Gets the value of a sprite actor property. The host application
+    passes in the symbol for the requested property; this is an abstract
+    reference to a string in the host application's symbol dictionary.
+    Use <span class="code">IMoaMmUtils::StringToSymbol()</span> to get the <span class="code">MoaMmSymbol</span> for any string, 
+    and <span class="code">IMoaMmUtils::SymbolToString()</span> to convert any symbol to a string. 
+    This method should populate <span class="code"><I>pPropValue</I></span> with
+    a new value; the host application then assumes ownership of the
+    value and is responsible for releasing it. This method returns
+    the error code <span class="code">kMoaMmErr_PropertyNotFound</span> if it does not support the specified property symbol. </DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="Image">Image()</A></h3>
+<h4>Syntax</h4>
+<DL>
+<DT class="code">Image(ConstPMoaMmXSpriteInfo <I>pActorInfo</I>, ConstPMoaMmPlayerStateInfo <I>pPlayerStateInfo</I>, PIMoaMmGC <I>pGC</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+  <DT><span class="code"><I>pActorInfo</I></span></DT>
+  <DD>Pointer to <span class="code">MoaMmXSpriteInfo</span> structure for context in which actor is drawn</DD>
+  <DT><span class="code"><I>pPlayerStateInfo</I></span></DT>
+  <DD>Pointer to a caller-owned <span class="code">CMoaMmPlayerStateInfo</span> structure
+    containing state information about the player</DD>
+  <DT><span class="code"><I>pGC</I></span></DT>
+  <DD>Pointer to an <span class="code">IMoaMmGC</span> interface for the graphics context into which the
+    sprite actor should be imaged</DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD>
+    <TABLE BORDER="2">
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=216><span class="code">kMoaErr_NoErr</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=288>Successful, sprite imaged into supplied GC </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=216><span class="code">kMoaMmErr_NotImplemented</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=288>Actor doesn't have a visual representation </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=216><span class="code">kMoaMmErr_GCTypeNotSupported</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=288>Doesn't support supplied GC type </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=216><span class="code">kMoaErr_OutOfMem</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=288>Couldn't image due to memory error </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=216><span class="code">kMoaMmErr_InternalError</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=288>Couldn't image due to an internal error </TD>
+      </TR>
+    </TABLE>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD><BR>
+    Images your sprite actor. <span class="code"><I>pActorInfo</I></span> contains a pointer to a 
+    <span class="code">MoaMmXSpriteInfo</span> structure which describes the context in which your actor is to
+    be imaged. This includes information such as the ink mode, sprite
+    rectangle in which to draw, and other imaging parameters. 
+    <span class="code"><I>pPlayerStateInfo</I></span> contains global information about the player's
+    state: whether it's playing or stopped, and whether sound playback
+    is enabled. <span class="code"><I>pGC</I></span> contains
+    a <span class="code">PIMoaMmGC</span>, a pointer
+    to a graphics context interface describing the native window or
+    offscreen buffer into which the sprite should be drawn.<BR>
+    <BR>
+    If you support the direct-to-screen imaging mode, the graphics
+    context supplied can be associated with an operating system window
+    on the playback machine. If the actor is offscreen-only, the graphics
+    context will always be associated with an offscreen buffer.<BR>
+    <BR>
+    <B>Windows note:</B> before your actor begins imaging, you must
+    explicitly set the raster drawing mode of the device using the
+    Windows <span class="code">SetROP2()</span> function. <BR>
+    <BR>
+    If your actor has no visual component, just return <span class="code">kMoaErr_NoErr</span>.</DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="Notify">Notify()</A></h3>
+<h4>Syntax</h4>
+<DL>
+<DT class="code">Notify(MoaLong <I>msgCode</I>, PMoaVoid <I>refCon</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+  <DT><span class="code"><I>msgCode</I></span></DT>
+  <DD>MoaLong</DD>
+  <DT><span class="code"><I>refCon</I></span></DT>
+  <DD>PMoaVoid</DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD>
+    <TABLE BORDER="2">
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=239><span class="code">kMoaErr_NoErr</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=505>Successful</TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=239><span class="code">kMoaMmErr_UnknownNotifyMsgCode</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=505>Notify message code not supported Used for communicating between assets and their actors. The <span class="code">NotifySprites() </span>method of the <span class="code">IMoaMmAssetCallback </span>interface calls this method for all active sprite actors. </TD>
+      </TR>
+    </TABLE>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD><BR>
+    Used for communicating between assets and their actors. The <span class="code">NotifySprites()</span> method of 
+    the <span class="code">IMoaMmAssetCallback</span> interface calls this method for all active sprite actors. <BR>
+    <BR>
+    <B>Note: </B>Xtra developers may specify values in the range of
+    0 to 65535 for their notification codes. Higher values are reserved
+    by Adobe for future use.</DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="SetCallback">SetCallback()</A></h3>
+<h4>Syntax</h4>
+<DL>
+<DT class="code">SetCallback(PIMoaMmSpriteCallback<I>pSpriteCallback</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+  <DT><span class="code"><I>pSpriteCallback</I></span></DT>
+  <DD>Pointer to an instance of
+    the <span class="code">IMoaMmSpriteCallback</span> interface</DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD>
+    <TABLE BORDER="2">
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP"><span class="code">kMoaErr_NoErr</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP">Interface set</TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP"><span class="code">kMoaMmErr_NotImplemented</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP">Callback interface not used </TD>
+      </TR>
+    </TABLE>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD><BR>
+    Receives an <span class="code">IMoaMmSpriteCallback</span> interface containing callback methods for the sprite. In Director,
+    this class also supports the <span class="code">IMoaDrSpriteCallback</span> interface containing Director-specific callbacks. This is called
+    directly after the host application calls an asset's <span class="code">NewXActor()</span> method.<BR>
+    <BR>
+    <B>Important</B>: If you want to hold on to the callback interface,
+    you must call <span class="code">AddRef()</span> on the interface and store it in an instance variable, then release
+    it in the <span class="code">MoaDestroy</span> function of your actor class.</DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="SetProp">SetProp()</A></h3>
+<h4>Syntax</h4>
+<DL>
+<DT class="code">SetProp(MoaMmSymbol <I>symbol</I>, ConstPMoaMmValue <I>pPropValue</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+  <DT class="codearg">symbol</DT>
+  <DD>MoaMmSymbol representing the property to set</DD>
+  <DT class="codearg">pPropValue</DT>
+  <DD>Pointer to a <span class="code">ConstPMoaMmValue</span> which contains the value</DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD>
+    <TABLE BORDER="2">
+      <TR>
+        <TD class="code">kMoaErr_NoErr</TD>
+        <TD>Property exists and value was set </TD>
+      </TR>
+      <TR>
+        <TD class="code">kMoaErr_BadParam</TD>
+        <TD>Invalid <span class="codearg">pPropValue</span> passed in </TD>
+      </TR>
+      <TR>
+        <TD class="code">kMoaMmErr_PropertyNotFound</TD>
+        <TD>Property isn't supported by this class </TD>
+      </TR>
+      <TR>
+        <TD class="code">kMoaMmErr_InternalError</TD>
+        <TD>Property exists, value ok, can't set due to internal error </TD>
+      </TR>
+      <TR>
+        <TD class="code">kMoaMmErr_NoMemForString</TD>
+        <TD>Can't allocate memory for setting string value data </TD>
+      </TR>
+      <TR>
+        <TD class="code">kMoaErr_OutOfMem</TD>
+        <TD>Can't allocate memory for setting other value data </TD>
+      </TR>
+      <TR>
+        <TD class="code">kMoaMmErr_IntegerExpected</TD>
+        <TD>Type mismatch: integer value expected </TD>
+      </TR>
+      <TR>
+        <TD class="code">kMoaMmErr_SymbolExpected</TD>
+        <TD>Type mismatch: symbol value expected </TD>
+      </TR>
+      <TR>
+        <TD class="code">kMoaMmErr_FloatExpected</TD>
+        <TD>Type mismatch: float value expected </TD>
+      </TR>
+      <TR>
+        <TD class="code">kMoaMmErr_StringExpected</TD>
+        <TD>Type mismatch: string value expected </TD>
+      </TR>
+      <TR>
+        <TD class="code">kMoaMmErr_PointExpected</TD>
+        <TD>Type mismatch: point value expected </TD>
+      </TR>
+      <TR>
+        <TD class="code">kMoaMmErr_RectExpected</TD>
+        <TD>Type mismatch: rect value expected </TD>
+      </TR>
+      <TR>
+        <TD class="code">kMoaMmErr_ValueTypeMismatch</TD>
+        <TD>Type mismatch: other value expected (non-specific) </TD>
+      </TR>
+      <TR>
+        <TD class="code">kMoaDrErr_CastMemberExpected</TD>
+        <TD>Type mismatch: <span class="code">CMRef</span> expected (Director only) </TD>
+      </TR>
+    </TABLE>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD><BR>
+    Sets the value of a sprite actor property. 
+    The host application passes in the symbol for the property to set. 
+    This is an abstract reference to a string in the host application's symbol dictionary.
+    Use <span class="code">IMoaMmUtils::StringToSymbol()</span> to get the <span class="code">MoaMmSymbol</span> for any string, 
+    and <span class="code">IMoaMmUtils::SymbolToString()</span> to convert any symbol to a string.
+    This method should take the value supplied in <span class="codearg">pPropValue</span> and use it to update the object's internal representation of the property. 
+    The host application continues to maintain ownership of the <span class="code">MoaMmValue</span>. 
+    This method should not release the passed-in value. 
+    <span class="code">SetProp()</span> should return the error code <span class="code">kMoaMmErr_PropertyNotFound</span> if it does not support the specified property symbol.
+</DL>
+
+<hr width=45% align=left>
+<A HREF = "../copyrite.htm">Copyright &#169; 1995-2008 Adobe Macromedia Software LLC, Inc.</A>
+</BODY>
+</html>

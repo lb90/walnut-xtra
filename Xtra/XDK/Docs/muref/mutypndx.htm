@@ -1,0 +1,571 @@
+<HTML>
+<HEAD>
+<TITLE>MUI Types and Miscellaneous API</TITLE>
+<link href="../xdk.css" rel="stylesheet" type="text/css">
+</HEAD>
+<BODY>
+<P> <A HREF="../mudg/index.htm" >MUI Developer's Guide</A><BR>
+  <A HREF="index.htm" >MUI Interfaces</A> | <A HREF="mumthndx.htm" >MUI Methods</A>
+<HR width=45% align=left>
+<H3><A NAME="RTFToC2">Director Xtra Development Kit: MUI API Reference</A></H3>
+<H3>MUI Types and Miscellaneous API</H3>
+<HR width=45% align=left>
+<P>This document contains the following sections:
+<UL>
+  <LI><A HREF = "#MUTYPES">MUI Types</A>
+  <LI><A HREF = "#MUCONSTS">MUI Constants</A>
+  <LI><A HREF = "#MUERRS">MUI Errors</A>
+</UL>
+<HR width=45% align=left>
+<H3><A NAME="MUTYPES">MUI Types</A></H3>
+<H4><A NAME="TMuiAlertButtonType">TMuiAlertButtonType</A> </H4>
+<P> Defined in: muiinit.t
+<P> <span class="code">typedef MoaLong TMuiAlertButtonType</span>
+<P> Passed to <A HREF="mualert.htm#Alert">IMuiAlert::Alert()</A>,
+  specifies the buttons in an alert. The following constants define
+  the button types:
+<P>
+<TABLE BORDER=2>
+  <TR>
+    <TD WIDTH=208><B>Constant</B></TD>
+    <TD WIDTH=296><B>Buttons</B> </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=208><span class="code">kMuiAlertButtons_Ok </span></TD>
+    <TD WIDTH=296>1: OK </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=208><span class="code">kMuiAlertButtons_OkCancel</span></TD>
+    <TD WIDTH=296>2: OK, Cancel</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=208><span class="code">kMuiAlertButtons_AbortRetryIgnore</span> </TD>
+    <TD WIDTH=296>3: Abort, Retry, Ignore</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=208><span class="code">kMuiAlertButtons_YesNoCancel</span></TD>
+    <TD WIDTH=296>3: Yes, No, Cancel</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=208><span class="code">kMuiAlertButtons_YesNo</span></TD>
+    <TD WIDTH=296>2: Yes, No </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=208><span class="code">kMuiAlertButtons_RetryCancel</span></TD>
+    <TD WIDTH=296>2: Retry, Cancel</TD>
+  </TR>
+</TABLE>
+
+<H4><A NAME="TMuiAlertIcon">TMuiAlertIcon</A> </H4>
+<P> Defined in: muiinit.t
+<P> <span class="code">typedef MoaLong TMuiAlertIcon</span>
+<P> Passed to <A HREF="mualert.htm#Alert">IMuiAlert::Alert()</A>,
+  specifies the icon in an alert box. The following constants define
+  the alert icons:
+<TABLE BORDER=2>
+  <TR>
+    <TD WIDTH=252>kMuiAlertIcon_None</TD>
+    <TD WIDTH=252></TD>
+  </TR>
+  <TR>
+    <TD WIDTH=252>kMuiAlertIcon_Stop</TD>
+    <TD WIDTH=252></TD>
+  </TR>
+  <TR>
+    <TD WIDTH=252>kMuiAlertIcon_Note</TD>
+    <TD WIDTH=252></TD>
+  </TR>
+  <TR>
+    <TD WIDTH=252>kMuiAlertIcon_Caution</TD>
+    <TD WIDTH=252></TD>
+  </TR>
+  <TR>
+    <TD WIDTH=252>kMuiAlertIcon_Question</TD>
+    <TD WIDTH=252></TD>
+  </TR>
+  <TR>
+    <TD WIDTH=252>kMuiAlertIcon_Error</TD>
+    <TD WIDTH=252></TD>
+  </TR>
+</TABLE>
+<H4><A NAME="TMuiDialogEvent">TMuiDialogEvent</A> </H4>
+<P> Defined in: mui.h
+<P> <span class="code">typedef MoaLong TMuiDialogEvent</span>
+<P> Value passed to <A HREF="../moref/montfcln.htm">IMoaNotificationClient::Notify()</A> to enable event handling for a dialog box. The following constants
+  define the types of events:
+<TABLE BORDER=2>
+  <TR>
+    <TD WIDTH=173><B>Constant</B></TD>
+    <TD WIDTH=166><span class="code"><B>itemHit</B></span><B> </B> </TD>
+    <TD WIDTH=166><B>Data in refCon</B></TD>
+  </TR>
+  <TR>
+    <TD WIDTH=173><span class="code">kMuiDialogItemChanged</span></TD>
+    <TD WIDTH=166>item changed </TD>
+    <TD WIDTH=166>-</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=173><span class="code">kMuiDialogItemClicked</span></TD>
+    <TD WIDTH=166>item clicked </TD>
+    <TD WIDTH=166>-</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=173><span class="code">kMuiDialogWindowOpening</span></TD>
+    <TD WIDTH=166>- </TD>
+    <TD WIDTH=166>-</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=173><span class="code">kMuiDialogWindowClosed</span></TD>
+    <TD WIDTH=166>- </TD>
+    <TD WIDTH=166>-</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=173><span class="code">kMuiDialogWindowResize</span></TD>
+    <TD WIDTH=166>- </TD>
+    <TD WIDTH=166>PMoaRect</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=173><span class="code">kMuiDialogWindowZoom</span></TD>
+    <TD WIDTH=166>- </TD>
+    <TD WIDTH=166>PMoaRect</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=173><span class="code">kMuiDialogItemEnteringFocus</span></TD>
+    <TD WIDTH=166>item about to get focus</TD>
+    <TD WIDTH=166>-</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=173><span class="code">kMuiDialogItemLosingFocus</span></TD>
+    <TD WIDTH=166>item about to lose focus</TD>
+    <TD WIDTH=166>-</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=173><span class="code">kMuiDialogListSelChanged</span><br>added in D11</TD>
+    <TD WIDTH=166>item whose selection changed</TD>
+    <TD WIDTH=166>int* of selected items</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=173><span class="code">kMuiDialogListDoubleClicked</span><br>added in D11</TD>
+    <TD WIDTH=166>item which was double clicked</TD>
+    <TD WIDTH=166>int* of selected items</TD>
+  </TR>
+</TABLE>
+
+<H4><A NAME="TMuiEventRecord">TMuiEventRecord</A> </H4>
+<P> Defined in: mui.h
+<PRE class="code">
+typedef struct
+{
+        MoaLong                 itemHit;
+        TMuiDialogEvent         event;
+        PIMuiDialog             pDialog;
+        MoaLong                 reserved;
+} TMuiEventRecord;
+
+
+</PRE>
+<P> Structure passed by a dialog to the <A HREF="../moref/montfcln.htm#Notify">IMoaNotificationClient::Notify()</A> method to communicate user events to an Xtra. <BR>
+<H4><A NAME="TMuiItem">TMuiItem</A> </H4>
+<P> Defined in: muiinit.t<BR>
+<PRE class="code">
+typedef struct
+{
+        MoaLong                 iStructSize;
+        MoaMmValue              vValue;
+        TMuiWidgetType          iType;  
+        MoaMmValue              vAttributeList; 
+        ConstPMoaChar           pTitle; 
+        ConstPMoaChar           pToolTip;
+        MoaLong                 iXPosition;     
+        MoaLong                 iYPosition;
+        MoaLong                 iWidth; 
+        MoaLong                 iHeight;
+        MoaBool                 bEnabled;
+} TMuiItem, * PTMuiItem;
+
+
+</PRE>
+<P> Structure passed in an array to <A HREF="mudialog.htm#Initialize">IMuiDialog::Initialize()</A> to indicate parameters of the widgets to be created. Fields in
+  the structure are used as follows:
+<TABLE width="743" BORDER=2>
+  <TR>
+    <TD WIDTH=95><B>Field</B></TD>
+    <TD WIDTH=95><B>Type</B></TD>
+    <TD WIDTH=314><B>Description</B></TD>
+  </TR>
+  <TR>
+    <TD WIDTH=95><span class="code">iStructSize</span></TD>
+    <TD WIDTH=95><span class="code">MoaLong</span> </TD>
+    <TD WIDTH=314>Determine version of struct, = sizeof(TMuiWindow) </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=95><span class="code">vValue</span></TD>
+    <TD WIDTH=95><span class="code">MoaMmValue</span> </TD>
+    <TD WIDTH=314>initial value/data to be modified</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=95><span class="code">iType</span></TD>
+    <TD WIDTH=95><span class="code">TMuiWidgetType</span> </TD>
+    <TD WIDTH=314>contextual: if data driven, a widget TIMui_WidgetType; if DU driven, a widget TIMui_WidgetType; if Pixel driven, a widget TIMui_WidgetType; if resource driven, a resource ID </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=95><span class="code">vAttributeList</span></TD>
+    <TD WIDTH=95><span class="code">MoaMmValue</span> </TD>
+    <TD WIDTH=314>contextual: if enum list of valid values; if int/float list with min 1st, and optionally, max 2nd; if a label, a list with #center, #right, and #left for justification. </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=95><span class="code">pTitle</span></TD>
+    <TD WIDTH=95><span class="code">ConstPMoaChar</span> </TD>
+    <TD WIDTH=314>widget title, NULL no title</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=95><span class="code">pToolTip</span></TD>
+    <TD WIDTH=95><span class="code">ConstPMoaChar</span> </TD>
+    <TD WIDTH=314>string with tool tip to display when floating over, NULL = not tip </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=95><span class="code">iXPosition</span></TD>
+    <TD WIDTH=95><span class="code">MoaLong</span> </TD>
+    <TD WIDTH=314>position of upper left of item, from upper left of dialog </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=95><span class="code">iYPosition</span></TD>
+    <TD WIDTH=95><span class="code">MoaLong</span> </TD>
+    <TD WIDTH=314>position of upper left of item, from upper left of dialog </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=95><span class="code">iWidth</span></TD>
+    <TD WIDTH=95><span class="code">MoaLong</span> </TD>
+    <TD WIDTH=314>pixel width of item, NULL = automatic</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=95><span class="code">iHeight</span></TD>
+    <TD WIDTH=95><span class="code">MoaLong</span> </TD>
+    <TD WIDTH=314>pixel height of item, NULL = automatic</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=95><span class="code">bEnabled</span></TD>
+    <TD WIDTH=95><span class="code">MoaBool</span> </TD>
+    <TD WIDTH=314>the UI information related to value</TD>
+  </TR>
+</TABLE>
+<H4>TMuiLayoutType</H4>
+<P> Defined in: muiinit.t
+<P> <span class="code">typedef MoaLong TMuiLayoutType;</span>
+<P> Field of the <A HREF="#TMuiWindow">TMuiWindow</A> structure, specifies the layout type of a dialog window.
+<TABLE BORDER=2>
+  <TR>
+    <TD WIDTH=137><span class="code">kMuiLayout_Dynamic</span></TD>
+    <TD WIDTH=367>Layout provided automatically, use <A HREF="#TMuiWidgetTypes">TMuiWidgetTypes</A> to specify layout groupings </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=137><span class="code">kMuiLayout_DialogUnit</span></TD>
+    <TD WIDTH=367>Layout coordinates defined in dialog units </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=137><span class="code">kMuiLayout_Pixel</span></TD>
+    <TD WIDTH=367>Layout coordinates defined in pixel units </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=137><span class="code">kMuiLayout_Resource</span></TD>
+    <TD WIDTH=367>Layout provided by resource </TD>
+  </TR>
+</TABLE>
+<H4><A NAME="TMuiWidgetTypes">TMuiWidgetType</A> </H4>
+<P> Defined in: muiinit.t
+<P> <span class="code">typedef MoaLong TMuiWidgetType</span>
+<P> Field of the <A HREF="#TMuiItem">TMuiItem</A> structure, used to specify the type of items displayed in a dialog
+  box. The following values are defined for the widget type:
+<TABLE BORDER=2>
+  <TR>
+    <TD WIDTH=248><B>Widget type</B></TD>
+    <TD WIDTH=62><B>Title</B> </TD>
+    <TD WIDTH=195><B>Attributes </B></TD>
+  </TR>
+  <TR>
+    <TD WIDTH=248><span class="code">kMuiWidgetType_None</span></TD>
+    <TD WIDTH=62>No </TD>
+    <TD WIDTH=195>none</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=248><span class="code">kMuiWidgetType_Void_VDivider</span></TD>
+    <TD WIDTH=62>No</TD>
+    <TD WIDTH=195>none</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=248><span class="code">kMuiWidgetType_Void_HDivider</span></TD>
+    <TD WIDTH=62>No</TD>
+    <TD WIDTH=195>none</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=248><span class="code">kMuiWidgetType_Bitmap</span></TD>
+    <TD WIDTH=62>No </TD>
+    <TD WIDTH=195>&lt;bitmapStyle&gt;</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=248><span class="code">kMuiWidgetType_Actor</span></TD>
+    <TD WIDTH=62>? </TD>
+    <TD WIDTH=195>?</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=248><span class="code">kMuiWidgetType_Boolean_Checkbox</span> </TD>
+    <TD WIDTH=62>Yes</TD>
+    <TD WIDTH=195>&lt;textSize&gt;</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=248><span class="code">kMuiWidgetType_Boolean_RadioButton</span> </TD>
+    <TD WIDTH=62>Yes</TD>
+    <TD WIDTH=195>&lt;textSize&gt;</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=248><span class="code">kMuiWidgetType_Enum_PopupList</span></TD>
+    <TD WIDTH=62>No</TD>
+    <TD WIDTH=195>&lt;popupStyle&gt;&lt;valueList&gt; </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=248><span class="code">kMuiWidgetType_Char_EditText</span></TD>
+    <TD WIDTH=62>No</TD>
+    <TD WIDTH=195>&lt;textSize&gt;&lt;justification&gt;&lt;editStyle&gt; </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=248><span class="code">kMuiWidgetType_Label_Normal</span></TD>
+    <TD WIDTH=62>No</TD>
+    <TD WIDTH=195>&lt;textSize&gt;&lt;justification&gt;&lt;editStyle&gt; </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=248><span class="code">kMuiWidgetType_Long_HSlider</span></TD>
+    <TD WIDTH=62>No</TD>
+    <TD WIDTH=195>&lt;sliderStyle&gt;&lt;valueRange&gt; </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=248><span class="code">kMuiWidgetType_Float_HSlider</span></TD>
+    <TD WIDTH=62>No</TD>
+    <TD WIDTH=195>&lt;sliderStyle&gt;&lt;valueRange&gt; </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=248><span class="code">kMuiWidgetType_Button_DefaultPushButton</span> </TD>
+    <TD WIDTH=62>Yes</TD>
+    <TD WIDTH=195>&lt;textSize&gt;</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=248><span class="code">kMuiWidgetType_Button_PushButton</span> </TD>
+    <TD WIDTH=62>Yes</TD>
+    <TD WIDTH=195>&lt;textSize&gt;</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=248><span class="code">kMuiWidgetType_Button_CancelButton</span> </TD>
+    <TD WIDTH=62>Yes</TD>
+    <TD WIDTH=195>&lt;textSize&gt;</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=248><span class="code">kMuiWidgetType_Button_Toggle</span></TD>
+    <TD WIDTH=62>Yes</TD>
+    <TD WIDTH=195>&lt;textSize&gt;</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=248><span class="code">kMuiWidgetType_RGB_ColorPicker</span> </TD>
+    <TD WIDTH=62></TD>
+    <TD WIDTH=195>none</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=248><span class="code">kMuiWidgetType_Index_ColorPicker</span> </TD>
+    <TD WIDTH=62></TD>
+    <TD WIDTH=195>none</TD>
+  </TR>
+</TABLE>
+<br>
+<TABLE BORDER=2>
+  <TR>
+    <TD WIDTH=203><B>Layout grouping type</B></TD>
+    <TD WIDTH=439><B>Purpose</B> </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=203><span class="code">kMuiWidgetType_Group_WindowBegin</span> </TD>
+    <TD WIDTH=439>First entry in the <span class="code">pInputStructArray</span> </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=203><span class="code">kMuiWidgetType_Group_WindowEnd</span> </TD>
+    <TD WIDTH=439>Last entry in the <span class="code">pInputStructArray</span> </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=203><span class="code">kMuiWidgetType_Group_HBegin</span></TD>
+    <TD WIDTH=439>Entry preceding a group of widgets arranged horizontally </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=203><span class="code">kMuiWidgetType_Group_HEnd</span></TD>
+    <TD WIDTH=439>Entry following a group of widgets arranged horizontally </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=203><span class="code">kMuiWidgetType_Group_VBegin</span></TD>
+    <TD WIDTH=439>Entry preceding a group of widgets arranged vertically </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=203><span class="code">kMuiWidgetType_Group_VEnd</span></TD>
+    <TD WIDTH=439>Entry following a group of widgets arranged vertically </TD>
+  </TR>
+</TABLE>
+<H4><A NAME="TMuiWindow">TMuiWindow</A> </H4>
+<P> Defined in: muiinit.t<BR>
+<PRE class="code">
+typedef struct
+{
+        MoaLong                 iStructSize
+        TMuiWindowType          iType;  
+        ConstPMoaChar           pTitle;
+        TMuiLayoutType          iLayout;
+        TMuiWindowPosition      iPosition;
+        MoaLong                 iXPosition;
+        MoaLong                 iYPosition;
+        MoaLong                 iWidth; 
+        MoaLong                 iHeight;
+        MoaBool                 bModal; 
+        MoaBool                 bToolTipsOn;
+        MoaBool                 bHasCloseBox;
+        MoaBool                 bCanZoom;
+} TMuiWindow, * PTMuiWindow;
+
+
+</PRE>
+<P> Structure passed to <A HREF="mudialog.htm#Initialize">IMuiDialog::Initialize()</A> to indicate parameters of the window to be created. Fields in
+  the structure are used as follows:
+<TABLE BORDER=2>
+  <TR>
+    <TD WIDTH=86><B>Field</B></TD>
+    <TD WIDTH=125><B>Type</B></TD>
+    <TD WIDTH=500><B>Description</B></TD>
+  </TR>
+  <TR>
+    <TD WIDTH=86><span class="code">iStructSize</span></TD>
+    <TD WIDTH=125><span class="code">MoaLong</span> </TD>
+    <TD WIDTH=500>use to determine version of struct, = sizeof(TMuiWindow) </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=86><span class="code">iType</span></TD>
+    <TD WIDTH=125><span class="code">TMuiWindowType</span> </TD>
+    <TD WIDTH=500>window type (one of <span class="code">kMuiWindowType_None</span>, <span class="code">kMuiWindowType_Palette</span>, <span class="code">kMuiWindowType_Standard</span>, or <span class="code">kMuiWindowType_NonMovable</span>) </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=86><span class="code">pTitle</span></TD>
+    <TD WIDTH=125><span class="code">ConstPMoaChar</span> </TD>
+    <TD WIDTH=500>name of window, set to NULL for none</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=86><span class="code">iLayout</span></TD>
+    <TD WIDTH=125><span class="code">TMuiLayoutType</span> </TD>
+    <TD WIDTH=500>how to layout the widgets (one of <span class="code">kMuiLayout_Dynamic</span>, <span class="code">kMuiLayout_DialogUnit</span>, <span class="code">kMuiLayout_Pixel</span>, <span class="code">kMuiLayout_Resource</span>, or <span class="code">kMuiLayout_MAX</span>) </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=86><span class="code">iPosition</span></TD>
+    <TD WIDTH=125><span class="code">TMuiWindowPosition</span> </TD>
+    <TD WIDTH=500>if this set, the <span class="code">iXPosition</span> and <span class="code">iYPosition</span> fields may be ignored (one of <span class="code">kMuiWindowPosition_Alert</span>, <span class="code">kMuiWindowPosition_Centered</span>) </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=86><span class="code">iXPosition</span></TD>
+    <TD WIDTH=125><span class="code">MoaLong</span> </TD>
+    <TD WIDTH=500>position of upper left of window, from upper left of dialog, NULL = Center </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=86><span class="code">iYPosition</span></TD>
+    <TD WIDTH=125><span class="code">MoaLong</span> </TD>
+    <TD WIDTH=500>position of upper left of window, from upper left of dialog, NULL = Center </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=86><span class="code">iWidth</span></TD>
+    <TD WIDTH=125><span class="code">MoaLong</span> </TD>
+    <TD WIDTH=500>pixel width of window, NULL = automatic</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=86><span class="code">iHeight</span></TD>
+    <TD WIDTH=125><span class="code">MoaLong</span> </TD>
+    <TD WIDTH=500>pixel height of window, NULL = automatic</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=86><span class="code">bModal</span></TD>
+    <TD WIDTH=125><span class="code">MoaBool</span> </TD>
+    <TD WIDTH=500>TRUE if modal</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=86><span class="code">bToolTipsOn</span></TD>
+    <TD WIDTH=125><span class="code">MoaBool</span> </TD>
+    <TD WIDTH=500>TRUE if dialog should display tool tips initially </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=86><span class="code">bHasCloseBox</span></TD>
+    <TD WIDTH=125><span class="code">MoaBool</span> </TD>
+    <TD WIDTH=500>TRUE if dialog has close box</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=86><span class="code">bCanZoom</span></TD>
+    <TD WIDTH=125><span class="code">MoaBool</span> </TD>
+    <TD WIDTH=500>TRUE if window zooms</TD>
+  </TR>
+</TABLE>
+<H4>TMuiWindowType</H4>
+<P> Defined in: muiinit.t
+<P> <span class="code">typedef MoaLong TMuiWindowType;</span>
+<P> Field of the <A HREF="#TMuiWindow">TMuiWindow</A> structure, specifies the type of a dialog window.
+<TABLE BORDER=2>
+  <TR>
+    <TD WIDTH=252>kMuiWindowType_Standard</TD>
+    <TD WIDTH=252></TD>
+  </TR>
+  <TR>
+    <TD WIDTH=252>kMuiWindowType_NonMovable</TD>
+    <TD WIDTH=252></TD>
+  </TR>
+</TABLE>
+<H4><A NAME="TMuiWindowPosition">TMuiWindowPosition</A> </H4>
+<P> Defined in: muiinit.t
+<P> <span class="code">typedef MoaLong TMuiWindowPosition</span>
+<P> Field of the <A HREF="#TMuiWindow">TMuiWindow</A> structure, specifies the position of a dialog window. The following
+  values are defined for the window position:
+<TABLE BORDER=2>
+  <TR>
+    <TD WIDTH=252><span class="code">kMuiWindowPosition_Alert</span></TD>
+    <TD WIDTH=252></TD>
+  </TR>
+  <TR>
+    <TD WIDTH=252><span class="code">kMuiWindowPosition_Centered</span></TD>
+    <TD WIDTH=252></TD>
+  </TR>
+</TABLE>
+<HR width=45% align=left>
+<H3><A NAME="MUCONSTS">MUI Constants</A></H3>
+<H4>IMuiDialog::WindowOp() constants </H4>
+<P> The following constants are defined as parameters to the <A HREF="mudialog.htm#WindowOp" >IMuiDialog::WindowOp()</A> method:<BR>
+<TABLE BORDER=2>
+  <TR>
+    <TD WIDTH=252><DL>
+        <DT><span class="code">kMui_WindowOp_Hide</span>
+      </DL></TD>
+    <TD WIDTH=252><DL>
+        <DT>Hide the dialog
+      </DL></TD>
+  </TR>
+  <TR>
+    <TD WIDTH=252><DL>
+        <DT><span class="code">kMui_WindowOp_Show</span>
+      </DL></TD>
+    <TD WIDTH=252><DL>
+        <DT>Show the dialog
+      </DL></TD>
+  </TR>
+  <TR>
+    <TD WIDTH=252><DL>
+        <DT><span class="code">kMui_WindowOp_Center</span>
+      </DL></TD>
+    <TD WIDTH=252><DL>
+        <DT>Center the dialog
+      </DL></TD>
+  </TR>
+</TABLE>
+<HR width=45% align=left>
+<H3><A NAME="MUERRS">MUI Errors</A></H3>
+<H4>IMuiDialog errors</H4>
+<P> <span class="code">kMuiErr_DialogCanceledWithCloseBox</span>
+<P> <span class="code">kMuiErr_DialogCanceledWithESC</span>
+<P> These errors are returned from the <A HREF="mudialog.htm#Run">IMuiDialog::Run()</A> method when the user cancels a modal dialog.
+<HR width=45% align=left>
+<A HREF = "../copyrite.htm">Copyright &#169; 1995-2007 Adobe Macromedia Software LLC, Inc.</A>
+</BODY>
+</HTML>

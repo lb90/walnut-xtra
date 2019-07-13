@@ -1,0 +1,331 @@
+<HTML>
+
+<HEAD> <TITLE>IMoa3dVectorValueUtils</TITLE> 
+<link href="../xdk.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+<body>
+
+<P>
+<A HREF="../mmdg/index.htm">MM Developer's Guide</A>
+<BR>
+<A HREF="index.htm" >MM Interfaces</A> | <A HREF="mmmthndx.htm" >MM Methods</A>
+| <A HREF="mmtypndx.htm">MM Types and Misc API</A>
+<hr width=45% align=left>
+<h3>IMoa3dVectorValueUtils</h3>
+
+<P>
+Interface ID: <span class="code">IID_IMoa3dVectorValueUtils<BR>
+</span>Pointer type: <span class="code">PIMoa3dVectorValueUtils<BR>
+  </span>Inheritance: <span class="code">IMoaUnknown<BR>
+  </span>Header file: <a href="../../Include/mivect3d.h">mivect3d.h</a>
+
+<h3>Description</h3>
+
+<DL>
+  <DD> This callback interface provides support for converting between the <a href="mmtypndx.htm#Types3D">3D 
+    vector</a> type (new to Director 8.5) and the <A HREF="mmtypndx.htm#MoaMmValue">MoaMmValue</A> 
+    type. The vector type is defined in m3dtypes.h 
+  </DL>
+
+<h3>Methods</h3>
+
+<h4>Data conversion </h4>
+
+<DL> 
+  <DD><A HREF = "#ValueToMoa3dVector">ValueToMoa3dVector()</A> <BR>
+    <A HREF = "#ValueToMoa3dVectorPtr">ValueToMoa3dVectorPtr()</A> <BR>
+    <A HREF = "#ValueReleaseVectorPtr">ValueReleaseVectorPtr()</A> <BR>
+    <A HREF = "#Moa3dVectorToValue">Moa3dVectorToValue()</A> <BR> <br>
+    <A HREF = "#ValueToMoa3dMatrix">ValueToMoa3dMatrix()</A> <BR>
+     <A HREF = "#Moa3dMatrixToValue">Moa3dMatrixToValue()</A> <BR>
+   <BR>
+</DL>
+
+<h4>Value type checking</h4>
+
+<DL>
+<DD>
+    <A HREF = "#ValueIsAVector">ValueIsAVector()</A> <BR>
+    <A HREF = "#ValueIsATransform">ValueIsATransform()</A> <BR>
+</DL>
+
+<hr width=45% align=left>
+
+<h3><A NAME="ValueToMoa3dVector">ValueToMoa3dVector()</A></h3>
+
+<h4>Syntax</h4>
+
+<DL>
+<DT class="code">ValueToMoa3dVector(ConstPMoaMmValue <I>pValue</I>, Moa3dVector <i>pVector</i>)</DT>
+</DL>
+
+<h4>Parameters</h4>
+
+<DL> 
+  <DD> 
+  <DT><span class="code"><i>pValue</i></span> 
+  <DD>Pointer to a <span class="code">MmValue</span> that contains the vector value</DD>
+  <DT><span class="code"><i>pVector</i></span> 
+  <DD>Pointer to the <span class="code">Moa3dVector</span> that will receive the result </DD>
+</DL>
+
+<h4>Returns</h4>
+
+<DL>
+<DT>
+<DD><span class="code">MoaError</span>
+</DL>
+
+<h4>Description</h4>
+
+<DL> 
+  <DD> Obtains the <span class="code">Moa3dVector</span> data for a value with type <span class="code">kMoaMmValueType_3dVector</span>. 
+    <span class="code"><I>pVector</I></span> is a pointer to memory for a <span class="code">Moa3dVector</span> to 
+    receive the result. Returns <span class="code">kMoaMmErr_VectorValueExpected </span>if <span class="code"><I>pValue</I></span> is 
+    not a vector-type value. <BR>
+</DL>
+
+<hr width=45% align=left>
+
+<h3><A NAME="ValueToMoa3dVectorPtr">ValueToMoa3dVectorPtr()</A></h3>
+
+<h4>Syntax</h4>
+
+<DL>
+<DT class="code">ValueToMoa3dVectorPtr(ConstPMoaMmValue <I>pValue</I>, Moa3dVector ** <I>ppVector</I>)</DT>
+</DL>
+
+<h4>Parameters</h4>
+
+<DL>
+<DD>
+<DT><span class="code"><I>pValue</I></span>
+  <DD>Pointer to a <span class="code">MmValue</span></DD>
+
+<DT><span class="code"><I>ppVector</I></span>
+<DD> returns a pointer to a<span class="code"><I>
+</I>Moa3dVector</span> rather than a copy </DD>
+</DL>
+
+<h4>Returns</h4>
+
+<DL>
+<DD><span class="code">MoaError</span>
+</DL>
+
+<h4>Description</h4>
+
+<DL>
+<DD>
+Like <span class="code">ValueToMoa3dVector</span>, except that it returns a ptr to the 
+<span class="code">Moa3dVector</span> this value represents, rather than a copy.  Locks any
+necessary handles.  Caller is responsible for calling <span class="code">ValueReleaseVectorPtr</span>
+when they are done with it. Returns <span class="code">kMoaMmErr_VectorValueExpected </span>if <span class="code"><I>pValue</I></span> is 
+not a vector-type value. <BR>
+<BR>
+
+</DL>
+
+<hr width=45% align=left>
+
+<h3><A NAME="ValueReleaseVectorPtr">ValueReleaseVectorPtr()</A></h3>
+
+<h4>Syntax</h4>
+
+<DL>
+<DT class="code">ValueReleaseVectorPtr(ConstPMoaMmValue <I>pValue</I>, Moa3dVector ** <I>ppVector</I>)</DT>
+</DL>
+
+<h4>Parameters</h4>
+
+<DL>
+<DD>
+<DT><span class="code"><I>pValue</I></span>
+<DD>Pointer to a <span class="code">MoaMmValue</span> with the value of interest</DD>
+<DT><span class="code"><I>ppVector</I></span>
+  <DD>Pointer to a memory location with a pointer to a <span class="code">Moa3dVector</span></DD>
+</DL>
+
+<h4>Returns</h4>
+
+<DL>
+<DD><span class="code">MoaError</span>
+</DL>
+
+<h4>Description</h4>
+
+<DL> 
+  <DD> Unlocks any handle associated with a previous call to <span class="code">ValueToMoa3dVectorPtr</span>. 
+    Should be preceeded by a call to <span class="code">ValueToMoa3dVectorPtr</span><BR>
+</DL>
+
+<hr width=45% align=left>
+
+<h3><A NAME="Moa3dVectorToValue">Moa3dVectorToValue()</A></h3>
+
+<h4>Syntax</h4>
+
+<DL>
+<DT class="code">Moa3dVectorToValue(Moa3dVector <I>pVector</I>, PMoaMmValue <I>pValue</I>)</DT>
+</DL>
+
+<h4>Parameters</h4>
+
+<DL>
+<DD>
+<DT><span class="code"><I>pVector</I></span>
+<DD> pointer to the <span class="code">Moa3dVector</span> that contains the vector data </DD>
+
+<DT><span class="code"><I>pValue</I></span>
+<DD>Pointer to a <span class="code">MoaMmValue</span> to receive the result </DD>
+</DL>
+
+<h4>Returns</h4>
+
+<DL>
+<DD><span class="code">MoaError</span>
+</DL>
+
+<h4>Description</h4>
+
+<DL> 
+  <DD>
+    Converts a <span class="code">Moa3dVector</span> into a Lingo value, the caller
+    must <span class="code">ValueRelease</span> when done with it
+    <BR>
+</DL>
+
+<hr width=45% align=left>
+
+<h3><A NAME="ValueToMoa3dMatrix">ValueToMoa3dMatrix()</A></h3>
+
+<h4>Syntax</h4>
+
+<DL>
+<DT class="code">ValueToMoa3dMatrix(ConstPMoaMmValue <I>pValue</I>, Moa3dMatrix <I>pMatrix</I>)</DT>
+</DL>
+
+<h4>Parameters</h4>
+
+<DL>
+<DD>
+  <DT><span class="code"><i>pValue</i></span> 
+  <DD>Pointer to a <span class="code">MmValue</span> that contains the matrix value</DD>
+  <DT><span class="code"><i>pMatrix</i></span> 
+  <DD>Pointer to the <span class="code">Moa3dMatrix</span> that will receive the result </DD>
+</DL>
+
+<h4>Returns</h4>
+
+<DL>
+<DD><span class="code">MoaError</span>
+</DL>
+
+<h4>Description</h4>
+
+<DL>
+<DD> Obtains the <span class="code">Moa3dMatrix</span> data for a value. <span class="code"><I>pMatrix</I></span> 
+    is a pointer to memory for a <span class="code">Moa3dMatrix</span> to receive the result. Returns 
+    <span class="code">kMoaMmErr_MatrixValueExpected </span>if <span class="code"><I>pValue</I></span> is not of 
+    type <span class="code">kMoaMmValueType_3dMatrix</span>. 
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="Moa3dMatrixToValue">Moa3dMatrixToValue()</A></h3>
+
+<h4>Syntax</h4>
+
+<DL>
+<DT class="code">Moa3dMatrixToValue(Moa3dMatrix <I>pMatrix</I>, PMoaMmValue <I>pValue</I>)</DT>
+</DL>
+
+<h4>Parameters</h4>
+
+<DL>
+<DD>
+  <DT><span class="code"><i>pMatrix</i></span> 
+  <DD>Pointer to the <span class="code">Moa3dMatrix</span> that contains the matrix value </DD>
+  <DT><span class="code"><i>pValue</i></span> 
+  <DD>Pointer to a <span class="code">MmValue</span> that will receive the value for the matrix 
+    data </DD>
+</DL>
+
+<h4>Returns</h4>
+
+<DL>
+<DD><span class="code">MoaError</span>
+</DL>
+
+<h4>Description</h4>
+
+<DL>
+  <DD> Converts data in a <span class="code">Moa3dMatrix</span> data to a value. <span class="code"><I>pMatrix</I></span> 
+    is a pointer to memory for a <span class="code">Moa3dMatrix</span> that contains the matrix 
+    values. This interface is only supported with Director 8.5.1 and later<span class="code"></span>. 
+    Note that some matrix data is not valid or useful as a 3D transform matrix.
+</DL>
+
+<hr width=45% align=left>
+
+<h3><A NAME="ValueIsAVector">ValueIsAVector()</A></h3>
+
+<h4>Syntax</h4>
+
+<DL>
+<DT class="code">ValueIsAVector(ConstPMoaMmValue <I>pValue</I>)</span></DL>
+
+<h4>Parameters</h4>
+
+<DL>
+<DD>
+<DT><span class="code"><I>pValue</I></span>
+  <DD>Pointer to a <span class="code">MoaMmValue</span> </DD>
+</DL>
+
+<h4>Returns</h4>
+
+<DL> 
+  <DD> <span class="code">MoaLong</span>
+</DL>
+
+<h4>Description</h4>
+
+<DL> 
+  <DD> returns 1 if the value is a <span class="code">moa3dVector</span>, 0 if not
+</DL>
+
+<hr width=45% align=left>
+
+<h3><A NAME="ValueIsATransform">ValueIsATransform()</A></h3>
+
+<h4>Syntax</h4>
+
+<DL>
+<DT class="code">ValueIsATransform(ConstPMoaMmValue <I>pValue</I>)</DT>
+</DL>
+
+<h4>Parameters</h4>
+
+<DL>
+<DD>
+<DT><span class="code"><I>pValue</I></span>
+  <DD>Pointer to a <span class="code">MoaMmValue</span> </DD>
+</DL>
+
+<h4>Returns</h4>
+
+<DL> 
+  <DD> <span class="code">MoaLong</span>
+</DL>
+
+<h4>Description</h4>
+
+<DL> 
+  <DD> returns 1 if the value is a <span class="code">moa3dMatrix</span>, 0 if not<BR>
+</DL>
+
+<hr width=45% align=left>
+<A HREF = "../copyrite.htm">Copyright &#169; 2001-2008 Adobe Macromedia Software LLC, Inc.</A>
+</BODY>
+</html>

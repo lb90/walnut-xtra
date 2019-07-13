@@ -1,0 +1,193 @@
+<html><head><title>IMoaMmFilePathServices</title>
+<link href="../xdk.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<A HREF="../mmdg/index.htm">MM Developer's Guide</A>
+<BR>
+<A HREF="index.htm" >MM Interfaces</A> | <A HREF="mmmthndx.htm" >MM Methods</A>
+| <A HREF="mmtypndx.htm">MM Types and Misc API</A>
+<BR><BR><hr width=45% align=left>
+<h3><A name = "IMoaMmFilePathServices"></A>IMoaMmFilePathServices</h3>
+<BR>
+
+Interface ID: <span class="code">IID_IMoaMmFilePathServices</span><BR>
+Pointer type: <span class="code">PIMoaMmFilePathServices</span><BR>
+Inheritance: <span class="code">IMoaUnknown</span><BR>
+Header file: <A HREF = "../../include/mmiservc.h">mmiservc.h</A><BR>
+
+<h3>Methods</h3>
+<DL><DD><A HREF = "#ResolveFilePath">ResolveFilePath()</A>
+<BR><A HREF = "#SetFilePath">SetFilePath()</A>
+<BR><A HREF = "#GetFilePath">GetFilePath()</A>
+<BR><A HREF = "#GetLocalFilePath">GetLocalFilePath()</A>
+<BR><A HREF = "#SetLinked">SetLinked()</A>
+<BR><A HREF = "#IsLinked">IsLinked()</A>
+<BR><A HREF = "#BeginDownload">BeginDownload()</A>
+<BR><A HREF = "#BrowseForFile">BrowseForFile()</A>
+</DL>
+
+<hr width=45% align=left><h3>
+<A name = "BeginDownload">BeginDownload()</A></h3>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">BeginDownload(PIMoaStream * <I>ppStream</I>)
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT><span class="codearg">ppStream</span>
+<DD><span class="code">PIMoaStream *</span>&nbsp;&nbsp;</DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DD><span class="code">MoaError</span></DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>
+Given the URL to a linked cast member, this method starts
+downloading the file and returns a <span class="code">PIMoaStream</span>. If the download
+is already in progress or completed, it returns the <span class="code">PIMoaStream</span>.
+If it is a local file, it does nothing. You can immediately
+monitor the download's progress or even access its contents.</DD>
+</DL>
+
+<hr width=45% align=left><h3>
+<A name = "BrowseForFile">BrowseForFile()</A></h3>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">BrowseForFile(PIMoaPathName <I>pPathToBeginBrowsingIn</I>, ConstPMoaLong <I>pFileTypeList</I>, <br>
+&nbsp;&nbsp;ConstPMoaChar <I>pFileExtensions</I>, PIMoaPathName <I>pSelectedFile</I>)
+</DT></DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT><span class="code"><I>pPathToBeginBrowsingIn</I></span></DT><DD><span class="code">PIMoaPathName</span>&nbsp;&nbsp;</DD>
+<DT><span class="code"><I>pFileTypeList</I></span></DT><DD><span class="code">ConstPMoaLong</span>&nbsp;&nbsp;</DD>
+<DT><span class="code"><I>pFileExtensions</I></span></DT><DD><span class="code">ConstPMoaChar</span>&nbsp;&nbsp;</DD>
+<DT><span class="code"><I>pSelectedFile</I></span></DT><DD><span class="code">PIMoaPathName</span>&nbsp;&nbsp;</DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DD><span class="code">MoaError</span></DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>
+This method displays a file open dialog box that lets you specify file types and extensions to filter for.
+</DL>
+
+<hr width=45% align=left><h3>
+<A name = "GetFilePath">GetFilePath()</A></h3>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">GetFilePath(PIMoaPathName <I>pPathOfMember</I>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT><span class="code"><I>pPathOfMember</I></span><DD><span class="code">PIMoaPathName</span>&nbsp;&nbsp;
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DD><span class="code">MoaError</span></DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>
+Given an interface for a linked cast member, this method returns the resolved file path.
+</DL>
+
+<hr width=45% align=left><h3>
+<A name = "GetLocalFilePath">GetLocalFilePath()</A></h3>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">GetLocalFilePath(PIMoaPathName <I>pLocalPathOfMember</I>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT><span class="codearg">pLocalPathOfMember</span><DD><span class="code">PIMoaPathName</span>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DD><span class="code">MoaError</span></DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>
+If a file is specified by an URL, this method returns the
+complete path to the copy of that file in the local cache.
+If the file is not specified by an URL, it is a local file and this method
+returns its path.
+
+</DL><BR>
+
+
+<!------------------------------------------------> 
+<hr width=45% align=left><h3>
+<A name = "IsLinked">IsLinked()</A></h3>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">IsLinked()</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DD><span class="code">MoaBoolParam</span></DL>
+
+<hr width=45% align=left><h3>
+<A name = "ResolveFilePath">ResolveFilePath()</A></h3>
+
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">ResolveFilePath(PIMoaPathName <I>pPathToResolve</I>, MoaBoolParam <I>bBrowseForFile</I>, 
+PIMoaPathName <I>pResolvedPath</I>)</DT>
+</DL>
+
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT><span class="code"><I>pPathToResolve</I></span></DT>
+<DD><span class="code">PIMoaPathName</span>&nbsp;&nbsp;</DD>
+<DT><span class="code"><I>bBrowseForFile</I></span></DT>
+<DD><span class="code">MoaBoolParam</span>&nbsp;&nbsp;</DD>
+<DT><span class="code"><I>pResolvedPath</I></span></DT>
+<DD><span class="code">PIMoaPathName</span>&nbsp;&nbsp;</DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DD><span class="code">MoaError</span></DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>
+Given a relative or local file path (written in the syntax of Windows, 
+Macintosh, or an URL), this method returns the absolute path in syntax 
+appropriate for the operating system.
+</DL>
+
+<hr width=45% align=left><h3>
+<A name = "SetFilePath">SetFilePath()</A></h3>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">SetFilePath(PIMoaPathName <I>pNewPath</I>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT><span class="code"><I>pNewPath</I></span><DD><span class="code">PIMoaPathName</span>&nbsp;&nbsp;</DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DD><span class="code">MoaError</span></DL>
+
+<hr width=45% align=left><h3>
+<A name = "SetLinked">SetLinked()</A></h3>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">SetLinked(MoaBoolParam <I>bLinked</I>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT><span class="code"><I>bLinked</I></span></DT>
+<DD><span class="code">MoaBoolParam</span>&nbsp;&nbsp;</DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DD><span class="code">MoaError</span></DL>
+
+<hr width=45% align=left>
+<A HREF = "../copyrite.htm">Copyright &#169; 1995-2008 Adobe Macromedia Software LLC, Inc.</A>
+</body></html>

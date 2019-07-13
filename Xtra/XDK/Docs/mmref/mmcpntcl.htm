@@ -1,0 +1,49 @@
+<HTML>
+<HEAD>
+<TITLE>IMoaMmCuePointCallback</TITLE>
+<link href="../xdk.css" rel="stylesheet" type="text/css">
+</HEAD>
+<BODY>
+<P> <A HREF="../mmdg/index.htm">MM Developer's Guide</A> <BR>
+  <A HREF="index.htm" >MM Interfaces</A> | <A HREF="mmmthndx.htm" >MM Methods</A> | <A HREF="mmtypndx.htm">MM Types and Misc API</A>
+<HR width=45% align=left>
+<h3><A NAME="IMoaMmCuePointCallback"></A>IMoaMmCuePointCallback</h3>
+<P> Interface ID: <span class="code">IID_IMoaMmCuePointCallback<BR>
+  </span>Pointer type: <span class="code">PIMoaMmCuePointCallback<BR>
+  </span>Inheritance: <span class="code">IMoaUnknown<BR>
+  </span>Header file: <A HREF = "../../include/mmiservc.h">mmiservc.h</A> <BR>
+ This interface supports sending cue point notification to a multimedia
+  application.  It consists of one method, GenerateCuePoint(). 
+  This interface is provided as a callback interface, available
+  by calling <span class="code">QueryInterface()</span> on a MOA object's <span class="code">pCallback</span> instance variable. <BR>
+<H3>Methods</H3>
+<DL>
+  <DD><A HREF = "#GenerateCuePoint">GenerateCuePoint()</A>
+</DL>
+<HR width=45% align=left>
+<H3><A NAME="GenerateCuePoint">GenerateCuePoint()</A> </H3>
+<H4>Syntax</H4>
+<DL>
+  <DT><span class="code">GenerateCuePoint(ConstPMoaMmCuePoint <I>pCuePoint</I>)</span>
+  </DL>
+<H4>Parameters</H4>
+<DL>
+  <DT><span class="code"><I>pCuePoint </I></span>
+  <DD>ConstPMoaMmCuePoint </DD>
+</DL>
+<H4>Returns</H4>
+<DL>
+  <DD><span class="code">MoaError</span> <BR>
+</DL>
+<H4>Description</H4>
+<DL>
+  <DD>This method provides an Xtra with a way to communicate cue
+    point information back to the host application.  To do so, you
+    allocate <span class="codearg">pCuePoint</span>,
+    a <A HREF="../mmref/mmtypndx.htm#MoaMmCuePoint" class="code" >MoaMmCuePoint</A> structure, populate it with information specific to your cue point,
+    then pass it to the application by calling this method.
+</DL>
+<HR width=45% align=left>
+<A HREF = "../copyrite.htm">Copyright &#169; 1995-2008 Adobe Macromedia Software LLC, Inc.</A>
+</BODY>
+</HTML>

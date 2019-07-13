@@ -1,0 +1,190 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>IMoaDrMovie</title>
+<link href="../xdk.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+
+<A HREF = "../drdg/index.htm">DR Developer's Guide</A><BR>
+<A HREF = "index.htm">DR Interfaces</A> | 
+<A HREF = "drmthndx.htm">DR Methods</A> | 
+<A HREF = "drtypndx.htm">DR Types and Misc API</A>
+<hr width=45% align=left>
+
+<h3><A name = "IMoaDrMovie"></A>IMoaDrMovie</h3>
+
+Interface ID: <span class="code">IID_IMoaDrMovie</span><BR>
+Pointer type: <span class="code">PIMoaDrMovie</span><BR>
+Inheritance: <span class="code">IMoaDrMediaOwner</span><BR>
+Header file: <A HREF = "../../include/driservc.h">driservc.h</A><BR>
+
+<DL>
+<DT class="heading4">Description</DT>
+<DD>
+    The <span class="code">IMoaDrMovie</span> interface represents open movies in Director. 
+	You acquire an IMoaDrMovie interface by calling the <span class="code">IMoaDrPlayer</span> 
+      methods <span class="code">GetActiveMovie()</span> or <span class="code">GetNthMovie()</span>.
+	  This returns to you an <span class="code">IMoaDrMovie</span> interface. 
+      You can calling the <span class="code">QueryInterface</span> method off this interface to retrieve a 
+      <a href="drmovie2.htm" class="code">IMoaDrMovie2</a> interface that offers a few additional methods
+      Note that the description for each of these methods has been moved to the <a href="drmovie2.htm" class="code">IMoaDrMovie2</a> file.
+</DL>
+
+<DL>
+<DT class="heading4"><a name="RTFToC2"></a>Movie properties</DT>
+    <DD><span class="code">IMoaDrMovie</span> inherits from the <span class="code">IMoaMmPropOwner</span> interface, 
+	providing for access to data through the properties 
+      mechanism described in the &quot;<a href="../mmdg/mmdgc5.htm">Multimedia Services</a>&quot; chapter in the <em>Development Guide</em> document. 
+	  See the &quot;<a href="drtypndx.htm#MOVPROPS">Properties</a>&quot; 
+      section for information on the properties defined for objects providing the MoaDrMovie interfaces.</DD>
+</DL>
+
+<DL>
+<DT class="heading4"><a name="RTFToC3"></a>Movie media</DT>
+    <DD>The <span class="code">IMoaDrMovie</span> interfaces inherit from the <span class="code">IMoaDrMediaOwner</span> interface, providing for access to media through 
+      the media owner mechanism described in the &quot;<a href="../drdg/index.htm#RTFToC6">Director Services</a>&quot; chapter in the <em>Development Guide</em> document. Movies 
+      have one kind of media: scores. Scores are editable through the <span class="code">IMoaDrScoreAccess</span> interface. You acquire a 
+      movie's score data by calling either <span class="code">GetMedia()</span>, which returns a handle to the score data, or<span class="code"> 
+      GetScoreAccess()</span>, which returns an <span class="code">IMoaDrScoreAccess</span> interface to the score data. </DD>
+</DL>
+
+<h4>Methods</h4>
+<DL>
+<DT class="heading5">Property owner methods</DT>
+
+<DD><A HREF = "#GetProp">GetProp()</A><BR>
+<A HREF = "#SetProp">SetProp()</A><BR>
+</DD>
+</DL>
+
+<DL>
+<DT class="heading5">Media owner methods</DT>
+<DD><A HREF = "#GetMedia">GetMedia()</A><BR>
+<A HREF = "#SetMedia">SetMedia()</A><BR>
+<A HREF = "#AttachMedia">AttachMedia()</A><BR>
+</DD></DL>
+
+<DL>
+<DT class="heading5">Scripting support</DT>
+<DD><A HREF = "#CallHandler">CallHandler()</A><BR>
+<A HREF = "#SendSpriteMessage">SendSpriteMessage()</A><BR>
+</DD></DL>
+
+<DL>
+<DT class="heading5">Managing casts</DT>
+<DD><A HREF = "#GetCastCount">GetCastCount()</A><BR>
+<A HREF = "#GetNthCast">GetNthCast()</A><BR>
+<A HREF = "#GetCastFromName">GetCastFromName()</A><BR>
+<A HREF = "#GetCastIndexFromName">GetCastIndexFromName()</A><BR>
+<A HREF = "#NewCast">NewCast()</A><BR>
+<A HREF = "#AddExternalCast">AddExternalCast()</A><BR>
+<A HREF = "#RemoveCast">RemoveCast()</A><BR>
+<A HREF = "#GetCMRefFromMemberName">GetCMRefFromMemberName()</A><BR>
+</DD></DL>
+
+<DL>
+<DT class="heading5">Acquiring ImoaDrCastMem</DT>
+<DD><A HREF = "#GetCastMemFromCMRef">GetCastMemFromCMRef()</A><BR>
+</DD></DL>
+
+<DL>
+<DT class="heading5">Imaging support</DT>
+<DD><A HREF = "#UpdateStageRect">UpdateStageRect()</A><BR>
+<A HREF = "#GetStageWindowGC">GetStageWindowGC()</A><BR>
+<A HREF = "#GetStageBufferGC">GetStageBufferGC()</A><br>
+</DD></DL>
+
+<DL>
+<DT class="heading5">Accessing frame labels</DT>
+<DD><A HREF = "#GetFrameIndexFromLabel">GetFrameIndexFromLabel()</A>
+<BR><A HREF = "#GetFrameLabelFromIndex">GetFrameLabelFromIndex()</A>
+<BR><A HREF = "#SetFrameLabel">SetFrameLabel()</A><br>
+</DD></DL>
+
+<DL>
+<DT class="heading5">Acquiring IMoaDrScoreAccess</DT>
+<DD><A HREF = "#GetScoreAccess">GetScoreAccess()</A><br>
+</DD></DL>
+
+<DL>
+<DT class="heading5">Managing movies</DT>
+<DD><A HREF = "#Save">Save()</A><br>
+</DD>
+</DL>
+
+<hr width=45% align=left>
+<span class="heading5"><A NAME="AddExternalCast" href="drmovie2.htm#AddExternalCast">AddExternalCast()</a></span> see IMoaDrMovie
+
+<hr width=45% align=left>
+<span class="heading5"><A NAME="AttachMedia" href="drmovie2.htm#AttachMedia">AttachMedia()</a></span> see IMoaDrMovie
+
+<hr width=45% align=left>
+<span class="heading5"><A NAME="CallHandler" href="drmovie2.htm#CallHandler">CallHandler()</A></span> see IMoaDrMovie
+
+<hr width=45% align=left>
+<span class="heading5"><A NAME="GetCastCount" href="drmovie2.htm#GetCastCount">GetCastCount()</A></span> see IMoaDrMovie
+
+<hr width=45% align=left>
+<span class="heading5"><A NAME="GetCastFromName" href="drmovie2.htm#GetCastFromName">GetCastFromName()</A></span> see IMoaDrMovie
+
+<hr width=45% align=left>
+<span class="heading5"><A NAME="GetCastIndexFromName" href="drmovie2.htm#GetCastIndexFromName">GetCastIndexFromName()</A></span> see IMoaDrMovie
+
+<hr width=45% align=left>
+<span class="heading5"><A NAME="GetCastMemFromCMRef" href="drmovie2.htm#GetCastMemFromCMRef">GetCastMemFromCMRef()</A></span> see IMoaDrMovie
+
+<hr width=45% align=left>
+<span class="heading5"><A NAME="GetCMRefFromMemberName" href="drmovie2.htm#GetCMRefFromMemberName">GetCMRefFromMemberName()</A></span> see IMoaDrMovie
+
+<hr width=45% align=left>
+<span class="heading5"><A NAME="GetFrameIndexFromLabel" href="drmovie2.htm#GetFrameIndexFromLabel">GetFrameIndexFromLabel()</A></span> see IMoaDrMovie
+
+<hr width=45% align=left>
+<span class="heading5"><A NAME="GetFrameLabelFromIndex" href="drmovie2.htm#GetFrameLabelFromIndex">GetFrameLabelFromIndex()</A></span> see IMoaDrMovie
+
+<hr width=45% align=left>
+<span class="heading5"><A NAME="GetMedia" href="drmovie2.htm#GetMedia">GetMedia()</A></span> see IMoaDrMovie
+
+<hr width=45% align=left>
+<span class="heading5"><A NAME="GetNthCast" href="drmovie2.htm#GetNthCast">GetNthCast()</A></span> see IMoaDrMovie
+
+<hr width=45% align=left>
+<span class="heading5"><A NAME="GetProp" href="drmovie2.htm#GetProp">GetProp()</A></span> see IMoaDrMovie
+
+<hr width=45% align=left>
+<span class="heading5"><A NAME="GetScoreAccess" href="drmovie2.htm#GetScoreAccess">GetScoreAccess()</A></span> see IMoaDrMovie
+
+<hr width=45% align=left>
+<span class="heading5"><A NAME="GetStageBufferGC" href="drmovie2.htm#GetStageBufferGC">GetStageBufferGC()</A></span> see IMoaDrMovie
+
+<hr width=45% align=left>
+<span class="heading5"><A NAME="GetStageWindowGC" href="drmovie2.htm#GetStageWindowGC">GetStageWindowGC()</A></span> see IMoaDrMovie
+
+<hr width=45% align=left>
+<span class="heading5"><A NAME="NewCast" href="drmovie2.htm#NewCast">NewCast()</A></span> see IMoaDrMovie
+
+<hr width=45% align=left>
+<span class="heading5"><A NAME="RemoveCast" href="drmovie2.htm#RemoveCast">RemoveCast()</A></span> see IMoaDrMovie
+
+<hr width=45% align=left>
+<span class="heading5"><A NAME="Save" href="drmovie2.htm#Save">Save()</A></span> see IMoaDrMovie
+
+<hr width=45% align=left>
+<span class="heading5"><A NAME="SendSpriteMessage" href="drmovie2.htm#SendSpriteMessage">SendSpriteMessage()</A></span> see IMoaDrMovie
+
+<hr width=45% align=left>
+<span class="heading5"><A NAME="SetFrameLabel" href="drmovie2.htm#SetFrameLabel">SetFrameLabel()</A></span> see IMoaDrMovie
+
+<hr width=45% align=left>
+<span class="heading5"><A NAME="SetMedia" href="drmovie2.htm#SetMedia">SetMedia()</A></span> see IMoaDrMovie
+
+<hr width=45% align=left>
+<span class="heading5"><A NAME="SetProp" href="drmovie2.htm#SetProp">SetProp()</A></span> see IMoaDrMovie
+
+<hr width=45% align=left>
+<span class="heading5"><A NAME="UpdateStageRect" href="drmovie2.htm#UpdateStageRect">UpdateStageRect()</A></span> see IMoaDrMovie
+
+<hr width=45% align=left>
+<A HREF = "../copyrite.htm">Copyright &#169; 1995-2008 Adobe Macromedia Software LLC, Inc.</A>
+</body></html>

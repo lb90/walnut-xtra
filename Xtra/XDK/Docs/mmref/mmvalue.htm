@@ -1,0 +1,824 @@
+<HTML>
+
+<HEAD> <TITLE>IMoaMmValue</TITLE>
+<link href="../xdk.css" rel="stylesheet" type="text/css">
+</HEAD>
+<body>
+
+<P>
+<A HREF="../mmdg/index.htm">MM Developer's Guide</A>
+<BR>
+<A HREF="index.htm" >MM Interfaces</A> | <A HREF="mmmthndx.htm" >MM Methods</A>
+| <A HREF="mmtypndx.htm">MM Types and Misc API</A>
+<hr width=45% align=left>
+
+<h3><A NAME="IMoaMmValue">IMoaMmValue</A></h3>
+
+<P>
+Interface ID: <span class="code">IID_IMoaMmValue<BR>
+</span>Pointer type: <span class="code">PIMoaMmValue<BR>
+</span>Inheritance: <span class="code">IMoaUnknown<BR>
+</span>Header file: <A HREF = "../../include/mmivalue.h">mmivalue.h</A>
+
+<h3>Description</h3>
+
+<DL>
+<DD>
+This interface provides support for converting C and MOA types
+to values that can be passed through the <A HREF="mmprpown.htm">IMoaMmPropertyOwner</A>
+interface and elsewhere in the multimedia API. The <A HREF="mmtypndx.htm#MoaMmValue">MoaMmValue</A>
+type provides a general, platform and application-independent
+mechanism for moving data of various types between an Xtra and
+an application. 
+<P>
+Like MOA interfaces, <span class="code">MoaMmValues</span> use reference counting
+for memory management. The methods <A HREF = "#ValueAddRef">ValueAddRef()</A>
+and <A HREF = "#ValueRelease">ValueRelease()</A> are provided
+by this interface to let you hold onto values when you need to
+and release them when you're finished. The &quot;caller-owns&quot;
+rule applies, as with MOA interfaces. 
+<P>
+With <A HREF="mmutils2.htm">IMoaMmUtils2</A>, <A HREF="mmwndmac.htm">IMoaMmWndMac</A>,
+and <A HREF="mmwndwin.htm">IMoaMmWndWin</A>, this interface supercedes
+<span class="code">IMoaMmUtils</span>, which has been made redundant. <BR>
+</DL>
+<h3>Methods</h3>
+
+<h4>Data conversion </h4>
+<DL>
+<DD><A HREF = "#StringToSymbol">StringToSymbol()</A> <BR>
+<A HREF = "#SymbolToString">SymbolToString()</A> <BR>
+<A HREF = "#ValueToInteger">ValueToInteger()</A> <BR>
+<A HREF = "#ValueToSymbol">ValueToSymbol()</A> <BR>
+<A HREF = "#ValueToFloat">ValueToFloat()</A> <BR>
+<A HREF = "#ValueToString">ValueToString()</A> <BR>
+<A HREF = "#ValueToStringPtr">ValueToStringPtr()</A> <BR>
+<A HREF = "#ValueToPoint">ValueToPoint()</A> <BR>
+<A HREF = "#ValueToRect">ValueToRect()</A> <BR>
+<A HREF = "#IntegerToValue">IntegerToValue()</A> <BR>
+<A HREF = "#SymbolToValue">SymbolToValue()</A> <BR>
+<A HREF = "#FloatToValue">FloatToValue()</A> <BR>
+<A HREF = "#StringToValue">StringToValue()</A> <BR>
+<A HREF = "#StringHandleToValue">StringHandleToValue()</A> <BR>
+<A HREF = "#PointToValue">PointToValue()</A> <BR>
+<A HREF = "#RectToValue">RectToValue()</A> 
+</DL>
+
+<h4>MoaMmValue management </h4>
+<DL>
+<DD><A HREF = "#ValueType">ValueType()</A> <BR>
+<A HREF = "#ValueAddRef">ValueAddRef()</A> <BR>
+<A HREF = "#ValueRelease">ValueRelease()</A> <BR>
+<A HREF = "#ValueStringLength">ValueStringLength()</A> <BR>
+<A HREF = "#ValueReleaseStringPtr">ValueReleaseStringPtr()</A>
+</DL>
+
+<hr width=45% align=left>
+
+<h3><A NAME="FloatToValue">FloatToValue()</A></h3>
+<h4>Syntax</h4>
+<DL>
+<DT class="code">FloatToValue(MoaDouble <I>fnum</I>, PMoaMmValue pValue)</DT></DL>
+<h4>Parameters</h4>
+<DL>
+<DT class="codearg">fnum</DT>
+<DD>Contains the <span class="code">MoaDouble</span> to be used for the new value </DD>
+<DT class="codearg">pValue</DT>
+<DD>Pointer to the <span class="code">MoaMmValue</span> to receive the result</DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+<DD><span class="code">MoaError</DD>
+</DL>
+<h4>Description</h4>
+<DL>
+<DD>Creates a new float-type <span class="code">MoaMmValue</span>
+from a <span class="code">MoaDouble</span>.
+<span class="code"><I>fnum</I></span> contains
+the <span class="code">MoaDouble </span>to be
+used as the basis for the new value. <span class="code"><I>pValue
+</I></span>contains a pointer to a <span class="code">MoaMmValue
+</span>to receive the result. This call populates the <span class="code">MoaMmValue
+</span>at <span class="code"><I>pValue</I></span>with
+a new <span class="code">MoaMmValue</span>,
+overwriting any current value. Make sure to release any preexisting
+value before making this call. The caller is responsible for releasing
+the returned value using <span class="code">IMoaMmValue::
+ValueRelease()</span>. </DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h3><A NAME="IntegerToValue">IntegerToValue()</A></h3>
+
+<h4>Syntax</h4>
+
+<DL>
+<DT class="code">IntegerToValue(MoaLong <I>num</I>, PMoaMmValue pValue)</DT></DL>
+
+<h4>Parameters</h4>
+
+<DL>
+<DT><span class="code"><I>num</I></span></DT>
+<DD>Contains the <span class="code">MoaLong</span> to be used for the new value</DD>
+<DT class="codearg">pValue</DT>
+<DD> Pointer to a <span class="code">MoaMmValue</span> to receive the result</DD>
+</DL>
+
+<h4>Returns</h4>
+
+<DL>
+<DT>
+<DD><span class="code">MoaError</DD>
+</DL>
+
+<h4>Description</h4>
+
+<DL>
+<DD>
+Creates a new integer-type <span class="code">MoaMmValue
+</span>from a <span class="code">MoaLong</span>.
+<span class="code"><I>num </I></span>contains
+the <span class="code">MoaLong </span>to be
+used as the basis for the new value. <span class="code"><I>pValue
+</I></span>contains a pointer to a <span class="code">MoaMmValue
+</span>to receive the result. This call populates the <span class="code">MoaMmValue
+</span>at <span class="code"><I>pValue</I></span>with
+a new <span class="code">MoaMmValue</span>,
+overwriting any current value. Make sure to release any preexisting
+value before making this call. The caller is responsible for releasing
+the returned value using <span class="code">IMoaMmValue::
+ValueRelease()</span>.</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h3><A NAME="PointToValue">PointToValue()</A></h3>
+
+<h4>Syntax</h4>
+
+<DL>
+<DT class="code">PointToValue(ConstPMoaPoint <I>pPoint</I>, PMoaMmValue pValue)
+</DT></DL>
+
+<h4>Parameters</h4>
+<DL>
+<DT><span class="code"><I>pPoint</I></span>
+<DD> Pointer to a <span class="code">ConstPMoaPoint</span> used for the new value</DD>
+<DT class="codearg">pValue</DT>
+<DD> Pointer to a <span class="code">MoaMmValue</span> to receive the result</DD>
+</DL>
+
+<h4>Returns</h4>
+<DL>
+<DD><span class="code">MoaError</DD>
+</DL>
+
+<h4>Description</h4>
+<DL>
+<DD>
+Creates a new point-type <span class="code">MoaMmValue
+</span>from a <span class="code">MoaPoint</span>.
+On entry, <span class="code"><I>pPoint </I></span>contains
+a pointer to a <span class="code">MoaPoint </span>to
+be used as the basis for the new value. <span class="code"><I>pValue
+</I></span>contains a pointer to a <span class="code">MoaMmValue
+</span>to receive the result. This call populates the <span class="code">MoaMmValue
+</span>at <span class="code"><I>pValue</I></span>
+with a new <span class="code">MoaMmValue</span>,
+overwriting any current value. Make sure to release any preexisting
+value before making this call. The caller is responsible for releasing
+the returned value (see <span class="code">IMoaMmValue::
+ValueRelease()</span>). </DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h3><A NAME="RectToValue">RectToValue()</A></h3>
+<h4>Syntax</h4>
+<DL>
+<DT class="code">RectToValue(ConstPMoaRect <I>pRect</I>, PMoaMmValue pValue)
+</DT></DL>
+
+<h4>Parameters</h4>
+<DL>
+<DT><span class="code"><I>pRect</I></span>
+<DD>Pointer to a <span class="code">ConstPMoaRect</span> used as the basis for the new value </DD>
+<DT class="codearg">pValue</DT>
+<DD> Pointer to a <span class="code">MoaMmValue </span>to receive the new value </DD>
+</DL>
+
+<h4>Returns</h4>
+<DL>
+<DD><span class="code">MoaError</DD>
+</DL>
+
+<h4>Description</h4>
+<DL>
+<DD>
+Creates a new rectangle-type <span class="code">MoaMmValue
+</span>from a <span class="code">MoaRect</span>.
+On entry, <span class="code"><I>pRect </I></span>contains
+a pointer to a <span class="code">MoaRect </span>to
+be used as the basis for the new value. <span class="code"><I>pValue
+</I></span>contains a pointer to a <span class="code">MoaMmValue
+</span>to receive the result. This call populates the <span class="code">MoaMmValue</span>
+at <span class="code"><I>pValue </I></span>with
+a new <span class="code">MoaMmValue</span>,
+overwriting any existing value. Make sure to release any preexisting
+value before making this call. The caller is responsible for releasing
+the returned value (see <span class="code">IMoaMmValue::
+ValueRelease()</span>). </DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h3><A NAME="StringHandleToValue">StringHandleToValue()</A></h3>
+
+<h4>Syntax</h4>
+
+<DL>
+<DT class="code">StringHandleToValue(MoaHandle <I>hString</I>, PMoaMmValue pValue)</DT>
+</DL>
+
+<h4>Parameters</h4>
+
+<DL>
+<DT><span class="code"><I>hString</I></span>
+<DD><span class="code">MoaHandle</span> containing a null-terminated string used for the value </DD>
+<DT class="codearg">pValue</DT>
+<DD> Pointer to a <span class="code">MoaMmValue </span>to receive the new value </DD>
+</DL>
+
+<h4>Returns</h4>
+
+<DL>
+<DD><span class="code">MoaError</DD>
+</DL>
+
+<h4>Description</h4>
+<DL>
+<DD>
+Creates a new string-type <span class="code">MoaMmValue
+</span>from a C string contained in a <span class="code">MoaHandle</span>.
+On entry <span class="code"><I>hString </I></span>contains
+a valid <span class="code">MoaHandle </span>containing
+a null-terminated C string to be used as the basis for the value.
+<span class="code"><I>pValue </I></span>contains
+a pointer to a <span class="code">MoaMmValue </span>to
+receive the result. This call populates the <span class="code">MoaMmValue
+</span>at <span class="code"><I>pValue </I></span>with
+a new <span class="code">MoaMmValue</span>,
+overwriting any current value. Make sure to release any preexisting
+value before making this call. The caller is responsible for releasing
+the returned value (see <span class="code">IMoaMmValue::
+ValueRelease()</span>). <BR>
+<BR>
+<B>Important</B>: <span class="code">StringHandleToValue()</span>
+does <B>not</B> copy the <span class="code">MoaHandle
+</span>supplied in <span class="code"><I>hString</I></span>.
+Instead, the <span class="code">MoaHandle </span>is
+transferred to the value. Therefore, the caller releases direct
+ownership of the original handle by making this call and can no
+longer reference or dispose it. To create a string-type value
+from a copy of an existing C string, use <span class="code">StringToValue()</span>instead.
+</DL>
+
+<hr width=45% align=left>
+
+<h3><A NAME="StringToSymbol">StringToSymbol()</A></h3>
+
+<h4>Syntax</h4>
+
+<DL>
+<DT class="code">StringToSymbol(ConstPMoaChar <I>pString</I>, PMoaMmSymbol pSymbol)
+
+</DT></DL>
+
+<h4>Parameters</h4>
+
+<DL>
+<DT><span class="code"><I>pString</I></span>
+<DD> Pointer to the <span class="code">ConstPMoaChar</span> containing the string </DD>
+<DT><span class="code"><I>pSymbol</I></span>
+<DD> Pointer to a <span class="code">MoaMmSymbol</span> that receives the result </DD>
+</DL>
+
+<h4>Returns</h4>
+
+<DL>
+<DD><span class="code">MoaError</DD>
+</DL>
+
+<h4>Description</h4>
+
+<DL>
+<DD>
+Converts the string, <span class="code"><I>pString</I></span>,
+to the corresponding symbol and returns the result in <span class="code"><I>pSymbol</I></span>.
+Symbols are used to refer to specific properties and media data.
+In addition, symbols are data types in Lingo, Director's scripting
+language. </DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h3><A NAME="StringToValue">StringToValue()</A></h3>
+
+<h4>Syntax</h4>
+
+<DL>
+<DT class="code">StringToValue(ConstPMoaChar <I>pString</I>, PMoaMmValue pValue)
+
+</DT></DL>
+
+<h4>Parameters</h4>
+
+<DL>
+<DT><span class="code"><I>pString</I></span>
+<DD> Pointer to a null-terminated string used for the value </DD>
+<DT class="codearg">pValue</DT>
+<DD> Pointer to a <span class="code">MoaMmValue</span> that receives the result </DD>
+</DL>
+
+<h4>Returns</h4>
+
+<DL>
+<DD><span class="code">MoaError</DD>
+</DL>
+
+<h4>Description</h4>
+
+<DL>
+<DD>
+Creates a new string-type <span class="code">MoaMmValue
+</span>from a C string stored at <span class="code"><I>pString</I></span>.
+On entry <span class="code"><I>pString </I></span>contains
+a pointer to a null-terminated C string to be used as the basis
+for the value. <span class="code"><I>pValue </I></span>contains
+a pointer to a <span class="code">MoaMmValue</span>
+to receive the result. This call populates the <span class="code">MoaMmValue
+</span>at <span class="code"><I>pValue</I></span>with
+a new <span class="code">MoaMmValue</span>,
+overwriting any existing value. Make sure to release any preexisting
+value before making this call. The caller is responsible for releasing
+the returned value (see <span class="code">IMoaMmValue::
+ValueRelease()</span>). <BR>
+<BR>
+<span class="code">StringToValue() </span>copies
+the string data at <span class="code"><I>pString</I></span>for
+use in the <span class="code">MoaValue</span>.
+If you want to avoid a memory copy and supply the C string data
+directly for the value, use <span class="code">StringHandleToValue()
+</span>instead.
+</DL>
+
+<hr width=45% align=left>
+
+<h3><A NAME="SymbolToString">SymbolToString()</A></h3>
+
+<h4>Syntax</h4>
+
+<DL>
+<DT class="code">SymbolToString(MoaMmSymbol <I>symbol</I>, PMoaChar <I>pStringBuf</I>, MoaLong bufLen)</DT></DL>
+
+<h4>Parameters</h4>
+
+<DL>
+<DT><span class="code"><I>symbol</I></span>
+  <DD> The symbol to translate </DD>
+<DT><span class="code"><I>pStringBuf</I></span>
+  <DD> Pointer to a string buffer to receive the result </DD>
+<DT><span class="code"><I>bufLen</I></span>
+  <DD> The size of the string buffer </DD>
+</DL>
+
+<h4>Returns</h4>
+
+<DL>
+<DD><span class="code">MoaError</DD>
+</DL>
+
+<h4>Description</h4>
+<DL>
+<DD>
+Converts <span class="code"><I>symbol </I></span>to
+a string. <span class="code"><I>pStringBuf </I></span>contains
+a pointer to the caller's string buffer which will receive the
+string. <span class="code"><I>bufLen </I></span>is
+the size of the caller's buffer. Symbols are used to refer to
+specific properties and media data. In addition, symbols are data
+types in Lingo, Director's scripting language.</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h3><A NAME="SymbolToValue">SymbolToValue()</A></h3>
+
+<h4>Syntax</h4>
+
+<DL>
+<DT class="code">SymbolToValue(MoaMmSymbol <I>symbol</I>, PMoaMmValue pValue)
+
+</DT></DL>
+
+<h4>Parameters</h4>
+
+<DL>
+<DT><span class="code"><I>symbol</I></span>
+  <DD>The symbol to translate </DD>
+  <DT><span class="code"><I>pStringBuf</I></span>
+  <DD>Pointer to a string buffer to receive the result </DD>
+  <DT><span class="code"><I>bufLen</I></span>
+  <DD>The size of the string buffer </DD>
+</DL>
+
+<h4>Returns</h4>
+
+<DL>
+<DD><span class="code">MoaError</DD>
+</DL>
+
+<h4>Description</h4>
+
+<DL>
+<DD>
+Converts <span class="code"><I>symbol </I></span>to
+a string. <span class="code"><I>pStringBuf </I></span>contains
+a pointer to the caller's string buffer which will receive the
+string. <span class="code"><I>bufLen </I></span>is
+the size of the caller's buffer. Symbols are used to refer to
+specific properties and media data. In addition, symbols are data
+types in Lingo, Director's scripting language.</DD>
+
+</DL>
+
+<hr width=45% align=left>
+
+<h3><A NAME="ValueAddRef">ValueAddRef()</A></h3>
+
+<h4>Syntax</h4>
+
+<DL>
+<DT class="code">ValueAddRef(PMoaMmValue pValue)
+</DT></DL>
+
+<h4>Parameters</h4>
+
+<DL>
+<DT class="codearg">pValue</DT>
+<DD>PMoaMmValue</DD>
+</DL>
+
+<h4>Returns</h4>
+
+<DL>
+<DD><span class="code">MoaError</DD>
+</DL>
+
+<h4>Description</h4>
+
+<DL>
+<DD>
+Increments the reference count of a value by 1. Because <span class="code">MoaMmValues</span>are
+shared objects, you should always call this method on values you
+passed as a method argument to retain it across method calls to
+your Xtra. When you explicitly request or construct a new value
+(for example, using <span class="code">IntegerToValue()</span>)
+this method is automatically called for you. Thus, you are responsible
+for calling <span class="code">IMoaMmValue:: ValueRelease()
+</span>on any value you create, unless the value is being
+passed back to the host application. Values passed back to the
+host application as return values to Xtra method functions are
+transferred to the host application which is then responsible
+for releasing them. Examples of this are your asset and sprite
+<span class="code">GetProp()</span>and <span class="code">CallFunction()</span>methods,
+and your Lingo Xtra <span class="code">Call()</span>
+method. </DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h3><A NAME="ValueRelease">ValueRelease()</A></h3>
+
+<h4>Syntax</h4>
+
+<DL>
+<DT class="code">ValueRelease(PMoaMmValue pValue)</DT></DL>
+
+<h4>Parameters</h4>
+
+<DL>
+<DT class="codearg">pValue</DT>
+<DD>PMoaMmValue</DD>
+</DL>
+
+<h4>Returns</h4>
+
+<DL>
+<DD><span class="code">MoaError</DD>
+</DL>
+
+<h4>Description</h4>
+
+<DL>
+<DD>
+Decrements the reference count of a value by 1. When the <span class="code">refCount</span>
+drops to 0, the value is released from memory. Because <span class="code">MoaMmValues</span>are
+shared objects, you should always call this method on values you
+passed as a method argument if you need to retain it across method
+calls to your Xtra. When you explicitly request or construct a
+new value (for example, using <span class="code">IntegerToValue()</span>)
+this method is automatically called for you. Thus, you are responsible
+for calling <span class="code">IMoaMmValue:: ValueRelease()
+</span>on any value you create, unless the value is being
+passed back to the host application Values passed back to the
+host application as return values to Xtra method functions are
+transferred to the host application which is then responsible
+for releasing them. Examples of this are your asset and sprite
+<span class="code">GetProp()</span> and <span class="code">CallFunction()</span>
+methods, and your Lingo Xtra <span class="code">Call()</span>
+method.</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h3><A NAME="ValueReleaseStringPtr">ValueReleaseStringPtr()</A></h3>
+
+<h4>Syntax</h4>
+
+<DL>
+<DT class="code">ValueReleaseStringPtr(ConstPMoaMmValue pValue)
+
+</DT></DL>
+
+<h4>Parameters</h4>
+
+<DL>
+<DT class="codearg">pValue</DT>
+<DD>Pointer to a string-type <span class="code">ConstPMoaMmValue</span></DD>
+</DL>
+
+<h4>Returns</h4>
+
+<DL>
+<DD><span class="code">MoaError</DD>
+</DL>
+
+<h4>Description</h4>
+
+<DL>
+<DD>
+Releases hold on the contents of a string value initiated by a
+call to <span class="code">ValueGetStringPtr()</span>.
+<span class="code">ValueReleaseStringPtr()</span> must
+be called when caller has finished directly accessing string data,
+stored in a string-type <span class="code">MoaMmValue</span>.
+To obtain a copy of a value's string data, use <span class="code">ValueToString()</span>
+rather than <span class="code">ValueToStringPtr()</span>.</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h3><A NAME="ValueStringLength">ValueStringLength()</A></h3>
+<h4>Syntax</h4>
+<DL>
+<DT class="code">ValueStringLength(ConstPMoaMmValue <I>pValue</I>, MoaLong * pResult)</DT></DL>
+<h4>Parameters</h4>
+<DL>
+<DT class="codearg">pValue</DT>
+<DD> Pointer to a string-type <span class="code">ConstPMoaMmValue</span> </DD>
+<DT class="codearg">pResult</DT>
+<DD>Pointer to a <span class="code">MoaLong</span> to receive the string length</DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+<DD><span class="code">MoaError</DD>
+</DL>
+<h4>Description</h4>
+<DL>
+<DD>Obtains the string length of a string-type <span class="code">MoaMmValue</span>.
+<span class="codearg">pResult</span> is a pointer to a <span class="code">MoaLong</span> to receive the length.
+The length supplied does not include the null terminator byte.
+Returns <span class="code">kMoaMmErr_StringExpected</span> if <span class="codearg">pValue</span> is not a string-type value.</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h3><A NAME="ValueToFloat">ValueToFloat()</A></h3>
+
+<h4>Syntax</h4>
+
+<DL>
+<DT class="code">ValueToFloat(ConstPMoaMmValue <I>pValue</I>, MoaDouble * pResult)
+
+</DT></DL>
+
+<h4>Parameters</h4>
+
+<DL>
+<DT class="codearg">pValue</DT>
+<DD>Pointer to a float-type <span class="code">ConstPMoaMmValue </span></DD>
+<DT class="codearg">pResult</DT>
+<DD>Pointer to a <span class="code">MoaDouble</span> to receive the result </DD>
+</DL>
+
+<h4>Returns</h4>
+<DL>
+<DD><span class="code">MoaError</DD></DL>
+<h4>Description</h4>
+<DL>
+<DD>Obtains the <span class="code">MoaDouble</span> for a float-type <span class="code">MoaMmValue</span>.
+<span class="codearg">pResult</span> is a pointer to a <span class="code">MoaDouble</span> to receive the result.
+Returns <span class="code">kMoaMmErr_FloatExpected</span> if <span class="codearg">pValue</span> is not a float-type value.</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h3><A NAME="ValueToInteger">ValueToInteger()</A></h3>
+<h4>Syntax</h4>
+<DL>
+<DT class="code">ValueToInteger(ConstPMoaMmValue <I>pValue</I>, MoaLong * pResult)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+<DT class="codearg">pValue</DT>
+<DD>Pointer to an integer-type <span class="code">ConstPMoaMmValue</span> </DD>
+<DT class="codearg">pResult</DT>
+<DD>Pointer to a <span class="code">MoaLong</span> to receive the result </DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+<DD><span class="code">MoaError</DD>
+</DL>
+<h4>Description</h4>
+<DL>
+<DD>Obtains the <span class="code">MoaLong</span> for an integer-type <span class="code">MoaMmValue</span>.
+<span class="codearg">pResult</span> is a pointer to a <span class="code">MoaLong</span> to receive the result. 
+Returns <span class="code">kMoaMmErr_IntegerExpected</span> if <span class="codearg">pValue</span> is not an integer-type value.</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h3><A NAME="ValueToPoint">ValueToPoint()</A></h3>
+<h4>Syntax</h4>
+<DL>
+<DT class="code">ValueToPoint(ConstPMoaMmValue <I>pValue</I>, PMoaPoint pResult)</DT></DL>
+<h4>Parameters</h4>
+<DL>
+<DT class="codearg">pValue</DT>
+<DD>Pointer to an integer-type <span class="code">ConstPMoaMmValue</span></DD>
+<DT class="codearg">pResult</DT>
+<DD>Pointer to a <span class="code">MoaPoint</span> to receive the result </DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+<DD><span class="code">MoaError</DD></DL>
+<h4>Description</h4>
+<DL>
+<DD>Obtains the <span class="code">MoaPoint</span> for an integer-type <span class="code">MoaMmValue</span>.
+<span class="codearg">pResult</span> is a pointer to a <span class="code">MoaPoint</span> to receive the result.
+Returns <span class="code">kMoaMmErr_PointExpected</span> if <span class="codearg">pValue</span> is not a point-type value.</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h3><A NAME="ValueToRect">ValueToRect()</A></h3>
+<h4>Syntax</h4>
+<DL>
+<DT class="code">ValueToRect(ConstPMoaMmValue <I>pValue</I>, PMoaRect pResult)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+<DT class="codearg">pValue</DT>
+<DD>Pointer to a rectangle-type <span class="code">ConstPMoaMmValue</span></DD>
+<DT class="codearg">pResult</DT>
+<DD>Pointer to a<span class="code">MoaRect</span> to receive the result</DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+<DD><span class="code">MoaError</DD</DL>
+<h4>Description</h4>
+<DL>
+<DD>Obtains the <span class="code">MoaRect</span> for a rectangle-type <span class="code">MoaMmValue</span>.
+<span class="codearg">pResult</span> is a pointer to a <span class="code">MoaRect</span> to receive the result.
+Returns <span class="code">kMoaMmErr_RectExpected</span> if <span class="codearg">pValue</span> is not a rectangle-type value.</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h3><A NAME="ValueToString">ValueToString()</A></h3>
+<h4>Syntax</h4>
+<DL>
+<DT class="code">ValueToString(ConstPMoaMmValue <I>pValue</I>, PMoaChar <I>pStringBuf</I>, MoaLong bufLen)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+<DT class="codearg">pValue</DT>
+<DD>Pointer to a string-type <span class="code">ConstPMoaMmValue</span></DD>
+<DT class="codearg">pStringBuf</DT>
+<DD> Pointer to a buffer to receive a copy of the string data </DD>
+<DT class="codearg">bufLen</DT>
+<DD><span class="code">MoaLong </span> indicating the length of the buffer</DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+<DD><span class="code">MoaError</DD></DL>
+<h4>Description</h4>
+<DL>
+<DD>Obtains the C string for a string-type <span class="code">MoaMmValue</span>.
+<span class="codearg">pStringBuf</span> is a pointer to a buffer to receive a copy of the string data.
+<span class="codearg">bufLen</span> is the length of the caller's buffer.
+The buffer must be large enough for the string data including the terminating null byte.
+To access the string data directly rather than obtaining a copy, use <span class="code">ValueToStringPtr()</span>.
+Returns <span class="code">kMoaMmErr_StringExpected</span> if <span class="codearg">pValue</span> is not a string-type value.</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A name = "ValueToStringPtr">ValueToStringPtr()</A></h4>
+<DL>
+<DT class="heading5">Syntax</DT>
+<DT class="code">ValueToStringPtr(ConstPMoaMmValue <em>pValue</em>, ConstPMoaChar * <em>pResult</em>)</DT>
+</DL>
+<DL>
+<DT class="heading5">Parameters</DT>
+<DT class="codearg">pValue</DT>
+<DD>Pointer to a string-type <span class="code">ConstPMoaMmValue</span></dd>
+<DT class="codearg">pResult</DT>
+<DD>Pointer to a <span class="code">ConstPMoaChar</span> to receive the pointer</DD>
+</DL>
+<DL>
+<DT class="heading5">Returns</DT>
+<DT class="code">MoaError</DT>
+<DD><span class="code">kMoaMmErr_StringExpected</span> if <span class="codearg">pValue</span> is not a string-type value.</DD>
+</DL>
+
+<DL>
+<DT class="heading5">Description</DT>
+<DD>
+Obtains direct-access to the C string for a string-type <span class="code">MoaMmValue</span>.
+<span class="code"><em>pResult</em></span> is a pointer to a <span class="code">ConstPMoaChar </span>to receive a pointer to the C string data. 
+The string buffer being accessed is owned by the <span class="code">MoaMmValue</span>.
+When done accessing the string data, you must call <span class="code">ValueReleaseStringPtr()</span>.
+To get a copy of the string data rather than accessing it directly, use <span class="code">ValueToString()</span>.
+</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h3><A NAME="ValueToSymbol">ValueToSymbol()</A></h3>
+<h4>Syntax</h4>
+<DL>
+<DT class="code">ValueToSymbol(ConstPMoaMmValue <I>pValue</I>, PMoaMmSymbol pResult)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+<DT class="codearg">pValue</DT>
+<DD>Pointer to a symbol-type <span class="code">ConstPMoaMmValue</span></DD>
+<DT class="codearg">pResult</DT>
+<DD> Pointer to a <span class="code">MoaMmSymbol</span> to receive the result</DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+<DD><span class="code">MoaError</DD>
+</DL>
+<h4>Description</h4>
+<DL>
+<DD>Obtain the <span class="code">MoaMmSymbol</span> for a symbol-type <span class="code">MoaMmValue</span>.
+<span class="codearg">pResult</span> is a pointer to a <span class="code">MoaMmSymbol</span> to receive the result.
+Returns <span class="code">kMoaMmErr_SymbolExpected</span> if <span class="codearg">pValue</span> is not a symbol-type value.</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h3><A NAME="ValueType">ValueType()</A></h3>
+<h4>Syntax</h4>
+<DL>
+<DT class="code">ValueType(ConstPMoaMmValue <I>pValue</I>, MoaMmValueType * pResult)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+<DT class="codearg">pValue</DT>
+<DD>Pointer to a <span class="code">ConstPMoaMmValue</span></DD>
+<DT class="codearg">pResult</DT>
+<DD>Pointer to a <span class="code">MoaMmValueType </span>to receive the result</DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+<DD><span class="code">MoaError</DD>
+</DL>
+<h4>Description</h4>
+<DL>
+<DD>Obtains the type code for a <span class="code">MoaMmValue</span>.
+This method returns a <A HREF="mmtypndx.htm#MoaMmValueType"><span class="code">MoaMmValueType</span></A> which specifies the type of value.
+Note that some <span class="code">MoaMmValue</span> scripting objects do not have a unique <span class="code">MoaMmValueType</span>.
+For example, to find out if a <span class="code">MoaMmValue</span> references an image object, 
+use the <span class="code">GetImageInfo()</span> method of <a href="mmimage.htm#GetImageInfo">IMoaMmImage</a>.</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<A HREF = "../copyrite.htm">Copyright &#169; 1995-2008 Adobe Macromedia Software LLC, Inc.</A> 
+</BODY>
+</html>

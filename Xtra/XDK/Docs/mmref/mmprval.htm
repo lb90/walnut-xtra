@@ -1,0 +1,77 @@
+<HTML>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<TITLE>IMoaMmPropReferenceValue</TITLE>
+<link href="../xdk.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+
+<A HREF="../mmdg/index.htm">MM Developer's Guide</A><BR><A HREF="index.htm" >MM Interfaces</A> 
+| <A HREF="mmmthndx.htm" >MM Methods</A>
+| <A HREF="mmtypndx.htm">MM Types and Misc API</A><BR><BR>
+
+<hr width=45% align=left>
+
+<h3><A name = "IMoaMmPropReferenceValue"></A>IMoaMmPropReferenceValue</h3>
+Interface ID: <span class="code">IID_IMoaMmPropReferenceValue</span><BR>
+Pointer type: <span class="code">PIMoaMmPropReferenceValue</span><BR>
+Inheritance: <span class="code">IMoaUnknown</span><BR>
+Header file: <A HREF = "../../include/mmipref.h">mmipref.h</A><BR>
+
+
+<h4>Methods</h4>
+<DL>
+<DD><A HREF = "#ValueToPropReference">ValueToPropReference()</A><BR>
+<A HREF = "#PropReferenceToValue">PropReferenceToValue()</A></DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A NAME="PropReferenceToValue">PropReferenceToValue()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">PropReferenceToValue(PMoaMmValue <em>pValue</em>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">pValue</DT>
+<dd>Pointer to place to store the resulting value object</dd>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DT class="code">MoaError</DT>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>This method converts a property reference to a Lingo value.
+The caller must release this interface when done with it.</DD>
+</DL>
+
+<hr width=45% align=left>
+
+
+<h4><A NAME="ValueToPropReference">ValueToPropReference()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">ValueToPropReference(ConstPMoaMmValue <em>pValue</em>, PIMoaMmPropertyReference * <em>ppPropRef</em>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">pValue</DT>
+<dd>Pointer to a value object</dd>
+<DT class="codearg">ppPropRef</DT>
+<dd>Pointer to a place to put the property reference interface that is returned</dd>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DT class="code">MoaError</DT>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>This method converts a value containing a Lingo wrapper around a property reference to the actual interface.</DD>
+</DL>
+
+<hr width=45% align=left>
+<A HREF = "../copyrite.htm">Copyright &#169; 1995-2008 Adobe Macromedia Software LLC, Inc.</A>
+</body></html>
+

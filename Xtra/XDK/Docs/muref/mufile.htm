@@ -1,0 +1,91 @@
+<HTML>
+<HEAD>
+<TITLE>IMuiFile</TITLE>
+<link href="../xdk.css" rel="stylesheet" type="text/css">
+</HEAD>
+<BODY>
+<A HREF="../mudg/index.htm" >MUI Developer's Guide</A> <BR>
+<A HREF="index.htm" >MUI Interfaces</A> | <A HREF="mumthndx.htm" >MUI Methods</A> | <A HREF="mutypndx.htm" >MUI Types and Misc API</A>
+<HR width=45% align=left>
+<h3><A NAME="IMuiFile">IMuiFile</A> </h3>
+<P> Interface ID: <span class="code">IID_IMuiFile<BR>
+  </span>Pointer type: <span class="code">PIMuiFile<BR>
+  </span>Inheritance: <span class="code">IMoaUnknown<BR>
+  </span>Header file: <A HREF = "../../Include/mui.h">mui.h</A>
+<DL>
+  <DD>This interface displays the standard system file open and
+    file save dialogs. It is available by calling <span class="code">IMoaCallback::CreateInstance()</span> with the class identifier <span class="code">CLSID_CMuiFile</span> and the
+    interface identifier <span class="code">IID_IMuiFile</span>.<BR>
+    <BR>
+    See the <A HREF="../mudg/index.htm">MUI Developer's Guide</A> for a list of the applications that currently support <span class="code">IMuiFile</span>. <BR>
+    <BR>
+    Use this interface in conjunction with the <A HREF="../mfdg/index.htm">Moa File Support II API</A> to open the file specified by the user.
+</DL>
+<H3>Methods</H3>
+<DL>
+  <DD><A HREF = "#SimpleFileOpen">SimpleFileOpen()</A> <BR>
+    <A HREF = "#SimpleFileSave">SimpleFileSave()</A> <BR>
+</DL>
+<HR width=45% align=left>
+<H3><A NAME="SimpleFileOpen">SimpleFileOpen()</A> </H3>
+<H4>Syntax</H4>
+<DL>
+  <DT><span class="code">SimpleFileOpen(PIMoaPathName * <I>ppMoaPath</I>, ConstPMoaChar <I>prompt</I>)</span>
+  </DL>
+<H4>Parameters</H4>
+<DL>
+  <DT><span class="code"><I>ppMoaPath</I></span>
+  <DD>Pointer to an <A HREF="../mfref/mfpthnm.htm">IMoaPathName</A> to return the user's selection</DD>
+  <DT><span class="code"><I>prompt</I></span>
+  <DD>Character string for the user prompt</DD>
+</DL>
+<H4>Returns</H4>
+<DL>
+  <DD><span class="code">MoaError</span> <BR>
+</DL>
+<H4>Description</H4>
+<DL>
+  <DD>Call this method to display a standard system file open dialog
+    box from your Xtra. Pass a string for the user prompt to display
+    in the dialog. Allocate and pass an instance of the <span class="code">IMoaPathName</span> interface to specify the default file to save in the dialog; otherwise,
+    an instance will be allocated for you and returned (caller owns).
+    The instance returned contains the selection from the user. <BR>
+    <BR>
+    Once the user has selected a file and dismissed the dialog, this
+    method returns. Use standard system calls to open the file selected
+    by the user. <BR>
+</DL>
+<HR width=45% align=left>
+<H3><A NAME="SimpleFileSave">SimpleFileSave()</A> </H3>
+<H4>Syntax<BR>
+  </H4>
+<DL>
+  <DT><span class="code">SimpleFileSave(PIMoaPathName * <I>ppMoaPath</I>, ConstPMoaChar <I>prompt</I>)</span>
+  </DL>
+<H4>Parameters</H4>
+<DL>
+  <DT><span class="code"><I>ppMoaPath</I></span>
+  <DD>Pointer to an <A HREF="../mfref/mfpthnm.htm">IMoaPathName</A> to return the user's selection</DD>
+  <DT><span class="code"><I>prompt</I></span>
+  <DD>Character string for the user prompt</DD>
+</DL>
+<H4>Returns</H4>
+<DL>
+  <DD><span class="code">MoaError</span> <BR>
+</DL>
+<H4>Description</H4>
+<DL>
+  <DD>Call this method to display a standard system file save dialog
+    box from your Xtra. Pass a string for the user prompt to display
+    in the dialog. Allocate and pass an instance of the <span class="code">IMoaPathName</span> interface to specify the default file to save in the dialog; otherwise,
+    an instance will be allocated for you and returned (caller owns).
+    The instance returned contains the selection from the user. <BR>
+    <BR>
+    Once the user has selected a file and dismissed the dialog, this
+    method returns. Use standard system calls to save to the file
+    selected by the user. <BR>
+</DL>
+<HR width=45% align=left>
+<A HREF = "../copyrite.htm">Copyright &#169; 1995-2008 Adobe Macromedia Software LLC, Inc.</A>
+</BODY>
+</HTML>

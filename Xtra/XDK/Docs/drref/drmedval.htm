@@ -1,0 +1,138 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>IMoaDrMediaValue</title>
+<link href="../xdk.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+
+<A HREF = "../drdg/index.htm">DR Developer's Guide</A><br>
+<A HREF = "index.htm"> DR Interfaces</A> | 
+<A HREF = "drmthndx.htm">DR Methods</A> | 
+<A HREF = "drtypndx.htm">DR Types and Misc API</A>
+<hr width=45% align=left>
+
+<h3><A name = "IMoaDrMediaValue">IMoaDrMediaValue</A></h3>
+
+Interface ID: <span class="code">IID_IMoaDrMediaValue</span><br>
+Pointer type: <span class="code">PIMoaDrMediaValue</span><br>
+Inheritance: <span class="code">IMoaUnknown</span><br>
+Header file: <A HREF = "../../include/drivalue.h">drivalue.h</A>
+
+<h4>Description</h4>
+<DL>
+<DD>
+The <span class="code">IMoaDrMediaValue</span> interface provides Director-specific value types for media.
+It complements the features of <span class="code">IMoaDrValue</span>, providing application-specific services to Xtras.</DD>
+</DL>
+
+<h4>Methods</h4>
+<DL>
+<DD><A HREF = "#ValueToMedia">ValueToMedia()</A></DD>
+<DD><A HREF = "#MediaToValue">MediaToValue()</A></DD>
+<dd><A HREF = "#ValueToPicture">ValueToPicture()</A></dd>
+<dd><A HREF = "#PictureToValue">PictureToValue()</A></dd>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A NAME="MediaToValue">MediaToValue()</A></h4>
+<dl>
+<dt class="heading5">Syntax</dt>
+<DT class="code">MediaToValue(const MoaHandle <em>hMediaData</em>, PMoaMmValue <em>pValue</em>)</DT>
+</dl>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">hMediaData</DT>
+<dd>Handle that has the media data</dd>
+<DT class="codearg">pValue</DT>
+<dd>Pointer to a <span class="code">MoaMmValue</span> to receive the result</dd>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DT class="code">MoaError</DT>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>This method creates a Lingo value from a binary handle that was acquired by calling 
+<A HREF = "./drmedval.htm#ValueToMedia" class="code">ValueToMedia()</A>.
+This Lingo value can be passed as a parameter to a Lingo handler.</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A NAME="PictureToValue">PictureToValue()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">PictureToValue(const MoaHandle <em>hPictureData</em>, PMoaMmValue <em>pValue</em>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">hPictureData</DT>
+<dd>Handle that has the picture data</dd>
+<DT class="codearg">pValue</DT>
+<dd>Pointer to a <span class="code">MoaMmValue</span> to receive the result</dd>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DT class="code">MoaError</DT>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>This method creates a Lingo value from a binary handle that was acquired by calling 
+<A HREF = "./drmedval.htm#ValueToPicture" class="code">ValueToPicture()</A>.
+This Lingo value can be passed as a parameter to a Lingo handler.</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A NAME="ValueToMedia">ValueToMedia()</A></h4>
+<dl>
+<dt class="heading5">Syntax</dt>
+<DT class="code">ValueToMedia(ConstPMoaMmValue <em>pValue</em>, MoaHandle * <em>phMediaData</em>)</DT>
+</dl>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">pValue</DT>
+<dd>Pointer to a value</dd>
+<DT class="codearg">phMediaData</DT>
+<dd>Pointer to a handle to receive the media data</dd>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DT class="code">MoaError</DT>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>This method converts a media Lingo value to a binary handle for saving to a file or network streaming.
+The binary value can be moved to a different platform and passed back to Director or Shockwave.</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A NAME="ValueToPicture">ValueToPicture()</A></h4>
+<dl>
+<dt class="heading5">Syntax</dt>
+<DT class="code">ValueToPicture(ConstPMoaMmValue <em>pValue</em>, MoaHandle * <em>phPictureData</em>)</DT>
+</dl>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">pValue</DT>
+<dd>Pointer to a value</dd>
+<DT class="codearg">phPictureData</DT>
+<dd>Pointer to a handle to receive the picture data</dd>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DT class="code">MoaError</DT>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>This method converts a picture Lingo value to a binary handle for saving to a file or network streaming.
+The binary value can be moved to a different platform and passed back to Director or Shockwave.</DD>
+</DL>
+
+<hr width=45% align=left>
+<A HREF = "../copyrite.htm">Copyright &#169; 1995-2008 Adobe Macromedia Software LLC, Inc.</A>
+</body>
+</html>

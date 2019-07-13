@@ -1,0 +1,241 @@
+<HTML>
+<HEAD>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<TITLE>IMoaDrValue</TITLE>
+<link href="../xdk.css" rel="stylesheet" type="text/css">
+</HEAD>
+<body>
+
+<A HREF = "../drdg/index.htm">DR Developer's Guide</A>
+<BR>
+<A HREF = "index.htm"> DR Interfaces</A> | 
+<A HREF = "drmthndx.htm">DR Methods</A> | 
+<A HREF = "drtypndx.htm">DR Types and Misc API</A>
+<hr width=45% align=left>
+
+<h3><A NAME="IMoaDrValue">IMoaDrValue</A></h3>
+Interface ID: <span class="code">IID_IMoaDrValue</span><BR>
+Pointer type: <span class="code">PIMoaDrValue</span><BR>
+Inheritance: <A HREF = "drmdaccs.htm" class="code">IMoaUnknown</A><br>
+Header file: <A HREF = "../../include/drivalue.h">drivalue.h</A><br>
+
+<h4>Methods</h4>
+<h5>Data conversion</h5>
+<DL>
+  <DD><A HREF = "#ValueToCMRef">ValueToCMRef()</A> <BR>
+    <A HREF = "#CMRefToValue">CMRefToValue()</A><BR>
+    <A HREF = "#SpriteRefToValue">SpriteRefToValue()</A> <BR>
+    <A HREF = "#ValueToCastLibRef">ValueToCastLibRef()</A> <BR>
+    <A HREF = "#CastLibRefToValue">CastLibRefToValue()</A> <BR>
+    <A HREF = "#ValueToSoundSpriteRef">ValueToSoundSpriteRef()</A> <BR>
+    <A HREF = "#SoundSpriteRefToValue">SoundSpriteRefToValue()</A></DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A NAME="CastLibRefToValue">CastLibRefToValue()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">CastLibRefToValue(ConstPMoaDrCastLibRef <em>pCLRef</em>, PMoaMmValue <em>pValue</em>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">pCLRef</DT>
+<dd>Pointer to a cast library reference</dd>
+<DT class="codearg">pValue</DT>
+<dd>Pointer to <span class="code">MoaMmValue</span> to receive the result</dd>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DT class="code">MoaError</DT>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>Creates a new value object from a cast library reference.</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A NAME="CMRefToValue">CMRefToValue()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">CMRefToValue(ConstPMoaDrCMRef <em>pCMRef</em>, PMoaMmValue <em>pValue</em>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">pCMRef</DT>
+<dd>Pointer to a <span class="code">ConstPMoaDrCMRef</span> to be used as the basis for the new value</dd>
+<DT class="codearg">pValue</DT>
+<dd>Pointer to <span class="code">MoaMmValue</span> to receive the result</dd>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DT class="code">MoaError</DT>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>Creates a new cast member reference-type <span class="code">MoaMmValue</span> from a <span class="code">MoaDrCMRef</span>. 
+<span class="codearg">pCMRef</span> is a pointer to a <span class="code">MoaDrCMRef</span> to be used as the basis for the new value. 
+<span class="codearg">pValue</span> contains a pointer to a <span class="code">MoaMmValue</span> to receive the result. 
+This call populates the <span class="code">MoaMmValue</span> at <span class="codearg">pValue</span> with a new <span class="code">MoaMmValue</span>, 
+overwriting any current value. 
+Make sure to release any preexisting value before making this call. 
+The caller is responsible for releasing the returned value using <span class="code">IMoaMmUtils::ValueRelease()</span>.</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A NAME="SoundSpriteRefToValue">SoundSpriteRefToValue()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">SoundSpriteRefToValue(ConstPMoaDrSoundSpriteRef <em>pSRef</em>, PMoaMmValue <em>pValue</em>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">pSRef</DT>
+<dd>Pointer to a sound sprite reference</dd>
+<DT class="codearg">pValue</DT>
+<dd>Pointer to <span class="code">MoaMmValue</span> to receive the result</dd>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DT class="code">MoaError</DT>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>Creates a new value object from a sound sprite reference.</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A NAME="SpriteRefToValue">SpriteRefToValue()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">SpriteRefToValue(ConstPMoaDrSpriteRef <em>pSRef</em>, PMoaMmValue <em>pValue</em>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">pSRef</DT>
+<dd>Pointer to a sprite reference</dd>
+<DT class="codearg">pValue</DT>
+<dd>Pointer to <span class="code">MoaMmValue</span> to receive the result</dd>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DT class="code">MoaError</DT>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD> a new value object from a sprite reference.</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A NAME="ValueToCastLibRef">ValueToCastLibRef()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">ValueToCastLibRef(ConstPMoaMmValue <em>pValue</em>, PMoaDrCastLibRef <em>pCLRef</em>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">pValue</DT>
+<dd>Pointer to a value object</dd>
+<DT class="codearg">pCLRef</DT>
+<dd>Pointer to a place to store the cast library reference.</dd>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DT class="code">MoaError</DT>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>Converts a value object to a <span class="code">MoaDrCastLibRef</span> structure.</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A NAME="ValueToCMRef">ValueToCMRef()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">ValueToCMRef(ConstPMoaMmValue <em>pValue</em>, PMoaDrCMRef <em>pCMRef</em>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">pValue</DT>
+<dd>Pointer to a value object </dd>
+<DT class="codearg">pCMRef</DT>
+<dd>Pointer to a MoaDrCMRef to receive the result</dd>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DD class="code">
+    <TABLE BORDER="2">
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=256><span class="code">kMoaErr_NoErr</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=329>successful</TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=256><span class="code">kMoaDrErr_CastMemberExpected</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=329>Type mismatch: <span class="code">CMRef</span> expected </TD>
+      </TR>
+    </TABLE>
+</DD>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>Obtains the <span class="code">MoaDrCMRef</span> for a cast member reference-type <span class="code">MoaMmValue</span>.
+<span class="codearg">pCMRef</span> is a pointer to a <span class="code">MoaDrCMRef</span> to receive the result.
+Returns <span class="code">kMoaDrErr_CastMemberExpected</span> if <span class="codearg">pValue</span> is not an cast member reference-type value.</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A NAME="ValueToSoundSpriteRef">ValueToSoundSpriteRef()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">ValueToSoundSpriteRef(ConstPMoaMmValue <em>pValue</em>, PMoaDrSoundSpriteRef <em>pSRef</em>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">pValue</DT>
+<dd>Pointer to a value object</dd>
+<DT class="codearg">pSRef</DT>
+<dd>Pointer to a <span class="code">MoaDrSoundSpriteRef</span> structure</dd>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DT class="code">MoaError</DT>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>Tries to convert a value object to a sound sprite reference.</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A NAME="ValueToSpriteRef">ValueToSpriteRef()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">ValueToSpriteRef(ConstPMoaMmValue <em>pValue</em>, PMoaDrSpriteRef <em>pSRef</em>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">pValue</DT>
+<dd>Pointer to a value object</dd>
+<DT class="codearg">pSRef</DT>
+<dd>Pointer to a <span class="code">MoaDrSpriteRef structure</span></dd>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DT class="code">MoaError</DT>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>Attempts to convert a value object to a sprite reference</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<A HREF = "../copyrite.htm">Copyright &#169; 1995-2008 Adobe Macromedia Software LLC, Inc.</A>
+</BODY>
+</html>

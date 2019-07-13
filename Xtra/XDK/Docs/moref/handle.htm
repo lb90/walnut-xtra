@@ -1,0 +1,230 @@
+<HTML>
+<HEAD>
+<TITLE>IMoaHandle</TITLE>
+<link href="../xdk.css" rel="stylesheet" type="text/css">
+</HEAD>
+<body>
+<A HREF="../moadg/index.htm">MOA Developer's Guide</A> <BR>
+<A HREF="index.htm">MOA Interfaces</A> | <A HREF="momthndx.htm">MOA Methods</A> | <A HREF="motypndx.htm">MOA Types and Misc API</A>
+<hr width=45% align=left>
+<h3>IMoaHandle</h3>
+<P> Interface ID: <span class="code">IID_IMoaHandle<BR>
+  </span>Pointer type: <span class="code">PIMoaHandle<BR>
+  </span>Inheritance: <A HREF = "unknown.htm">IMoaUnknown</A> <BR>
+  Header file: <A HREF = "../../include/moastdif.h">moastdif.h</A> <BR>
+<h3>Description</h3>
+<DL>
+  <DD>
+    This standard MOA interface is implemented by every application's
+    callback object for the use of Xtras. It provides methods for
+    use in allocating handle-based, relocatable memory. <BR>
+    <BR>
+    This interface is preferable to the <span class="code">IMoaCalloc</span> interface for use in allocating larger chunks of memory, such
+    as those required for sound buffers and bitmap data. <BR>
+    <BR>
+    You can access this interface by calling the <span class="code">QueryInterface()</span> method of <span class="code">IMoaCallback</span> interface, provided by the <span class="code">pCallback</span> instance variable of all MOA objects.</DD>
+</DL>
+
+<h3>Methods</h3>
+<h4>Allocating </h4>
+<DL>
+  <DD><A HREF = "#Alloc">Alloc()</A> <BR>
+    <A HREF = "#ZeroAlloc">ZeroAlloc()</A>
+</DL>
+<h4>Freeing </h4>
+<DL>
+  <DD><A HREF = "#Free">Free()</A>
+</DL>
+<h4>Sizing </h4>
+<DL>
+  <DD><A HREF = "#GetSize">GetSize()</A> <BR>
+    <A HREF = "#Resize">Resize()</A> <BR>
+    <A HREF = "#GetLargestFreeBlock">GetLargestFreeBlock()</A>
+</DL>
+<h4>Accessing </h4>
+<DL>
+  <DD><A HREF = "#Lock">Lock()</A> <BR>
+    <A HREF = "#Unlock">Unlock()</A>
+</DL>
+<hr width=45% align=left>
+<h3><A NAME="Alloc">Alloc()</A></h3>
+<h4>Syntax</h4>
+<DL>
+  <DT class="code">Alloc(MoaLong <I>cb</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+  <DT><span class="code"><I>cb</I></span>
+  <DD>Integer representing size of memory block to allocate</DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD><span class="code">MoaHandle</span>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD>Allocates and returns a relocatable memory block of at least
+    cb bytes in size. The memory isn't necessarily zeroed out. If
+    the request cannot be satisfied,NULL is returned. </DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="Free">Free()</A></h3>
+<h4>Syntax</h4>
+<DL>
+  <DT class="code">Free(MoaHandle <I>h</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+  <DT><span class="code"><I>h</I></span>
+  <DD>Previously allocated handle to be freed</DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD>void
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD>Frees a handle passed in. It is OK to pass NULL, or a locked
+    handle, to this method. </DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="GetLargestFreeBlock">GetLargestFreeBlock()</A></h3>
+<h4>Syntax</h4>
+<DL>
+  <DT class="code">GetLargestFreeBlock()</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD>Size of largest free block
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD>The method <span class="code">GetLargestFreeBlock()</span> returns the amount of free space that could be quickly allocated
+    via the <span class="code">Alloc</span> method
+    (i.e., how large a handle could be allocated without purging,
+    compacting, etc.). A return value of -1 means that this function
+    isn't implemented. </DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="GetSize">GetSize()</A></h3>
+<h4>Syntax</h4>
+<DL>
+  <DT class="code">GetSize(MoaHandle <I>h</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+  <DT><span class="code"><I>h</I></span>
+  <DD>Previously allocated handle</DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD>Size of handle h
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD>Returns the logical size of the handle h. The value returned
+    will always be the exact value passed when the handle was allocated
+    or resized using the <span class="code">Alloc()</span>, <span class="code">ZeroAlloc()</span>, or <span class="code">Resize()</span> methods. </DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="Lock">Lock()</A></h3>
+<h4>Syntax</h4>
+<DL>
+  <DT class="code">Lock(MoaHandle <I>h</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+  <DT><span class="code"><I>h</I></span>
+  <DD>Previously allocated handle to lock</DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD>Pointer to start of handle's storage area
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD>Call this method to lock the handle h in memory. This routine
+    never returns NULL; it always return a valid pointer (unless the
+    handle passed in was invalid). The pointer will be aligned to
+    at least a two-byte boundary (but not necessarily to a four-byte
+    boundary). Note that this method doesn't provide lock counting,
+    so nested calls to <span class="code">Lock()</span> have no cumulative effect: the first call of <span class="code">Unlock()</span> will unlock the handle. </DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="Resize">Resize()</A></h3>
+<h4>Syntax</h4>
+<DL>
+  <DT class="code">Resize(MoaHandle <I>h</I>, MoaLong <I>newSize</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+  <DT><span class="code"><I>h</I></span>
+  <DD>Previously allocated handle</DD>
+  <DT><span class="code"><I>newSize</I></span>
+  <DD>New size to allocated for handle</DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD>TRUE if resized, FALSE if not
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD>Attempts to resize the handle h to be at least newSize bytes
+    long. If the request can be satisfied, this method resizes the
+    handle and returns TRUE. Returns FALSE if the handle h can't be
+    resized or is locked. </DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="Unlock">Unlock()</A></h3>
+<h4>Syntax</h4>
+<DL>
+  <DT class="code">Unlock(MoaHandle <I>h</I>)
+</DL>
+<h4>Parameters</h4>
+<DL>
+  <DT><span class="code"><I>h</I></span>
+  <DD>Previously allocated handle</DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD>void
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD>Unlocks the given handle and invalidates any pointers to it. </DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="ZeroAlloc">ZeroAlloc()</A></h3>
+<h4>Syntax</h4>
+<DL>
+  <DT class="code">ZeroAlloc(MoaLong <I>cb</I>)
+</DL>
+<h4>Parameters</h4>
+<DL>
+  <DT><span class="code"><I>cb</I></span>
+  <DD>Integer representing size of memory block to allocate</DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD>Handle to newly allocated memory
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD>Allocates and returns a relocatable memory block of at least
+    cb bytes in size. The memory is zeroed out. If the request cannot
+    be satisfied, NULL is returned. <BR>
+</DL>
+<hr width=45% align=left>
+<A HREF = "../copyrite.htm">Copyright &#169; 1995-2007 Adobe Macromedia Software LLC, Inc.</A>
+</BODY>
+</html>

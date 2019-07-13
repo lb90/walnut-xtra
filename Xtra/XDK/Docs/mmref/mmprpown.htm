@@ -1,0 +1,185 @@
+<HTML>
+<HEAD>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<TITLE>IMoaMmPropOwner</TITLE>
+<link href="../xdk.css" rel="stylesheet" type="text/css">
+</HEAD>
+<body>
+<A HREF="../mmdg/index.htm">MM Developer's Guide</A> <BR>
+<A HREF="index.htm" >MM Interfaces</A> | <A HREF="mmmthndx.htm" >MM Methods</A> | <A HREF="mmtypndx.htm">MM Types and Misc API</A>
+<hr width=45% align=left>
+<h3>IMoaMmPropOwner</h3>
+Interface ID: <span class="code">IID_IMoaMmPropOwner<BR>
+  </span>Pointer type: <span class="code">PIMoaMmPropOwner<BR>
+  </span>Inheritance: <A HREF = "../moref/unknown.htm">IMoaUnknown</A> <BR>
+  Header file: <A HREF = "../../include/mmiservc.h">mmiservc.h</A>
+<h4>Description</h4>
+<DL>
+  <DD>
+    <span class="code">IMoaMmPropOwner</span> is
+    the base interface for multimedia interfaces that support properties.
+    This interface provides a general mechanism for defining and specifying
+    a variety of properties. Interfaces inheriting from <span class="code">IMoaMmPropOwner</span> can be found throughout this API.<BR>
+    <BR>
+    The Xtra interfaces <span class="code">IMoaMmXAsset</span> and <span class="code">IMoaMmXSpriteActor</span> inherit from this interface. This enables Xtra developers to define
+    custom properties for their media assets.<BR>
+    <BR>
+    Various objects in Director provide interfaces that inherit from <span class="code">IMoaMmPropOwner</span>. The
+    categories of properties defined in Director include:<BR>
+    <BR>
+    <UL>
+      <LI>player</LI>
+      <LI>movie</LI>
+      <LI>cast properties</LI>
+      <LI>cast member</LI>
+      <LI>score access</LI>
+      <LI>score frame</LI>
+      <LI>score sound</LI>
+      <LI>score sprite</LI>
+    </UL>
+    <BR>
+    For a complete listing of Director properties and their values,
+    see &quot;Properties&quot; in the <A HREF="../drref/drtypndx.htm"><I>Director Types and Miscellaneous API</I></A>.</DD>
+</DL>
+<h4>Methods</h4>
+<h4>Property owner methods </h4>
+<DL>
+  <DD><A HREF = "#GetProp">GetProp()</A> <BR>
+    <A HREF = "#SetProp">SetProp()</A></DD>
+</DL>
+<hr width=45% align=left>
+<h3><A NAME="GetProp">GetProp()</A></h3>
+<DL>
+<dt class="heading5">Syntax</dt>
+  <DT class="code">GetProp(MoaMmSymbol <I>symbol</I>, PMoaMmValue <I>pPropValue</I>)</DT></DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+  <DT class="codearg">symbol</DT>
+  <DD>Symbol representing the property whose value to retrieve</DD>
+  <DT class="codearg">pPropValue</DT>
+  <DD>Pointer to <span class="code">MoaMmValue</span> to retrieve property value</DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+  <DD>
+    <TABLE BORDER="2">
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=226><span class="code">kMoaErr_NoErr</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=395>Property exists and value was returned </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=226><span class="code">kMoaErr_BadParam</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=395>Invalid <span class="code"><I>pPropValue</I></span> passed in </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=226><span class="code">kMoaMmErr_PropertyNotFound</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=395>Property isn't supported by this class </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=226><span class="code">kMoaMmErr_InternalError</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=395>Property exists but couldn't get due to internal error </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=226><span class="code">kMoaMmErr_NoMemForString</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=395>Couldn't allocate memory for string value data </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=226><span class="code">kMoaErr_OutOfMem</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=395>Couldn't allocate memory for other value data </TD>
+      </TR>
+    </TABLE>
+    </DD>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+  <DD>Gets the current value of the property represented by <span class="codearg">symbol</span>,
+    and returns it in <span class="codear">pPropValue</span>. </DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="SetProp">SetProp()</A></h3>
+<DL>
+<dt class="heading5">Syntax</dt>
+  <DT class="code">SetProp(MoaMmSymbol <I>symbol</I>, ConstPMoaMmValue <I>pPropValue</I>)</DT>
+    </DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+  <DT class="codearg">symbol</DT>
+  <DD>Symbol representing the property whose value to retrieve </DD>
+  <DT class="codearg">pPropValue</DT>
+  <DD>Pointer to <span class="code">MoaMmValue</span> to retrieve property value </DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+  <DD>
+    <TABLE BORDER="2">
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=248><span class="code">kMoaErr_NoErr</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=402>Property exists and value was set </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=248><span class="code">kMoaErr_BadParam</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=402>Invalid <span class="code"><I>pPropValue</I> </span>passed in </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=248><span class="code">kMoaMmErr_PropertyNotFound</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=402>Property isn't supported by this class </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=248><span class="code">kMoaMmErr_InternalError</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=402>Property exists, value ok, failed due to internal error </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=248><span class="code">kMoaMmErr_NoMemForString</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=402>Couldn't allocate memory for setting string value data </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=248><span class="code">kMoaErr_OutOfMem</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=402>Couldn't allocate memory for setting other value data </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=248><span class="code">kMoaMmErr_IntegerExpected</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=402>Type mismatch: integer value expected </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=248><span class="code">kMoaMmErr_SymbolExpected</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=402>Type mismatch: symbol value expected </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=248><span class="code">kMoaMmErr_FloatExpected</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=402>Type mismatch: float value expected </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=248><span class="code">kMoaMmErr_StringExpected</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=402>Type mismatch: string value expected </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=248><span class="code">kMoaMmErr_PointExpected</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=402>Type mismatch: point value expected </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=248><span class="code">kMoaMmErr_RectExpected</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=402>Type mismatch: rect value expected </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=248><span class="code">kMoaMmErr_ValueTypeMismatch</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=402>Type mismatch: other value expected (non-specific) </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=248><span class="code">kMoaDrErr_CastMemberExpected</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=402>Director only. Type mismatch: <span class="code">CMRef</span> expected </TD>
+      </TR>
+    </TABLE>
+    </DD>
+</DL>
+<BR>
+<DL>
+<dt class="heading5">Description</dt>
+  <DD>Sets the current value of the property represented by <span class="codearg">symbol</span> to the 
+  value passed in <span class="codearg">pPropValue</span>.</DD>
+</DL>
+
+<hr width=45% align=left>
+<A HREF = "../copyrite.htm">Copyright &#169; 1995-2008 Adobe Macromedia Software LLC, Inc.</A>
+</BODY>
+</html>

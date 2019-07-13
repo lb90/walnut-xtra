@@ -1,0 +1,84 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<TITLE>IMoaDrMovieStage</TITLE>
+<link href="../xdk.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+
+<A HREF = "../drdg/index.htm">DR Developer's Guide</A><br>
+<A HREF = "index.htm"> DR Interfaces</A> | 
+<A HREF = "drmthndx.htm">DR Methods</A> | 
+<A HREF = "drtypndx.htm">DR Types and Misc API</A>
+<hr width=45% align=left>
+
+<h3><A name = "IMoaDrMovieStage">IMoaDrMovieStage</A></h3>
+
+Interface ID: <span class="code">IID_IMoaDrMovieStage</span><br>
+Pointer type: <span class="code">PIMoaDrMovieStage</span><br>
+Inheritance: <span class="code">IMoaUnknown</span><br>
+Header file: <A HREF = "../../include/driservc.h">driservc.h</A>
+
+<h4>Description</h4>
+<dl> 
+  <DD> The <span class="code">IMoaDrMovieStage</span> interface provides access to new stage-related functions associated with a movie. 
+	IMoaDrMovieStage is an additional interface on the same movie class that supports IMoaDrMovie and IMoaDrMovie2. 
+	You acquire a movie interface by calling the <span class="code">IMoaDrPlayer</span> methods <span class="code">GetActiveMovie()</span> 
+    or <span class="code">GetNthMovie()</span>. This returns to you an <span class="code">IMoaDrMovie</span> interface. 
+	You can call the <span class="code">QueryInterface</span> method off this interface to retrieve an <span class="code">IMoaDrMovieStage</span> interface. 
+	<p>This interface was added with Director 7.</p></DD>
+</dl>
+<h4>Methods</h4>
+<dl>
+<dd><A HREF = "#TransformStagePointScaledToUnscaled">TransformStagePointScaledToUnscaled()</A></dd>
+<dd><A HREF = "#TransformStagePointUnscaledToScaled">TransformStagePointUnscaledToScaled()</A></dd>
+</dl>
+
+<h4><A NAME="TransformStagePointScaledToUnscaled">TransformStagePointScaledToUnscaled()</A></h4>
+<dl>
+<dt class="heading5">Syntax</dt>
+<dt class="code">TransformStagePointScaledToUnscaled(PMoaPoint <em>pStagePoint</em>)</dt>
+</dl>
+<dl>
+<dt class="heading5">Parameters</dt>
+<dt class="codearg">pStagePoint</dt>
+<dd>IN: The scaled point, OUT: The unscaled point</dd>
+</dl>
+<dl>
+<dt class="heading5">Returns</dt>
+<dt class="code">MoaError</dt>
+</dl>
+<dl>
+<dt class="heading5">Description</dt>
+<dd>Transforms a given point from scaled to unscaled stage coordinates.
+    Scaled is the coordinate space of the movie scaled to its current drawRect.
+	Unscaled is the coordinate space of the original, un-zoomed movie.</dd>
+</dl>
+
+<hr width=45% align=left>
+
+<h4><A NAME="TransformStagePointUnscaledToScaled">TransformStagePointUnscaledToScaled()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">TransformStagePointUnscaledToScaled(PMoaPoint <em>pStagePoint</em>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">pStagePoint</DT>
+<dd>IN: The unscaled point, OUT: The scaled point</dd>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DT class="code">MoaError</DT>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>Transforms a given point from unscaled to scaled stage coordinates.
+Unscaled is the coordinate space of the original, un-zoomed movie.
+Scaled is the coordinate space of the movie scaled to its current drawRect.</DD>
+</DL>
+
+<hr width=45% align=left>
+<A HREF = "../copyrite.htm">Copyright &#169; 1995-2008 Adobe Macromedia Software LLC, Inc.</A>
+</body>
+</html>

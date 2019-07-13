@@ -1,0 +1,402 @@
+<HTML>
+<HEAD>
+<TITLE>IMoaMmWndMac</TITLE>
+<link href="../xdk.css" rel="stylesheet" type="text/css">
+</HEAD>
+<body>
+<A HREF="../mmdg/index.htm">MM Developer's Guide</A> <BR>
+  <A HREF="index.htm" >MM Interfaces</A> | <A HREF="mmmthndx.htm" >MM Methods</A> | <A HREF="mmtypndx.htm">MM Types and Misc API</A>
+<hr width=45% align=left>
+<h3><A NAME="IMoaMmWndMac">IMoaMmWndMac</A></h3>
+ Interface ID: <span class="code">IID_IMoaMmWndMac<BR>
+  </span>Pointer type: <span class="code">PIMoaMmWndMac<BR>
+  </span>Inheritance: <span class="code">IMoaUnknown<BR>
+  </span>Header file: <A HREF = "../../include/mmiwndm.h">mmiwndm.h</A> <BR>
+<h3>Description</h3>
+<DL>
+<DD>This interface supports Macintosh-specific user interface display.</DD>
+<DD> As an alternative to this platform-specific API, consider using
+  the MUI XDK and MUI Xtra instead. It
+  provides platform-independent interfaces that support dialogs
+  containing a variety of widget types, including dynamic layout
+  capabilities and a standard event-handling mechanism. The MUI
+  API also lets you easily display system alerts, file dialogs,
+  and URL dialogs. See the <A HREF="../mudg/index.htm">MUI Developer's
+  Guide</A> for information on which applications support the MUI XDK.</DD>
+<DD> With <A HREF="mmutils2.htm">IMoaMmUtils2</A>, <A HREF="mmvalue.htm">IMoaMmValue</A>,
+  and <A HREF="mmwndwin.htm">IMoaMmWndWin</A>, this interface supersedes <span class="code">IMoaMmUtils</span>, which has been made redundant. </DD>
+  </DL>
+
+<h3>Methods</h3>
+<DL>
+  <DD><A HREF = "#MacHandleEvent">MacHandleEvent()</A> <BR>
+    <A HREF = "#MacPrepareModalDialog">MacPrepareModalDialog()</A> <BR>
+    <A HREF = "#MacModalDialog">MacModalDialog()</A> <BR>
+    <A HREF = "#MacUnprepareModalDialog">MacUnprepareModalDialog()</A> <BR>
+    <A HREF = "#MacAlert">MacAlert()</A> <BR>
+    <A HREF = "#MacRegisterWindow">MacRegisterWindow()</A> <BR>
+    <A HREF = "#MacUnregisterWindow">MacUnregisterWindow()</A> <BR>
+    <A HREF = "#MacDragWindow">MacDragWindow()</A> <BR>
+    <A HREF = "#MacSelectWindow">MacSelectWindow()</A> <BR>
+    <A HREF = "#MacXShowWindow">MacXShowWindow()</A> <BR>
+    <A HREF = "#MacHideWindow">MacHideWindow()</A>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="MacAlert">MacAlert()</A></h3>
+<h4>Syntax</h4>
+<DL>
+<DT class="code">MacAlert(MoaLong <I>alertID</I>, PMoaVoid <I>filterProcUPP</I>) </DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+  <DT><span class="code"><I>alertID</I></span></DT>
+  <DD>Alert's resource ID </DD>
+  <DT><span class="code"><I>filterProcUPP</I></span></DT>
+  <DD>Universal <span class="code">procPtr</span> to a<span class="code"> filterProc</span> </DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD><span class="code">MoaError</span>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD>Replaces the Macintosh <span class="code">Alert()</span> call. This method is required to ensure proper window management
+    in the host application. <span class="codearg">alertID</span> is the alert resource ID of your alert. Make sure
+    to call <span class="code">MoaBeginUsingResources()</span> before this call and <span class="code">MoaEndUsingResources()</span> afterwards, 
+    to provide access to your resources. <span class="codearg">filterProcUPP</span> is a universal <span class="code">procPtr</span> to a <span class="code">filterProc</span>;
+    set to NULL if there is none. <span class="code">MacAlert()</span> returns a 16-bit integer identifying what user action
+    took place; it returns 1 if alert wasn't drawn. See the <I>Inside
+    Mac</I> documentation on <span class="code">Alert</span> for more information. </DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="MacDragWindow">MacDragWindow()</A></h3>
+<h4>Syntax</h4>
+<DL>
+<DT class="code">MacDragWindow(PMoaMmMacWindow <I>pWindow</I>, PMoaPoint <I>pStartPoint</I>, PMoaRect <I>pLimitRect</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+  <DT><span class="code"><I>pWindow</I></span></DT>
+  <DD><span class="code">WindowPtr</span> to the Macintosh window </DD>
+  <DT><span class="code"><I>pStartPoint</I></span></DT>
+  <DD>PMoaPoint</DD>
+  <DT><span class="code"><I>pLimitRect</I></span></DT>
+  <DD>PMoaRect</DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD><span class="code">MoaError</span>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD>
+    Drags a Macintosh window. <span class="codearg">pWindow</span> is
+    a Macintosh <span class="code">WindowPtr</span>.
+    This method is provided as a replacement for the Macintosh Toolbox <span class="code">DragWindow()</span> function.
+    This method allows the host application to correctly handle window
+    layering and focus when your Xtra is running along-side windows
+    owned by the application. To have events for a Macintosh window
+    routed to your code, see <span class="code">MacRegisterWindow()</span> and <span class="code">MacUnregisterWindow()</span>.
+    See also: <span class="code">MacSelectWindow()</span>, <span class="code">MacXShowWindow()</span>, <span class="code">MacHideWindow()</span>. </DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="MacHandleEvent">MacHandleEvent()</A></h3>
+<h4>Syntax</h4>
+<DL>
+<DT class="code">MacHandleEvent(PMoaVoid <I>pEventRecord</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+  <DT><span class="code"><I>pEventRecord</I></span></DT>
+  <DD>Pointer to a Macintosh <span class="code">EventRecord</span> structure </DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD><span class="code">MoaError</span>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD>
+    Passes a Macintosh-style event on to host
+    application. <span class="code"><I>pEventRecord</FONT></I></span> is a pointer to a Macintosh <span class="code">EventRecord</span> structure. This call passes the event directly to the host application's
+    event loop. </DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="MacHideWindow">MacHideWindow()</A></h3>
+<h4>Syntax</h4>
+<DL>
+<DT class="code">MacHideWindow(PMoaMmMacWindow <I>pWindow</I>) </DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+  <DT><span class="code"><I>pWindow</I></span></DT>
+  <DD><span class="code">WindowPtr</span> to the Macintosh window </DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD><span class="code">MoaError</span>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD>
+    Hides a Macintosh window. <span class="codearg">pWindow</span> is
+    a Macintosh <span class="code">WindowPtr</span>.
+    This method is provided as a replacement for the Macintosh Toolbox <span class="code">HideWindow()</span> function.
+    This method allows the host application to correctly handle window
+    layering and focus when your Xtra is running along-side windows
+    owned by the application. To have events for a Macintosh window
+    routed to your code, see <span class="code">MacRegisterWindow() </span>and <span class="code">MacUnregisterWindow()</span>.
+    See also: <span class="code">MacDragWindow()</span>, <span class="code">MacXShowWindow()</span>, <span class="code">MacSelectWindow()</span>. </DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="MacModalDialog">MacModalDialog()</A></h3>
+<h4>Syntax</h4>
+<DL>
+<DT class="code">MacModalDialog(MoaMmDialogCookie <I>dialogCookie</I>, PMoaVoid <I>filterProcUPP</I>, MoaShort * <I>itemHit</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+  <DT><span class="code"><I>dialogCookie</I></span></DT>
+  <DD>Value obtained from calling <span class="code">MacPrepareModalDialog()</span> </DD>
+  <DT><span class="code"><I>filterProcUPP</I></span></DT>
+  <DD>PMoaVoid</DD>
+  <DT><span class="code"><I>itemHit</I></span></DT>
+  <DD>MoaShort *</DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD><span class="code">MoaError</span></DD>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD>Use this on the Macintosh instead of
+    calling the Toolbox <span class="code">ModalDialog()</span>.
+    This method allows the host application to get update events and
+    performs other operations supporting moveable modal dialogs. <span class="codearg">dialogCookie</span>is
+    the value obtained from a call to <span class="code">MacPrepareModalDialog()</span>, which must be made before showing the dialog and entering a dialog
+    loop. If the dialog has a title bar, it is moveable, and the host
+    application's windows and dialogs beneath it update properly when
+    it is moved. Since moving a dialog can cause update events in
+    the host applications, make sure you can handle calls back to
+    your thumbnail and sprite imaging methods from within this call.
+    Be sure to &quot;bracket&quot; your call to <span class="code">MacModalDialog()</span> with calls to <span class="code">MoaBeginUsingResources()
+    and MacPrepareModalDialog()</span> before showing your dialog
+    and entering your dialog loop, and<span class="code">MacUnprepareModalDialog()</span> and <span class="code">MoaEndUsingResources()</span> after exiting the dialog loop and closing the dialog. <BR>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="MacPrepareModalDialog">MacPrepareModalDialog()</A></h3>
+<h4>Syntax</h4>
+<DL>
+<DT class="code">MacPrepareModalDialog(PMoaMmDialogCookie <I>pDialogCookie</I>) </DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+  <DT><span class="code"><I>pDialogCookie</I></span></DT>
+  <DD>PMoaMmDialogCookie</DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD><span class="code">MoaError</span>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD>Call this method before calling the <span class="code">MacModalDialog()</span> loop. This method must be called before your dialog has been displayed
+    and before you enter you modal dialog loop. <span class="code"><I>pDialogCookie</FONT></I></span>contains
+    a pointer to a <span class="code">MoaMmDialogCookie</span>to
+    receive a special value that is passed to subsequent calls to <span class="code">MacModalDialog()</span> and <span class="code">MacUnprepareModalDialog().</span> <BR>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="MacRegisterWindow">MacRegisterWindow()</A></h3>
+<h4>Syntax</h4>
+<DL>
+<DT class="code">MacRegisterWindow(PIMoaMmMacEventHandler <I>pEventHandler</I>, PMoaMmMacWindow <I>pWindow</I>, MoaMmRegWindowFlags <I>flags</I>, PMoaVoid <I>refCon</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+  <DT><span class="code"><I>pEventHandler</I></span></DT>
+  <DD>PIMoaMmMacEventHandler</DD>
+  <DT><span class="code"><I>pWindow</I></span></DT>
+  <DD>PMoaMmMacWindow</DD>
+  <DT><span class="code"><I>flags</I></span></DT>
+  <DD>MoaMmRegWindowFlags</DD>
+  <DT><span class="code"><I>refCon</I></span></DT>
+  <DD>PMoaVoid</DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD><span class="code">MoaError</span>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD>
+    Use this method to incorporate modeless windows or floating palettes
+    controlled by your Xtra.. For example, your asset media editor
+    can be modeless and persist after the call to the Editor method
+    returns. (Use the <span class="code">PIMoaAssetCallback::SetModified()</span> method to &quot;dirty&quot; your asset when changes
+    are made asynchronously.) As another example, a floating inspector
+    palette could be created that tracks the current selection in
+    the cast window, supplying additional information about the selected
+    cast member(s). </DD>
+    <DD>You supply a <span class="code">PIMoaMmMacEventHandler</span> interface which the host application calls back (the
+    Macintosh <span class="code">EventRecord*</span> is given as a parameter to the 
+    <span class="code">HandleEvent()</span> method). 
+    <span class="codearg">pWindow</span> is the Macintosh window pointer of the window
+    you want to register. <span class="codearg">flags</span> contains the window registration flags; see mmtypes.h. 
+    <span class="codearg">refCon</span> is an
+    arbitrary 4-byte value (user-data) which the caller can supply
+    to be passed to <span class="codearg">pEventHandler</span> when
+    events are dispatched. </DD>
+    <DD><B>Director Tip:</B>This callback is also available in
+    projectors, so can be used to display arbitrary windows at run-time. </DD>
+    <DD>Here are some tips about Macintosh window management:</DD>
+    <DD>
+
+    <UL>
+      <LI>Do not use the <span class="code"><I>refCon</FONT></I></span> or <span class="codearg">windowKind</span> fields of the Macintosh <span class="code">WindowPeek</span> structure for your window; these are reserved for
+        use by the host application to support event dispatching. If you
+        need to associate special instance data with your window, use
+        the class implementing <span class="code">IMoaMmMacEventHandler</span>.</LI>
+      <LI>Before registering a window, you create it using <span class="code">NewWindow()</span>, <span class="code">NewCWindow()</span>, <span class="code">GetNewWindow()</span>,
+        or <span class="code">GetNewCWindow()</span>,
+        which are standard Macintosh toolbox window creation calls. </LI>
+      <LI>You must create a new instance of your <span class="code">IMoaMmMacEventHandler</span> class for each window to register. 
+      (You can't use the same instance
+        to handle events for multiple windows.) </LI>
+      <LI>You must create your window as <I><B>hidden</B></I>. If you
+        want to show it immediately, use the <span class="code">MacXShowWindow()</span> callback after registering it. To bring it to the
+        front, follow <span class="code">MacXShowWindow()</span> with a call to <span class="code">MacSelectWindow()</span>.</LI>
+      <LI>Do not use the Macintosh calls <span class="code">DragWindow()</span>, 
+      <span class="code">ShowWindow()</span>, <span class="code">HideWindow()</span>,
+        or <span class="code">SelectWindow()</span> on registered windows. Instead, 
+        use the corresponding <span class="code">IMoaMmWndMac</span> wrapper methods: <span class="code">MacDragWindow()</span>, 
+        <span class="code">MacXShowWindow()</span>, <span class="code">MacHideWindow()</span>, <span class="code">MacSelectWindow()</span>.
+        If you do not use these methods, the host application's window
+        management code may be affected adversely.</LI>
+      <LI>Only call the Macintosh <span class="code">DisposeWindow() </span>routine <I><B>after</B></I> the window is hidden and
+        unregistered. The sequence for disposing a window is: <BR>
+        <PRE class="code">        pUtils-&gt;lpVtbl-&gt;MacHideWindow(pUtils, theWindow);
+        pUtils-&gt;lpVtbl-&gt;MacUnregisterWindow(pUtils, pMyEventHandler)
+        DisposeWindow(theWindow)
+</PRE></LI>
+      <LI>If you don't call <span class="code">MacHideWindow()</span> first, the host application's window management code
+        may be affected adversely.</LI>
+    </UL>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="MacSelectWindow">MacSelectWindow()</A></h3>
+<h4>Syntax</h4>
+<DL>
+<DT class="code">MacSelectWindow(PMoaMmMacWindow <I>pWindow</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+  <DT><span class="code"><I>pWindow</I></span></DT>
+  <DD><span class="code">WindowPtr</span> to the Macintosh window </DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD><span class="code">MoaError</span>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD>
+    Selects a Macintosh window and brings the
+    window to the front. <span class="codearg">pWindow</span> is
+    a Macintosh <span class="code">WindowPtr</span>.
+    This method is provided as a replacement for the Macintosh Toolbox <span class="code">SelectWindow()</span> function.
+    Use this callback instead of calling <span class="code">SelectWindow()</span>.
+    This allows the host application to correctly handle window layering
+    and focus when your Xtra is running along-side windows owned by
+    the application. To have events for a Macintosh window routed
+    to your code, see <span class="code">MacRegisterWindow()</span> and <span class="code">MacUnregisterWindow()</span>.
+    See also: <span class="code">MacDragWindow()</span>, <span class="code">MacXShowWindow()</span>, <span class="code">MacHideWindow()</span>. </DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="MacXShowWindow">MacXShowWindow()</A></h3>
+<h4>Syntax</h4>
+<DL>
+<DT class="code">MacXShowWindow(PMoaMmMacWindow <I>pWindow</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+  <DT><span class="code"><I>pWindow</I></span></DT>
+  <DD><span class="code">WindowPtr</span> to the Macintosh window </DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD><span class="code">MoaError</span>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD>
+    Makes a Macintosh window visible; it doesn't
+    necessarily bring the window to the front. <span class="codearg">pWindow</span> is a Macintosh 
+    <span class="code">WindowPtr</span>.
+    This method is provided as a replacement for the Macintosh Toolbox <span class="code">ShowWindow()</span> function.
+    Use this callback instead of calling <span class="code">ShowWindow()</span>.
+    This allows the host application to correctly handle window layering
+    and focus when your Xtra is running along-side windows owned by
+    the application. To have events for a Macintosh window routed
+    to your code, see <span class="code">MacRegisterWindow()</span> and <span class="code">MacUnregisterWindow()</span>.
+    See also: <span class="code">MacDragWindow()</span>, <span class="code">MacXShowWindow()</span>, <span class="code">MacSelectWindow()</span>. </DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="MacUnprepareModalDialog">MacUnprepareModalDialog()</A></h3>
+<h4>Syntax</h4>
+<DL>
+<DT class="code">MacUnprepareModalDialog(MoaMmDialogCookie <I>dialogCookie</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+  <DT><span class="code"><I>dialogCookie</I></span></DT>
+  <DD>Value obtained from <span class="code">MacPrepareModalDialog()</span> </DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD><span class="code">MoaError</span>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD>Call this after your <span class="code">MacModalDialog()</span> loop. This method must be called after you have exited
+    your dialog loop and your dialog window has been closed. <span class="codearg">dialogCookie</span> is the value 
+    obtained from the previous call to <span class="code">MacPrepareModalDialog()</span>.</DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="MacUnregisterWindow">MacUnregisterWindow()</A></h3>
+<h4>Syntax</h4>
+<DL>
+<DT class="code">MacUnregisterWindow(PIMoaMmMacEventHandler <I>pEventHandler</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+  <DT class="codearg">pEventHandler</DT>
+  <DD class="code">PIMoaMmMacEventHandler</DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD><span class="code">MoaError</span>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD>
+    Call this with the <span class="code">PIMoaMmMacEventHandler</span> you supplied to <span class="code">MacRegisterWindow()</span> when you no longer want to receive events for the window. You
+    must call <span class="code">MacUnregisterWindow()</span>before
+    disposing of your window See the description of <span class="code">MacRegisterWindow()</span>method
+    for more information.
+</DL>
+
+<hr width=45% align=left>
+<A HREF = "../copyrite.htm">Copyright &#169; 1995-2008 Adobe Macromedia Software LLC, Inc.</A>
+</BODY>
+</html>

@@ -1,0 +1,180 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>IMoaDrScoreFrame</title>
+<link href="../xdk.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+
+<A HREF = "../drdg/index.htm">DR Developer's Guide</A> <BR>
+<A HREF = "index.htm"> DR Interfaces</A> | <A HREF = "drmthndx.htm">DR Methods</A> | <A HREF = "drtypndx.htm">DR Types and Misc API</A>
+<hr width=45% align=left>
+<h3>IMoaDrScoreFrame</h3>
+Interface ID: <span class="code">IID_IMoaDrScoreFrame</span><br>
+Pointer type: <span class="code">PIMoaDrScoreFrame</span><br>
+Inheritance: <A HREF = "../mmref/mmprpown.htm" class="code">IMoaMmPropOwner</A><br>
+Header file: <A HREF = "../../include/driservc.h">driservc.h</A> <BR>
+
+<h4>Description</h4>
+<DL>
+  <DD>
+    The <span class="code">IMoaDrScoreFrame</span> interface represents a particular frame in a score. You acquire
+    this interface through the <span class="code">IMoaDrScoreAccess::GetFrame()</span> method. </DD>
+</DL>
+<h4><A NAME="RTFToC2">Score frame properties</A></h4>
+<DL>
+  <DD><span class="code">IMoaDrScoreFrame</span> inherits from the <span class="code">IMoaMmPropOwner</span> interface, providing for access to data through the properties
+    mechanism described in the &quot;<a href="../mmdg/mmdgc5.htm">Multimedia Services</a>&quot; chapter
+    in the <I>Developer's Guide </I>document. See the &quot;<a href="drtypndx.htm#FRMPROPS">Properties</a>&quot;
+    section for information on the properties defined for objects
+    providing the <span class="code">IMoaDrScoreFrame</span> interface.</DD>
+</DL>
+
+<h4>Methods</h4>
+<DL>
+  <DD><A HREF = "#GetProp">GetProp()</A> <BR>
+    <A HREF = "#SetProp">SetProp()</A></DD>
+</DL>
+
+<hr width=45% align=left>
+<h4><A NAME="GetProp">GetProp()</A></h4>
+<dl>
+<dt class="heading5">Syntax</dt>
+<dt class="code">GetProp(MoaMmSymbol <em>symbol</em>, PMoaMmValue <em>pPropValue</em>)</dt>
+</dl>
+<dl>
+<dt class="heading5">Parameters</dt>
+<dt class="codearg">symbol</dt>
+<dd>The <span class="code">MoaMmSymbol</span> for the property of interest </dd>
+<dt class="codearg">pPropValue</dt>
+<dd>Pointer to a caller-owned <span class="code">MoaMmValue</span> structure to receive the value of the property</dd>
+</dl>
+<dl>
+<dt class="heading5">Returns</dt>
+<dt class="code">MoaError</dt>
+  <DD>
+    <TABLE BORDER="2">
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=252><span class="code">kMoaErr_NoErr</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=489>Property exists and value was returned </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=252><span class="code">kMoaErr_BadParam</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=489>Invalid<span class="codearg"> pPropValue</span> passed in </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=252><span class="code">kMoaMmErr_PropertyNotFound</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=489>Property isn't supported by this class </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=252><span class="code">kMoaMmErr_InternalError</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=489>Property exists but couldn't get due to internal error </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=252><span class="code">kMoaMmErr_NoMemForString</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=489>Couldn't allocate memory for string value data </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=252><span class="code">kMoaErr_OutOfMem</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=489>Couldn't allocate memory for other value data </TD>
+      </TR>
+    </TABLE>
+</DD>
+</dl>
+<dl>
+<dt class="heading5">Description</dt>
+<dd>Obtains the value of the specified score frame property. 
+To get the symbol from a string, use the <span class="code">IMoaMmUtils::StringToSymbol()</span>.
+The caller is responsible for releasing the value with <span class="code">IMoaMmUtils::ValueRelease()</span> when it is no longer needed.</dd>
+</dl>
+
+<hr width=45% align=left>
+
+<h4><A NAME="SetProp">SetProp()</A></h4>
+<dl>
+<dt class="heading5">Syntax</dt>
+<dt class="code">SetProp(MoaMmSymbol <em>symbol</em>, ConstPMoaMmValue <em>pPropValue</em>)</dt>
+</dl>
+<dl>
+<dt class="heading5">Parameters</dt>
+<dt class="codearg">symbol</dt>
+<dd>The <span class="code">MoaMmSymbol</span> for the property of interest </dd>
+<dt class="codearg">pPropValue</dt>
+<dd>Pointer to a caller-owned <span class="code">MoaMmValue</span> structure to copy the new value for the property from</dd>
+</dl>
+<dl>
+<dt class="heading5">Returns</dt>
+<dt class="code">MoaError</dt>
+  <DD>
+    <TABLE BORDER="2">
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=277><span class="code">kMoaErr_NoErr</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=484>Property exists and value was set </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=277><span class="code">kMoaErr_BadParam</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=484>Invalid <span class="codearg">pPropValue</span> passed in </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=277><span class="code">kMoaMmErr_PropertyNotFound</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=484>Property isn't supported by this class </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=277><span class="code">kMoaMmErr_InternalError</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=484>Property exists, value ok, can't set--internal error </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=277><span class="code">kMoaMmErr_NoMemForString</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=484>Can't allocate memory for setting string value data </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=277><span class="code">kMoaErr_OutOfMem</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=484>Can't allocate memory for setting other value data </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=277><span class="code">kMoaMmErr_IntegerExpected</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=484>Type mismatch: integer value expected </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=277><span class="code">kMoaMmErr_SymbolExpected</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=484>Type mismatch: symbol value expected </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=277><span class="code">kMoaMmErr_FloatExpected</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=484>Type mismatch: float value expected </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=277><span class="code">kMoaMmErr_StringExpected</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=484>Type mismatch: string value expected </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=277><span class="code">kMoaMmErr_PointExpected</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=484>Type mismatch: point value expected </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=277><span class="code">kMoaMmErr_RectExpected</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=484>Type mismatch: rect value expected </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=277><span class="code">kMoaMmErr_ValueTypeMismatch</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=484>Type mismatch: other value expected (non-specific) </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=277><span class="code">kMoaDrErr_CastMemberExpected</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=484>Type mismatch: <span class="code">CMRef</span> value expected </TD>
+      </TR>
+    </TABLE>
+</DD>
+</dl>
+<dl>
+<dt class="heading5">Description</dt>
+<dd>Sets a score frame property to a new value.
+To get the symbol from a string, use the <span class="code">IMoaMmUtils::StringToSymbol()</span>.
+The caller continues to maintain ownership of the value passed in, 
+and should release it using <span class="code">IMoaMmUtils::ValueRelease()</span> when it is no longer needed.</dd>
+</dl>
+
+<hr width=45% align=left>
+<A HREF = "../copyrite.htm">Copyright &#169; 1995-2008 Adobe Macromedia Software LLC, Inc.</A>
+</BODY>
+</html>

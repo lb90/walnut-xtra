@@ -1,0 +1,169 @@
+<html><head><title>IMoaMmColor</title>
+<link href="../xdk.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<A HREF="../mmdg/index.htm">MM Developer's Guide</A><BR>
+<A HREF="index.htm" >MM Interfaces</A> | <A HREF="mmmthndx.htm" >MM Methods</A> | <A HREF="mmtypndx.htm">MM Types and Misc API</A>
+<hr width=45% align=left>
+
+<h3><A name = "IMoaMmColor"></A>IMoaMmColor</h3>
+<hr width=45% align=left>
+
+  Interface ID: <span class="code">IID_IMoaMmColor</span><BR>
+  Pointer type: <span class="code">PIMoaMmColor</span><BR>
+  Inheritance: <span class="code">IMoaUnknown</span><BR>
+  Header file: <A HREF = "../../include/mmiClr.h">mmiClr.h</A>
+
+<h3>Description</h3>
+<p>This interface provides methods used to manipulate a MoaMmColorSpec. ColorToValue() 
+  and ValueToColor() convert between MoaMmColorSpec and MoaMmValue type. Included 
+  for convenience are IndexToRGB() and RGBToIndex(), which are exact duplicates 
+  of methods in IMoaUtils2.
+</p>
+<h3>Constants and Structures</h3>
+<DL> 
+  <DD>
+    MoaMmColorSpec<BR>
+    MoaMmRGBTriple<BR>
+    MoaMmColorIndex<BR>
+<pre class="code">
+typedef MoaByte MoaMmColorIndex, * PMoaMmColorIndex;
+
+
+typedef struct
+{
+     MoaByte   red;
+     MoaByte   green;
+     MoaByte   blue;
+} MoaMmRGBTriple, *PMoaMmRGBTriple;
+typedef const MoaMmRGBTriple * ConstPMoaMmRGBTriple;
+
+
+typedef struct
+{
+     union
+     {
+          MoaMmRGBTriple  rgb;        /* rgb color */
+          MoaMmColorIndex index;      /* palette index */
+     } color;
+
+     MoaByte type; 
+
+} MoaMmColorSpec, *PMoaMmColorSpec;
+typedef const MoaMmColorSpec * ConstPMoaMmColorSpec;
+</pre>
+</DD>
+</DL>
+
+<h3>Methods</h3>
+<DL>
+<DD><A HREF = "#ValueToColor">ValueToColor()</A>
+<BR><A HREF = "#ColorToValue">ColorToValue()</A>
+<BR><A HREF = "#RGBToIndex">RGBToIndex()</A>
+<BR><A HREF = "#IndexToRGB">IndexToRGB()</A></DD>
+</DL>
+
+
+<hr width=45% align=left>
+<h3><A name = "ColorToValue">ColorToValue()</A></h3>
+<h4>Syntax</h4>
+<DL>
+<DT class="code">ColorToValue(ConstPMoaMmColorSpec <I>pColor</I>, PMoaMmValue <I>pValue</I>) </DT>
+</DL>
+<h4>Parameters</h4>
+<DL> 
+<DT class="codearg">pColor</DT> 
+<DD>ConstPointer to a moaMmColorSpec used as the basis for the new value</DD>
+<DT class="codearg">pValue</DT>
+<DD>Pointer to a MoaMmValue that receives the result</DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+<DD><span class="code">MoaError</span></DD>
+</DL>
+<h3>Description</h3>
+<DL>
+<DD>Creates a new color type <span class="code">MoaMmValue</span> from a <span class="code">MoaMmColorSpec</span>. 
+On entry, <span class="codearg">pColor</span> contains a pointer to a <span class="code">MoaMmColorSpec</span> to be used as the basis for the new value. 
+See <A HREF="mmtypndx.htm#MoaMmColorSpec">mmtypndx</A> for the values to use in the type field.
+<span class="codearg">pValue</span> contains a pointer to a <span class="code">MoaMmValue</span> to receive the result. 
+This call populates the data at <span class="codearg">pValue</span> with a new <span class="code">MoaMmValue</span>, overwriting any current value.
+Make sure to release any preexisting value before making this call. 
+The caller is responsible for releasing the returned value. See <span class="code">IMoaValue::ValueRelease()</span>.</DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A name = "IndexToRGB">IndexToRGB()</A></h3>
+<h4>Syntax</h4>
+<DL>
+<DT class="code">IndexToRGB(MoaMmColorIndex <I>index</I>, PMoaMmRGBTriple <I>pRGBColor</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+<DT class="codearg">index</DT>
+<DD>The color index of the palette entry </DD>
+<DT class="codearg">pRGBColor</DT>
+<DD>Pointer to a MoaMmRGBTriple to receive the result</DD>
+</DL>
+<h4>Returns</h4>
+<DL> 
+<DD><span class="code">MoaError</span></DD>
+</DL>
+<h4>Description</h4>
+<DL>
+<DD>Cross-platform method to convert color index specified to the corresponding RGB color in the current color palette. 
+The palette currently in use by the playback window device is used for the lookup. 
+The device must be set to indexed color (less than or equal to 8 bits pixel depth) for this method to work properly.
+If the device is set to a direct color mode (greater than 8 bits), the results are unpredictable. 
+<span class="codearg">index</span> specifies the color index of the palette entry of interest. 
+<span class="codearg">pRGBColor</span> contains a pointer to a <span class="code">MoaMmRGBTriple</span> to receive the result.</DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A name = "RGBToIndex">RGBToIndex()</A></h3>
+<h4>Syntax</h4>
+<DL>
+<DT class="code">RGBToIndex(ConstPMoaMmRGBTriple <I>pRGBColor</I>, PMoaMmColorIndex <I>pIndex</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+<DT class="codearg">pRGBColor</DT>
+<DD><span class="code">ConstPMoaMmRGBTriple</span></DD>
+<DT class="codearg">pIndex</DT>
+<DD><span class="code">PMoaMmColorIndex</span></DD>
+</DL>
+<h4>Returns</h4>
+<DL> 
+<DD><span class="code">MoaError</span></DD>
+</DL>
+<h4>Description</h4>
+<DL>
+<DD>Cross-platform method to convert RGB value specified to the closest corresponding index in the current color palette.</DD>
+</DL>
+
+<hr width=45% align=left><h3>
+<A name = "ValueToColor">ValueToColor()</A></h3>
+<h4>Syntax</h4>
+<DL>
+<DT class="code">ValueToColor(ConstPMoaMmValue <I>pValue</I>, PMoaMmColorSpec <I>pColor</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+<DT class="codearg">pValue</DT>
+<DD>Const pointer to a color-type <span class="code">MoaMmValue</span></DD>
+<DT class="codearg">pColor</DT>
+<DD>Pointer to a <span class="code">MoaMmColorSpec</span> to receive the result</DD>
+</DL>
+<h4>Returns</h4>
+<DL> 
+<DD><span class="code">MoaError</span></DD>
+</DL>
+<h4>Description</h4>
+<dl> 
+<dd>Obtains the <span class="code">MoaMmColorSpec</span> for a color-type <span class="code">MoaMmValue</span>. 
+Returns <span class="code">kMoaMmErr_colorExpected</span> if <span class="codearg">pValue</span> is not a color-type value.</dd>
+</dl>
+
+<hr width=45% align=left>
+<A HREF = "../copyrite.htm">Copyright &#169; 1995-2008 Adobe Macromedia Software LLC, Inc.</A>
+</body></html>

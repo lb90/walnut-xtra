@@ -1,0 +1,458 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<TITLE>IMoaBitmapFilter</TITLE>
+<link href="../xdk.css" rel="stylesheet" type="text/css">
+</HEAD>
+<body>
+
+<A HREF="../mmdg/index.htm">MM Developer's Guide</A><BR>
+<A HREF="index.htm" >MM Interfaces</A> | <A HREF="mmmthndx.htm" >MM Methods</A> | <A HREF="mmtypndx.htm">MM Types and Misc API</A><BR>
+<hr width=45% align=left>
+
+<h3>IMoaBitmapFilter</h3>
+Interface ID: <span class="code">IID_IMoaBitmapFilter</span><BR>
+  Pointer type: <span class="code">PIMoaBitmapFilter</span><BR>
+  Inheritance: <A HREF = "../moref/unknown.htm">IMoaUnknown</A> <BR>
+  Header file: <A HREF="../../include/bmfilters.h">bmfilters.h</A>
+<DL>
+<DT class="heading4"><a name="RTFToC2"></a>Filters</DT>
+<DD><span class="code">IMoaBitmapFilter</span> offers a way to provide custom filter effects for sprites in Director.
+A filter instance is associated with a score sprite and called when the sprite is imaged.
+The filter can process the sprite image data, replacing it with a modified version of the image.
+When Director starts up, it checks for any filter xtras and presents them in a list in the Property Inspector Filters tab.
+Filter properties get stored with other sprite data in the score.
+The Property Inspector based user interface for filter properties can be offered by use of a <a href="../drdg/vdlsyntax.htm">VDL</a> file,
+and by providing response the the dbgPropList() function call in your filter.
+See the TileFilter example for some code that shows this in operation.
+Filters can also assigned to a sprite with the Director scripting language.
+There is currently no way to programmatically add a filter to the score when doing a score recording session.</DD>
+</DL>
+
+<h4>Methods</h4>
+<DL>
+<DT class="heading5">Filter methods</DT>
+
+<DD><A HREF = "#GetProp">GetProp()</A><BR>
+<A HREF = "#SetProp">SetProp()</A><BR>
+<A HREF = "#RunFilter">RunFilter()</A><BR>
+<A HREF = "#StreamOutProps">StreamOutProps()</A><BR>
+<A HREF = "#StreamInProps">StreamInProps()</A><BR>
+<A HREF = "#GetStreamOutPropsSize">GetStreamOutPropsSize()</A><BR>
+<A HREF = "#InvokePropsEditor">InvokePropsEditor()</A><BR>
+<A HREF = "#FinishPropsEditor">FinishPropsEditor()</A><BR>
+<A HREF = "#GetOutputRect">GetOutputRect()</A><BR>
+<A HREF = "#CallFunction">CallFunction()</A><BR>
+<A HREF = "#GetFilterCaps">GetFilterCaps()</A><BR>
+<A HREF = "#SetCallback">SetCallback()</A><BR>
+<A HREF = "#Notify">Notify()</A><BR>
+</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A NAME="CallFunction"></a>CallFunction()</h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">CallFunction(MoaMmSymbol <em>methodName</em>, MoaLong <em>nArgs</em>, ConstPMoaMmValue <em>pArgs</em>, PMoaMmValue <em>pResult</em>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">methodName</DT>
+<DD>Symbol of the method (function) to call</DD>
+<DT class="codearg">nArgs</DT>
+<DD>Number of arguments, excluding reserved value in <span class="codearg">pArgs[0]</span></DD>
+<DT class="codearg">pArgs</DT>
+<DD>Array of arguments, with the first valid argument at <span class="codearg">pArgs[1]</span></DD>
+<DT class="codearg">pResult</DT>
+<DD>Pointer to a <span class="code">MoaMmValue</span> to receive a result value, if any</DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DT class="code">MoaError</DT>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>
+This method provides scripting support for a filter.
+It is also used by the Director user interface code to determine what properties a filter supports.
+</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A NAME="FinishPropsEditor"></a>FinishPropsEditor()</h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">FinishPropsEditor(MoaBoolParam <em>param</em>, PMoaMmModifyFlags <em>pFlags</em>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">param</DT>
+<DD>-</DD>
+<DT class="codearg">pFlags</DT>
+<DD>-</DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DT class="code">MoaError</DT>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>
+Not used In Director 11</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A NAME="GetFilterCaps"></a>GetFilterCaps()</h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">GetFilterCaps(PMoaBMFilterCaps <em>pCaps</em>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">pCaps</DT>
+<DD>Place to return the filter capabilities flag values.</DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DT class="code">MoaError</DT>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>
+Called to find out what specific capabilities a filter provides</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A NAME="GetOutputRect"></a>GetOutputRect()</h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">GetOutputRect(const PMoaFilterInfo <em>pSource</em>, PMoaFilterInfo <em>pDestination</em>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">pSource</DT>
+<DD>Pointer to the input rectangle of the image</DD>
+<DT class="codearg">pDestination</DT>
+<DD>Pointer to store the output size rectangle after the filter</DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DT class="code">MoaError</DT>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>
+This function is called to determine the size of the image after the filter will be applied.
+If your filter does not change the image size, then return the same size rectangle as provided in <em>pSource</em>.</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A NAME="GetProp"></a>GetProp()</h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">GetProp(MoaMmSymbol <em>symbol</em>, PMoaMmValue <em>pPropValue</em>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">symbol</DT>
+<DD> The <span class="code">MoaMmSymbol</span> for the property of interest</DD>
+<DT class="codearg">pPropValue</DT>
+<DD> Pointer to a <span class="code">MoaMmValue</span> to receive the value</DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DD>
+<TABLE BORDER="2">
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=232><span class="code">kMoaErr_NoErr</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=403>Property exists and value was returned</TD>
+</TR>
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=232><span class="code">kMoaErr_BadParam</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=403>Invalid <span class="codearg">pPropValue</span> passed in</TD>
+</TR>
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=232><span class="code">kMoaMmErr_PropertyNotFound</span> </TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=403>Property isn't supported by this class</TD>
+</TR>
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=232><span class="code">kMoaMmErr_InternalError</span> </TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=403>Property exists but couldn't get due to internal error</TD>
+</TR>
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=232><span class="code">kMoaMmErr_NoMemForString</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=403>Couldn't allocate memory for string value data</TD>
+</TR>
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=232><span class="code">kMoaErr_OutOfMem</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=403>Couldn't allocate memory for other value data</TD>
+</TR>
+</TABLE></DD>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>
+Method to get the value of a property as defined by the MoaMmSymbol parameter</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A NAME="GetStreamOutPropsSize"></a>GetStreamOutPropsSize()</h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">GetStreamOutPropsSize(MoaLong *<em>pSizeBytes</em>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="code"><em>pSizeBytes</em></DT>
+<DD>Pointer to a <span class="code">MoaLong</span> to receive the total amount of property data</DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DT class="code">MoaError</DT>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>
+Implement this method to inform the host application of the total amount of properties data, in bytes, 
+streamed out when the application calls your <span class="code">IMoaMmXAsset::StreamOutProps()</span> method.
+If the filter has no properties data to stream out, set the value at <span class="codearg">pSizeBytes</span> to 0.
+You must supply the actual data size that would be streamed out in a subsequent call to <span class="code">IMoaMmXAsset::StreamOutProps()</span>.</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A NAME="InvokePropsEditor"></a>InvokePropsEditor()</h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">InvokePropsEditor()</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DT class="code">MoaError</DT>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>
+Not used In Director 11</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A NAME="Notify"></a>Notify()</h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">Notify(MoaLong <em>msgCode</em>, PMoaVoid <em>refCon</em>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">msgCode</DT>
+<DD>message identifier</DD>
+<DT class="codearg">refCon</DT>
+<DD>reference value</DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DT class="code">MoaError</DT>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>
+-</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A NAME="RunFilter"></a>RunFilter()</h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">RunFilter(PIMoaMmGC <em>pGC</em>, const PMoaFilterInfo <em>pInfo</em>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">pGC</DT>
+<DD>Pointer to an <span class="code">IMoaMmGC</span> interface for the graphics context which the filter should process.</DD>
+<DT class="codearg">pInfo</DT>
+<DD>Defines the rect where to apply the filter.
+It also specifies the scale factor of stage.</DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DT class="code">MoaError</DT>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>
+Called when the filter effect should be applied to the sprite image.
+The pGC reference contains the image pixel data which will get modified by the filter.
+</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A NAME="SetCallback"></a>SetCallback()</h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">SetCallback(PIMoaBitmapFilterCallback <em>pBitmapFilterCallback</em>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">pBitmapFilterCallback</DT>
+<DD>Filter call interface</DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DT class="code">MoaError</DT>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>
+- </DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A NAME="SetProp"></a>SetProp()</h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">SetProp(MoaMmSymbol <em>symbol</em>, ConstPMoaMmValue <em>pPropValue</em>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">symbol</DT>
+<DD>The <span class="code">MoaMmSymbol</span> for the property of interest</DD>
+<DT class="codearg">pPropValue</DT>
+<DD> Pointer to a caller-owned <span class="code">ConstPMoaMmValue</span> structure from which to copy the new value</DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DD><TABLE BORDER="2">
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=257><span class="code">kMoaErr_NoErr</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=451>Property exists and value was set</TD>
+</TR>
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=257><span class="code">kMoaErr_BadParam</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=451>Invalid <span class="codearg">pPropValue</span> passed in</TD>
+</TR>
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=257><span class="code">kMoaMmErr_PropertyNotFound</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=451>Property isn't supported by this class</TD>
+</TR>
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=257><span class="code">kMoaMmErr_InternalError</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=451>Property exists, value ok, couldn't set--internal error</TD>
+</TR>
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=257><span class="code">kMoaMmErr_NoMemForString</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=451>Couldn't allocate memory for setting string value data</TD>
+</TR>
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=257><span class="code">kMoaErr_OutOfMem</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=451>Couldn't allocate memory for setting other value data</TD>
+</TR>
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=257><span class="code">kMoaMmErr_IntegerExpected</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=451>Type mismatch: integer value expected</TD>
+</TR>
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=257><span class="code">kMoaMmErr_SymbolExpected</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=451>Type mismatch: symbol value expected</TD>
+</TR>
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=257><span class="code">kMoaMmErr_FloatExpected</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=451>Type mismatch: float value expected</TD>
+</TR>
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=257><span class="code">kMoaMmErr_StringExpected</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=451>Type mismatch: string value expected</TD>
+</TR>
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=257><span class="code">kMoaMmErr_PointExpected</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=451>Type mismatch: point value expected</TD>
+</TR>
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=257><span class="code">kMoaMmErr_RectExpected</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=451>Type mismatch: rect value expected</TD>
+</TR>
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=257><span class="code">kMoaMmErr_ValueTypeMismatch</span> </TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=451>Type mismatch: other value expected (non-specific) </TD>
+</TR>
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=257><span class="code">kMoaDrErr_CastMemberExpected</span> </TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=451>Type mismatch: <span class="code">CMRef</span> value expected </TD>
+</TR>
+</TABLE></DD>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>Sets the value of the specified property.
+To get the symbol froma string, use the <span class="code">IMoaMmUtils::StringToSymbol()</span> method. 
+The caller continues to maintain ownership of the value passed in, 
+and should release it using <span class="code">IMoaMmUtils::ValueRelease()</span> when it is no longer needed.</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A NAME="StreamInProps"></a>StreamInProps()</h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">StreamInProps(PIMoaStream <em>pInStream</em>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">pInStream</DT>
+<DD>Pointer to <span class="code">IMoaStream</span> interface to use for streaming in property data</DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DT class="code">MoaError</DT>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>
+Streams in the filter property data by utilizing the supplied <span class="code">IMoaStream</span> interface.
+Filter property is stored in the score along with other data about the sprite.
+The host application owns the stream interface, so you should not release it. 
+Return <span class="code">kMoaErr_NoErr</span> to indicate to the host application that the filter properties (if any) have been loaded successfully</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A NAME="StreamOutProps"></a>StreamOutProps()</h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">StreamOutProps(PIMoaStream <em>pOutStream</em>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">pOutStream</DT>
+<DD>Pointer to the <span class="code">IMoaStream</span> interface to use for streaming out property data</DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DT class="code">MoaError</DT>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>
+Streams out the filter property data by utilizing the supplied <span class="code">IMoaStream</span> interface.
+Filter properties are stored in the score along with other score data.
+The host application owns the stream interface, so you should not release it. 
+If your filter instance does not have any property data, it can return from this call (with <span class="code">kMoaErr_NoErr</span>) without utilizing the stream.
+</DD>
+</DL>
+
+<hr width=45% align=left>
+<A HREF = "../copyrite.htm">Copyright &#169; 1995-2008 Adobe Macromedia Software LLC, Inc.</A>
+</BODY>
+</html>

@@ -1,0 +1,210 @@
+<HTML>
+<HEAD>
+<TITLE>MOA Development Issues</TITLE>
+<link href="../xdk.css" rel="stylesheet" type="text/css">
+</HEAD>
+<body>
+<A HREF="index.htm">MOA Developer's Guide</A><BR>
+<A HREF="../moref/index.htm" >MOA Interfaces</A> | <A HREF="../moref/momthndx.htm" >MOA Methods</A> | <A HREF="../moref/motypndx.htm" >MOA Types and Misc API</A>
+<HR width=45% align=left>
+<H3><A NAME="RTFToC2">Director Xtra Development Kit: MOA Developer's Guide</A></H3>
+<h3>MOA Development Issues </h3>
+<HR width=45% align=left>
+    <h3>Introduction</h3>
+<DL>
+  <DD>This chapter address some issues about developing MOA on specific
+    platforms and in specific development environments. It begins
+    with a discussion of some internal issues with regard to MOA development.
+    It then discusses the various compilers and development environments
+    supported, noting specific details about setting up a compiler
+    to develop MOA code. The discussion concludes with a reference
+    section on the MOA for debugging macros.</DD></DL>
+
+    <h3><A NAME="RTFToC4">MOA internals</A> </h3>
+This section addresses the programming languages available for
+    MOA development and some internal issues with regard to method
+    calls and memory footprints.
+    <h4><A NAME="RTFToC5">Programming languages</A> </h4>
+    <P> Both MOA clients and Xtras are intended be written in C or C++.
+      The MOA Services Library itself is written in ANSI C, so that
+      MOA can be implemented on platforms that don't support C++ compilers.
+    <P> The MOA object system uses pointer-based allocation for internal
+      data structures, since much of the library code is core, and MOA
+      doesn't require a lot of memory in the first place. Note that
+      all memory allocators will be configurable to allow for alternate
+      memory managers (e.g., SmartHeap). Note also that every MOA application
+      will provide Xtras with access to an implementation of the IMoaHandle
+      interface for allocating relocatable memory.
+    <h4><A NAME="RTFToC6">Method calling overhead</A> </h4>
+    <P> The overhead for a MOA method call is identical to that of a C++
+      virtual function call. The calling technique is call-by-pointer,
+      with an extra level of indirection. The performance impact is
+      typically negligible for all but the tightest of inner loops.
+      To look at some code comparisons, a typical direct C function
+      call such as:
+    <P> <span class="code">MyFunct();</span>
+    <P> compiles into the 68K assembly language call:
+    <P> <span class="code">JSR 0x00000000 ; some address</span>
+    <P> A comparable MOA method call in C such as:
+    <P> <span class="code">foo-&gt;lpVtbl-&gt;MyFunct(foo) /* C notation */</span>
+    <P> or in C++:
+    <P> <span class="code">foo-&gt;MyFunct() /* C++ notation */</span>
+    <P> compiles into the assembly language call (again, 68K):
+    <P> <span class="code">MOVE.L foo,-(A7) ; move first arg onto stack</span>
+    <P> <span class="code">MOVEA.L foo,A0 ; move foo into a register</span>
+    <P> <span class="code">MOVEA.L (A0),A0 ; get the vtable</span>
+    <P> <span class="code">MOVEA.L $000C(A0),A0 ; get the particular function to call</span>
+    <P> <span class="code">JSR (A0) ; call it</span>
+    <P> The last instruction is the equivalent to a standard C function
+      call. You can optimize a method call down to a single instruction
+      in a loop by getting the function address first, then calling
+      it directly within the loop. For example:
+    <P> <span class="code">void (*MyFunctProc)(void) = foo-&gt;lpVtbl-&gt;MyFunct;</span>
+    <P> <span class="code">while (tightloop) {</span>
+    <P> <span class="code">(*MyFunctProc)(foo);</span>
+    <P> <span class="code">}</span>
+    <P> In contrast, the speed cost of actually instantiating an interface
+      is a bit more significant than creating a C++ object (you don't
+      really want to do either one in speed-critical loops, naturally).
+    <h4><A NAME="RTFToC7">Memory overhead</A> </h4>
+    <P> The memory overhead for MOA objects and interface instances is:
+    <P> * Overhead per object instance: 20 bytes + instance variables
+    <P> * Overhead per interface instance: 8 bytes
+    <P> It is most efficient to keep an object in memory without any interfaces
+      instantiated other than IMoaUnknown. The IMoaUnknown interface
+      is part of the base overhead of the object and can be used to
+      instantiate any other interfaces at appropriate times. To ensure
+      they are removed from memory, call Release() on interfaces you
+      acquire through QueryInterface() when you are through using them.
+    <P> Class and interface definitions also have some memory overhead.
+      The figures for Mac MOA are (very) approximately:
+    <P> * Overhead code per Xtra: ~1800 bytes
+    <P> * Overhead per class definition: ~100 bytes
+    <P> * Overhead per interface definition: ~400 bytes
+
+    <h3><A NAME="RTFToC8">Development Environments</A> </h3>
+    On Windows, Visual C/C++ 2003 is fully supported by Adobe, while on the Macintosh, 
+    Apple XCode is fully supported. Support for other environments may be added in the future.
+    Developers should contact Adobe about their specific needs if they require
+    the use of other development environments.
+    <P> In any environment, all structure-alignment must be carefully
+      specified. MOA assumes &quot;native&quot; structure alignment
+      in all cases: PPC code will assume PPC alignment, etc. However, it is strongly recommended
+      that <B>all structures should be long aligned in all cases, </B>with
+      explicit padding to force things to the proper boundary (i.e.,
+      structure definitions should not rely on compiler behavior to
+      insert padding or correct alignment problems). This will make
+      for easier portability, less risk of mismatched structures, and
+      better performance on most modern machines.
+    <P> MPW C promotes all types to long-size before passing them as parameters,
+      while Think and Metrowerks do not. Microsoft's COM calling conventions
+      require C calling conventions for interface methods, thus MOA
+      API is exposed to this problem. For this reason, <B>the arguments
+      to all methods of all interfaces must be exactly 4 bytes in length</B>.
+      Smaller parameters should be passed as longs; larger parameters
+      should be passed by pointer. <B>Exception:</B> 8-byte doubles
+      (MoaDouble) may be passed by value. This rule applies to all interfaces
+      defined by MOA and MOA-compliant applications.
+    <h4><A NAME="RTFToC8">Platform Notes</A> </h4>
+    <h5><A NAME="RTFToC11">PPC Macintosh</A></h5>
+    <P> Set your compiler to generate a shared library, file type 'Xtra',
+      owner 'Xown'. PEF version info doesn't matter; you'll need to
+      export the following symbols: &quot;DllGetClassObject&quot;, &quot;DllGetInterface&quot;,
+      &quot;DllGetClassForm&quot;, &quot;DllCanUnloadNow&quot;, &quot;ppcSetFileRef&quot;
+      (in Metrowerks, you can select &quot;use #pragma&quot; and the
+      correct symbols will be exported). &quot;DllGetClassInfo&quot;.
+      You don't need an Initialize, Terminate or main entry point. <B>Important</B>:
+      set structure alignment to PowerPC. Define the following
+      preprocessor symbols for all files (using either a prefix file,
+      compiler prefs, or command-line options):
+    <P> <span class="code">#define MACINTOSH // compiling on Macintosh</span>
+    <P> You'll need the header files moaxtra.h, moastdif.h, and moatypes.h.
+    <h5><A NAME="RTFToC13">Windows 32-bit</A></h5>
+    <P> In Win95, Win32s, and WinNT, the only compilers currently supported
+      is MSVC2.x. Other compilers will be supported in the future.
+    <P> Set your compiler to generate a large-model DLL. After producing
+      the file, rename it to have the extension .x32 (rather than .dll).
+      Currently, the windows projects define the following preprocessor symbols for all files:
+    <P> 
+	<span class="code">#define _WINDOWS // compiling on Windows</span><br>
+    <span class="code">#define WIN32 // compiling 32-bit Windows</span><br>
+	The following symbol gets defined by other MOA headers if it is not defined in the project:<br>
+    <span class="code">#define WINDOWS // compiling on Windows</span></P>
+
+    <h4><A NAME="RTFToC14">Compiler Notes</A> </h4>
+    <h5><A NAME="RTFToC16">MPW C</A> </h5>
+    <P> Support for MPW C/C++, which promotes all types to long-size before
+      passing them as parameters, gives rise to the rule above requiring
+      long argument types to all methods.
+    <P> The MPW preprocessor is unable to handle the debugging macros
+      discussed at the end of this chapter. MPW C also forces restrictions
+      on A4 globals, which means some difficult programming for the
+      uninitiated.
+
+    <h3><A NAME="RTFToC18">Debugging</A></h3>
+
+    <h4><A NAME="RTFToC19">Debugging PPC Xtras</A> </h4>
+    <P> On Power PC Macintoshes, when VM is off, MOA uses the call GetMemFragment()
+      to load Xtras. However, the Metrowerks debugger won't properly
+      debug code fragments loaded with this call. However, if you add
+      a file in the Xtras folder named &quot;_XtraDebugMode_&quot;,
+      the call GetDiskFragment() is always used to load PPC Xtras, regardless
+      of the VM state. This trick is intended for debugging purposes
+      ONLY; your Xtras should be tested without this workaround in place
+      before shipping.
+    <h4><A NAME="RTFToC20">Debugging Macros</A> </h4>
+    <P> Header file: moaxtra.h
+    <P> The debugging macros defined in moaxtra.h may be useful for helping
+      you develop Xtras. These macros can be added to and left in your
+      code, since the behavior described here is only defined when you
+      include the definition <span class="code">#define MOA_DEBUG</span> in your Xtra
+      code. Otherwise, they are defined as nil. As noted earlier, these
+      macros can't be used with MPW C because of incompatibility with
+      the C preprocessor.
+    <hr width=45% align=left>
+    <h5>MOA_ASSERT()</h5>
+    <P> <span class="code">MOA_ASSERT(<I>cond</I>, <I>msg</I>)</span>
+    <P> <span class="code"><I>cond</I></span> Condition
+      to test
+    <P> <span class="code"><I>msg</I></span> Char
+      * for the message to display if test is true
+    <P> Displays the text <span class="code"><I>msg</I></span> only if the <span class="code"><I>cond</I></span> is true. On the Macintosh, this macro invokes <span class="code">debugstr()</span>;
+      on Windows, it invokes <span class="code">MessageBox()</span>.
+    <hr width=45% align=left>
+    <h5>MOA_CLOBBERMEM()</h5>
+    <P> <span class="code">MOA_CLOBBERMEM(<I>p</I>, <I>sz</I>)</span>
+    <P> <span class="code"><I>p</I></span> Pointer
+      to start of memory to clobber
+    <P> <span class="code"><I>sz</I></span> Size
+      of memory to clobber
+    <P> Clobbers memory by writing bogus address values to the range from <span class="code"><I>p</I></span> to <span class="code"><I>p</I></span> +<span class="code"><I> sz</I></span>. This
+      macro can force a failure in calls that otherwise find address-like
+      values to jump to in the specified memory.
+    <hr width=45% align=left>
+    <h5><A NAME="RTFToC23">MOA_CLOBBERTEST()</A></h5>
+    <P> <span class="code">MOA_CLOBBERTEST(<I>p</I>, <I>msg</I>)</span>
+    <P> <span class="code"><I>p</I></span> Pointer
+      to memory to check
+    <P> <span class="code"><I>msg</I></span> Char
+      * for the message to display if memory is clobbered
+    <P> Like <span class="code">MOA_ISCLOBBERED()</span>, except displays the text <span class="code"><I>msg</I></span> if the memory has been clobbered. On the Macintosh, this macro
+      invokes <span class="code">debugstr()</span>; on Windows, it invokes <span class="code">MessageBox()</span>.
+    <hr width=45% align=left>
+    <h5><A NAME="RTFToC24">MOA_DEBUGSTR()</A></h5>
+    <P> <span class="code">MOA_DEBUGSTR(<I>msg</I>)</span>
+    <P> <span class="code"><I>msg</I></span> String
+      to display in the debugger
+    <P> Use this macro to display the string <span class="code"><I>x</I></span> as your code executes. On the Macintosh, this macro invokes <span class="code">debugstr()</span>;
+      on Windows, it invokes <span class="code">MessageBox()</span>.
+    <hr width=45% align=left>
+    <h5><A NAME="RTFToC25">MOA_ISCLOBBERED()</A></h5>
+    <P> <span class="code">MOA_ISCLOBBERED(<I>p</I>)</span>
+    <P> <span class="code"><I>p</I></span> Pointer
+      to memory to check
+    <P> Returns: TRUE if clobbered, FALSE otherwise
+    <P> Checks the memory at address <span class="code"><I>p</I></span> to see if it has been clobbered.
+</DL>
+<hr width=45% align=left>
+<A HREF = "../copyrite.htm">Copyright &#169; 1995-2007 Adobe Macromedia Software LLC, Inc.</A>
+</BODY>
+</html>

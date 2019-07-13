@@ -1,0 +1,90 @@
+<HTML>
+<HEAD> <TITLE>Director XDK</TITLE> 
+<link href="../Docs/xdk.css" rel="stylesheet" type="text/css">
+</HEAD>
+<BODY LINK="#ff0000" VLINK="#000080" BGCOLOR="#ffffff" alink="#ff3300">
+<span class="heading4">Director Xtra Development Kit</span>
+<HR ALIGN="LEFT" WIDTH="45%">
+<A NAME="RTFToC2" class="heading5">What's an Xtra?</A>
+<P>Xtras are code extensions to Adobe applications such as Director and Authorware. 
+  For the user, Xtras add custom features to tools they already know how to use. 
+  For the developer, Xtras are C-code object modules that use the Xtra Application 
+  Programming Interface (API) to extend the functionality of Adobe applications. 
+  All Xtra APIs are implemented using the Macromedia Open Architecture (MOA). 
+  MOA defines an object model that provides standard ways for applications and extensions to interact.</P>
+<p>An Xtra Development Kit (XDK) provides the resources you need to implement Xtras for Adobe products. 
+  In addition to documentation, this XDK provides header files for the API supported by Director, 
+  and examples of how to implement several kinds of Director Xtra.</p>
+<p>If you haven't done so already, you should read the <a href="../readme.htm">readme</a> file that came with the Director XDK. 
+  It contains descriptions of the example files, updated information about API changes, known bugs, 
+  and other specific details about this version of the XDK.</p>
+  <hr align="LEFT" width="45%">
+  <span class="heading5">Director Xtra Development Overview</span>
+<P>There are five categories of Xtras you can create with this XDK: Sprites, Transitions, Lingo, Filter and Tool Xtras. 
+  Sprites provide a way to add new media data types. 
+  Transitions provide a way to extend the list of available transitions. 
+  Script (Lingo) Xtras provide a way to add new commands to the Scripting language.
+  Tool Xtras are used to extend the functionality of the authoring environment.
+  Filter Xtras are used to provide imaging effects to sprites - they were added in Director 11.</p>
+
+  <p>You make Xtras available to the application by placing them in the appropriate 
+  folder or directory: Xtras can be placed in the folder named &quot;Xtras&quot; 
+  inside the configuration folder where the Director application resides. 
+  Director comes with an Xtras folder directory already in the application's configurationdirectory -- 
+  do not remove it but instead simply add your Xtras into it. 
+  For Shockwave, the location of the Xtras folder depends on which platform you are talking about. 
+  Generally speaking, there is a single location for Xtras that works for all the supported browsers for a platform. For Projectors, xtras can be placed in a folder called &quot;Xtras&quot; that is next to the projector application. </p>
+  
+  <p>Shockwave 7 and later will only load and run Xtras that register themselves as "Safe for Shockwave." 
+  If you intend your Xtra to be used with Shockwave, then you need to make sure that it follows the "Safe for Shockwave" guidelines. 
+  See Tech Note 13761 at the <a href="http://www.adobe.com/support/xtras">Adobe support</a> website for more details about this. 
+  The support site also has information about Xtra packaging and downloading.</p>
+<hr width=45% align=left>
+<span class="heading5">In the documentation</span>
+<P>The XDK documentation includes conceptual discussions of the types of Xtras 
+  you can create and complete documentation of the API of the Director XDK. The 
+  documentation consists of the following sections.</P>
+<UL>
+  <LI>The <A HREF="drdg/index.htm">Director Developer's Guide </A>describes the 
+    API you use to implement Xtras with Director-specific behavior, as well as 
+    the support API provided specifically by Director. It also provides reference 
+    documentation for Director interfaces and types.<br><br></LI>
+  <LI>The <A HREF="mmdg/index.htm">Multimedia Developer's Guide</A> describes 
+    the API you use to implement a multimedia Xtra, as well as the support API 
+    provided by Director. It also provides reference documentation for multimedia 
+    interfaces and types.<br><br></LI>
+  <LI>The <A HREF="mfdg/index.htm">MOA File Access II Developer's Guide</A> documents 
+    the File Access II API, which provides local and remote file access.<br><br></LI>
+  <LI>The <A HREF="mudg/index.htm">MUI Developer's Guide</A> documents a cross-platform 
+    API for displaying and interacting with dialog boxes conforming to the Macromedia 
+    User Interface standard.<br><br></LI>
+  <LI>The <A HREF="moadg/index.htm">MOA Developer's Guide</A> describes the Macromedia 
+    Open Architecture object model, the general structure of MOA Xtras, and the 
+    basics of the MOA Xtra development process.<br><br></LI>
+  <LI><u><a href="updates.htm">Updates to the XDK</a></u> lists the new features 
+    and interfaces for the current release as well older release notes.<br><br></LI>
+  <LI><u><a href="../examples/examples.htm">XDK Examples</a></u> discusses the example projects.<br><br></LI>
+  <LI><u><a href="IndexFrameSet.htm">Index</a></u> for the APIs</LI>
+</UL>
+  <hr width=45% align=left>
+  <span class="heading5">Note on syntax</span>
+<p>Some of the documentation still uses C calling conventions, such as: <BR>
+  This-&gt;pObj-&gt;pInterface-&gt;lpVtbl-&gt;FunctionOnInterface(This-&gt;pObj-&gt;pInterface, 
+  variable1, &amp;returnVariable2); </p>
+<P> The newest additions to the documentation as well as the complete Xtra example 
+  projects provided in this XDK are all written in C++ and use the following syntax 
+  for the same function call: <BR>
+  <span class="code">pObj-&gt;pInterface-&gt;FunctionOnInterface(variable1, &amp;returnVariable2);</span> 
+  <br>
+</p>
+<A NAME="RTFToC6" class="heading5">Note on type conventions</A>
+<P>The following type conventions are used throughout this documentation:</P>
+<P><I>Italic type</i> is used to identify new terms where they are defined.</P>
+<P><span class="code">Courier type</span> is used to identify API literals, including class 
+  names, method names, function names, type names, macros, and code fragments.</P>
+<P><span class="codearg">Italic courier type</span> is used to identify parameters to functions and methods.</P>
+
+<HR ALIGN="LEFT" WIDTH="45%">
+<A HREF = "copyrite.htm">Copyright &#169; 1995-2008 Adobe Macromedia Software LLC, Inc.</A>
+</BODY>
+</HTML>

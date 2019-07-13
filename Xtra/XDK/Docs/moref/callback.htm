@@ -1,0 +1,144 @@
+<HTML>
+<HEAD>
+<TITLE>IMoaCallback</TITLE>
+<link href="../xdk.css" rel="stylesheet" type="text/css">
+</HEAD>
+<body>
+<A HREF="../moadg/index.htm">MOA Developer's Guide</A> <BR>
+<A HREF="index.htm">MOA Interfaces</A> | <A HREF="momthndx.htm">MOA Methods</A> | <A HREF="motypndx.htm">MOA Types and Misc API</A>
+<hr width=45% align=left>
+<h3>IMoaCallback</h3>
+<P> Interface ID: <span class="code">IID_IMoaCallback<BR>
+  </span>Pointer type: <span class="code">PIMoaCallback<BR>
+  </span>Inheritance: <A HREF = "unknown.htm">IMoaUnknown</A> <BR>
+  Header file: <A HREF = "../../include/moaxtra.h">moaxtra.h</A> <BR>
+<h3>Description</h3>
+<DL>
+  <DD>
+    This standard MOA interface is implemented by the application's
+    callback object for the use of Xtras. It provides methods for
+    accessing other interfaces belonging to the application, for acquiring
+    and releasing resources for use by the Xtra, for accessing the
+    application cache, and for creating instances of MOA classes and
+    interfaces. All MOA objects have an instance variable, <span class="code">pCallback</span>,
+    that refers to this interface of the application's callback object. <BR>
+</DL>
+<h3>Methods</h3>
+<h4>Creating an instance </h4>
+<DL>
+  <DD><A HREF = "#MoaCreateInstance">MoaCreateInstance()</A>
+</DL>
+<h4>Getting a cache </h4>
+<DL>
+  <DD><A HREF = "#MoaGetCache">MoaGetCache()</A>
+</DL>
+<h4>Using Resources </h4>
+<DL>
+  <DD><A HREF = "#MoaBeginUsingResources">MoaBeginUsingResources()</A> <BR>
+    <A HREF = "#MoaEndUsingResources">MoaEndUsingResources()</A>
+</DL>
+<hr width=45% align=left>
+<h3><A NAME="MoaBeginUsingResources">MoaBeginUsingResources()</A> </h3>
+<h4>Syntax</h4>
+<DL>
+  <DD>
+  <DT class="code">MoaBeginUsingResources(MoaFileRef <I>fileRef</I>, XtraResourceCookie * <I>pSaveCookie</I>)
+</DL>
+<h4>Parameters</h4>
+<DL>
+  <DT><span class="code"><I>fileRef</I></span>
+  <DD>File reference </DD>  
+  <DT><span class="code"><I>pSaveCookie</I></span>
+  <DD>Resource cookie for the file</DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD><span class="code">XtraResourceCookie</span>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD>Opens, if necessary, and returns an identifier for the resources
+    in the file represented by fileRef. When it opens your Xtra, MOA
+    creates the global gXtraFileRef to refers to your Xtra's file
+    (global within the namespace of your Xtra). Pass this global as
+    the fileRef parameter. The parameter pSaveCookie returns a reference
+    to the resource file to use in calling the method <span class="code">MoaEndUsingResources()</span>. </DD>
+</DL>
+<hr width=45% align=left>
+<h3><A NAME="MoaCreateInstance">MoaCreateInstance()</A></h3>
+<h4>Syntax</h4>
+<DL>
+  <DT class="code">MoaCreateInstance(ConstPMoaClassID <I>pClassID</I>, ConstPMoaInterfaceID <I>pInterfaceID</I>, PPMoaVoid <I>ppvOb</I>)
+</DL>
+<h4>Parameters</h4>
+<DL>
+  <DT><span class="code"><I>pClassID</I></span>
+  <DD>CLSID for the class being instantiated <BR>
+    <BR>
+  <DT><span class="code"><I>pInterfaceID</I></span>
+  <DD>IID for the interface being
+    instantiated <BR>
+    <BR>
+  <DT><span class="code"><I>ppvOb</I></span>
+  <DD>Pointer to interface of type pInterfaceID
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD><span class="code">MoaError</span>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD>Create and initialize an object of the class with CLSID pClassID,
+    and return a pointer to the interface with IID pInterfaceID. MOA
+    will choose the class and interface from the correct Xtra, and
+    return a pointer to the interface in ppUnknown. In the event of
+    duplicate class ID's, the Xtra containing the most recent version
+    will be used (according to the information provided when the Xtra
+    is loaded). <BR>
+</DL>
+<hr width=45% align=left>
+<h3><A NAME="MoaEndUsingResources">MoaEndUsingResources()</A> </h3>
+<h4>Syntax</h4>
+<DL>
+  <DD>
+  <DT class="code">MoaEndUsingResources(MoaFileRef <I>fileRef</I>, XtraResourceCookie <I>saveCookie</I>)
+</DL>
+<h4>Parameters</h4>
+<DL>
+  <DT><span class="code"><I>fileRef</I></span>
+  <DD>File reference <BR>
+    <BR>
+  <DT><span class="code"><I>saveCookie</I></span>
+  <DD>Resource cookie for the file
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD><span class="code">void</span>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD>Closes the resource file represented by fileRef and previously
+    opened with the <span class="code">MoaBeginUsingResources()</span> method. <BR>
+</DL>
+<hr width=45% align=left>
+<h3><A NAME="MoaGetCache">MoaGetCache()</A></h3>
+<h4>Syntax</h4>
+<DL>
+  <DD>
+  <DT>MoaGetCache()
+  </DL>
+<h4>Parameters</h4>
+<DL>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD> Applications interface</DD>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD>Call this method to access the application cache from within your Xtra. <BR>
+</DL>
+<hr width=45% align=left>
+<A HREF = "../copyrite.htm">Copyright &#169; 1995-2008 Adobe Macromedia Software LLC, Inc.</A>
+</BODY>
+</html>

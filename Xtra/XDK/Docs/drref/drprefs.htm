@@ -1,0 +1,684 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>IMoaDrPreferenceAccess</title>
+<link href="../xdk.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+
+<A HREF = "../drdg/index.htm">DR Developer's Guide</A><br>
+<A HREF = "index.htm"> DR Interfaces</A> | 
+<A HREF = "drmthndx.htm">DR Methods</A> | 
+<A HREF = "drtypndx.htm">DR Types and Misc API</A>
+<hr width=45% align=left>
+
+<h3><A name = "IMoaDrPreferenceAccess">IMoaDrPreferenceAccess</A></h3>
+
+Interface ID: <span class="code">IID_IMoaDrPreferenceAccess</span><br>
+Pointer type: <span class="code">PIMoaDrPreferenceAccess</span><br>
+Class ID: <span class="code">CID_IMoaDrPreferenceAccess</span>
+Inheritance: IMoaUnknown<br>
+Header file: <A HREF = "../../include/driservc.h">driservc.h</A>
+
+<h4>Description</h4>
+
+The <span class="code">IMoaDrPreferenceAccess</span> interface provides access to Director's preference file. 
+This allows developers to add custom preferences (author time only) for an Xtra, that the Xtra can access at any time. 
+These interfaces do not provide access to the built-in Director preferences. 
+The Director preferences are stored in the registry on Windows and in the preference file on Macintosh.
+<p> 
+To use the <span class="code">IMoaDrPreferenceAccess</span> methods, you must pass in a unique ID (<span class="code">prefGUID</span>) and a string identifying the preference (<span class="code">prefKey</span>). 
+Only by passing in the same GUID and string can you access the preference. 
+The <span class="code">prefGUID</span> needs to be an Xtra's ClassID and must have an associated <span class="code">kMoaMmDictKey_DisplayNameString</span> value in the registry.</p>
+<p>
+<span class="code">IMoaDrPreferenceAccess</span> is an additional interface on the main callback object.</p>
+
+  <p> <a name="28602">&nbsp;</a><br>
+    <b>IMoaDrPreferenceAccess method summary</b><br><br>
+	
+<span class="code"><a href="#28617">SetDataPref</a>&#32;</span>Sets a preference containing raw data.<br>
+<span class="code"><a href="#28630">SetStringPref</a>&#32;</span>Sets a preference containing a string.<br>
+<span class="code"><a href="#28642">SetFlagPref</a>&#32;</span>Sets a preference containing a flag(Bool).<br>
+<span class="code"><a href="#28654">SetLongPref</a></span>&#32;Sets a preference containing a long integer.<br>
+<span class="code"><a href="#28665">SetDoublePref</a></span>&#32;Sets a preference containing a double float.<br>
+<span class="code"><a href="#28677">SetPointPref</a>&#32;</span>Sets a preference containing a point.<br>
+<span class="code"><a href="#28689">SetRectPref</a></span>&#32;Sets a preference containing a rect.<br><br>
+
+<span class="code"><a href="#28700">GetDataPref</a>&#32;</span>Gets a preference containing raw data.<br>
+<span class="code"><a href="#28713">GetStringPref</a></span>&#32;Gets a preference containing a string.<br>
+<span class="code"><a href="#28726">GetFlagPref</a></span>&#32;Gets a preference containing a flag(Bool).<br>
+<span class="code"><a href="#28738">GetLongPref</a></span>&#32;Gets a preference containing a long integer.<br>
+<span class="code"><a href="#28750">GetDoublePref</a></span>&#32;Gets a preference containing a double float.<br>
+<span class="code"><a href="#28762">GetPointPref</a></span>&#32;Gets a preference containing a point.<br>
+<span class="code"><a href="#28774">GetRectPref</a></span>&#32;Gets a preference containing a rectangle.</p>
+
+<hr width=45% align=left>
+
+<h4><A NAME="28617">SetDataPref()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">SetDataPref(PMoaChar <em>prefKey</em>, MoaID <em>prefGUID</em>, PMoaVoid <em>pData</em>, MoaUlong <em>size</em>)
+</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">prefKey</DT>
+<DD>Pointer to a null-terminated C-string representing the preference to set</DD>
+<DT class="codearg">prefGUID</DT>
+<DD>The ClassID GUID  that allows the Xtra to access the preference</DD>
+<DT class="codearg">pData</DT>
+<DD>A pointer to data you have prepared for your custom preference</DD>
+<DT class="codearg">size</DT>
+<DD>The size, in bytes,  of the data referenced by pData</DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DD>
+<TABLE width="753" BORDER="2">
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=292><span class="code">kMoaErr_NoErr</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=443>Successful</TD>
+</TR>
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=292><span class="code">kMoaDrPrefsErr_ClassIDNotValid</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=443>No <span class="code">kMoaMmDictKey_DisplayNameString</span> for the GUID </TD>
+</TR>
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=292><span class="code">kMoaDrPrefsErr_InvalidKey</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=443>No value provided for prefKey</TD>
+</TR>
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=292><span class="code">kMoaDrPrefsErr_InvalidData</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=443>No data available to save as a pref</TD>
+</TR>
+</TABLE>
+</DD>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>Sets a preference containing raw data.</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A NAME="28630">SetStringPref()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">SetStringPref(PMoaChar <em>prefKey</em>, MoaID <em>prefGUID</em>, PMoaChar <em>pValue</em>)
+</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">prefKey</DT>
+<DD>Pointer to a null-terminated C-string representing the preference to set</DD>
+<DT class="codearg">prefGUID</DT>
+<DD>The ClassID GUID  that allows the Xtra to access the preference</DD>
+<DT class="codearg">pValue</DT>
+<DD>A pointer to the null-terminated C-string value for the preference being set</DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DD>
+<TABLE width="747" BORDER="2">
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=290><span class="code">kMoaErr_NoErr</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=439>Successful</TD>
+</TR>
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=290><span class="code">kMoaDrPrefsErr_ClassIDNotValid</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=439>No <span class="code">kMoaMmDictKey_DisplayNameString</span> for the GUID </TD>
+</TR>
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=290><span class="code">kMoaDrPrefsErr_InvalidKey</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=439>No value provided for prefKey</TD>
+</TR>
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=290><span class="code">kMoaDrPrefsErr_InvalidPointer</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=439>No string data to save as a pref</TD>
+</TR>
+</TABLE>
+</DD>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>Sets a preference containing a string.</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A NAME="28642">SetFlagPref()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">SetFlagPref(PMoaChar <em>prefKey</em>, MoaID <em>prefGUID</em>, MoaBool <em>value</em>)
+</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">prefKey</DT>
+<DD>Pointer to a null-terminated C-string representing the preference to set</DD>
+<DT class="codearg">prefGUID</DT>
+<DD>The ClassID GUID  that allows the Xtra to access the preference</DD>
+<DT class="codearg">value</DT>
+<DD>A boolean value setting the flag for the preference</DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DD>
+<TABLE width="762" BORDER="2">
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=311><span class="code">kMoaErr_NoErr</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=433>Successful</TD>
+</TR>
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=311><span class="code">kMoaDrPrefsErr_ClassIDNotValid</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=433>No <span class="code">kMoaMmDictKey_DisplayNameString</span> for the GUID </TD>
+</TR>
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=311><span class="code">kMoaDrPrefsErr_InvalidKey</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=433>No value provided for prefKey</TD>
+</TR>
+</TABLE>
+</DD>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>Sets a preference containing a flag (Boolean value).</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A NAME="28654">SetLongPref()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">SetLongPref(PMoaChar <em>prefKey</em>, MoaID <em>prefGUID</em>, MoaLong <em>value</em>)
+</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">prefKey</DT>
+<DD>Pointer to a null-terminated C-string representing the preference to set</DD>
+<DT class="codearg">prefGUID</DT>
+<DD>The ClassID GUID  that allows the Xtra to access the preference</DD>
+<DT class="codearg">value</DT>
+<DD>A long integer value for the preference</DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DD>
+<TABLE width="733" BORDER="2">
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=273><span class="code">kMoaErr_NoErr</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=442>Successful</TD>
+</TR>
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=273><span class="code">kMoaDrPrefsErr_ClassIDNotValid</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=442>No <span class="code">kMoaMmDictKey_DisplayNameString</span> for the GUID </TD>
+</TR>
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=273><span class="code">kMoaDrPrefsErr_InvalidKey</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=442>No value provided for prefKey</TD>
+</TR>
+</TABLE>
+</DD>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>Sets a preference containing a long integer.</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A NAME="28665">SetDoublePref()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">SetDoublePref(PMoaChar <em>prefKey</em>, MoaID <em>prefGUID</em>, MoaDouble <em>value</em>)
+</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">prefKey</DT>
+<DD>Pointer to a null-terminated C-string representing the preference to set</DD>
+<DT class="codearg">prefGUID</DT>
+<DD>The ClassID GUID  that allows the Xtra to access the preference</DD>
+<DT class="codearg">value</DT>
+<DD>A double float value for the preference</DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DD>
+<TABLE width="748" BORDER="2">
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=276><span class="code">kMoaErr_NoErr</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=454>Successful</TD>
+</TR>
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=276><span class="code">kMoaDrPrefsErr_ClassIDNotValid</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=454>No <span class="code">kMoaMmDictKey_DisplayNameString</span> for the GUID </TD>
+</TR>
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=276><span class="code">kMoaDrPrefsErr_InvalidKey</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=454>No value provided for prefKey</TD>
+</TR>
+</TABLE>
+</DD>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>Sets a preference containing a double float.</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A NAME="28677">SetPointPref()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">SetPointPref(PMoaChar <em>prefKey</em>, MoaID <em>prefGUID</em>, MoaPoint <em>value</em>)
+</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">prefKey</DT>
+<DD>Pointer to a null-terminated C-string representing the preference to set</DD>
+<DT class="codearg">prefGUID</DT>
+<DD>The ClassID GUID  that allows the Xtra to access the preference</DD>
+<DT class="codearg">value</DT>
+<DD>A point value for the preference</DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DD>
+<TABLE width="730" BORDER="2">
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=279><span class="code">kMoaErr_NoErr</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=433>Successful</TD>
+</TR>
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=279><span class="code">kMoaDrPrefsErr_ClassIDNotValid</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=433>No <span class="code">kMoaMmDictKey_DisplayNameString</span> for the GUID </TD>
+</TR>
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=279><span class="code">kMoaDrPrefsErr_InvalidKey</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=433>No value provided for prefKey</TD>
+</TR>
+</TABLE>
+</DD>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>Sets a preference containing a point.</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A NAME="28689">SetRectPref()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">SetRectPref(PMoaChar <em>prefKey</em>, MoaID <em>prefGUID</em>, MoaRect <em>value</em>)
+</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">prefKey</DT>
+<DD>Pointer to a null-terminated C-string representing the preference to set</DD>
+<DT class="codearg">prefGUID</DT>
+<DD>The ClassID GUID  that allows the Xtra to access the preference</DD>
+<DT class="codearg">value</DT>
+<DD>A rect value for the preference</DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DD>
+<TABLE width="751" BORDER="2">
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=295><span class="code">kMoaErr_NoErr</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=438>Successful</TD>
+</TR>
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=295><span class="code">kMoaDrPrefsErr_ClassIDNotValid</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=438>No <span class="code">kMoaMmDictKey_DisplayNameString</span> for the GUID </TD>
+</TR>
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=295><span class="code">kMoaDrPrefsErr_InvalidKey</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=438>No value provided for prefKey</TD>
+</TR>
+</TABLE>
+</DD>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>Sets a preference containing a rect.</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A NAME="28700">GetDataPref()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">GetDataPref(PMoaChar <em>prefKey</em>, MoaID <em>prefGUID</em>, PMoaVoid <em>pData</em>, MoaUlong <em>size</em>)
+</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">prefKey</DT>
+<DD>Pointer to a null-terminated C-string representing the preference to set</DD>
+<DT class="codearg">prefGUID</DT>
+<DD>The ClassID GUID  that allows the Xtra to access the preference</DD>
+<DT class="codearg">pData</DT>
+<DD>A pointer to place to receive data for your custom preference</DD>
+<DT class="codearg">size</DT>
+<DD>The size, in bytes, of the data you want to receive</DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DD>
+<TABLE width="735" BORDER="2">
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=301><span class="code">kMoaErr_NoErr</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=416>Successful</TD>
+</TR>
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=301><span class="code">kMoaDrPrefsErr_ClassIDNotValid</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=416>No <span class="code">kMoaMmDictKey_DisplayNameString</span> for the GUID </TD>
+</TR>
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=301><span class="code">kMoaDrPrefsErr_InvalidKey</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=416>No value provided for prefKey</TD>
+</TR>
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=301><span class="code">kMoaDrPrefsErr_InvalidPointer</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=416>No place to store the data</TD>
+</TR>
+</TABLE>
+</DD>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>Gets a preference containing raw data. 
+If the preference does not exist no error is returned, so you will want to pre-populate your data bytes with a known value.</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A NAME="28713">GetStringPref()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">GetStringPref(PMoaChar <em>prefKey</em>, MoaID <em>prefGUID</em>, PMoaChar* <em>ppValue</em>, MoaLong <em>bufLen</em>)
+</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">prefKey</DT>
+<DD>Pointer to a null-terminated C-string representing the preference to set</DD>
+<DT class="codearg">prefGUID</DT>
+<DD>The ClassID GUID  that allows the Xtra to access the preference</DD>
+<DT class="codearg">ppValue</DT>
+<DD>A pointer to a <span class="code">MoaChar*</span> that will receive the string value of the preference</DD>
+<DT class="codearg">bufLen</DT>
+<DD>The size, in bytes, of the string buffer</DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DD>
+<TABLE width="791" BORDER="2">
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=279><span class="code">kMoaErr_NoErr</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=494>Successful</TD>
+</TR>
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=279><span class="code">kMoaDrPrefsErr_ClassIDNotValid</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=494>No <span class="code">kMoaMmDictKey_DisplayNameString</span> for the GUID </TD>
+</TR>
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=279><span class="code">kMoaDrPrefsErr_InvalidKey</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=494>No value provided for prefKey</TD>
+</TR>
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=279><span class="code">kMoaDrPrefsErr_InvalidPointer</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=494>No place to store the result</TD>
+</TR>
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=279><span class="code">kMoaDrPrefsErr_BufferOverrun</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=494>Not enough room for the result</TD>
+</TR>
+</TABLE>
+</DD>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>Gets a preference with a string value.
+If the preference has not yet been set, the string &quot;notapref&quot; is returned as the default preference value.</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A NAME="28726">GetFlagPref()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">GetFlagPref(PMoaChar <em>prefKey</em>, MoaID <em>prefGUID</em>, MoaBool* <em>pValue</em>)
+</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">prefKey</DT>
+<DD>Pointer to a null-terminated C-string representing the preference to set</DD>
+<DT class="codearg">prefGUID</DT>
+<DD>The ClassID GUID  that allows the Xtra to access the preference</DD>
+<DT class="codearg">pValue</DT>
+<DD>pointer to the flag (boolean) value of the preference</DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DD>
+<TABLE width="799" BORDER="2">
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=306><span class="code">kMoaErr_NoErr</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=475>Successful</TD>
+</TR>
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=306><span class="code">kMoaDrPrefsErr_ClassIDNotValid</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=475>No <span class="code">kMoaMmDictKey_DisplayNameString</span> for the GUID </TD>
+</TR>
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=306><span class="code">kMoaDrPrefsErr_InvalidKey</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=475>No value provided for prefKey</TD>
+</TR>
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=306><span class="code">kMoaDrPrefsErr_InvalidPointer</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=475>No place to store the pref</TD>
+</TR>
+</TABLE>
+</DD>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>Gets a preference containing a flag (Boolean).
+If the preference has not yet been set,  FALSE  is assigned to *pValue.</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A NAME="28738">GetLongPref()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">GetLongPref(PMoaChar <em>prefKey</em>, MoaID <em>prefGUID</em>, MoaLong* <em>pValue</em>)
+</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">prefKey</DT>
+<DD>Pointer to a null-terminated C-string representing the preference to set</DD>
+<DT class="codearg">prefGUID</DT>
+<DD>The ClassID GUID  that allows the Xtra to access the preference</DD>
+<DT class="codearg">pValue</DT>
+<DD>A pointer to the long integer value of the preference</DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DD>
+<TABLE width="778" BORDER="2">
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=309><span class="code">kMoaErr_NoErr</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=451>Successful</TD>
+</TR>
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=309><span class="code">kMoaDrPrefsErr_ClassIDNotValid</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=451>No <span class="code">kMoaMmDictKey_DisplayNameString</span> for the GUID </TD>
+</TR>
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=309><span class="code">kMoaDrPrefsErr_InvalidKey</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=451>No value provided for prefKey</TD>
+</TR>
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=309><span class="code">kMoaDrPrefsErr_InvalidPointer</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=451>No place to store the pref</TD>
+</TR>
+</TABLE>
+</DD>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>Gets a preference containing a long integer.
+If the preference hasn't been set, then a value of zero is provided for the pref. </DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A NAME="28750">GetDoublePref()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">GetDoublePref(PMoaChar <em>prefKey</em>, MoaID <em>prefGUID</em>, PMoaDouble <em>pValue</em>)
+</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">prefKey</DT>
+<DD>Pointer to a null-terminated C-string representing the preference to set</DD>
+<DT class="codearg">prefGUID</DT>
+<DD>The ClassID GUID  that allows the Xtra to access the preference</DD>
+<DT class="codearg">pValue</DT>
+<DD>A pointer to the double float value of the preference</DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DD>
+<TABLE width="785" BORDER="2">
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=303><span class="code">kMoaErr_NoErr</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=464>Successful</TD>
+</TR>
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=303><span class="code">kMoaDrPrefsErr_ClassIDNotValid</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=464>No <span class="code">kMoaMmDictKey_DisplayNameString</span> for the GUID </TD>
+</TR>
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=303><span class="code">kMoaDrPrefsErr_InvalidKey</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=464>No value provided for prefKey</TD>
+</TR>
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=303><span class="code">kMoaDrPrefsErr_InvalidPointer</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=464>No place to store the pref value</TD>
+</TR>
+</TABLE>
+</DD>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>Gets a preference containing a double float.
+If the preference hasn't been set, then 0.0 is the default value.</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A NAME="28762">GetPointPref()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">GetPointPref(PMoaChar <em>prefKey</em>, MoaID <em>prefGUID</em>, PMoaPoint <em>pValue</em>)
+</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">prefKey</DT>
+<DD>Pointer to a null-terminated C-string representing the preference to set</DD>
+<DT class="codearg">prefGUID</DT>
+<DD>The ClassID GUID  that allows the Xtra to access the preference</DD>
+<DT class="codearg">pValue</DT>
+<DD>A pointer to the point value of the preference</DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DD>
+<TABLE width="763" BORDER="2">
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=275><span class="code">kMoaErr_NoErr</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=470>Successful</TD>
+</TR>
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=275><span class="code">kMoaDrPrefsErr_ClassIDNotValid</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=470>No <span class="code">kMoaMmDictKey_DisplayNameString</span> for the GUID </TD>
+</TR>
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=275><span class="code">kMoaDrPrefsErr_InvalidKey</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=470>No value provided for prefKey</TD>
+</TR>
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=275><span class="code">kMoaDrPrefsErr_InvalidPointer</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=470>No place to store the pref value </TD>
+</TR>
+</TABLE>
+</DD>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>Gets a preference containing a point.
+If no preference exists,  point {0,0} is returned.</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A NAME="28774">GetRectPref()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">GetRectPref(PMoaChar <em>prefKey</em>, MoaID <em>prefGUID</em>, PMoaRect <em>pValue</em>)
+</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">prefKey</DT>
+<DD>Pointer to a null-terminated C-string representing the preference to set</DD>
+<DT class="codearg">prefGUID</DT>
+<DD>The ClassID GUID  that allows the Xtra to access the preference</DD>
+<DT class="codearg">pValue</DT>
+<DD>A pointer to the rect value of the preference</DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DD>
+<TABLE width="728" BORDER="2">
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=274><span class="code">kMoaErr_NoErr</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=436>Successful</TD>
+</TR>
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=274><span class="code">kMoaDrPrefsErr_ClassIDNotValid</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=436>No <span class="code">kMoaMmDictKey_DisplayNameString</span> for the GUID </TD>
+</TR>
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=274><span class="code">kMoaDrPrefsErr_InvalidKey</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=436>No value provided for prefKey</TD>
+</TR>
+<TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=274><span class="code">kMoaDrPrefsErr_InvalidPointer</span></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=436>No place to store the resulting pref value </TD>
+</TR>
+</TABLE>
+</DD>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>Gets a preference containing raw rectangle.
+If no preference was previously set, the rectangle {0,0,0,0} is used as the default value.</DD>
+</DL>
+
+<hr width=45% align=left>
+<A HREF = "../copyrite.htm">Copyright &#169; 1999-2008 Adobe Macromedia Software LLC, Inc.</A>
+</body></html>

@@ -1,0 +1,138 @@
+-- Director 8 View Description List
+-- Copyright 1999 Macromedia, Inc.
+
+-- Wacky Oval tab of Property Inspector
+
+[
+	#oval:
+	[
+		#symbol: #oval,
+		
+		#comment: "Wacky Oval",
+		
+		#picture: [7900, 20],
+				
+		#propertyDescriptionList:
+		[
+			#title:
+			[
+				#comment: "Wacky Oval Properties",
+				#title: true
+			],
+			 
+			#clickable: 
+			[
+				#format: #boolean,
+				#editable: #true,
+				#comment: "When TRUE, the sprite will toggle between an oval and an x."
+			],
+
+			#red:
+			[
+				#comment: "Simply Red!",
+				#format: #integer,
+				#range:
+				[
+			 		#min: 0.0,
+			 		#max: 255.0,
+			 		#granularity: 1.0
+			 	] 
+			],
+
+			#green:
+			[
+				#comment: "Green Eggs & Ham",
+				#format: #integer,
+				#range:
+				[
+			 		#min: 0.0,
+			 		#max: 255.0,
+			 		#granularity: 1.0
+			 	]
+			],
+
+			#blue:
+			[
+				#comment: "Blue Oyster",
+				#format: #integer,
+				#range:
+				[
+			 		#min: 0.0,
+			 		#max: 255.0,
+			 		#granularity: 1.0
+			 	]
+			]
+		],
+		
+		#itemDescriptionList:
+		[
+			#clickable:
+			[
+				#property: #clickable,
+				#text: "Clickability",
+				#left: 0,
+				#top: 5,
+				#right: -1,
+				#bottom: 5 + 12
+			],
+
+			#redLabel: 
+			[ 
+				#type: #label,
+				#left: 0,
+				#top: 20,
+				#right: 60,
+				#bottom: 20 + 12,
+				#text: "Red:"
+			],
+
+			#red:
+			[
+				#property: #red,
+				#left: 0,
+				#top: 35,
+				#right: -30,
+				#bottom: 35 + 12
+			],
+
+			#greenLabel: 
+			[ 
+				#type: #label,
+				#left: 0,
+				#top: 50,
+				#right: 60,
+				#bottom: 50 +12,
+				#text: "Green:"
+			],
+
+			#green:
+			[
+				#property: #green,
+				#left: 0,
+				#top: 65,
+				#right: -30,
+				#bottom: 65 + 12
+			],	
+
+			#blueLabel: 
+			[ 
+				#type: #label,
+				#left: 0,
+				#top: 80,
+				#right: 60,
+				#bottom: 80 +12,
+				#text: "Blue:"
+			],
+
+			#blue:
+			[
+				#property: #blue,
+				#left: 0,
+				#top: 95,
+				#right: -30,
+				#bottom: 95 + 12
+			]
+			
+		]
+	]
+]

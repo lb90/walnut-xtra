@@ -1,0 +1,344 @@
+<HTML>
+<HEAD>
+<TITLE>MOA File Access II Developer's Guide</TITLE>
+<link href="../xdk.css" rel="stylesheet" type="text/css">
+</HEAD>
+<BODY>
+<P> <A HREF="../index.htm">Director XDK</A><BR>
+  <A HREF="../mfref/index.htm">MF II Interfaces</A> | <A HREF="../mfref/mfmthndx.htm">MF II Methods</A> | <A HREF="../mfref/mftypndx.htm">MF II Types and Misc API</A>
+<HR width=45% align=left>
+<H3><A NAME="RTFToC2">Director Xtra Development Kit </A></H3>
+<h3>MOA File Access II Developer's Guide </h3>
+<HR width=45% align=left>
+<P>This document contains the following sections:
+<UL>
+  <LI><A HREF = "#MFINTRO">Introduction</A>
+  <LI><A HREF = "#MFUSING">Using File Access Behavior</A>
+  <LI><A HREF = "#MFFILE2">The IMoaFile2 Interface</A>
+  <LI><A HREF = "#MFPATH">The IMoaPath Interface</A>
+</UL>
+<HR width=45% align=left>
+<H3><A NAME="MFINTRO">Introduction</A></H3>
+The MOA File Access II API provides local and remote file access through the following related interfaces:
+<UL>
+  <LI><span class="code">IMoaFile2</span> provides a consistent way to access files
+    via standard paths: either file paths for local file access or
+    URLs for http and ftp file access. <span class="code">IMoaFile2</span> supersedes <span class="code">IMoaFile</span>, which is still used by the MoaFile Xtra
+    supplied with Director. <span class="code">IMoaFile2</span> has many of the same methods as, but doesn't inherit from, <span class="code">IMoaFile</span>.
+  <LI><span class="code">IMoaPathName</span> provides a cross-platform representation
+    of paths, both for local access by filename and for http or ftp
+    file access via URL. It supports expressing path name strings
+    in the dialects of various host platforms.
+  <LI><span class="code">IMoaStream2</span>, which inherits from <span class="code">IMoaStream</span>,
+    provides methods for accessing streams of bytes from a file. To
+    read or write data to a file, you acquire an <span class="code">IMoaStream2</span> interface from an instance of <span class="code">IMoaFile2</span>, then invoke
+    the data access methods of the stream.
+  <LI><span class="code">IMoaIOAttributes</span> is an interface provided by an instance
+    of <span class="code">IMoaFile2</span> to represent its behavior. The IO attributes
+    let you determine information about the file itself, and how to
+    handle the <span class="code">IMoaStream2</span> interfaces you acquire from
+    it. <span class="code">IMoaIOAttributes</span> is a synonym for <span class="code">IMoaDict</span>.
+</UL>
+<HR width=45% align=left>
+<H3><A NAME="MFUSING">Using File Access Behavior</A></H3>
+For this XDK, MOA File Access II behavior is provided in several
+variations.
+<H4>Local File Access in Director</H4>
+<P> <span class="code">IMoaFile2</span> is implemented in Director for local file
+  access. To acquire this interface, you call <span class="code">IMoaCallback::CreateInstance()</span>,
+  passing the class id <span class="code">CLSID_CMoaFile2</span> and the interface
+  id <span class="code">IID_IMoaFile2</span>.
+<H4>Remote File Access</H4>
+<P> <span class="code">IMoaFile2</span> is implemented for URL access to HTTP and
+  FTP files through the NetFile2 Xtra This Xtra is named NetFile.x32
+  on Windows, and NetFile PPC on the Macintosh. This Xtra is
+  shipped with Director. In addition to
+  this Xtra, you also need the INetURL Xtra, also shipped with the
+  applications. This Xtra is named INetUrl.x32 on the Windows
+  and INetUrl PPC on the Power Mac. On PPC
+  Macintoshes, you also need NetManage WinSock Library.
+<P> Note that in Director, the<span class="code"> IMoaFile2</span> interface provided
+  by the NetFile Xtra can also do local file access--it does so
+  by working with the built-in implementation of the interface.
+<P> For Xtras running in Shockwave, Netscape Navigator and Microsoft
+  Internet Explorer both provide the standard Net Xtras for URL
+  access (See the Director Shockwave documentation for more).<BR>
+<HR width=45% align=left>
+<H3><A NAME="MFFILE2">The IMoaFile2 Interface</A></H3>
+The <span class="code">IMoaFile2 </span>interface provides high-level, cross-platform
+access to the file system through MOA. Its functionally is a superset
+of the original <span class="code">IMoaFile</span> interface, but not a direct
+superset of <span class="code">IMoaFile</span>.<BR>
+<H4>Getting and setting the file object's
+  path name</H4>
+<P> <span class="code">IMoaFile2 </span>provides three methods to get and set a file
+  object's path name. <span class="code">GetPathName() </span>and <span class="code">SetPathName()</span>use
+  the <span class="code">IMoaPathName </span>interface. <span class="code">GetPathName()</span> returns
+  a pointer to an instance of the <span class="code">IMoaPathName </span>interface.
+  It can be used to set the file name path and other details of
+  the target file using the <span class="code">SetPathName() </span>method. <span class="code">SetPathName()</span> sets the <span class="code">MoaFile</span> object's underlying path name using
+  a previously resolved <span class="code">IMoaPathName </span>object. The given <span class="code">IMoaPathName </span>interface is cloned so the client doesn't
+  have a reference to the same interface as the <span class="code">MoaFile2</span> implementation. <BR>
+  <BR>
+  <span class="code">SetPathSpec() </span>sets the <span class="code">MoaFile</span> object's underlying
+  path name to a specified string.
+<H4>Retrieving information about the file <BR>
+  </H4>
+<P> You can retrieve information about files using four methods: <span class="code">EnumFiles()</span>, <span class="code">IsDirectory()</span>, <span class="code">IsExisting()</span>, <span class="code">IsSameFile()</span>. <BR>
+  <BR>
+  <span class="code">EnumFiles()</span> lists all entries in the current directory.
+  For each entry in the current directory, the following data is
+  returned: the <span class="code">IMoaPathName</span> interface to the current file,
+  whether or not the file is a directory, the last date the file
+  was modified, the file type, and the client data passed into <span class="code">EnumFiles()</span>. <BR>
+  <BR>
+  <span class="code">IsDirectory()</span> returns TRUE if the underlying path name
+  points to a directory. <span class="code">IsExisting()</span> returns TRUE if the
+  object pointed to by the underlying path name exists. <span class="code">IsSameFile()</span> returns TRUE if the current <span class="code">IMoaFile</span> instance and an
+  instance pointer point to the same file or directory.
+<H4>Getting and setting file attributes <BR>
+  </H4>
+<P> You can retrieve and set the following file attributes: size,
+  access privileges, dates (create, modify, and access), and cache
+  priority.<BR>
+  <BR>
+  The <span class="code">GetSize()</span> and <span class="code">SetSize() </span>methods retrieve
+  and set the file size. <span class="code">GetAccess() </span>and <span class="code">SetAccess() </span>return and set the file access permissions. <span class="code">GetDates()</span> and <span class="code">SetDates() </span>return and set the creation, last modification,
+  last access dates, or any combination of these dates. If the file
+  is remote, you can call the <span class="code">GetCachePriority()</span> and <span class="code">SetCachePriority() </span>methods to return and set the following cache priorities:
+  Always, If You Can, or Never.<BR>
+  <BR>
+  You can also use the <span class="code">GetMoaIOAttributeDict() </span>to get an <span class="code">IMoaIOAttribute</span> interface. With this interface, you can
+  access the various file attributes of the object pointed to by
+  the underlying path name. See the header file (MOAFILE2.H) for
+  specific information on <span class="code">GetMoaIOAttributeDict()</span>. <BR>
+  <BR>
+<H4>Managing files<BR>
+  </H4>
+<P> You can create, delete, swap, rename, and clone files and directories. <span class="code">CreateFile() </span>creates a new file. <span class="code">CreateDirectory()</span> creates a new directory. <span class="code">Delete() </span>deletes the file or
+  directory specified by the underlying path name. <span class="code">SwapFile() </span>exchanges two files specified by <span class="code">IMoaFile2 </span>instances. <span class="code">Rename() </span>changes the name of the file or directory pointed
+  to by the underlying path name. <span class="code">Clone() </span>creates a new <span class="code">IMoaFile2 </span>object identical to the current instance.<BR>
+<HR width=45% align=left>
+<H3><A NAME="MFPATH">The IMoaPath Interface</A></H3>
+The IMoaPathName interface provides various methods for the manipulation
+of path names.<BR>
+<BR>
+<H4>Initializing paths<BR>
+  </H4>
+<P> You can use two methods to initialize paths: <span class="code">InitFromString() </span>and <span class="code">SetTempPath()</span>. <span class="code">InitFromString()</span> intializes
+  the current IMoaPathName object from a path string. <span class="code">SetTempPath()</span> creates a temporary path instance with a unique name.
+<H4>Manipulating path names<BR>
+  </H4>
+<P> You can change path names with a variety of methods. <span class="code">Resolve()</span> resolves the current instance into a fully qualified path. <span class="code">RemoveFinal() </span>removes the final component of the current path name, while <span class="code">AddFinal() </span>adds the string (representing either a directory
+  or file name) passed in to the current path name. <span class="code">Concat() </span>concatenates the path name of the current instance with a
+  specified instance. <span class="code">SetExtension() </span>sets the extension
+  of the current file name.<BR>
+  <BR>
+  <span class="code">SetVolumeName() </span>sets the volume name of the current path
+  name. For the Macintosh, this is the name of the target volume.
+  For MS-DOS, it is the drive letter of the target volume. <BR>
+  <BR>
+  There are several methods that deal specifically with URL-style
+  paths; these methods have no effect on non-URL paths. <span class="code">SetScheme()</span> sets the scheme component of the path name. <span class="code">SetHostName() </span>sets the host name component of the path name. <span class="code">SetPort() </span>sets the port component of the path name. <span class="code">SetUserID() </span>sets the user ID component of the path name. <span class="code">SetPassword() </span>sets the password component of the path name. <span class="code">SetParameters() </span>sets any miscellaneous components of the path name. <span class="code">SetAnchor() </span>sets the anchor component of the path name.
+<H4>Retrieving information about paths <BR>
+  </H4>
+<P> You can find out whether or not a path is empty, absolute, relative,
+  canonical, or equal to another path using the following methods: <span class="code">IsEmpty()</span>, <span class="code">IsAbsolute()</span>, <span class="code">IsRelative()</span>, <span class="code">IsCanonical()</span>, and <span class="code">AreEqual()</span>.<BR>
+  <BR>
+  You can also use the following methods to retrieve other information. <span class="code">GetPath()</span> returns a pointer to a string containing the
+  current path name. <span class="code">GetDisplayPath()</span> returns the display
+  path for the path. <span class="code">GetDisplayFileName() </span>returns the display
+  file name for the path. <span class="code">GetExtension()</span> returns the extension
+  of the current file. <BR>
+  <BR>
+  <span class="code">GetVolumeName() </span>returns the volume name of the current
+  path name. For the Macintosh, this is the name of the volume.
+  For MS-DOS, it is the drive letter of the volume. <BR>
+  <BR>
+  There are several methods that deal specifically with URL-style
+  paths; these methods have no effect on non-URL paths. <span class="code">GetScheme() </span>returns the scheme component of the path name. <span class="code">GetHostName() </span>returns the host name component of the path name. <span class="code">GetPort() </span>returns the port component of the path name. <span class="code">GetUserID() </span>returns the user ID component of the path name. <span class="code">GetPassword() </span>returns the password component of the path name. <span class="code">GetParameters() </span>returns user-defined components of the path name. <span class="code">GetAnchor() </span>returns the anchor component of the path name. <BR>
+  <BR>
+<H4>Retrieving related paths<BR>
+  </H4>
+<P> You can retrieve related paths using the <span class="code">GetParentDirectory()</span>, <span class="code">GetWorkingDirectory()</span>, <span class="code">GetRelativePath()</span>, and <span class="code">Clone() </span>methods. <BR>
+  <BR>
+  <span class="code">GetParentDirectory() </span>returns a <span class="code">PIMoaPathName </span>that
+  references the current instance's parent directory. <span class="code">GetWorkingDirectory() </span>returns a <span class="code">PIMoaPathName </span>that references the current
+  working directory. <span class="code">GetRelativePath()</span> returns a <span class="code">PIMoaPathName </span>that contains the relative path from the current instance
+  to the destination path in the specified instance. <span class="code">Clone() </span>creates an <span class="code">IMoaPathName </span>instance identical to the
+  current instance. <BR>
+  <BR>
+<H4>Macintosh-specific methods<BR>
+  </H4>
+<P> You can use the <span class="code">InitFromFSSpec() </span>and <span class="code">GetFSSpec()</span> for Macintosh-specific operations.<BR>
+<H4>File IO Attributes</H4>
+<P> The <span class="code">IMoaIOAttributes</span> interface provides a mechanism
+  for getting information about the behavior of a stream or file.
+  This interface is a synonym for the <span class="code">IMoaDict</span> interface
+  used to register Xtras.  Each implementation of <span class="code">IMoaFile2</span> and <span class="code">IMoaStream2</span> can provide an instance of the <span class="code">IMoaIOAttributes</span> interface to specify its behavior.  The following entries can
+  be found in this dictionary.  A list of constants associated with these entries is available
+  in <A HREF="../mfref/mftypndx.htm#IOAttributes"> Moa File Access II Types and Miscellaneous API</A>.
+<TABLE BORDER="2">
+  <TR>
+    <TD WIDTH=93><B>IMoaStream2 Attributes</B></TD>
+    <TD WIDTH=71><B>Type</B> </TD>
+    <TD WIDTH=44><B>Entry Size </B>(bytes)</TD>
+    <TD WIDTH=296><B>Value</B> </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=93>Flags</TD>
+    <TD WIDTH=71>PMoaLong</TD>
+    <TD WIDTH=44>4 </TD>
+    <TD WIDTH=296>logical OR of 0 or more of: <BR>
+      <span class="code">kMoaStreamFlag_HasAsyncIO</span>, <span class="code">kMoaStreamFlag_HasBufferredIO</span>, <span class="code">kMoaStreamFlag_HasDirectBufferAccess</span> </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=93>AccessMode</TD>
+    <TD WIDTH=71>PMoaLong</TD>
+    <TD WIDTH=44>4 </TD>
+    <TD WIDTH=296>One of <span class="code">kMoaStreamOpenAccess_ReadOnly, kMoaStreamOpenAccess_ReadWrite, kMoaStreamOpenAccess_WriteOnly</span> </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=93>BufferSize</TD>
+    <TD WIDTH=71>PMoaLong</TD>
+    <TD WIDTH=44>4 </TD>
+    <TD WIDTH=296>Buffer size in bytes</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=93>DataRate</TD>
+    <TD WIDTH=71>PMoaLong</TD>
+    <TD WIDTH=44>4 </TD>
+    <TD WIDTH=296></TD>
+  </TR>
+  <TR>
+    <TD WIDTH=93>End</TD>
+    <TD WIDTH=71>PMoaLong</TD>
+    <TD WIDTH=44>4 </TD>
+    <TD WIDTH=296>End of stream in bytes</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=93>CurrentLength</TD>
+    <TD WIDTH=71>PMoaLong</TD>
+    <TD WIDTH=44>4</TD>
+    <TD WIDTH=296>Length of stream in bytes</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=93>Position</TD>
+    <TD WIDTH=71>PMoaLong</TD>
+    <TD WIDTH=44>4 </TD>
+    <TD WIDTH=296>Current position in stream in bytes</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=93>PositionType</TD>
+    <TD WIDTH=71>PMoaLong</TD>
+    <TD WIDTH=44>4 </TD>
+    <TD WIDTH=296>One of <span class="code">kMoaStreamSetPositionType_None, kMoaStreamSetPositionType_Expensive, kMoaStreamSetPositionType_Cheap</span> </TD>
+  </TR>
+</TABLE>
+<TABLE BORDER="2">
+  <TR>
+    <TD WIDTH=93><B>IMoaFile2 Attributes</B></TD>
+    <TD WIDTH=71><B>Type</B> </TD>
+    <TD WIDTH=44><B>Size<BR>
+      </B>(bytes)</TD>
+    <TD WIDTH=296><B>Values</B> </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=93>Flags</TD>
+    <TD WIDTH=71>PMoaLong</TD>
+    <TD WIDTH=44>4 </TD>
+    <TD WIDTH=296>Logical OR of 0 or more of: <BR>
+      <span class="code">kMoaFileFlag_IsExistant, <BR>
+      kMoaFileFlag_IsDirectory</span> </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=93>AccessPerm</TD>
+    <TD WIDTH=71>PMoaLong</TD>
+    <TD WIDTH=44>4 </TD>
+    <TD WIDTH=296>One of <span class="code">kMoaFileAccessPerm_Read, kMoaFileAccessPerm_Write</span> </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=93>Length</TD>
+    <TD WIDTH=71>PMoaLong</TD>
+    <TD WIDTH=44>4 </TD>
+    <TD WIDTH=296>Length of file in bytes</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=93>Type</TD>
+    <TD WIDTH=71>PMoaChar</TD>
+    <TD WIDTH=44>N/A </TD>
+    <TD WIDTH=296></TD>
+  </TR>
+  <TR>
+    <TD WIDTH=93>Encoding</TD>
+    <TD WIDTH=71>PMoaChar</TD>
+    <TD WIDTH=44>N/A </TD>
+    <TD WIDTH=296></TD>
+  </TR>
+  <TR>
+    <TD WIDTH=93>Creator</TD>
+    <TD WIDTH=71>PMoaChar</TD>
+    <TD WIDTH=44>N/A </TD>
+    <TD WIDTH=296></TD>
+  </TR>
+  <TR>
+    <TD WIDTH=93>CreateDate</TD>
+    <TD WIDTH=71>PMoaWide</TD>
+    <TD WIDTH=44>8 </TD>
+    <TD WIDTH=296></TD>
+  </TR>
+  <TR>
+    <TD WIDTH=93>ModifyDate</TD>
+    <TD WIDTH=71>PMoaWide</TD>
+    <TD WIDTH=44>8 </TD>
+    <TD WIDTH=296></TD>
+  </TR>
+  <TR>
+    <TD WIDTH=93>AccessDate</TD>
+    <TD WIDTH=71>PMoaWide</TD>
+    <TD WIDTH=44>8 </TD>
+    <TD WIDTH=296></TD>
+  </TR>
+  <TR>
+    <TD WIDTH=93>CachePriority</TD>
+    <TD WIDTH=71>PMoaLong</TD>
+    <TD WIDTH=44>4</TD>
+    <TD WIDTH=296></TD>
+  </TR>
+</TABLE>
+<TABLE BORDER="2">
+  <TR>
+    <TD WIDTH=93><B>Volume Attributes </B></TD>
+    <TD WIDTH=71><B>Type </B> </TD>
+    <TD WIDTH=44><B>Size </B>(bytes)</TD>
+    <TD WIDTH=296><B>Values</B> </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=93>Flags</TD>
+    <TD WIDTH=71>PMoaLong</TD>
+    <TD WIDTH=44>4 </TD>
+    <TD WIDTH=296>Logical OR of <span class="code">kMoaVolFlag_IsRemovable, kMoaVolFlag_IsCDROM, kMoaVolFlag_IsHardDisk, kMoaVolFlag_IsNetworkDrive</span> </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=93>BlockSize</TD>
+    <TD WIDTH=71>PMoaLong</TD>
+    <TD WIDTH=44>4 </TD>
+    <TD WIDTH=296>File system block size in bytes</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=93>SectorSize</TD>
+    <TD WIDTH=71>PMoaLong</TD>
+    <TD WIDTH=44>4 </TD>
+    <TD WIDTH=296>File system sector size in bytes</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=93>FreeSpace</TD>
+    <TD WIDTH=71>PMoaLong</TD>
+    <TD WIDTH=44>4 </TD>
+    <TD WIDTH=296>Remaining space in bytes</TD>
+  </TR>
+</TABLE>
+<HR width=45% align=left>
+<A HREF = "../copyrite.htm">Copyright &#169; 1995-2007 Adobe Macromedia Software LLC, Inc.</A>
+</BODY>
+</HTML>

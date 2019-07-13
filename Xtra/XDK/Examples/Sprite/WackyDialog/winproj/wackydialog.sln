@@ -1,0 +1,31 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Asset", "Asset.vcproj", "{920663C6-E5DF-46D0-B141-14BA437ED88B}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Dialog", "Dialog.vcproj", "{DF0BB4C4-A469-4E87-BB34-33363E16BEBC}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Release = Release
+	EndGlobalSection
+	GlobalSection(ProjectDependencies) = postSolution
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{920663C6-E5DF-46D0-B141-14BA437ED88B}.Debug.ActiveCfg = Debug|Win32
+		{920663C6-E5DF-46D0-B141-14BA437ED88B}.Debug.Build.0 = Debug|Win32
+		{920663C6-E5DF-46D0-B141-14BA437ED88B}.Release.ActiveCfg = Release|Win32
+		{920663C6-E5DF-46D0-B141-14BA437ED88B}.Release.Build.0 = Release|Win32
+		{DF0BB4C4-A469-4E87-BB34-33363E16BEBC}.Debug.ActiveCfg = Debug|Win32
+		{DF0BB4C4-A469-4E87-BB34-33363E16BEBC}.Debug.Build.0 = Debug|Win32
+		{DF0BB4C4-A469-4E87-BB34-33363E16BEBC}.Release.ActiveCfg = Release|Win32
+		{DF0BB4C4-A469-4E87-BB34-33363E16BEBC}.Release.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

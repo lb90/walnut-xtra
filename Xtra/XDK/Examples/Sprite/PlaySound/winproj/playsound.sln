@@ -1,0 +1,23 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PlaySound", "PlaySound.vcproj", "{B3524E9E-9680-4948-83AB-695C7E6A7305}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Release = Release
+	EndGlobalSection
+	GlobalSection(ProjectDependencies) = postSolution
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{B3524E9E-9680-4948-83AB-695C7E6A7305}.Debug.ActiveCfg = Debug|Win32
+		{B3524E9E-9680-4948-83AB-695C7E6A7305}.Debug.Build.0 = Debug|Win32
+		{B3524E9E-9680-4948-83AB-695C7E6A7305}.Release.ActiveCfg = Release|Win32
+		{B3524E9E-9680-4948-83AB-695C7E6A7305}.Release.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

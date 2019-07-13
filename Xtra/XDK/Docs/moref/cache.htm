@@ -1,0 +1,417 @@
+<HTML>
+<HEAD>
+<TITLE>IMoaCache</TITLE>
+<link href="../xdk.css" rel="stylesheet" type="text/css">
+</HEAD>
+<body>
+<A HREF="../moadg/index.htm">MOA Developer's Guide</A> <BR>
+<A HREF="index.htm">MOA Interfaces</A> | <A HREF="momthndx.htm">MOA Methods</A> | <A HREF="motypndx.htm">MOA Types and Misc API</A>
+<hr width=45% align=left>
+<h3>IMoaCache</h3>
+<P> Interface ID: <span class="code">IID_IMoaCache<BR>
+  </span>Pointer type: <span class="code">PIMoaCache<BR>
+  </span>Inheritance: <A HREF = "unknown.htm">IMoaUnknown</A> <BR>
+  Header file: <A HREF = "../../include/moastdif.h">moastdif.h</A> <BR>
+<h3>Description</h3>
+<DL>
+<DD>
+The IMoaCache interface is provided by all MOA applications for
+use in registering an Xtra. Xtras register themselves by implementing
+the Xtra interface <span class="code">IMoaRegister</span>.
+They can initialize themselves from cached information by implementing
+the <span class="code">IMoaInitFromDict</span> interface. To get access to the cache at other times, you call
+the <span class="code">MoaGetCache()</span> method of the <span class="code">IMoaCallback</span> interface. The <span class="code">IMoaDict</span> interface is used to get and set individual entries in a cache. <BR>
+<BR>
+An application's cache contains nested dictionaries of information
+about files contained in its Xtras folders, both the application-specific
+Xtras folder and the system-wide Xtras folder. The dictionaries
+in the cache form a nested hierarchy. <BR>
+<BR>
+At the top level, the cache contains a dictionary for each file
+found in the Xtras folders. Cached files include all files found
+in the Xtras folders, both those that contain Xtras and those
+that don't. This enables an application to cache non-MOA extension
+files. <BR>
+<BR>
+Within each file dictionary, there may be zero, one, or more Xtra
+dictionaries. A file dictionary will contain no Xtra dictionary
+if the file isn't an Xtras file. When a cached file contains Xtras,
+the file dictionary contains one Xtra dictionary for each Xtra. <BR>
+<BR>
+Within each Xtra dictionary, the cache contains one registry dictionary
+per class/interface that an application registers. If a given
+Xtra contains three classes, each implementing an interface of
+interest to an application, its Xtra dictionary will contain three
+registry dictionaries. <BR>
+<BR>
+The methods of <span class="code">IMoaCache</span> provide mechanisms for registering classes and interfaces and
+for accessing the various dictionaries in a cache. The <span class="code">AddRegistryEntry()</span> method is the main method used in an Xtra's <span class="code">IMoaRegister</span> implementation to register its classes and interfaces. This method
+returns a pointer to a specific registry dictionary, which can
+be used to store other information about an Xtra class and its
+interface. Other methods can be used to access file dictionaries,
+Xtra dictionaries, and registry dictionaries. To manipulate the
+entries in a dictionary, you use methods of the <span class="code">IMoaDict</span> interface.</DD>
+</DL>
+
+<h3>Methods</h3>
+
+<h4>Counting entries </h4>
+<DL>
+<DD><A HREF = "#EnumerateFileEntries">EnumerateFileEntries()</A> <BR>
+<A HREF = "#EnumerateXtraEntries">EnumerateXtraEntries()</A> <BR>
+<A HREF = "#EnumerateRegistryEntries">EnumerateRegistryEntries()</A> <BR>
+<A HREF = "#SetXtraEntryNoncacheable">SetXtraEntryNoncacheable()</A>
+</DL>
+<h4>Modifying entries </h4>
+<DL>
+  <DD><A HREF = "#AddRegistryEntry">AddRegistryEntry()</A>
+</DL>
+<h4>Creating an instance </h4>
+<DL>
+  <DD><A HREF = "#GetInstanceFromRegistry">GetInstanceFromRegistry()</A> <BR>
+    <A HREF = "#CreateNewInstanceFromRegistry">CreateNewInstanceFromRegistry()</A>
+</DL>
+<h4>Accessing entries </h4>
+<DL>
+  <DD><A HREF = "#EnumerateRegistryEntriesFromFile">EnumerateRegistryEntriesFromFile()</A> <BR>
+    <A HREF = "#GetFileSpecFromFileDict">GetFileSpecFromFileDict()</A>
+</DL>
+<hr width=45% align=left>
+<h3><A NAME="AddRegistryEntry">AddRegistryEntry()</A></h3>
+<h4>Syntax</h4>
+<DL>
+  <DT class="code">AddRegistryEntry(PIMoaXtraEntryDict <I>pXtraDict</I>, ConstPMoaClassID <I>pClassID</I>, ConstPMoaInterfaceID <I>pInterfaceID</I>, PIMoaRegistryEntryDict * <I>ppRegistryDict</I>)
+</DL>
+<h4>Parameters</h4>
+<DL>
+  <DT class="codearg">pXtraDict</DT>
+  <DD><span class="code">IMoaDict</span> instance for the Xtra dictionary</DD>
+  <DT class="codearg">pClassID</DT>
+  <DD>CLSID of the class being registered</DD>
+  <DT class="code">pInterfaceID</DT>
+  <DD>IID of the interface being registered</DD>
+  <DT class="code">ppRegistryDict</DT>
+  <DD><span class="code">IMoaDict</span> instance for the registry dictionary</DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD class="code">MoaError</DD>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD>
+Call this method inside your Xtra's implementation of the <span class="code">Register()</span> method to add a registry entry to the cache. 
+Pass the instance of <span class="code">IMoaDict</span> passed to you by <span class="code">Register()</span> as the <span class="codearg">pXtraDict</span> argument.
+The class and interface passed to this method are typically (but not necessarily) implemented within the same Xtra as the <span class="code">Register()</span> method.<BR>
+<BR>
+The argument for <span class="codearg">ppRegistryDict</span> should be a pointer to an IMoaDict. 
+The interface returned can be used to add custom information to the registry entry, such as any key/value combinations specified for a particular interface.
+If you don't need the registry dictionary, pass NULL.<BR>
+<BR>
+<B>Note: </B>Do not call <span class="code">Release()</span> on <span class="codearg">ppRegistryDict</span>.</DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="CreateNewInstanceFromRegistry">CreateNewInstanceFromRegistry()</A> </h3>
+<h4>Syntax</h4>
+<DL>
+  <DT>CreateNewInstanceFromRegistry(PIMoaRegistryEntryDict <I>pRegistryDict</I>, ConstPMoaInterfaceID <I>pInterfaceID</I>, PPMoaVoid <I>ppvObj</I>)
+  </DL>
+<h4>Parameters</h4>
+<DL>
+  <DT class="codearg">pRegistryDict</DT>
+  <DD>Registry dictionary for the class/interface to instantiate</DD>
+  <DT class="codearg">pInterfaceID</DT>
+  <DD>Interface to return in ppvObj</DD>
+  <DT class="codearg">ppvObj</DT>
+  <DD>Pointer to returned interface</DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD><span class="code">MoaError</span>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD>
+<B>Note: </B>This method is intended more for use in MOA application
+code than in Xtra code. MOA applications generally determine when
+and how to create instances of specific Xtra classes and interfaces. <BR>
+<BR>
+Create an instance of the class and interface cached in the dictionary <span class="codearg">pRegistryDict</span> and return it in <span class="codearg">ppvObj</span>.
+If <span class="codearg">pInterfaceID</span> is not <span class="code">NULL</span>, that
+interface will be the one returned in <span class="codearg">ppvObj</span>;
+if the class doesn't support that interface, an error is returned.
+If <span class="codearg">pInterfaceID</span> is <span class="code">NULL</span>, the interface
+returned is the one specified in the <span class="codearg">pRegistryDict</span>. <BR>
+<BR>
+The interface returned belongs to the caller, who must call <span class="code">Release()</span> on it when done.</DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="EnumerateFileEntries">EnumerateFileEntries()</A> </h3>
+<h4>Syntax</h4>
+<DL>
+<DT>EnumerateFileEntries(MoaCacheFileEntryEnumProc <I>pEnumProc</I>, PMoaVoid <I>refCon</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+  <DT class="codearg">pEnumProc</DT>
+  <DD>File enumeration function</DD>
+  <DT class="codearg">refCon</DT>
+  <DD>Pointer to structure for collecting file information</DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD><span class="code">MoaError</span>
+</DL>
+<h4>Description</h4>
+<P> Enumerates all files cached by the application. The cache covers
+  both the application-specific and general Xtras folders, and includes
+  both Xtras and other files found there. The enumeration function
+  you pass in as <span class="codearg">pEnumProc</span> should have the following syntax:<BR>
+<PRE class="code">
+        typedef MoaError (*MoaCacheFileEntryEnumProc)(
+                PIMoaFileEntryDict pFileDict, 
+                ConstPMoaSystemFileSpec pFileSpec, 
+                MoaWide fileDate, 
+                MoaUlong fileType,      /* Mac OS type */
+                PMoaVoid refCon); 
+        
+</PRE>
+<DL>
+  <DD>Your enumeration function will be called repeatedly for each file in the cache.
+    The parameters passed to your function include the file spec, file modification date, and file type (meaningful only on Macintosh systems).
+    The <span class="codearg">pFileSpec</span> passed is system dependent: 
+    it is an <span class="code">FSSpec</span> on the Macintosh and a character string for a pathname on Windows.
+    The <span class="codearg">refCon</span> passed when you called <span class="code">EnumerateFileEntries()</span> is in turn passed to your enumeration function.
+    You can use <span class="codearg">refCon</span> to pass a structure pointer into your enumeration function for collecting information about files of interest;
+    if you don't need this pointer, pass NULL . 
+    Returning a nonzero value from your enumeration function will terminate the enumeration.<BR>
+    <BR>
+    Important note: the <span class="codearg">pFileSpec</span> passed to you may be NULL.
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="EnumerateRegistryEntries">EnumerateRegistryEntries()</A> </h3>
+<h4>Syntax</h4>
+<DL>
+  <DT>EnumerateRegistryEntries(MoaCacheRegistryEntryEnumProc <I>pEnumProc</I>, PMoaVoid <I>refCon</I>)
+  </DL>
+<h4>Parameters</h4>
+<DL>
+  <DT class="codearg">pEnumProc</DT>
+  <DD>Registry dictionary enumeration function </DD>
+  <DT class="codearg">refCon</DT>
+  <DD>Pointer to structure for collecting file information </DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DT>
+  <DD><span class="code">MoaError</span>
+</DL>
+<h4>Description<BR>
+  <BR>
+  </h4>
+<P> Call this method to enumerate all registry dictionaries in the cache.
+  The cache contains one registry dictionary for each class/interface provided by Xtras.
+  The enumeration function you pass in as <span class="codearg">pEnumProc</span> should have the following syntax:<BR>
+<PRE class="code">
+        typedef MoaError (*MoaCacheRegistryEntryEnumProc)(
+                PIMoaRegistryEntryDict pRegistryDict, 
+                ConstPMoaClassID pClassID, 
+                ConstPMoaInterfaceID pInterfaceID, 
+                PMoaVoid refCon); 
+</PRE>
+<DL>
+  <DD>Your procedure will be repeatedly called for each registry
+    in the cache. <span class="code">pRegistryDict</span> provides the registry dictionary for the class/interface combination. 
+    <span class="code">pClassID</span> and <span class="code">pInterfaceID</span> provide the class and interface ID of the registered ability.
+    You can use the class/interface pair to create the object. It
+    is generally more convenient to use the <span class="code">pRegistryDict</span> and <span class="code">pInterfaceID</span> parameters
+    to call the <span class="code">IMoaCache</span> methods <span class="code">GetInstanceFromRegistry()</span>
+    or <span class="code">CreateInstanceFromRegistry()</span> to instantiate the
+    particular object and interface.<BR>
+    <BR>
+    The <span class="codearg">refCon</span> passed when you called <span class="code">EnumerateRegistryEntries()</span> is in turn passed to your enumeration function.
+    You can use <span class="codearg">refCon</span> to pass a structure pointer into your enumeration function for
+    collecting information about classes and interface of interest;
+    if you don't need this pointer, pass NULL . Returning a nonzero
+    value from your enumeration function will terminate the enumeration. <BR>
+    <BR>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="EnumerateRegistryEntriesFromFile">EnumerateRegistryEntriesFromFile()</A> </h3>
+<h4>Syntax</h4>
+<DL>
+  <DT class="code">EnumerateRegistryEntriesFromFile(ConstPMoaSystemFileSpec <I>pFileSpec</I>, MoaLong <I>maxFolderLevels</I>, MoaCacheRegistryEntryEnumFromFileProc <I>pEnumProc</I>, PMoaVoid <I>refCon</I>)
+</DL>
+<h4>Parameters</h4>
+<DL>
+  <DT class="codearg">pFileSpec</DT>
+  <DD>FSSpec on Mac/pathname string in Windows </DD>
+  <DT class="codearg">maxFolderLevels</DT>
+  <DD>Search depth </DD>
+  <DT class="codearg">pEnumProc</DT>
+  <DD>Registry dictionary enumeration function </DD>
+  <DT class="codearg">refCon</DT>
+  <DD>Pointer to structure for collecting registry information </DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD><span class="code">MoaError</span>
+</DL>
+<h4>Description</h4>
+<P> Similar to the <span class="code">EnumerateRegistryEntries()</span> method, this method enumerates all registry entries for a specific folder or file. 
+  Additional information provided by the enumeration function includes the file and Xtra each came from.
+  The enumeration function you pass in as <span class="codearg">pEnumProc</span> should have the following syntax:<BR>
+<PRE class="code">
+        typedef MoaError (*MoaCacheRegistryEntryEnumFromFileProc)(
+                PIMoaFileEntryDict pFileDict, 
+                ConstPMoaSystemFileSpec pFileSpec, 
+                MoaWide fileDate, 
+                MoaUlong fileType,      /* Mac OS type */
+                PIMoaXtraEntryDict pXtraDict, 
+                PIMoaRegistryEntryDict pRegistryDict, 
+                ConstPMoaClassID pClassID, 
+                ConstPMoaInterfaceID pInterfaceID, 
+                PMoaVoid refCon); 
+</PRE>
+<DL>
+  <DD><span class="codearg">pFileSpec</span> returned by the enumeration function might be NULL.</DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="EnumerateXtraEntries">EnumerateXtraEntries()</A> </h3>
+<h4>Syntax</h4>
+<DL>
+  <DT>EnumerateXtraEntries(MoaCacheXtraEntryEnumProc <I>pEnumProc</I>, PMoaVoid <I>refCon</I>)
+  </DL>
+<h4>Parameters</h4>
+<DL>
+  <DT class="codearg">pEnumProc</DT>
+  <DD>Xtra dictionary enumeration function </DD>
+  <DT class="codearg">refCon</DT>
+  <DD>Pointer to structure for collecting Xtra information </DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD><span class="code">MoaError</span>
+</DL>
+<h4>Description</h4>
+<P> Call this function to enumerate all Xtra dictionaries in the cache.
+  The enumeration function you pass in as <span class="codearg">pEnumProc</span> should have the following syntax:<BR>
+<PRE class="code">
+        typedef MoaError (*MoaCacheXtraEntryEnumProc)(
+                PIMoaXtraEntryDict pXtraDict, 
+                PMoaVoid refCon); 
+</PRE>
+<DL>
+  <DT>
+  <DD>Your enumeration function will be called repeatedly for each Xtra in the cache.
+    The parameters passed to your function include the IMoaDict interface to the dictionary for each Xtra.
+    The <span class="codearg">refCon</span> passed when you called <span class="code">EnumerateXtraEntries()</span> is in turn passed to your enumeration function. 
+    You can use <span class="codearg">refCon</span> to pass a structure pointer into your enumeration function for collecting information about Xtras of interest; 
+    if you don't need this pointer, pass NULL. 
+    Returning a nonzero value from your enumeration function will terminate the enumeration.</DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="GetFileSpecFromFileDict">GetFileSpecFromFileDict()</A> </h3>
+<h4>Syntax</h4>
+<DL>
+  <DT>GetFileSpecFromFileDict(PIMoaFileEntryDict <I>pFileDict</I>, PMoaSystemFileSpec <I>pFileSpec</I>, MoaLong <I>fileSpecLen</I>)
+  </DL>
+<h4>Parameters</h4>
+<DL>
+  <DT class="codearg">pFileDict</DT>
+  <DD>IMoaDict</span> interface for a particular file entry </DD>
+  <DT class="codearg">pFileSpec</DT>
+  <DD>Returned file spec </DD>
+  <DT class="codearg">fileSpecLen</DT>
+  <DD>Length of returned file spec </DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DT>
+  <DD><span class="code">MoaError</span>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DT>
+  <DD>Given a file dictionary <span class="codearg">pFileDict</span>,
+    from either <span class="code">EnumerateFileEntries()</span> or <span class="code">EnumerateRegistryEntriesFromFile()</span>, <span class="code">GetFileSpecFromFileDict()</span> returns
+    the <span class="code">MoaSystemFileSpec</span> associated with it. <BR>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="GetInstanceFromRegistry">GetInstanceFromRegistry()</A> </h3>
+<h4>Syntax</h4>
+<DL>
+  <DT>GetInstanceFromRegistry(PIMoaRegistryEntryDict <I>pRegistryDict</I>, ConstPMoaInterfaceID <I>pInterfaceID</I>, PPMoaVoid <I>ppvObj</I>)
+  </DL>
+<h4>Parameters</h4>
+<DL>
+  <DT class="codearg">pRegistryDict</DT>
+  <DD>Registry dictionary for the class/interface to instantiate </DD>
+  <DT class="codearg">pInterfaceID</DT>
+  <DD>Interface to return in ppvObj </DD>
+  <DT class="codearg">ppvObj</DT>
+  <DD>Pointer to returned interface </DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DT>
+  <DD><span class="code">MoaError</span>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD>
+    <B>Note:</B> This method is intended more for use in MOA application
+    code than in Xtra code. MOA applications generally determine when
+    and how to create instances of specific Xtra classes and interfaces. <BR>
+    <BR>
+    Similar to <span class="code">CreateNewInstanceFromRegistry()</span>,
+    this method only creates a new instance of a particular class
+    and interface the first time it is called. Subsequent calls return
+    a new interface (via <span class="code">QueryInterface()</span>)
+    of the same object. The underlying object lives until MOA is shut
+    down (it's kept in an internal table to MOA).<BR>
+    <BR>
+    Note that although the object remains in existence, the interface
+    returned belongs to the caller, who still must call <span class="code">Release()</span> it when done.
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="SetXtraEntryNoncacheable">SetXtraEntryNoncacheable()</A> </h3>
+<h4>Syntax</h4>
+<DL>
+  <DT>SetXtraEntryNoncacheable(PIMoaXtraEntryDict <I>pXtraDict</I>)
+  </DL>
+<h4>Parameters</h4>
+<DL>
+  <DT class="codearg">pXtraDict</DT>
+  <DD><span class="code">IMoaDict</span> interface passed to Register() method </DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DT>
+  <DD><span class="code">MoaError</span>
+</DL>
+<h4>Description</h4>
+<DL>
+<DD>
+Use this method to set the specified Xtra as non-cacheable.
+This method is provided for use by certain types of Xtras that need to be able to participate in registration each time MOA is started.
+One such Xtra would be an adapter for non-MOA extensions that needs to check the presence of specific extension file types and cache them independently.<BR>
+<BR>
+When you call <span class="code">SetXtraEntryNoncacheable()</span> inside an Xtra's <span class="code">Register()</span> method implementation, 
+your Xtra will be registered every time a MOA application is started.
+The information provided by <span class="code">Register()</span> is analyzed for the current runtime but is never stored in the cache.
+In general, you shouldn't make an Xtra non-cacheable, since it delays MOA start-up time (and thus app launch time).</DD>
+</DL>
+
+<hr width=45% align=left>
+<A HREF = "../copyrite.htm">Copyright &#169; 1995-2008 Adobe Macromedia Software LLC, Inc.</A>
+</BODY>
+</html>

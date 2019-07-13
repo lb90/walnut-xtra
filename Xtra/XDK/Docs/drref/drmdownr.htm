@@ -1,0 +1,315 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>IMoaDrMediaOwner</title>
+<link href="../xdk.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+
+<A HREF = "../drdg/index.htm">DR Developer's Guide</A><br>
+<A HREF = "index.htm"> DR Interfaces</A> | 
+<A HREF = "drmthndx.htm">DR Methods</A> | 
+<A HREF = "drtypndx.htm">DR Types and Misc API</A>
+<hr width=45% align=left>
+
+<h3><A name = "IMoaDrMediaOwner">IMoaDrMediaOwner</A></h3>
+
+Interface ID: <span class="code">IID_IMoaDrMediaOwner</span><br>
+Pointer type: <span class="code">PIMoaDrMediaOwner</span><br>
+Inheritance: <A HREF = "../mmref/mmprpown.htm" class="code">IMoaMmPropOwner</A><br>
+Header file: <A HREF = "../../include/driservc.h">driservc.h</A>
+
+<h4>Description</h4>
+<DL>
+  <DD>
+    The <span class="code">IMoaDrMediaOwner</span> interface adds three methods to the <span class="code">IMoaMmPropOwner</span> interface, <span class="code">AttachMedia()</span>, 
+	<span class="code">GetMedia()</span>, and <span class="code">SetMedia()</span>.
+    These methods enable an Xtra to retrieve media information from
+    objects such as cast members and movies.<BR>
+    <BR>
+    Methods of this interface include pointers to a <span class="code">MoaDrMediaInfo</span> structure as parameters. 
+	Before a <span class="code">GetMedia()</span>, <span class="code">SetMedia()</span>, or <span class="code">AttachMedia()</span> call,
+	use <span class="code">IMoaDrMediaOwner::NewMediaInfo() </span>to fill out the structure, 
+	specifying NULL for the <span class="code">aux </span>field and <span class="code">kMoaDrMediaOpts_None </span>for the <span class="code">options </span>field.
+    Using this call forces you to fill out all the needed parameters.
+    The <span class="code">aux </span>information currently applies only when setting image media.<BR>
+    <BR>
+    The <span class="code">formatSymbol</span> and <span class="code">labelSymbol</span> members
+    of this structure are <span class="code">MoaMmSymbols</span>.
+    These symbols are obtained from strings using the host application
+    symbol dictionary, accessed through the <span class="code">StringToSymbol()</span> method of the <span class="code">IMoaMmUtils</span> interface<BR>
+    <BR>
+    The <span class="code">labelSymbol</span> refers
+    to the specific chunk of media data you want from the media owner.
+    These labels are generic descriptors for the content media.
+	In the <span class="code">IMoaDrCastMem</span> interface, which inherits from <span class="code">IMoaDrMediaOwner</span>,
+    the labels used are different than the cast member types. For
+    example, a film loop cast member has score media label, a bitmap
+    cast member has an image media label, and so on.
+	These generic labels are used to allow multiple representations for specific
+    media data types. For example, a bitmap is really just one type of image. <BR>
+    <BR>
+    The <span class="code">formatSymbol</span> refers
+    to the specific media data type you want to get or set. In Director,
+    the media types represented by these sy mbols are largely platform-specific,
+    except for opaque handles and strings. For example, a bitmap cast
+    member provides image media. On the Macintosh, the format for
+    getting and setting this data is a Macintosh PICT. You use the <span class="code">formatSymbol</span> <span class="code">&quot;macPICT&quot;</span> to access this data.
+	On Windows, packed DIBs are supported; you use the <span class="code">formatSymbol</span> <span class="code">&quot;winDIB&quot;</span> to access this data.<BR>
+    <BR>
+    This mechanism uses symbols rather than hardwired constants for
+    future expansion of media access support. The goal is to allow
+    Xtra media assets to export arbitrary labels and formats of their
+    media to other Xtras. (Currently, Xtras can only access media
+    data of other Xtras through the opaque handle provided by composite
+    media. label. So, for example, in the future, someone may make
+    a 3D plug-in, and other Xtras could use <span class="code">GetMedia()</span> to get the &quot;geometry&quot; (label) media in &quot;DXF&quot; (format)).</DD>
+</DL>
+
+<h4>Methods</h4>
+<span class="heading5">Property owner methods</span>
+<DL>
+  <DD><A HREF = "#GetProp">GetProp()</A><BR>
+    <A HREF = "#SetProp">SetProp()</A></DD>
+</DL>
+
+<span class="heading5">Media owner methods</span>
+<DL>
+  <DD><A HREF = "#GetMedia">GetMedia()</A><BR>
+    <A HREF = "#SetMedia">SetMedia()</A><BR>
+    <A HREF = "#AttachMedia">AttachMedia()</A></DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A NAME="AttachMedia">AttachMedia()</A></h4>
+<dl>
+<dt class="heading5">Syntax</dt>
+<dt class="code">AttachMedia(PMoaDrMediaInfo <em>pMediaInfo</em>)</dt>
+</dl>
+<dl>
+<dt class="heading5">Parameters</dt>
+<dt class="codearg">pMediaInfo</dt>
+<dd>Pointer to MediaInfo structure filled with proper information</dd>
+</dl>
+<dl>
+<dt class="heading5">Returns</dt>
+<dt class="code">MoaError</dt>
+</dl>
+<dl>
+<dt class="heading5">Description</dt>
+<dd>Attaches media to an object, releasing it from the caller. Before
+    making this call, use <span class="code">IMoaDrMediaOwner::NewMediaInfo()</span> to fill out the media information structure,
+	specifying NULL for the <span class="code">aux</span> field
+    and <span class="code">kMoaDrMediaOpts_None</span> for
+    the <span class="code">options</span> field. <BR>
+    <BR>
+    On enter, the <span class="code">labelSymbol</span> and <span class="code">formatSymbol</span> fields
+    should be populated with symbols indicating which chunk of media
+    is to be attach (<span class="code">labelSymbol</span>),
+    and what format the media is supplied in (<span class="code">formatSymbol</span>).
+    The <span class="code">mediaData</span> field
+    should hold the data itself (typically a <span class="code">MoaHandle</span>, Macintosh Handle, or Windows global handle) <BR>
+    <BR>
+    Upon return, if there is no error, the media has changed ownership
+    and belongs to the host application, and should no longer be referenced by the caller.</dd>
+</dl>
+
+<hr width=45% align=left>
+
+<h4><A NAME="GetMedia">GetMedia()</A></h4>
+<dl>
+<dt class="heading5">Syntax</dt>
+<dt class="code">GetMedia(PMoaDrMediaInfo <em>pMediaInfo</em>)</dt>
+</dl>
+<dl>
+<dt class="heading5">Parameters</dt>
+<dt class="codearg">pMediaInfo</dt>
+<dd>Pointer to MediaInfo structure to be filled out</dd>
+</dl>
+<dl>
+<dt class="heading5">Returns</dt>
+<dt class="code">MoaError</dt>
+</dl>
+<dl>
+<dt class="heading5">Description</dt>
+<dd>Gets media data. This method obtains a copy of the media associated with an object.
+Before making this call, use <span class="code">IMoaDrMediaOwner::NewMediaInfo()</span> to fill out the media information structure, specifying NULL for
+    the <span class="code">aux</span>field and <span class="code">kMoaDrMediaOpts_None</span> for the <span class="code">options</span> field. 
+	The caller partially populates a <span class="code">MoaDrMediaInfo</span> struct with symbols indicating the requested chunk of media (<span class="code">labelSymbol</span>)
+    and the requested format (<span class="code">formatSymbol</span>).
+    After the call, the <span class="code">mediaData</span> field is populated with the requested data; the type of this field depends on the format requested.
+	The caller then owns the data and is responsible for disposing it, if applicable. 
+	Typically this data is either a <span class="code">MoaHandle</span>,
+    a Macintosh Handle or Pointer, or a Windows global handle.</dd>
+</dl>
+
+<hr width=45% align=left>
+
+<h4><A NAME="GetProp">GetProp()</A></h4>
+<dl>
+<dt class="heading5">Syntax</dt>
+<dt class="code">GetProp(MoaMmSymbol <em>symbol</em>, PMoaMmValue <em>pPropValue</em>)</dt>
+</dl>
+<dl>
+<dt class="heading5">Parameters</dt>
+<dt class="codearg">symbol</dt>
+<dd><span class="code">MoaMmSymbol</span> representing the property to get</dd>
+<dt class="codearg">pPropValue</dt>
+<dd>Pointer to a <span class="code">MoaMmValue</span> to receive the property's value</dd>
+</dl>
+<dl>
+<dt class="heading5">Returns</dt>
+<dt class="code">MoaError</dt>
+  <DD>
+    <TABLE BORDER="2">
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=280><span class="code">kMoaErr_NoErr</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=433><span class="code">Property</span> exists and value was returned </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=280><span class="code">kMoaErr_BadParam</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=433>Invalid <span class="codearg">pPropValue</span> passed in </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=280><span class="code">kMoaMmErr_PropertyNotFound</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=433>Property isn't supported by this class </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=280><span class="code">kMoaMmErr_InternalError</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=433>Property exists but couldn't get due to internal err </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=280><span class="code">kMoaMmErr_NoMemForString</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=433>Couldn't allocate memory for string value data </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=280><span class="code">kMoaErr_OutOfMem</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=433>Couldn't allocate memory for other value data </TD>
+      </TR>
+    </TABLE></DD>
+</dl>
+<dl>
+<dt class="heading5">Description</dt>
+<dd>Retrieves the value of a specified property.</dd>
+</dl>
+
+<hr width=45% align=left>
+
+<h4><A NAME="SetMedia">SetMedia()</A></h4>
+<dl>
+<dt class="heading5">Syntax</dt>
+<dt class="code">SetMedia(PMoaDrMediaInfo <em>pMediaInfo</em>)</dt>
+</dl>
+<dl>
+<dt class="heading5">Parameters</dt>
+<dt class="codearg">pMediaInfo</dt>
+<dd>Pointer to MediaInfo structure to be use</dd>
+</dl>
+<dl>
+<dt class="heading5">Returns</dt>
+<dt class="code">MoaError</dt>
+</dl>
+<dl>
+<dt class="heading5">Description</dt>
+<dd>Sets media data. This method copies caller-supplied media data
+    and associates it with an object. Before making this call, use <span class="code">IMoaDrMediaOwner::NewMediaInfo()</span> to
+    fill out the media information structure, specifying NULL for
+    the <span class="code">aux</span> field and <span class="code">kMoaDrMediaOpts_None</span> for the <span class="code">options</span> field.
+    The caller populates a <span class="code">MoaDrMediaInfo</span> structure with symbols indicating the supplied chunk
+    of media (<span class="code">labelSymbol</span>),
+    the supplied format (<span class="code">formatSymbol</span>),
+    and the media data itself (<span class="code">mediaData</span>).
+    If the label and format are supported by the object, a call to
+    this method copies the caller's data and replaces any existing
+    media data for the supplied label for the cast member. Since the
+    data is copied, the caller retains ownership of the media data passed in. 
+	Typically, this data is either a <span class="code">MoaHandle</span>,
+    a Macintosh Handle or pointer, or a Windows global handle.</dd>
+</dl>
+
+<hr width=45% align=left>
+
+<h4><A NAME="SetProp">SetProp()</A></h4>
+<dl>
+<dt class="heading5">Syntax</dt>
+<dt class="code">SetProp(MoaMmSymbol <em>symbol</em>, ConstPMoaMmValue <em>pPropValue</em>)</dt>
+</dl>
+<dl>
+<dt class="heading5">Parameters</dt>
+<dt class="codearg">symbol</dt>
+<dd><span class="code">MoaMmSymbol</span> representing the property to set</dd>
+<dt class="codearg">pPropValue</dt>
+<dd>Value to use for setting</dd>
+</dl>
+<dl>
+<dt class="heading5">Returns</dt>
+<dt class="code">MoaError</dt>
+  <DD>    <TABLE BORDER="2">
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=272><span class="code">kMoaErr_NoErr</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=458>Property exists and value was set </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=272><span class="code">kMoaErr_BadParam</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=458>Invalid <span class="codearg">pPropValue</span> passed in </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=272><span class="code">kMoaMmErr_PropertyNotFound</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=458>Property isn't supported by this class </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=272><span class="code">kMoaMmErr_InternalError</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=458>Property exists, value ok, couldn't - - internal error </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=272><span class="code">kMoaMmErr_NoMemForString</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=458>Couldn't allocate memory for setting string value data </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=272><span class="code">kMoaErr_OutOfMem</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=458>Couldn't allocate memory for setting other value data </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=272><span class="code">kMoaMmErr_IntegerExpected</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=458>Type mismatch: integer value expected </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=272><span class="code">kMoaMmErr_SymbolExpected</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=458>Type mismatch: symbol value expected </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=272><span class="code">kMoaMmErr_FloatExpected</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=458>Type mismatch: float value expected </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=272><span class="code">kMoaMmErr_StringExpected</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=458>Type mismatch: string value expected </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=272><span class="code">kMoaMmErr_PointExpected</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=458>Type mismatch: point value expected </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=272><span class="code">kMoaMmErr_RectExpected</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=458>Type mismatch: <span class="code">MoaRect</span> value expected </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=272><span class="code">kMoaMmErr_ValueTypeMismatch</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=458>Type mismatch: other value expected (non-specific) </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=272><span class="code">kMoaDrErr_CastMemberExpected</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=458>Type mismatch: <span class="code">CMRef</span> expected </TD>
+      </TR>
+    </TABLE></DD>
+</dl>
+<dl>
+<dt class="heading5">Description</dt>
+<dd>Sets the value of a specified property.</dd>
+</dl>
+
+<hr width=45% align=left>
+<A HREF = "../copyrite.htm">Copyright &#169; 1995-2008 Adobe Macromedia Software LLC, Inc.</A>
+</BODY>
+</html>

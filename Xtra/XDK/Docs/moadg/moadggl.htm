@@ -1,0 +1,68 @@
+<HTML>
+<HEAD>
+<TITLE>MOA Glossary</TITLE>
+<link href="../xdk.css" rel="stylesheet" type="text/css">
+</HEAD>
+<body>
+<A HREF="index.htm">MOA Developer's Guide</A><BR>
+<A HREF="../moref/index.htm" >MOA Interfaces</A> | <A HREF="../moref/momthndx.htm" >MOA Methods</A> | <A HREF="../moref/motypndx.htm" >MOA Types and Misc API</A>
+<HR width=45% align=left>
+<H3><A NAME="RTFToC2">Director Xtra Development Kit: MOA Developer's Guide</A></H3>
+<h3>MOA Glossary </h3>
+<HR width=45% align=left>
+<DL>
+  <DT>
+  <DD><B>Class</B>: A unit of implementation of one or more MOA
+    interfaces, corresponding to a class in other object models. The
+    class defines implementations for each method in its interfaces,
+    and provides ways to create and destroy the objects that provide
+    those implementations. In addition, the class defines a private
+    data structure--instance variables--accessible only within method
+    implementations.<BR>
+    <BR>
+    <B>Interface</B>: A unit of interaction specified as a set of
+    function prototypes or methods. An interface is designed to provide
+    a template through which a provider and a user of the interface
+    can interact. An interface defines the names, argument types,
+    and return types for all its methods. It is identified by an interface
+    identifier, a 128 place integer that uniquely represents the interface
+    in code. <BR>
+    <BR>
+    <B>Instance variable</B>: A member of a private data structure
+    belonging to an object. The instance variables for a particular
+    class of objects are accessible only within the method implementations
+    for the interfaces of the class. <BR>
+    <BR>
+    <B>Method</B>: function prototype that specifies the name, calling
+    sequence, argument types, and return types for a specific procedure
+    of an interface. The functions prototyped within an interface
+    are referred to as its methods. The methods represent the actual
+    name binding of the function call: this name binding is independent
+    of the actual name used by a class for the method implementation. <BR>
+    <BR>
+    <B>Method implementation</B>: a function that represents the implementation
+    of a specific method. A class definition specifies a name binding
+    from each method defined in an interface to the corresponding
+    method implementation in the class. In most cases, method implementations
+    are given a name consisting of the class name, and underbar, and
+    the method name; for example MyClass_MyMethod<BR>
+    <BR>
+    <B>MoaID</B>: A 128 place integer type used to identify interfaces
+    and classes defined in MOA. Each interface and each class is assigned
+    its own unique MoaID when it is defined. These identifiers are
+    used within a program to identify and interact with a particular
+    interface or class. The MoaID for an interface is referred to
+    as its IID, or Interface Identifier. The MoaID for a class is
+    referred to as its CLSID, or Class Identifier.<BR>
+    <BR>
+    <B>Object</B>: A unit of behavior, providing a specific set of
+    interfaces implemented by a class. Within its method implementations,
+    the object has access to the private data of its instance variables.
+    Externally, the only &quot;visible&quot; aspect of an object is
+    its collection of behaviors: the methods defined by its interfaces. <BR>
+    <BR>
+</DL>
+<hr width=45% align=left>
+<A HREF = "../copyrite.htm">Copyright &#169; 1995-2007 Adobe Macromedia Software LLC, Inc.</A>
+</BODY>
+</html>

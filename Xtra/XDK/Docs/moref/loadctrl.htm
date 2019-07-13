@@ -1,0 +1,41 @@
+<HTML>
+<HEAD>
+<TITLE>IMoaXtraLoadControl</TITLE>
+<link href="../xdk.css" rel="stylesheet" type="text/css">
+</HEAD>
+<body>
+<A HREF="../moadg/index.htm">MOA Developer's Guide</A> <BR>
+<A HREF="index.htm">MOA Interfaces</A> | <A HREF="momthndx.htm">MOA Methods</A> | <A HREF="motypndx.htm">MOA Types and Misc API</A>
+<hr width=45% align=left>
+
+<h4>IMoaXtraLoadControl</h4>
+Interface ID: <span class="code">IID_IMoaXtraLoadControl</span><BR>
+  Pointer type: <span class="code">PIMoaXtraLoadControl</span><BR>
+Header file: <A HREF = "../../include/moastdif.h">moastdif.h</A> <BR>
+<h4>Description</h4>
+<DL>
+  <DD>
+    Describes an interface that an Xtra can use to control its load/unload status. <BR><br>
+    An Xtra should register this interface using the normal technique (in IMoaRegister).
+    It can also register an additional long in its registry dict to request that it be preloaded at launch, 
+    and/or that it never be unloaded once it is loaded. 
+    With older versions of Director, this was an essential interface for resource based macintosh based Xtras.
+    Currently the <span class="code">kMoaXlc_PreloadAtLaunch</span> option is still useful - 
+    some asset xtras that also provide a global scripting method use the preload option.
+    As far as <span class="code">kMoaXlc_NeverUnload</span> goes, 
+    Xtra code libraries do not get unloaded so this setting is no longer useful.<br>
+    <br>
+    
+    <p> Registry keys: <BR>
+      <span class="code">kMoaRegKey_XtraLoadControlOptions</span> <BR>
+      <span class="code">kMoaRegType_XtraLoadControlOptions</span></p>
+    <p> Registry options: <BR>
+      <span class="code">kMoaXlc_PreloadAtLaunch</span><BR>
+      <span class="code">kMoaXlc_NeverUnload</span></p>
+    </DD>
+</DL>
+
+<hr width=45% align=left>
+<A HREF = "../copyrite.htm">Copyright &#169; 1995-2008 Adobe Macromedia Software LLC, Inc.</A>
+</BODY>
+</html>

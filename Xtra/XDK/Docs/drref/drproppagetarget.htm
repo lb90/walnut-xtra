@@ -1,0 +1,140 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>IID_IMuiPropertyPageTarget</title>
+<link href="../xdk.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+
+<A HREF = "../drdg/index.htm">DR Developer's Guide</A><br>
+<A HREF = "index.htm"> DR Interfaces</A> | 
+<A HREF = "drmthndx.htm">DR Methods</A> | 
+<A HREF = "drtypndx.htm">DR Types and Misc API</A>
+<hr width=45% align=left>
+
+<h3><A name = "IID_IMuiPropertyPageTarget">IID_IMuiPropertyPageTarget</A></h3>
+
+Interface ID: <span class="code">IID_IID_IMuiPropertyPageTarget</span><br>
+Class ID: <span class="code">CID_IMuiPropertyPageTarge</span>t<br>
+Pointer type: <span class="code">PIID_IMuiPropertyPageTarget</span><br>
+Inheritance: <span class="code">IMoaUnknown</span><br>
+Header file: <A HREF = "../../include/muippage.h">muippage.h</A>
+
+<h4>Description</h4>
+<DL>
+<DD>The <span class="code">IMuiPropertyPageTarget</span> interface creates an abstraction layer above the 
+object or group of objects targeted by the Property page (see <a href="drproppage.htm">IMuiPropertyPage</a>).
+This layer of abstraction creates a generic interface for accessing multiple targeted objects.
+When the Property page targets multiple objects, a single call to this interface allows you to set the 
+properties for all of the objects at the same time.</DD>
+</DL>
+
+<h4>Methods</h4>
+<DL>
+<DD><A HREF = "#GetNthTarget">GetNthTarget()</A>Allows developers to access specific individual targeted 
+objects when more than one object is targeted.<br>
+<A HREF = "#GetTargetCount">GetTargetCount()</A> Determines how many items the Property inspector is currently targeting.<br>
+<A HREF = "#GetProp">GetProp()</A>  Returns the value of a particular property for all of the targeted objects.<br>
+<A HREF = "#SetProp">SetProp()</A> Sets the value of a particular property for all of the targeted objects.</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A NAME="GetNthTarget">GetNthTarget()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">GetNthTarget(MoaLong <em>index</em>, PIMoaUnknown * <em>ppTarget</em>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">index</DT>
+<dd>The index of the targeted object to be retrieved. Targeted objects use a zero-based index.</dd>
+<DT class="codearg">ppTarget</DT>
+<dd>A pointer to a <span class="code">PIMoaUnknown*</span> interface for the targeted object (<span class="codearg">ppTarget</span>) specified in the arguments.</dd>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DT class="code">MoaError</DT>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>Call this method to gain access to individual targeted objects. 
+This interface can be queried to provide access for other interfaces such as the <span class="code">IMoaMmXAsset</span> interface, 
+or a private interface supported by the asset.</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A NAME="GetProp">GetProp()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">GetProp(MoaMmSymbol <em>property</em>, PMoaMmValue <em>pValue</em>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">property</DT>
+<dd>A pointer to a specific <span class="code">MoaMmSymbol</span> property.</dd>
+<DT class="codearg">pValue</DT>
+<dd>The parameter by which the value of the property being queried is returned.</dd>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DT class="code">MoaError</DT>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>Call this method to query the value of a particular property for all currently targeted objects. 
+If all of the objects have the same value for the specified property, 
+the value of that property is put into <span class="code">pResult</span>. 
+If all of the objects have different values, 
+the type of <span class="code">pResult</span> is void with a Null value.</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A NAME="GetTargetCount">GetTargetCount()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">GetTargetCount(PMoaLong <em>pCount</em>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">pCount</DT>
+<dd>A pointer to a <span class="code">MoaLong</span>.</dd>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DT class="code">MoaError</DT>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>Call this method to determine the number of objects currently targeted by the Property inspector.</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A NAME="SetProp">SetProp()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">SetProp(MoaMmSymbol <em>property</em>, ConstPMoaMmValue <em>pValue</em>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">property</DT>
+<dd>The property to be set.</dd>
+<DT class="codearg">pValue</DT>
+<dd>A pointer to a value for the property being set.</dd>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DT class="code">MoaError</DT>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>Call this method to set the value of a particular property for all of the currently targeted objects.</DD>
+</DL>
+
+<hr width=45% align=left>
+<A HREF = "../copyrite.htm">Copyright &#169; 1995-2008 Adobe Macromedia Software LLC, Inc.</A>
+
+</body></html>

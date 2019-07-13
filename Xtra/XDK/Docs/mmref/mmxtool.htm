@@ -1,0 +1,134 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<TITLE>IMoaMmXTool</TITLE>
+<link href="../xdk.css" rel="stylesheet" type="text/css">
+</HEAD>
+<body>
+
+<A HREF="../mmdg/index.htm">MM Developer's Guide</A><BR>
+<A HREF="index.htm" >MM Interfaces</A> | <A HREF="mmmthndx.htm" >MM Methods</A> | <A HREF="mmtypndx.htm">MM Types and Misc API</A><BR>
+<hr width=45% align=left>
+
+<h3>IMoaMmXTool</h3>
+Interface ID: <span class="code">IID_IMoaMmXTool</span><BR>
+  Pointer type: <span class="code">PIMoaBitmapFilter</span><BR>
+  Inheritance: <A HREF = "../moref/unknown.htm">IMoaUnknown</A> <BR>
+  Header file: <A HREF="../../include/mmixtool.h">mmixtool.h</A>
+
+<DL>
+<DT class="heading4">Description</DT>
+<DD>The <span class="code">IMoaMmXTool</span> interface provides a mechanism for providing authoring-time tools that are listed in the Xtras menu. 
+The <I>Director Developer's Guide</I> has more on <A HREF="../mmdg/mmdgc4.htm">implementing Tools Xtras</A>.
+In addition to this interface, Tools Xtras implement the <span class="code">IMoaRegister</span> interface 
+to inform the host application of its capabilities, menu name, and other details. 
+This interface is called by the host application to get the enable state of your tool 
+(unless you're &quot;<span class="code">alwaysEnabled</span>&quot;) and to invoke the tool. </DD>
+</DL>
+
+<DL>
+<DT class="heading4">Methods</DT>
+<DD><A HREF = "#Invoke">Invoke()</A> <BR>
+<A HREF = "#GetEnabled">GetEnabled()</A></DD>
+</DL>
+<hr width=45% align=left>
+
+<h4><A NAME="GetEnabled"></a>GetEnabled()</h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">GetEnabled(PMoaMmEnabledState <em>pEnabledState</em>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">pEnabledState</DT>
+<DD>place to return the enabled state for the tool</DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DD>
+    <TABLE BORDER="2">
+      <TR>
+        <TD WIDTH=226 ALIGN="LEFT" VALIGN="TOP" class="code">kMoaErr_NoErr </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=370>Succeeded, value at <span class="codearg">pEnabledState</span> properly set </TD>
+      </TR>
+      <TR>
+        <TD WIDTH=226 ALIGN="LEFT" VALIGN="TOP" class="code">kMoaMmErr_NotImplemented </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=370>Tool is specified as <span class="code">&quot;</span><span class="code">alwaysEnabled</span><span class="code">&quot; </span>in registry. </TD>
+      </TR>
+    </TABLE>
+</DD>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>
+Called by the host application to obtain the state of your tool.
+Set the value at <span class="codearg">pEnabledState</span> depending on whether or not it's okay for the user to invoke your tool at this time.
+The following values are valid for <span class="codearg">pEnabledState</span>:
+    <TABLE BORDER="2">
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=224><B>Value</B></TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=374><B>Description</B> </TD>
+      </TR>
+      <TR>
+        <TD WIDTH=224 ALIGN="LEFT" VALIGN="TOP" class="code">kMoaMmEnabledState_Disabled </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=374>Tool cannot be invoked now </TD>
+      </TR>
+      <TR>
+        <TD WIDTH=224 ALIGN="LEFT" VALIGN="TOP" class="code">kMoaMmEnabledState_Enabled </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=374>Tool can be invoked now </TD>
+      </TR>
+    </TABLE>
+If you registered a value of <span class="code">TRUE</span> for the <span class="code">kMoaMmDictKey_AlwaysEnabled</span> key 
+in your <span class="code">IMoaRegister::Register()</span> implementation, 
+the host application assumes you're always enabled and never calls this method.
+</DD>
+</DL>
+<hr width=45% align=left>
+
+<h4><A NAME="Invoke"></a>Invoke()</h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">Invoke()</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg"></DT>
+<DD></DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DD>
+    <TABLE BORDER="2">
+      <TR>
+        <TD WIDTH=243 ALIGN="LEFT" VALIGN="TOP" class="code">kMoaErr_NoErr</TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=385>Succeeded, tool invoked</TD>
+      </TR>
+      <TR>
+        <TD WIDTH=243 ALIGN="LEFT" VALIGN="TOP" class="code">kMoaMmErr_ToolDisabled</TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=385>Failed because tool is disabled</TD>
+      </TR>
+      <TR>
+        <TD WIDTH=243 ALIGN="LEFT" VALIGN="TOP" class="code">kMoaErr_OutOfMem</TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=385>Failed due to memory error</TD>
+      </TR>
+      <TR>
+        <TD WIDTH=243 ALIGN="LEFT" VALIGN="TOP" class="code">kMoaMmErr_InternalError</TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=385>Failed due to internal error</TD>
+      </TR>
+    </TABLE>
+</DD>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>
+Called when your tool is selected by the user. 
+You can do a multitude of operations from putting up a modal dialog or a modeless window, or immediately executing some operation;
+it's up to you.
+See the documentation for the Multimedia Services and <a href="../drdg/index.htm#RTFToC6">Director Services</a> callbacks for an idea of the functionality available.
+</DD>
+</DL>
+
+<hr width=45% align=left>
+<A HREF = "../copyrite.htm">Copyright &#169; 1995-2008 Adobe Macromedia Software LLC, Inc.</A>
+</BODY>
+</html>

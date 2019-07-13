@@ -1,0 +1,1975 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+
+<HEAD><TITLE>Director Developer's Guide</TITLE>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link href="../xdk.css" rel="stylesheet" type="text/css">
+</HEAD>
+<BODY>
+
+<A HREF="../index.htm">Director XDK</A> | 
+<A NAME="RTFToC3"></A><A HREF="../mmdg/index.htm">MM Developer's Guide</A><BR>
+<A HREF="../drref/index.htm">DR Interfaces</A> | <A HREF="../drref/drmthndx.htm">DR Methods</A>
+| <A HREF="../drref/drtypndx.htm">DR Types and Misc API</A>
+
+<HR width=45% align=left>
+
+<h4><A NAME="RTFToC2">Director Xtra Development Kit </A></h4>
+
+<h4>Director Developer's Guide</h4>
+
+<HR width=45% align=left>
+
+This document contains the following sections:
+<UL>
+<LI><A HREF = "#DRINTRO">Introduction</A></LI>
+<LI><A HREF = "#DROBJMOD">The Director Object Model</A></LI>
+<LI><A HREF = "#DRUSEMOD">Using the Director Object Model</A></LI>
+<LI><A HREF = "#DRSUPPORT">Other Director Support API</A></LI>
+<LI><A HREF = "#DREXAMP">Director Services Examples</A></LI>
+<LI><A HREF = "#PropertyPages">Property Inspector Panels</A></LI> 
+<LI><A HREF = "#XtraVersions">Xtra Version Information</A> </LI>
+<LI><A HREF = "#CrossPlatform">Cross Platform Projectors</A> </LI>
+<LI><A HREF = "#Unicode">Unicode</A></LI>
+</UL>
+
+<HR width=45% align=left>
+<h4><A NAME="DRINTRO">Introduction</A></h4>
+
+<P>
+This guide describes the Director service callbacks, a set of
+interfaces that provide access to objects representing internal
+data structures of Director. Through these interfaces, you can
+directly manipulate almost any feature of Director movies. This
+enables Xtras to provide a high level of control over the media
+and behavior of a Director movie. Using the Director services,
+an Xtra can provide various levels of functionality, from simple
+media access and editing tools to complete authoring models providing
+alternate ways to create Director movies.<BR>
+<BR>
+This discussion is in four parts. It begins with an overview of
+the Director object model and how it shapes the interfaces provided
+by the Director services. The overview is followed by a detailed
+look at the interfaces to the model, describing how to use the
+Director features available through them. Next, there's a discussion
+of several supporting interfaces provided by the Director services
+API. Finally, there are several examples of accessing and using
+Director services. <BR><br>
+  For a list of updates to the documentation see <a href="../updates.htm">Updates 
+  to the XDK</a>.</P>
+
+<HR width=45% align=left>
+<h4><A NAME="DROBJMOD">The Director Object Model</A></h4>
+
+<P>
+To allow Xtras to manipulate movies and their contents, the Director
+service callbacks represent various objects of Director's internal
+model. The abstract model is shown in the following diagram: 
+<BR>
+<BR>
+<A NAME="DROM"><IMG SRC="drwdgc41.gif"></A><BR>
+<BR>
+At the top of the Director object model is the player, the host
+application itself. The player can be the Director authoring application,
+a standalone projector, or Shockwave for Director. At the next
+level, a player may have one or more open movies, including the
+main movie and one or more movie-in-a-window. The next level shows
+the two types of subcomponents of a movie, cast and score. A movie
+can have several casts, but each movie has only one score. Casts
+consist of a number of cast members, each of which presents a
+specific type of media or provides a specific kind of behavior.
+A movie's score is made up of frames, sounds, and sprites in sprite
+channels.<BR>
+<BR>
+The following diagram shows how Director's callback interfaces
+correspond to the Director object model. For simplicity, this
+diagram is limited to the top levels of the model: player, movie,
+cast, and score. The interfaces for deeper levels--cast members
+and score components--are described later in this section.<BR>
+<BR>
+<IMG SRC="drwdgc42.gif" ALIGN="TOP"><BR>
+<BR>
+As shown in this diagram, Director's callback object provides
+a number of interfaces including standard MOA callbacks. The Director
+callback interfaces include the general interface <span class="code">IMoaMmUtils2</span>
+(described in the <I><A HREF="../mmdg/index.htm">Multimedia Developer's Guide</A></I>)
+and <span class="code">IMoaDrUtils</span> (whose methods are described where relevant
+throughout in this section). <BR>
+<BR>
+The callback object also provides the <A HREF="../drref/drplayer.htm"><span class="code">IMoaDrPlayer</span></A>
+interface. This interface represents the player at the top of
+the Director object model shown in the previous diagram. From
+this interface, Xtras can acquire other interfaces and access
+other objects in the model. <BR>
+<BR>
+To get the <span class="code">IMoaDrMovie</span> interface for a movie object,
+you call the <span class="code">IMoaDrPlayer</span> methods <A HREF="../drref/drplayer.htm#GetActiveMovie"><span class="code">GetActiveMovie()</span></A>
+or <A HREF="../drref/drplayer.htm#GetNthMovie"><span class="code">GetNthMovie()</span></A>.
+To get the <A HREF="../drref/drscracc.htm"><span class="code">IMoaDrScoreAccess</span></A>
+interface for a movie's score object, you call <A HREF="../drref/drmovie.htm#GetScoreAccess"><span class="code">IMoaDrMovie::GetScoreAccess()</span></A>.
+To get the <A HREF="../drref/drcast.htm"><span class="code">IMoaDrCast</span></A>
+interface for a movie's cast, you call the <span class="code">IMoaDrMovie</span>
+methods <A HREF="../drref/drmovie.htm#GetNthCast"><span class="code">GetNthCast()</span></A>
+and <A HREF="../drref/drmovie.htm#GetCastFromName"><span class="code">GetCastFromName()</span></A>.
+<BR>
+<BR>
+While this diagram illustrates the general approach to accessing
+objects in the Director model, Director callbacks provide a variety
+ways to access movie objects and manipulate the media they present.
+The remainder of this section describes various techniques for
+accessing objects in Director movies in greater detail.</P>
+
+<H4><A NAME="RTFToC5">Model objects and properties</A></H4>
+
+<P>
+Most interfaces for the objects of the Director model inherit
+from the <A HREF="../mmref/mmprpown.htm"><span class="code">IMoaMmPropOwner</span></A>
+interface. Each type of object in the Director model defines specific
+properties that you can access and manipulate through this interface.
+<BR>
+<BR>
+For example, a player has properties to represent its authoring
+mode and the filename of its executable. A movie has properties
+representing its filename, its stage area, and the current palette.
+These properties are described in the &quot;<A HREF="../drref/drtypndx.htm#DRPROPS">Director Properties</A>&quot;
+section of the <I>Director API Reference</I>. In the following
+discussion, the properties supported by each interface are briefly
+enumerated.
+
+<H4><A NAME="RTFToC6">Accessing and manipulating media</A></H4>
+
+<P>
+Accessing and manipulating media in a movie is central to controlling
+Director behavior. The Director services API defines two abstract
+interfaces, <span class="code">IMoaDrMediaOwner </span>and <span class="code">IMoaDrMediaAccess</span>,
+that enable manipulating media and placing it in a presentation.</P>
+
+<H5><A NAME="RTFToC7">Media owners</A></H5>
+
+<P>
+The media owner interface, <A HREF="../drref/drmdownr.htm">IMoaDrMediaOwner</A>,
+defines a general mechanism to get and set the media presented
+by an object. Methods of this interface let you acquire media
+for examination or editing, and pass media to an object for presentation.
+The <A HREF="../drref/drtypndx.htm#MoaDrMediaInfo">MoaDrMediaInfo</A>
+structure is defined for use in <span class="code">IMoaDrMediaOwner</span>methods
+to pass media data between Director and Xtras. <BR>
+<BR>
+In the <span class="code">MoaDrMediaInfo</span> structure, media is categorized
+by two fields: label and format. The media label specifies the
+generic type of the media represented. Typical media label types
+represent text, image, and sound. The media format specifies the
+specific C type of the data. Typical format types are standard
+data types such as RTF or application- or platform-specific data
+types such as PICT or DIB. <BR>
+<BR>
+Two Director services interfaces inherit from <span class="code">IMoaDrMediaOwner</span>:
+<A HREF="../drref/drmovie.htm">IMoaDrMovie</A> and <A HREF="../drref/drcstmm.htm">IMoaDrCastMem</A>.
+A movie can own one label type of media--a score--while a cast
+member can own a wide variety of media label types including images,
+text, digital video, scores, and so on.
+
+<H5><A NAME="RTFToC8">Media accessors
+</A></H5>
+
+<P>
+The media access interface, <A HREF="../drref/drmdaccs.htm">IMoaDrMediaAccess</A>,
+defines a general base interface for accessing and editing media.
+This interface is intended to be inherited by interfaces for manipulating
+specific media types. For example, in the future there might be
+a general interface for manipulating bitmap image data. Then,
+any object that presents bitmap data, either an internal object
+or a media asset Xtra, could provide the same interface. This
+would enable the application's standard editor--or an Xtra-defined
+editor--to edit any bitmap.<BR>
+<BR>
+The general behavior defined by <span class="code">IMoaDrMediaAccess</span> provides
+ways to get and set the <span class="code">IMoaDrMediaOwner</span>interface that
+owns the media, as well as the label and format of the media being
+accessed. It provides ways to clear the media being accessed,
+to update or revert the media by getting a fresh copy from the
+owner, and to commit any changes made back to the owner.<BR>
+<BR>
+Currently, one interface inherits from <span class="code">IMoaDrMediaAccess</span>:
+<A HREF="../drref/drscracc.htm">IMoaDrScoreAccess</A>. The <span class="code">IMoaDrScoreAccess</span>
+interface, discussed later in this section, provides ways to edit
+frames, sounds, and sprites in a movie's score. It also provides
+ways to assign the score to a specific owner, either a cast member
+or a movie.
+
+<HR width=45% align=left>
+<h4><A NAME="DRUSEMOD">Using the Director Object Model</A></h4>
+
+<P>
+This discussion looks at the various interfaces representing the
+Director object model, describing how you acquire these interfaces
+and detailing the behavior available through each of them.
+
+<H4><A NAME="RTFToC10">The IMoaDrPlayer interface</A></H4>
+
+<P>
+The <A HREF="../drref/drplayer.htm"><span class="code">IMoaDrPlayer</span></A>
+interface is provided by Director's callback object. The Director
+executable, whether authoring application or projector, provides
+one instance of this interface to represent its top-level movie
+playing functionality and provide access to other interfaces of
+the object model. <BR>
+<BR>
+Among the capabilities provided by methods of the <span class="code">IMoaDrPlayer</span>
+interface are property support, scripting support, access to movies,
+access to all available cast member types--both built-in and Xtras--and
+file name resolution.
+
+<H5><A NAME="RTFToC11">Acquiring IMoaDrPlayer </A></H5>
+
+<P>
+To get access to the application's single instance of <span class="code">IMoaDrPlayer</span>,
+you call <span class="code">QueryInterface()</span> on any Xtra object's <span class="code">pCallback</span>
+instance variable. An example of acquiring the player interface
+is included at the end of this section.
+
+<H5><A NAME="RTFToC12">Player properties</A></H5>
+
+<P>
+The <span class="code">IMoaDrPlayer</span> interface inherits from <span class="code">IMoaMmPropOwner</span>.
+The player object supports a number of properties through this
+interface, all of which are get-only. These are:
+
+<TABLE  BORDER="2">
+<TR><TD WIDTH=111><B>Property </B></TD><TD WIDTH=393><B>Description</B>
+</TD></TR>
+
+<TR><TD WIDTH=111><span class="code">authorMode</span> </TD><TD WIDTH=393>Authoring application or a projector
+</TD></TR>
+
+<TR><TD WIDTH=111><span class="code">name</span> </TD><TD WIDTH=393>Executable name of host application
+</TD></TR>
+
+<TR><TD WIDTH=111><span class="code">pathName</span> </TD><TD WIDTH=393>Path to host executable (including file name)
+</TD></TR>
+
+<TR><TD WIDTH=111><span class="code">folderName</span> </TD><TD WIDTH=393>Path to host executable (excluding file name)
+</TD></TR>
+
+</TABLE>
+
+<P>
+For more details, see &quot;<A HREF="../drref/drtypndx.htm#PLAYPROPS">Player properties</A>&quot; in the <I>Director API Reference</I>.
+
+<H5><A NAME="RTFToC13">Scripting
+support </A></H5>
+
+<P>
+<span class="code">IMoaDrPlayer</span> provides a number of methods that support
+calls to Lingo handlers and globals. <BR>
+<BR>
+To call an arbitrary handler in the currently active movie, use
+the <A HREF="../drref/drplayer.htm#CallHandler">IMoaDrPlayer::CallHandler()</A>
+method. To let you get and set the values of Lingo globals, <span class="code">IMoaDrPlayer</span>
+provides the <A HREF="../drref/drplayer.htm#GetGlobalVarValue">GetGlobalVarValue()</A>
+and <A HREF="../drref/drplayer.htm#SetGlobalVarValue">SetGlobalVarValue()</A>
+methods.
+
+<H5><A NAME="RTFToC14">Movie support
+</A></H5>
+
+<P>
+The <span class="code">IMoaDrPlayer</span> interface provides methods that give
+you access to any movie currently open in Director. The method
+<A HREF="../drref/drplayer.htm#GetActiveMovie">GetActiveMovie()</A>
+returns an <A HREF="../drref/drmovie.htm">IMoaDrMovie</A> interface
+for the currently active movie--that is the movie being processed
+at the time your Xtra method is called. The <A HREF="../drref/drplayer.htm#GetMovieCount">GetMovieCount()</A>
+method returns the number of open movies in the player, while
+the <A HREF="../drref/drplayer.htm#GetNthMovie">GetNthMovie()</A>
+method returns the <span class="code">IMoaDrMovie</span> interface for any open
+movie.
+
+<H5><A NAME="RTFToC15">Cast member management </A></H5>
+
+<P>
+The player interface provides methods to access any cast member
+type currently available in the Director executable, both internal
+cast members and Sprite Asset Xtras. Using these methods in conjunction
+with methods of the <A HREF="../drref/drcast.htm">IMoaDrCast</A>
+interface, your Xtra can create new instances of any cast member
+type and add them to a cast. <BR>
+<BR>
+The <A HREF="../drref/drplayer.htm#GetCastMemTypeCount">GetCastMemTypeCount()</A>
+method returns the number of cast member types currently available,
+including all internal Director types plus any Sprite Asset Xtra
+types currently registered. The <A HREF="../drref/drplayer.htm#GetNthCastMemTypeSymbol">GetNthCastMemTypeSymbol()</A>
+method returns a type symbol for the cast member number specified.
+<A HREF="../drref/drplayer.htm#GetCastMemTypeDisplayName">GetCastMemTypeDisplayName()</A>
+returns the display string for the cast member type. <BR>
+<BR>
+You could use these methods to implement an authoring or playback
+interface that allows the user to select cast members and add
+them to a cast. The <span class="code">IMoaDrCast</span> method <span class="code">CreateCastMem()</span>
+takes the type symbol returned by <span class="code">GetNthCastMemTypeSymbol()</span>,
+creates a new cast member of the corresponding type, and adds
+it to the specified cast. For more information, see the discussion
+of the <span class="code">IMoaDrCast</span> interface later in this section.
+
+<H5><A NAME="RTFToC16">File access</A></H5>
+
+<P>
+The <span class="code">IMoaDrPlayer</span> interface provides a general method
+for finding paths to arbitrary files. The <A HREF="../drref/drplayer.htm#ResolveFileName">ResolveFileName()</A>
+method takes a character string representing a filename and returns
+a string representing the path to that file. This method uses
+Director's standard file search algorithm to locate the path to the file.
+
+<H4><A NAME="RTFToC17">The IMoaDrMovie and IMoaDrMovie2 interfaces</A></H4>
+
+<P>
+The <A HREF="../drref/drmovie.htm">IMoaDrMovie</A> and <A HREF="../drref/drmovie.htm">IMoaDrMovie2</A>
+interfaces are used to represent movie objects in the Director
+framework. You can acquire these interfaces for any open movie,
+and use them to access various features of the movie it represents.
+These interface supports access to movie properties, access to
+the score media and frame labels of a movie, access to the casts
+and cast members of the movie. They also provide access to graphics
+contexts for both the offscreen buffer and onscreen window in
+which the movie is drawn. <span class="code">IMoaDrMovie2 </span>interfaces inherits
+from <span class="code">IMoaDrMovie</span>, defining three additional methods for
+manipulating cast member references. 
+<P>
+Except where noted, the following sections pertain to <EM>both
+</EM>the <span class="code">IMoaDrMovie</span> and <span class="code">IMoaDrMovie2</span> interfaces.
+For simplicity, only the <span class="code">IMoaDrMovie </span>interface is specifically
+mentioned.
+
+<H5><A NAME="RTFToC18">Acquiring
+an IMoaDrMovie interface </A></H5>
+
+<P>
+There are several ways to get access to an <span class="code">IMoaDrMovie</span>
+interface. <BR>
+<BR>
+The <span class="code">IMoaDrPlayer</span> interface provides two methods for acquiring
+the interface of any open movie. The method <A HREF="../drref/drplayer.htm#GetActiveMovie">GetActiveMovie()</A>
+returns an <span class="code">IMoaDrMovie</span> interface for the currently active
+movie. The <A HREF="../drref/drplayer.htm">GetNthMovie()</A> method
+returns the <span class="code">IMoaDrMovie</span> interface for any open movie.
+<BR>
+<BR>
+A sprite asset's actor can access the movie it belongs to through
+the <A HREF="../drref/drsprtcl.htm#GetMovie">IMoaDrSpriteCallback::GetMovie()</A>
+method. This allows the sprite to interact with its movie. For
+more information on implementing a sprite asset and acquiring
+the sprite callback interface, see &quot;<A HREF="../mmdg/mmdgc2.htm">Asset Xtras</A>&quot; in the <I>Multimedia Developer's Guide</I>. <BR>
+<BR>
+When using a score access object , you can access the score of
+a movie through the <A HREF="../drref/drscracc.htm#GetAccessInfo">IMoaDrScoreAccess::GetAccessInfo()</A>
+method. This method populates a <A HREF="../drref/drtypndx.htm#MoaDrAccessInfo">MoaDrAccessInfo</A>
+structure; upon return, the <span class="code">pOwner</span> field of this structure
+contains a pointer to the score's owner, an <span class="code">IMoaDrMediaOwner</span>.
+A score's media owner may be either an <span class="code">IMoaDrMovie</span> or
+<span class="code">IMoaDrCastMem</span> interface.
+<P>
+To acquire the <span class="code">IMoaDrMovie2</span> interface, you call <span class="code">QueryInterface()</span>
+on the <span class="code">IMoaDrMovie</span> interface.
+
+<H5><A NAME="RTFToC19">Movie properties
+</A></H5>
+
+<P>
+The <span class="code">IMoaDrMovie</span> interface inherits from <span class="code">IMoaMmPropOwner</span>
+(through <span class="code">IMoaDrMediaOwner</span>). The movie object supports
+a number of properties through this interface. These are:
+
+<TABLE BORDER="2">
+<TR><TD WIDTH=144><B>Property</B></TD>
+<TD WIDTH=506><B>Description</B></TD>
+</TR>
+
+<TR><TD WIDTH=144><span class="code">name </span></TD>
+<TD WIDTH=506>Name of the movie file</TD>
+</TR>
+
+<TR><TD WIDTH=144><span class="code">pathName </span></TD>
+<TD WIDTH=506>Path to movie file</TD>
+</TR>
+
+<TR><TD WIDTH=144><span class="code">playing </span></TD>
+<TD WIDTH=506>Movie's playback state</TD>
+</TR>
+
+<TR><TD WIDTH=144><span class="code">defaultColorDepth </span></TD>
+<TD WIDTH=506>Bit depth of movie palette</TD>
+</TR>
+
+<TR><TD WIDTH=144><span class="code">defaultStageRect </span></TD>
+<TD WIDTH=506>Size of movie stage</TD>
+</TR>
+
+<TR><TD WIDTH=144><span class="code">tempo </span></TD>
+<TD WIDTH=506>Frame rate of movie</TD>
+</TR>
+
+<TR><TD WIDTH=144><span class="code">defaultPalette </span></TD>
+<TD WIDTH=506>Standard CLUT for movie</TD>
+</TR>
+
+<TR><TD WIDTH=144><span class="code">remapPalettes </span></TD>
+<TD WIDTH=506>Movie's remapping state</TD>
+</TR>
+
+<TR><TD WIDTH=144><span class="code">castCount </span></TD>
+<TD WIDTH=506>Number of movie casts</TD>
+</TR>
+
+<TR><TD WIDTH=144><span class="code">stageColor </span></TD>
+<TD WIDTH=506>Background color</TD>
+</TR>
+
+<TR><TD WIDTH=144><span class="code">frame </span></TD>
+<TD WIDTH=506>Current frame number</TD>
+</TR>
+
+<TR><TD WIDTH=144><span class="code">activeCastLib </span></TD>
+<TD WIDTH=506>Index of active cast (authoring only)</TD>
+</TR>
+
+<TR><TD WIDTH=144><span class="code">scoreSelection </span></TD>
+<TD WIDTH=506>List of rects representing selection area (authoring only)</TD>
+</TR>
+
+</TABLE>
+
+
+<P>
+For more details, see &quot;<A HREF="../drref/drtypndx.htm#MOVPROPS">Movie properties</A>&quot; in the <I>Director API Reference</I>.
+
+<H5><A NAME="RTFToC20">Score access</A></H5>
+
+<P>
+The <span class="code">IMoaDrMovie</span> interface inherits from <span class="code">IMoaDrMediaOwner</span>.
+The movie object supports one type of media data through this
+interface: score media. You can access score media in a couple
+of ways: through a handle to the score data, or through an <span class="code">IMoaDrScoreAccess</span>
+interface. <BR>
+<BR>
+Handle access may be useful for moving score data between movies
+or to and from disk. The data in the handle is in the same format
+as Director uses to save score data. However, this form isn't
+generally useful for accessing or modifying score data, since
+the actual structure of the data isn't published. Because it inherits
+from the <span class="code">IMoaDrMediaOwner </span>interface, <span class="code">IMoaDrMovie</span>
+provides three methods for accessing handle data: <span class="code">AttachMedia()</span>,
+<span class="code">GetMedia()</span>, and <span class="code">SetMedia()</span>. <A HREF="../drref/drmovie.htm#GetMedia">GetMedia()</A>
+returns the handle to the score data of a movie, in a <span class="code">MoaDrMediaInfo</span>
+structure. <A HREF="../drref/drmovie.htm#SetMedia">SetMedia()</A>
+assigns the media to the movie, essentially copying the data into
+the movie. <A HREF="../drref/drmovie.htm#AttachMedia">AttachMedia()</A>
+is like <span class="code">SetMedia()</span>, except that it transfers the score
+data to the movie--the caller need not dispose of the data after
+this method returns. <BR>
+<BR>
+As an alternative to raw data access, the <A HREF="../drref/drscracc.htm">IMoaDrScoreAccess</A>
+interface provides a way to access and modify the contents of
+a movie's score. To get a movie's score data through this interface,
+call the <A HREF="../drref/drmovie.htm#GetScoreAccess">IMoaDrMovie::GetScoreAccess()</A>
+method. This interface, described later in this section, includes
+methods for interacting with the frames, sounds, and sprites in
+a score. <BR>
+<BR>
+A movie's score may have labeled frames, used to identify and
+access specific frames in a movie. The <span class="code">IMoaDrMovie</span> interface
+provides ways to access frame labels. The <A HREF="../drref/drmovie.htm#GetFrameIndexFromLabel">GetFrameIndexFromLabel()</A>
+and <A HREF="../drref/drmovie.htm#GetFrameLabelFromIndex">GetFrameLabelFromIndex()</A>
+methods let you find the position of a frame if you know its label,
+or find the label of a frame if you know its position in the score.
+The <A HREF="../drref/drmovie.htm#SetFrameLabel">SetFrameLabel()</A>
+method lets you assign a new label to a specific frame in a movie.
+
+<H5><A NAME="RTFToC21">Managing casts </A></H5>
+
+<P>
+As shown in the <A HREF="#DROM">Director object model diagram</A>,
+each movie can have several casts. Casts may be either internal
+(saved in the same movie file) or external (saved in a separate
+file). Casts are discussed in greater detail in the next section.
+This discussion focuses on how a movie organizes and accesses
+its casts. <BR>
+<BR>
+Casts are identified in two ways: by index in the movie's cast
+list and by name. The index of a cast depends on the order in
+which it's added to the movie. Cast names are defined by the author
+and are displayed in the user interface for identification purposes.
+
+<H6><A NAME="RTFToC22">Adding casts</A></H6>
+
+<P>
+<A HREF="../drref/drmovie.htm#AddExternalCast"><span class="code">IMoaDrMovie::AddExternalCast()</span></A>
+adds an existing external cast to the movie. You can provide a
+name along with the path to the cast file. The <A HREF="../drref/drmovie.htm#NewCast"><span class="code">NewCast()</span></A>
+method creates a new cast and adds it to the movie. The new cast
+can be either internal or external. Both methods return the index
+of the new cast in the movie's cast list in a parameter provided
+by the caller.
+
+<H6><A NAME="RTFToC23">Manipulating the cast list </A></H6>
+
+<P>
+To find out how many casts belong to a movie, call <A HREF="../drref/drmovie.htm#GetCastCount"><span class="code">GetCastCount()</span></A>.
+This method returns a parameter representing the number of casts
+in the cast list. To get the position of a cast with a particular
+name, use the <A HREF="../drref/drmovie.htm#GetCastIndexFromName"><span class="code">GetCastIndexFromName()</span></A>
+method. <BR>
+<BR>
+To delete the cast at a particular position in the list, call
+the <A HREF="../drref/drmovie.htm#RemoveCast"><span class="code">RemoveCast()</span></A>
+method. To move a cast member to a new location, call the <A HREF="../drref/drmovie2.htm#MoveCastMember"><span class="code">IMoaDrMovie2::MoveCastMember()</span></A>
+method.
+
+<H6><A NAME="RTFToC24">Acquiring a cast interface </A></H6>
+
+<P>
+To manipulate a cast and its cast members, you need to its <span class="code">IMoaDrCast</span>
+interface. To get the interface for a cast with a particular display
+name, call <A HREF="../drref/drmovie.htm#GetCastFromName"><span class="code">IMoaDrMovie::GetCastFromName()</span></A>.
+To get an interface for a specific cast in the movie's cast list,
+call the <A HREF="../drref/drmovie.htm#GetNthCast"><span class="code">IMoaDrMovie::GetNthCast()</span></A>
+method. <BR>
+
+<H6><A NAME="RTFToC25">Accessing cast members </A></H6>
+
+<P>
+The <A HREF="../drref/drmovie.htm#GetCastMemFromCMRef"><span class="code">GetCastMemFromCMRef()</span></A>
+method provides a way to get the <A HREF="../drref/drcstmm.htm"><span class="code">IMoaDrCastMem</span></A>
+interface for any cast member in any cast in a movie. This method
+takes a <A HREF="../drref/drtypndx.htm#MoaDrCmRef"><span class="code">MoaDrCmRef</span></A>
+struct as an argument. This structure contains two fields, one
+an index of the cast in the movie list, and the other an index
+of the cast member in the cast.
+
+<H6><A NAME="RTFToC26">Manipulating CMRefs </A></H6>
+
+<P>
+The <span class="code">IMoaDrMovie2 </span>interface provides two methods that
+let you manipulate cast member reference identifiers: <A HREF="../drref/drmovie2.htm#GetCMRefFromCMId">GetCMRefFromCMId()</A>
+and <A HREF="../drref/drmovie2.htm#GetCMIdFromCMRef"><span class="code">GetCMIdFromCMRef()</span></A>.
+<span class="code">GetCMRefFromCMId()</span> obtains the cast member reference
+for a cast member from its unique identifier. <span class="code">GetCMIdFromCMRef()</span>
+obtains a unique identifier for the cast member referred to by
+its cast member reference; this identifier can be used to retrieve
+the cast member reference for the cast member at a later time,
+even if the cast member has been moved across cast boundaries.
+<P>
+Director also provides a number of macros for manipulating <span class="code">CMRef</span>
+structures. These macros, defined in drtypes.h and described in
+&quot;<A HREF="../drref/drtypndx.htm">Director Types and Miscellaneous API</A>&quot;,
+let you create a <span class="code">CMRef</span>, get the cast index, the cast
+member index, or clear the contents of a <span class="code">CMRef</span>. You should
+use these macros to manipulate a <span class="code">CMRef</span> structure rather
+than accessing the contents directly.
+
+<H5><A NAME="RTFToC27">Additional movie features </A></H5>
+
+<H6><A NAME="RTFToC28">Scripting support </A></H6>
+
+<P>
+To call any scripting handler, whether built-in or defined in
+a movie script, use the <A HREF="../drref/drmovie.htm#CallHandler"><span class="code">IMoaDrMovie::CallHandler()</span></A>
+method. This method takes the handler name and a list containing
+arguments to the handler.
+
+<H6><A NAME="RTFToC29">Saving and creating movies </A></H6>
+
+<P>
+When your Xtra modifies a movie by manipulating either its cast
+or score, you can use the <A HREF="../drref/drmovie.htm#Save"><span class="code">IMoaDrMovie::Save()</span></A>
+to save it back to disk. 
+<P>
+To create a new movie, clear the cast and score of an existing
+movie, then save the empty movie. To clear the cast, call <A HREF="../drref/drmovie.htm#RemoveCast"><span class="code">IMoaDrMovie::RemoveCast()</span></A>
+(note however that you can't remove the first cast in a movie--instead,
+you can clear all the members from the cast). Create a new empty
+score by calling <A HREF="../drref/drutils.htm#NewScoreAccess"><span class="code">IMoaDrUtils::NewScoreAccess()</span></A>,
+and assign it to the movie by calling <A HREF="../drref/drscracc.htm#SetOwner"><span class="code">IMoaDrScoreAccess::SetOwner()</span></A>.
+Call <A HREF="../drref/drscracc.htm#Commit"><span class="code">IMoaDrScoreAccess::Commit()</span></A>
+to assign the empty score to the movie. Finally save the movie
+by calling <A HREF="../drref/drmovie.htm#Save"><span class="code">IMoaDrMovie::Save()</span></A>,
+giving the movie a new file name and path.
+
+<H6><A NAME="RTFToC30">Imaging support</A></H6>
+
+<P>
+In Director, each movie has a window and offscreen buffer where
+it performs its drawing. (The Director imaging model and animation
+loop is described in more detail in &quot;<A HREF="../mmdg/mmdgc2.htm">Asset Xtras</A>&quot; in the <I>Multimedia Developer's Guide</I>.)
+<P>
+The <span class="code">IMoaDrMovie</span> interface provides access to the graphics
+contexts for Director's off- and onscreen drawing environments.
+This is useful when an authoring or playback Xtra wants to directly
+access the images presented in a movie. To get the offscreen drawing
+buffer, call the <A HREF="../drref/drmovie.htm#GetStageBufferGC"><span class="code">IMoaDrMovie::GetStageBufferGC()</span></A>
+method. To get the onscreen drawing window, call <A HREF="../drref/drmovie.htm#GetStageWindowGC"><span class="code">IMoaDrMovie::GetStageWindowGC()</span></A>.
+<P>
+<B>Note:</B> Direct access to the drawing buffers creates potential
+for interference in the presentation and performance of a movie,
+so these features should be used with care. This access is intended
+for use in Scripting and Tool Xtras that need temporary access
+to the stage for image capture or other such non-invasive purposes.
+<P>
+The <A HREF="../drref/drmovie.htm#UpdateStageRect"><span class="code">UpdateStageRect()</span></A>
+method lets an Xtra force the movie to redraw an image from a
+specific area of the offscreen buffer to its onscreen window.
+
+<H4><A NAME="RTFToC31">The IMoaDrCast interface</A></H4>
+
+<P>
+The <A HREF="../drref/drcast.htm"><span class="code">IMoaDrCast</span></A>
+interface represents a list of cast members belonging to a movie.
+A Director movie may have one or more casts.
+
+<H5><A NAME="RTFToC32">Creating, acquiring, and saving a cast </A></H5>
+
+<P>
+Using the Director services, casts are always created and accessed
+in association with a particular movie. However, a cast can be
+internal, saved with its movie, or external, saved in a separate
+cast file. External casts can be included in multiple movies,
+or moved from one movie to another. <BR>
+<BR>
+The <A HREF="../drref/drmovie.htm#NewCast">IMoaDrMovie::NewCast()</A>
+method lets you create a new cast and place it in a specific movie.
+This method lets you provide a name for the cast and specify whether
+it's internal or external. This method returns, as a parameter,
+the index of the new cast in the movie <BR>
+<BR>
+To manipulate a cast, you acquire its <span class="code">IMoaDrCast</span> interface.
+You can get the interface for a cast with a particular display
+name by calling <A HREF="../drref/drmovie.htm#GetCastFromName">IMoaDrMovie::GetCastFromName()</A>.
+To get an interface for a specific cast in the movie's cast list,
+call the <A HREF="../drref/drmovie.htm#GetNthCast">IMoaDrMovie::GetNthCast()</A>
+method. <BR>
+<BR>
+To save an external cast, call the <A HREF="../drref/drcast.htm#Save"><span class="code">IMoaDrCast::Save()</span></A>
+method. <span class="code">Save()</span> can be used to move an external cast from
+one movie to another. After save the cast by calling <A HREF="../drref/drcast.htm#Save"><span class="code">IMoaDrCast::Save()</span></A>,
+remove it from the movie by calling <A HREF="../drref/drmovie.htm#RemoveCast"><span class="code">IMoaDrMovie::RemoveCast()</span></A>.
+Finally, add it to the new movie by calling <A HREF="../drref/drmovie.htm#AddExternalCast"><span class="code">IMoaDrMovie::AddExternalCast()</span></A>.
+
+<H5><A NAME="RTFToC33">Cast properties</A></H5>
+
+<P>
+The <span class="code">IMoaDrCast</span> interface inherits from <span class="code">IMoaMmPropOwner</span>.
+A cast object supports a number of properties through this interface.
+These are:
+
+
+<TABLE BORDER="2">
+<TR><TD WIDTH=93><B>Property</B> </TD><TD WIDTH=627><B>Description</B>
+</TD>
+</TR>
+
+<TR><TD WIDTH=93><span class="code">name </span></TD><TD WIDTH=627>Name of the cast in the user interface
+</TD>
+</TR>
+
+<TR><TD WIDTH=93><span class="code">pathName </span></TD><TD WIDTH=627>Full pathname of the cast
+</TD>
+</TR>
+
+<TR><TD WIDTH=93><span class="code">preloadMode </span></TD><TD WIDTH=627>Cast preload mode
+</TD>
+</TR>
+
+<TR><TD WIDTH=93><span class="code">memberCount </span></TD>
+<TD WIDTH=627>Number of cast members in cast
+</TD>
+</TR>
+
+<TR><TD WIDTH=93><span class="code">minMember </span></TD><TD WIDTH=627>Index of first member in cast
+</TD>
+</TR>
+
+<TR><TD WIDTH=93><span class="code">maxMember </span></TD>
+<TD WIDTH=627>Index of last member in cast</TD>
+</TR>
+
+<TR><TD WIDTH=93><span class="code">selection </span></TD><TD WIDTH=627>List of selection ranges (authoring only)
+</TD>
+</TR>
+</TABLE>
+
+<P>
+For more details, see &quot;<A HREF="../drref/drtypndx.htm#CASTPROPS">Cast properties</A>&quot; in the <I>Director API Reference</I>.
+
+<H5><A NAME="RTFToC34">Cast member management </A></H5>
+
+<P>
+A cast is made up of cast members, and the <span class="code">IMoaDrCast</span>
+interface provides methods to create, delete, and access those
+members.
+
+<H6><A NAME="RTFToC35">Creating, copying, and deleting cast members </A></H6>
+
+<P>
+You can create a new cast member of a specific type by calling
+the <A HREF="../drref/drcast.htm#CreateCastMem">CreateCastMem()</A>
+method. This method lets you specify the type of cast member and
+where in the cast to place the new member. If a cast member already
+exists in the specified slot, it will be replaced. The <A HREF="../drref/drcast.htm#DuplicateCastMem"><span class="code">IMoaDrCast::DuplicateCastMem()</span></A>
+method lets you copy one cast member to another slot in any cast
+for which you have an <span class="code">IMoaDrCast</span> interface. The destination
+cast may be the same as the source cast, another cast in the same
+movie, or a cast in a different movie. 
+<P>
+To remove a member from a cast, call the <A HREF="../drref/drcast.htm#DeleteCastMem"><span class="code">IMoaDrCast::DeleteCastMem()</span></A>
+method.
+
+<H6><A NAME="RTFToC36">Cast member list management </A></H6>
+
+<P>
+<span class="code">IMoaDrCast</span> interface provides a number of methods for
+determining the number of members in the cast and finding open
+cast member slots. A cast has 32,000 slots for cast members. 
+<P>
+Use the methods <A HREF="../drref/drcast.htm#GetFirstUsedMemberIndex"><span class="code">GetFirstUsedMemberIndex()</span></A>
+and <A HREF="../drref/drcast.htm#GetLastUsedMemberIndex"><span class="code">GetLastUsedMemberIndex()</span></A>
+to determine the range of occupied slots in a cast. Use the methods
+<A HREF="../drref/drcast.htm#GetFirstFreeMemberIndex"><span class="code">GetFirstFreeMemberIndex()</span></A>
+and <A HREF="../drref/drcast.htm#GetLastFreeMemberIndex"><span class="code">GetLastFreeMemberIndex()</span></A>
+to determine the available cast member slots in a cast. The method
+<A HREF="../drref/drcast.htm#GetNextFreeMemberIndex"><span class="code">GetNextFreeMemberIndex()</span></A>
+lets you determine where the next free slot can be found relative
+to a particular position in the cast; <A HREF="../drref/drcast.htm#GetNextUsedMemberIndex"><span class="code">GetNextUsedMemberIndex()</span></A>
+lets you determine the next occupied slot relative to a particular
+position. To find the position of a cast member with a particular
+name, use the method <A HREF="../drref/drcast.htm#GetMemberIndexFromName"><span class="code">GetMemberIndexFromName()</span></A>.
+
+<H6><A NAME="RTFToC37">Movie interaction</A></H6>
+
+<P>
+To find the position of a particular cast in a movie, call the
+method <A HREF="../drref/drcast.htm#GetIndexInMovie"><span class="code">IMoaDrCast::GetIndexInMovie()</span></A>.
+
+<H4><A NAME="RTFToC38">The IMoaDrCastMem interface</A></H4>
+
+<P>
+The <A HREF="../drref/drcstmm.htm"><span class="code">IMoaDrCastMem</span></A>
+interface provides access to the members of a cast. You can use
+this interface to manipulate a cast member, access its media or
+properties, and call scripting functions provided by the cast
+member. 
+<P>
+To acquire the interface for the cast member at a specific position
+in a cast, call the <A HREF="../drref/drcast.htm#GetCastMem"><span class="code">IMoaDrCast::GetCastMem()</span></A>
+method. You can also acquire the interface for a particular member
+in a particular cast of a movie by calling the <span class="code">IMoaDrMovie</span>
+method <A HREF="../drref/drmovie.htm#GetCastMemFromCMRef"><span class="code">GetCastMemFromCMRef()</span></A>.
+
+<H5><A NAME="RTFToC39">Cast member properties </A></H5>
+
+<P>
+The <span class="code">IMoaDrCastMember</span> interface inherits from <span class="code">IMoaMmPropOwner</span>
+(through <span class="code">IMoaDrMediaOwner</span>). A cast member object supports
+a number of properties through this interface. The general properties
+supported by all cast members are:
+
+<TABLE BORDER="2">
+<TR><TD WIDTH=140><B>Property</B></TD>
+<TD WIDTH=593><B>Description</B></TD>
+</TR>
+
+<TR><TD WIDTH=140><span class="code">name </span></TD>
+<TD WIDTH=593>User-defined name of cast member.</TD>
+</TR>
+
+<TR><TD WIDTH=140><span class="code">size </span></TD>
+<TD WIDTH=593>Memory occupied by cast member</TD>
+</TR>
+
+<TR><TD WIDTH=140><span class="code">castType </span></TD>
+<TD WIDTH=593>Type of cast member (as a string/symbol)</TD>
+</TR>
+
+<TR><TD WIDTH=140><span class="code">type </span></TD>
+<TD WIDTH=593>Type of cast member (as a symbol)</TD>
+</TR>
+
+<TR><TD WIDTH=140><span class="code">scriptText </span></TD>
+<TD WIDTH=593>Text of cast member script</TD>
+</TR>
+
+<TR><TD WIDTH=140><span class="code">modified </span></TD>
+<TD WIDTH=593>Modified since last save</TD>
+</TR>
+
+<TR><TD WIDTH=140><span class="code">loaded </span></TD>
+<TD WIDTH=593>Currently in memory</TD>
+</TR>
+
+<TR><TD WIDTH=140><span class="code">fileName </span></TD>
+<TD WIDTH=593>Path to cast member (linked members only)</TD>
+</TR>
+
+<TR><TD WIDTH=140><span class="code">purgePriority </span></TD>
+<TD WIDTH=593>Author-settable purge priority</TD>
+</TR>
+
+<TR><TD WIDTH=140><span class="code">number </span></TD>
+<TD WIDTH=593>Cast member number of cast member</TD>
+</TR>
+
+<TR><TD WIDTH=140><span class="code">member </span></TD>
+<TD WIDTH=593>Cast member type of cast member</TD>
+</TR>
+
+<TR><TD WIDTH=140><span class="code">width </span></TD>
+<TD WIDTH=593>Width of default display rectangle</TD>
+</TR>
+
+<TR><TD WIDTH=140><span class="code">height </span></TD>
+<TD WIDTH=593>Height of default display rectangle</TD>
+</TR>
+
+<TR><TD WIDTH=140><span class="code">rect </span></TD>
+<TD WIDTH=593>Display rectangle</TD>
+</TR>
+
+<TR><TD WIDTH=140><span class="code">hilite </span></TD>
+<TD WIDTH=593>Highlighting state of cast member</TD>
+</TR>
+
+<TR><TD WIDTH=140><span class="code">regPoint </span></TD>
+<TD WIDTH=593>Registration point of cast member (settable for bitmaps only)</TD>
+</TR>
+<TR><TD WIDTH=140><span class="code">interface </span></TD>
+<TD WIDTH=593>The Moa interface for the member (for Xtra based members only)</TD>
+</TR>
+
+</TABLE>
+
+<P>
+In addition to the general properties listed here, cast members
+of various cast types support properties specific to their type.
+For more details, see &quot;<A HREF="../drref/drtypndx.htm#CASTMEMPROPS">Cast member properties</A>&quot; in the <I>Director API Reference</I>.
+
+<H5><A NAME="RTFToC40">Cast member media </A></H5>
+
+<P>
+The <span class="code">IMoaDrCastMem</span> interface inherits from <span class="code">IMoaDrMediaOwner</span>.
+Media owners provide methods for getting and
+setting their media. The media associated with a media owner is
+identified by label and format. Cast members support the following
+labels and formats:
+
+<TABLE BORDER="2">
+<TR><TD WIDTH=116><B>Label</B></TD><TD WIDTH=503><B>Description</B>
+</TD></TR>
+
+<TR><TD WIDTH=116><span class="code">Composite </span></TD><TD WIDTH=503>Cast member data in a portable (byte-swapped) handle 
+</TD></TR>
+
+<TR><TD WIDTH=116><span class="code">Image </span></TD><TD WIDTH=503>Primary image data
+</TD></TR>
+
+<TR><TD WIDTH=116><span class="code">Text </span></TD><TD WIDTH=503>Text character string
+</TD></TR>
+
+<TR><TD WIDTH=116><span class="code">TextStyles </span></TD><TD WIDTH=503>Text style run data
+</TD></TR>
+
+<TR><TD WIDTH=116><span class="code">Sound </span></TD><TD WIDTH=503>Sound samples
+</TD></TR>
+
+<TR><TD WIDTH=116><span class="code">Palette </span></TD><TD WIDTH=503>Palette entries
+</TD></TR>
+
+<TR><TD WIDTH=116><span class="code">Score </span></TD><TD WIDTH=503>Score data for a movie or film loop
+</TD></TR>
+
+</TABLE>
+
+<P>
+<TABLE BORDER="2">
+<TR><TD WIDTH=140><B>Format</B></TD><TD WIDTH=672><B>Description</B>
+</TD>
+</TR>
+
+<TR><TD WIDTH=140><span class="code">moaHandle </span></TD><TD WIDTH=672>Generic <span class="code">MoaHandle</span> of data
+</TD>
+</TR>
+
+<TR><TD WIDTH=140><span class="code">moaTEStyles </span></TD><TD WIDTH=672><span class="code">textStyles</span> format stored in a <span class="code">MoaHandle </span>
+</TD>
+</TR>
+
+<TR><TD WIDTH=140><span class="code">macTEStyles </span></TD><TD WIDTH=672><span class="code">textStyles</span> in TextEdit format stored in a Macintosh <span class="code">StScrpHandle </span>
+</TD>
+</TR>
+
+<TR><TD WIDTH=140><span class="code">macPICT </span></TD><TD WIDTH=672>Macintosh <span class="code">PicHandle</span>
+</TD>
+</TR>
+
+<TR><TD WIDTH=140><span class="code">macSnd </span></TD><TD WIDTH=672>Macintosh <span class="code">sndHdl</span> in Macintosh sound resource format
+</TD>
+</TR>
+
+<TR><TD WIDTH=140><span class="code">macColorTable </span></TD><TD WIDTH=672>Macintosh <span class="code">CTabHandle</span> to a ColorTable record 
+</TD>
+</TR>
+
+<TR><TD WIDTH=140><span class="code">winDIB </span></TD><TD WIDTH=672>Windows packed DIB <span class="code">GlobalHandle </span>with bitmap information, table, and bits
+</TD>
+</TR>
+
+<TR><TD WIDTH=140><span class="code">winWAVE </span></TD><TD WIDTH=672>Windows RIFF WAVE <span class="code">GlobalHandle</span>; RIFF sound format 
+</TD>
+</TR>
+
+<TR><TD WIDTH=140><span class="code">winPALETTE </span></TD><TD WIDTH=672>Windows HPALETTE <span class="code">GlobalHandle</span>; RIFF palette format
+</TD>
+</TR>
+
+</TABLE>
+
+<P>
+The labels and formats supported by a particular cast member depend
+on the cast member type. The description of the <A HREF="../drref/drcstmm.htm"><span class="code">IMoaDrCastMem</span></A>
+interface includes a complete listing of cast member types and
+the media they support.
+
+<H6><A NAME="RTFToC41">Setting and
+removing media </A></H6>
+
+<P>
+Before you can set the media of a cast member--by calling <span class="code">IMoaDrCastMem::SetMedia()</span>--you
+need to populate a <A HREF="../drref/drtypndx.htm#MoaDrMediaInfo"><span class="code">MoaDrMediaInfo</span></A>
+structure with the format, type, and media data. To ensure that
+the media data is properly applied to the cast member, call the
+<A HREF="../drref/drutils.htm#NewMediaInfo"><span class="code">IMoaDrUtils::NewMediaInfo()</span></A>
+method. Note that this method doesn't allocate the media data;
+you do that before calling these methods. 
+<P>
+To dispose of a cast member's media data, you acquire the data
+by calling <A HREF="../drref/drcstmm.htm#GetMedia"><span class="code">IMoaDrCastMem::GetMedia()</span></A>.
+You then call the <A HREF="../drref/drutils.htm#MediaRelease"><span class="code">IMoaDrUtils::MediaRelease()</span></A>
+method. This ensures that the data, originally allocated by the
+host application, is properly disposed of. 
+<P>
+Note that special options are supported when setting &quot;image&quot;
+label media. 
+
+<H5><A NAME="RTFToC42">Scripting support </A></H5>
+
+<P>
+The <span class="code">IMoaDrCastMem</span> interface supports scripting access
+to cast members through two methods, <A HREF="../drref/drcstmm.htm#CallFunction">CallFunction()</A>
+and <A HREF="../drref/drcstmm.htm#CallHandler">CallHandler()</A>.
+<P>
+In addition to defining specific properties, the Digital Video,
+Text, and sprite Xtra cast member types define specific functions
+that you can call to access media information. To call the functions
+associated with a particular cast member, use the method <span class="code">IMoaDrCastMem::CallFunction()</span>.
+The functions associated with particular cast member types are
+listed and described in &quot;<A HREF="../drref/drtypndx.htm#CASTMEMPROPS">Cast member properties</A>&quot; in
+the <I>Director API Reference</I>.
+<P>
+To call a specific handler defined in a cast member's script,
+use the <span class="code">IMoaDrCastMem::CallHandler()</span> method.
+
+<H6><A NAME="RTFToC43">Cast information</A></H6>
+
+<P>
+To find the position of a cast member in a cast, call the <A HREF="../drref/drcstmm.htm#GetMemberIndex"><span class="code">IMoaDrCastMem::GetMemberIndex()</span></A>
+method.
+
+<H6><A NAME="RTFToC44">Acquiring IMoaDrScoreAccess </A></H6>
+
+<P>
+For cast members that present Director filmloops, the <A HREF="../drref/drcstmm.htm#GetScoreAccess"><span class="code">IMoaDrCastMem::GetScoreAccess()</span></A>
+method provides a way to get the <span class="code">IMoaDrScoreAccess</span> interface
+for the loop. Use this interface as an alternative to the methods
+of the <span class="code">IMoaDrMediaOwner </span>interface for accessing and manipulating
+score data owned by a cast member. The <span class="code">IMoaDrScoreAccess</span>
+interface is described in greater detail in the next section of
+this discussion.
+
+<H4><A NAME="RTFToC45">The IMoaDrScoreAccess interface</A></H4>
+
+<P>
+The <A HREF="../drref/drscracc.htm"><span class="code">IMoaDrScoreAccess</span></A>
+interface provides a way to access the score data belonging to
+a movie (<span class="code">IMoaDrMovie</span>) or a filmloop cast member (<span class="code">IMoaDrCastMem</span>).
+<P>
+With the <span class="code">IMoaDrScoreAccess</span> interface, you access data
+in a score frame by frame. When you first acquire an <span class="code">IMoaDrScoreAccess</span>
+interface, it's not set to a particular frame. The interface provides
+methods for determining the number of frames in a score, moving
+to a specific frame, inserting a frame, deleting a frame, and
+so on. In addition, <span class="code">IMoaDrScoreAccess</span> provides ways to
+get the interfaces for a frame (<span class="code">IMoaDrScoreFrame</span>), the
+sound channels of a frame (<span class="code">IMoaDrScoreSound</span>), and any
+sprite in the sprite channels of a frame (<span class="code">IMoaDrScoreSprite</span>).
+<P>
+You can edit a score at two levels: by manipulating entire frames
+in the score, and by accessing the contents of specific frames.
+These two editing levels are described in separate sections of
+the following discussion.
+
+<H5><A NAME="RTFToC46">Acquiring score access </A></H5>
+
+<P>
+You can acquire an <span class="code">IMoaDrScoreAccess</span> interface in one
+of three ways. The <A HREF="../drref/drmovie.htm#GetScoreAccess">IMoaDrMovie::GetScoreAccess()</A>
+method returns an interface representing the score of a specific
+movie. The <A HREF="../drref/drcstmm.htm#GetScoreAccess">IMoaDrCastMem::GetScoreAccess()</A>
+method returns an interface for the score of a filmloop cast member.
+The <A HREF="../drref/drutils.htm#NewScoreAccess">IMoaDrUtils::NewScoreAccess()</A>
+method returns an interface for a new score without a specific
+owner. After acquiring a score through this method, you can call
+<A HREF="../drref/drscracc.htm#SetOwner">IMoaDrScoreAccess::SetOwner()</A>
+to attach the score to a movie or cast member.
+
+<H5><A NAME="RTFToC47">Editing support</A></H5>
+
+<P>
+You edit a score in an editing session. An editing session begins
+with a call to the <A HREF="../drref/drscracc.htm#BeginUpdate">IMoaDrScoreAccess::BeginUpdate()</A>
+method, and ends with a call to the <A HREF="../drref/drscracc.htm#EndUpdate">IMoaDrScoreAccess::EndUpdate()</A>
+method. In between these two method calls, you can add, modify,
+and delete frames in the score.
+<P>
+Once you begin an editing session, make changes to the score through
+methods of the <span class="code">IMoaDrScoreAccess</span> interface. To save changes
+you've made to the score data, call the <A HREF="../drref/drscracc.htm#Commit">Commit()</A>
+method. To restore data from the media owner, call the <span class="code">Refresh()</span>
+method. If the score data is being edited through another means
+(e.g., Scripting calls or the authoring environment's user interface),
+<A HREF="../drref/drscracc.htm#Refresh">Refresh()</A> returns
+the latest version of the score data. Otherwise, it returns the
+media data as it was either when you began the editing session
+or when you last called <A HREF="../drref/drscracc.htm#Commit">IMoaDrScoreAccess::Commit()</A>
+. To delete all data in the score and start with a blank slate,
+call <A HREF="../drref/drscracc.htm#New">IMoaDrScoreAccess::New()</A>
+method.
+
+<H5><A NAME="RTFToC48">Frame manipulation</A></H5>
+
+<P>
+This section looks at methods for accessing specific frames in
+a movie and editing the score by inserting, copying, and deleting
+frames.
+
+<H6><A NAME="RTFToC49">Frame access</A></H6>
+
+<P>
+Through an <span class="code">IMoaDrScoreAccess</span> interface, you can move
+to any frame in the score by calling <A HREF="../drref/drscracc.htm#SetCurFrameIndex"><span class="code">SetCurFrameIndex()</span></A>.
+(When you first acquire the interface, it isn't set to a specific
+frame.) As you move around the frames of a score, you can determine
+the current frame index by calling <A HREF="../drref/drscracc.htm#GetCurFrameIndex"><span class="code">GetCurFrameIndex()</span></A>.
+To determine the last frame in the score, call <A HREF="../drref/drscracc.htm#GetLastFrameIndex"><span class="code">GetLastFrameIndex()</span></A>.
+
+<H6><A NAME="RTFToC50">Frame editing</A></H6>
+
+<P>
+You can manipulate the current frame using a number of <span class="code">IMoaDrScoreAccess</span>
+methods. Call <A HREF="../drref/drscracc.htm#DuplicateFrame"><span class="code">DuplicateFrame()</span></A>
+or <A HREF="../drref/drscracc.htm#InsertFrame"><span class="code">InsertFrame()</span></A>
+to create a copy of the current frame, place it immediately after
+the current frame, and move score access to the new frame position.
+Call <A HREF="../drref/drscracc.htm#DeleteFrame"><span class="code">DeleteFrame()</span></A>
+to remove the current frame. Call <A HREF="../drref/drscracc.htm#ClearFrame"><span class="code">ClearFrame()</span></A>
+to remove the data from all channels in a frame. Call <A HREF="../drref/drscracc.htm#UpdateFrame"><span class="code">UpdateFrame()</span></A>
+to commit any changes made to the channels of the current frame
+and increment the frame position to the next frame in the score.
+
+<H6><A NAME="RTFToC51">Frame access</A></H6>
+
+<P>
+To access general properties of a frame, you acquire the frame's
+<span class="code">IMoaDrScoreFrame</span> interface by calling <A HREF="../drref/drscracc.htm#GetFrame"><span class="code">GetFrame()</span></A>.
+The <A HREF="../drref/drscrfrm.htm"><span class="code">IMoaDrScoreFrame</span></A>
+interface inherits from <span class="code">IMoaMmPropOwner</span>, and provides
+just the two methods of this interface: <span class="code">GetProp()</span> and
+<span class="code">SetProp()</span>. The properties of a frame that you can access
+through this interface are:
+
+<TABLE BORDER="2">
+<TR><TD WIDTH=176><B>Property</B></TD><TD WIDTH=525><B>Description</B>
+</TD>
+</TR>
+
+<TR><TD WIDTH=176><span class="code">tempo </span></TD><TD WIDTH=525>Frame tempo in fps
+</TD>
+</TR>
+
+<TR><TD WIDTH=176><span class="code">waitSeconds </span></TD><TD WIDTH=525>Wait time of the frame
+</TD>
+</TR>
+
+<TR><TD WIDTH=176><span class="code">waitClick </span></TD><TD WIDTH=525>Mouse click wait state
+</TD>
+</TR>
+
+<TR><TD WIDTH=176><span class="code">waitSound </span></TD><TD WIDTH=525>Sound wait state
+</TD>
+</TR>
+
+<TR><TD WIDTH=176><span class="code">waitDigitalVideo </span></TD><TD WIDTH=525>Digital video wait state
+</TD>
+</TR>
+
+<TR><TD WIDTH=176><span class="code">palette </span></TD><TD WIDTH=525>CLUT for the frame (as an integer)
+</TD>
+</TR>
+
+<TR><TD WIDTH=176><span class="code">paletteRef </span></TD><TD WIDTH=525>Reference to palette as cast member (as a <span class="code">CMRef</span> or symbol)
+</TD>
+</TR>
+
+<TR><TD WIDTH=176><span class="code">paletteTransitionType </span></TD><TD WIDTH=525>Cross palette transition
+</TD>
+</TR>
+
+<TR><TD WIDTH=176><span class="code">paletteOverTime </span></TD><TD WIDTH=525>Palette transition state
+</TD>
+</TR>
+
+<TR><TD WIDTH=176><span class="code">paletteFrames </span></TD><TD WIDTH=525>Time for palette transition
+</TD>
+</TR>
+
+<TR><TD WIDTH=176><span class="code">paletteSpeed </span></TD><TD WIDTH=525>Rate of palette transition
+</TD>
+</TR>
+
+<TR><TD WIDTH=176><span class="code">transition </span></TD><TD WIDTH=525>Cast member in transition channel
+</TD>
+</TR>
+
+<TR><TD WIDTH=176><span class="code">script </span></TD><TD WIDTH=525>Cast member in script channel
+</TD>
+</TR>
+
+</TABLE>
+
+<P>
+You can get and set any of these frame properties through the
+methods <span class="code">GetProp()</span> and <span class="code">SetProp()</span>. For more details,
+see &quot;<A HREF="../drref/drtypndx.htm#FRMPROPS">Score frame properties</A>&quot; in the <I>Director API Reference</I>.
+
+<H5><A NAME="RTFToC52">Score channel access </A></H5>
+
+<P>
+In addition to accessing general frame data through the score,
+you can also access and manipulate both sound and sprite channels
+of the current frame.
+
+<H6><A NAME="RTFToC53">Manipulating sound channel data </A></H6>
+
+<P>
+To manipulate the data in a specific sound channel of a frame,
+call the method <A HREF="../drref/drscracc.htm#GetSound"><span class="code">IMoaDrScoreAccess::GetSound()</span></A>.
+This method returns an instance of the <A HREF="../drref/drscrsnd.htm"><span class="code">IMoaDrScoreSound</span></A>
+interface for the specified sound channel of the current frame.
+<P>
+The <span class="code">IMoaDrScoreSound</span> interface inherits from <span class="code">IMoaMmPropOwner</span>
+interface, and provides just the two methods of this interface:
+<span class="code">GetProp()</span> and <span class="code">SetProp()</span>. The properties of a
+sound channel that you can access through this interface are:
+
+<TABLE BORDER="2">
+<TR><TD WIDTH=116><B>Property </B></TD><TD WIDTH=388><B>Description</B>
+</TD></TR>
+
+<TR><TD WIDTH=116><span class="code">member </span></TD><TD WIDTH=388>Cast member represented in sound channel
+</TD></TR>
+
+<TR><TD WIDTH=116><span class="code">scoreColor </span></TD><TD WIDTH=388>Color of sound in channel
+</TD></TR>
+
+</TABLE>
+
+<P>
+You can get and set these sound channel properties through the
+methods <span class="code">GetProp()</span> and <span class="code">SetProp()</span>. For more details,
+see &quot;<A HREF="../drref/drtypndx.htm#SCSNDPROPS">Score sound properties</A>&quot; in the <I>Director API Reference</I>.
+
+<H6><A NAME="RTFToC54">Manipulating
+sprite channel data </A></H6>
+
+<P>
+To manipulate the data in a specific sprite channel of a frame,
+call the method <A HREF="../drref/drscracc.htm#GetSprite"><span class="code">IMoaDrScoreAccess::GetSprite()</span></A>.
+This method returns an instance of the <A HREF="../drref/drscrspr.htm"><span class="code">IMoaDrScoreSprite</span></A>
+interface for the specified sprite channel of the current frame.
+<P>
+The <span class="code">IMoaDrScoreSprite</span> interface inherits from <span class="code">IMoaMmPropOwner</span>
+interface and provides just the two methods of this interface:
+<span class="code">GetProp()</span> and <span class="code">SetProp()</span>. The properties of a
+sprite channel that you can access through this interface are:
+
+<TABLE BORDER="2">
+<TR><TD WIDTH=120><B>Property</B></TD>
+<TD WIDTH=525><B>Description</B></TD>
+</TR>
+
+<TR><TD WIDTH=120><span class="code">member </span></TD>
+<TD WIDTH=525>Cast member presented in sprite channel</TD>
+</TR>
+
+<TR><TD WIDTH=120><span class="code">scoreColor </span></TD>
+<TD WIDTH=525>Color of sprite in channel</TD>
+</TR>
+
+<TR><TD WIDTH=120><span class="code">script </span></TD>
+<TD WIDTH=525>Cast member for the sprite's script</TD>
+</TR>
+
+<TR><TD WIDTH=120><span class="code">size </span></TD>
+<TD WIDTH=525>Size of sprite as a point value</TD>
+</TR>
+
+<TR><TD WIDTH=120><span class="code">loc </span></TD>
+<TD WIDTH=525>Location of sprite (position of the registration point)</TD>
+</TR>
+
+<TR><TD WIDTH=120><span class="code">foreColor </span></TD>
+<TD WIDTH=525>Foreground color of sprite</TD>
+</TR>
+
+<TR><TD WIDTH=120><span class="code">backColor </span></TD>
+<TD WIDTH=525>Background color of sprite</TD>
+</TR>
+
+<TR><TD WIDTH=120><span class="code">ink </span></TD>
+<TD WIDTH=525>Inkmode of sprite</TD>
+</TR>
+
+<TR><TD WIDTH=120><span class="code">trails </span></TD>
+<TD WIDTH=525>Trail drawing state</TD>
+</TR>
+
+<TR><TD WIDTH=120><span class="code">moveableSprite </span></TD>
+<TD WIDTH=525>Movable state of sprite</TD>
+</TR>
+
+<TR><TD WIDTH=120><span class="code">editableText </span></TD>
+<TD WIDTH=525>Editable state of text sprite</TD>
+</TR>
+
+<TR><TD WIDTH=120><span class="code">blend </span></TD>
+<TD WIDTH=525>Blend percentage of sprite</TD>
+</TR>
+
+</TABLE>
+
+<P>
+You can get and set any of these sprite channel properties through
+the methods <span class="code">GetProp()</span> and <span class="code">SetProp()</span>. For more
+details, see &quot;<A HREF="../drref/drtypndx.htm#SCSPPROPS">Score sprite properties</A>&quot; in the <I>Director API Reference</I>.
+
+<H5><A NAME="RTFToC55">Accessing the score owner </A></H5>
+
+<P>
+You can determine and set ownership of a score using the <span class="code">IMoaDrScoreAccess</span>
+methods <span class="code">SetAccessInfo()</span>, <span class="code">GetAccessInfo()</span>, and
+<span class="code">SetOwner()</span>. The <A HREF="../drref/drscracc.htm#GetAccessInfo">GetAccessInfo()</A>
+method returns a <A HREF="../drref/drtypndx.htm#MoaDrAccessInfo">MoaDrAccessInfo</A>
+structure containing the owner, label, and format of the media
+data. For a score, the label is always score and the format is
+always <span class="code">MoaHandle</span>. The owner may be either an <span class="code">IMoaDrMovie</span>
+or <span class="code">IMoaDrCastMem</span> (both of which inherit from <span class="code">IMoaDrMediaOwner</span>and
+support score media). To change ownership of a score, you can
+call either <A HREF="../drref/drscracc.htm#SetAccessInfo">SetAccessInfo()</A>
+with a completely filled out <span class="code">MoaDrAccessInfo</span> structure,
+or <A HREF="../drref/drscracc.htm#SetOwner">SetOwner()</A> providing
+the interface of the new owner.
+
+<H4><A NAME="RTFToC56">Summary: acquiring Director services interfaces</A></H4>
+
+<P>
+The following table lists all the methods for acquiring access
+to Director services interfaces:
+
+<TABLE BORDER="2">
+<TR><TD WIDTH=151><B>Interface </B></TD>
+<TD WIDTH=749><B>Accessed by</B></TD>
+</TR>
+
+<TR><TD WIDTH=151><span class="code">IMoaDrUtils</span></TD>
+<TD WIDTH=749><span class="code">IMoaCallback::QueryInterface() (from pCallback)</span></TD>
+</TR>
+
+<TR><TD WIDTH=151><span class="code">IMoaDrPlayer</span></TD>
+<TD WIDTH=749><span class="code">IMoaCallback::QueryInterface() (from pCallback)</span></TD>
+</TR>
+
+<TR><TD WIDTH=151><span class="code">IMoaDrMovie</span></TD>
+<TD WIDTH=749><span class="code">IMoaDrPlayer::GetActiveMovie(), IMoaDrPlayer::GetNthMovie()</span></TD>
+</TR>
+
+<TR><TD WIDTH=151><span class="code">IMoaDrMovie2</span></TD>
+<TD WIDTH=749><span class="code">IMoaDrMovie::QueryInterface()</span></TD>
+</TR>
+
+<TR><TD WIDTH=151><span class="code">IMoaDrCast</span></TD>
+<TD WIDTH=749><span class="code">IMoaDrMovie::GetCastFromName(), IMoaDrMovie::GetNthCast(), IMoaDrMovie::NewCast()</span></TD>
+</TR>
+
+<TR><TD WIDTH=151><span class="code">IMoaDrCastMem</span></TD>
+<TD WIDTH=749><span class="code">IMoaDrCast::GetCastMemFromCMRef(), IMoaDrCastMem::GetCastMem()</span></TD>
+</TR>
+
+<TR><TD WIDTH=151><span class="code">IMoaDrScoreAccess</span></TD>
+<TD WIDTH=749><span class="code">IMoaDrCastMem::GetScoreAccess(), IMoaDrMovie::GetScoreAccess(), IMoaDrUtils::NewScoreAccess()</span></TD>
+</TR>
+
+<TR><TD WIDTH=151><span class="code">IMoaDrScoreFrame</span></TD>
+<TD WIDTH=749><span class="code">IMoaDrScoreAccess::GetFrame()</span></TD>
+</TR>
+
+<TR><TD WIDTH=151><span class="code">IMoaDrScoreSound</span></TD>
+<TD WIDTH=749><span class="code">IMoaDrScoreAccess::GetSound()</span></TD>
+</TR>
+
+<TR><TD WIDTH=151><span class="code">IMoaDrScoreSprite</span></TD>
+<TD WIDTH=749><span class="code">IMoaDrScoreAccess::GetSprite() 
+</span></TD>
+</TR>
+
+</TABLE>
+
+<HR width=45% align=left>
+<h4><A NAME="DRSUPPORT">Other Director Support API</A></h4>
+
+<P>
+In addition to interfaces representing the Director object model,
+the Director services provide a number of facilities for use by
+Xtras. The <span class="code">IMoaDrUtils</span> interface provides methods for
+converting Director specific data to <span class="code">MoaMmValues</span>, for
+attaching and releasing media data, and for creating clients to
+receive notification from the host application. The <span class="code">IMoaDrAssetCallback</span>
+and <span class="code">IMoaDrSpriteCallback</span> interfaces provide Director-specific
+callback facilities for use by media asset Xtras.
+
+<H4><A NAME="RTFToC58">The IMoaDrUtils interface</A></H4>
+
+<P>
+<span class="code">IMoaDrUtils</span> is a general interface the provides useful
+utilities for working with Director. Part of the functionality
+of <span class="code">IMoaDrUtils</span> has been superseded by <span class="code">IMoaDrValue</span>.
+
+<H5><A NAME="RTFToC60">Media management</A></H5>
+
+<P>
+As described in the earlier discussion of the <span class="code">IMoaDrCastMem</span>
+interface, the <span class="code">IMoaDrUtils</span> methods <span class="code">NewMediaInfo()</span>
+and <span class="code">MediaRelease()</span> provide ways to populate a <span class="code">MoaDrMediaInfo</span>
+structure with appropriate data, and to release the application-allocated
+data belonging to a cast member. These methods are used in conjunction
+with the <span class="code">IMoaDrCastMem</span> methods <span class="code">AttachMedia()</span>,
+<span class="code">SetMedia()</span> and <span class="code">GetMedia()</span>.
+
+<H5><A NAME="RTFToC61">Acquiring IMoaDrScoreAccess </A></H5>
+
+<P>
+To create a new score outside the context of a specific movie
+or cast member, call the <span class="code">IMoaDrUtils::NewScoreAccess()</span>
+method. You can then call the <span class="code">IMoaDrScoreAccess::SetOwner()</span>
+method to specify the owner of the score.
+
+<H4><A NAME="RTFToC62">The IMoaDrValue interface </A></H4>
+
+<P>
+The IMoaDrValue interface provides methods for converting between
+MoaMmValues and Director-specific types. The following table lists
+the methods of this interface and the types of values they convert.
+
+<TABLE BORDER="2">
+<TR><TD WIDTH=230><B>Type</B></TD><TD WIDTH=204><B>To MoaMmValue</B>
+</TD>
+<TD WIDTH=203><B>From MoaMmValue</B></TD>
+</TR>
+
+<TR><TD WIDTH=230>Cast Member Reference</TD><TD WIDTH=204><A HREF="../drref/drvalue.htm#ValueToCMRef"><span class="code">ValueToCMRef()</span></A>
+</TD>
+<TD WIDTH=203><A HREF="../drref/drvalue.htm#CMRefToValue"><span class="code">CMRefToValue()</span></A></TD>
+</TR>
+
+<TR><TD WIDTH=230>Sprite Reference </TD><TD WIDTH=204><A HREF="../drref/drvalue.htm#ValueToSpriteRef"><span class="code">ValueToSpriteRef()</span></A>
+</TD>
+<TD WIDTH=203><A HREF="../drref/drvalue.htm#SpriteRefToValue"><span class="code">SpriteRefToValue()</span></A></TD>
+</TR>
+
+<TR><TD WIDTH=230>Cast Library Reference </TD>
+    <TD WIDTH=204><A HREF="../drref/drvalue.htm#ValueToCastLibRef"><span class="code">ValueToCastLibRef()</span></A>    </TD>
+    <TD WIDTH=203><A HREF="../drref/drvalue.htm#CastLibRefToValue"><span class="code">CastLibRefToValue()</span></A></TD>
+</TR>
+
+<TR><TD WIDTH=230>Sound Sprite Reference</TD><TD WIDTH=204><A HREF="../drref/drvalue.htm#ValueToSoundSpriteRef"><span class="code">ValueToSoundSpriteRef()</span></A><span class="code"> </span>
+</TD>
+<TD WIDTH=203><A HREF="../drref/drvalue.htm#SoundSpriteRefToValue"><span class="code">SoundSpriteRefToValue()</span></A></TD>
+</TR>
+</TABLE>
+
+<H4>Director notification clients<a name="NotificationIDs"></a></H4>
+
+<P>
+Director uses the MOA notification interfaces to notify Xtras
+of specific events of interest. Xtras call the callback interface
+<A HREF="../moref/montfctn.htm">IMoaNotification</A> to register
+interest in specific events, and implement the <A HREF="../moref/montfcln.htm">IMoaNotificationClient</A>
+interface to process the events requested. 
+<P> Director defines the following event notification IDs, which an Xtra uses 
+  to indicate the events it's interested in, and which the application uses to 
+  indicate the events its sending to the Xtra. For each event type, a specific 
+  data type is passed to the <A HREF="../moref/montfctn.htm">IMoaNotification::Register()</A> 
+  method when registering, and data is received from the application when it calls 
+  <A HREF="../moref/montfcln.htm#Notify">IMoaNotificationClient::Notify()</A>. 
+  For some code illustrating how to use custom notifications see <a href="notify.htm">notify.htm</a>. 
+  The following table lists Director event types and the associated Notification 
+  IDs and Data:
+
+<TABLE BORDER="2">
+<TR><TD WIDTH=100><B>Event</B></TD>
+<TD WIDTH=225><B>Notification ID </B></TD>
+    <TD WIDTH=244><B>Data passed to <span class="code">Register()</span></B> </TD>
+    <TD WIDTH=314><B>Data received by <span class="code">Notify()</span></B> </TD>
+  </TR>
+
+<TR><TD WIDTH=100>Movie opened</TD>
+<TD WIDTH=225><span class="code">NID_DrNMovieOpened</span></TD>
+<TD WIDTH=244><span class="code">PIMoaDrMovie</span> of movie to notify on (NULL == all movies)</TD>
+<TD WIDTH=314><span class="code">PIMoaDrMovie</span> of movie that opened</TD>
+</TR>
+
+<TR><TD WIDTH=100>Movie closed</TD>
+<TD WIDTH=225><span class="code">NID_DrNMovieClosed</span></TD>
+<TD WIDTH=244><span class="code">PIMoaDrMovie</span> of movie to notify on (NULL == all movies)</TD>
+<TD WIDTH=314><span class="code">PIMoaDrMovie</span> of movie that closed. Do not release this interface!</TD>
+</TR>
+
+<TR><TD WIDTH=100>Step frame</TD>
+<TD WIDTH=225><span class="code">NID_DrNStep</span></TD>
+<TD WIDTH=244><span class="code">PIMoaDrMovie</span> of movie to notify on (NULL == all movies)</TD>
+<TD WIDTH=314><span class="code">PIMoaDrMovie</span> of movie that stepped</TD>
+</TR>
+
+<TR><TD WIDTH=100>Service background process</TD>
+<TD WIDTH=225><span class="code">NID_DrNIdle</span></TD>
+<TD WIDTH=244><span class="code">PMoaLong</span> indicating max milliseconds between calls</TD>
+<TD WIDTH=314><span class="code">PMoaLong</span> indicating milliseconds since last call</TD>
+</TR>
+
+<TR><TD WIDTH=100>Palette changed</TD>
+<TD WIDTH=225><span class="code">NID_DrNPaletteChanged</span></TD>
+<TD WIDTH=244>NULL</TD>
+<TD WIDTH=314><span class="code">MoaMmValue</span> representing new internal palette -OR- <span class="code">PIMoaMmCastMember</span> representing new external palette</TD>
+</TR>
+
+<TR><TD WIDTH=100>Cast member modified</TD>
+<TD WIDTH=225><span class="code">NID_DrNCastMemberModified</span></TD>
+<TD WIDTH=244><span class="code">PIMoaDrCastMem</span> of the cast member to notify on (NULL == all cast members)</TD>
+<TD WIDTH=314><span class="code">PIMoaDrCastMem</span> of the cast member modified</TD>
+</TR>
+
+<TR><TD WIDTH=100>Selection changed in cast window</TD>
+<TD WIDTH=225><span class="code">NID_DrNCastSelectionChanged</span></TD>
+<TD WIDTH=244>NULL</TD>
+<TD WIDTH=314>NULL</TD>
+</TR>
+
+<TR><TD WIDTH=100>Score modified</TD>
+<TD WIDTH=225><span class="code">NID_DrNScoreModified</span></TD>
+<TD WIDTH=244>NULL</TD>
+<TD WIDTH=314>NULL</TD>
+</TR>
+
+<TR><TD WIDTH=100>Selection changed in score window</TD>
+<TD WIDTH=225><span class="code">NID_DrNScoreSelectionChanged</span></TD>
+<TD WIDTH=244>NULL</TD>
+<TD WIDTH=314>NULL</TD>
+</TR>
+
+<TR><TD WIDTH=100>Cue point passed</TD>
+<TD WIDTH=225><span class="code">NID_DrNCuePointPassed</span></TD>
+<TD WIDTH=244><span class="code">PIMoaMmValue</span> sprite reference containing cue points of interest (NULL == all sprites)</TD>
+<TD WIDTH=314><span class="code">PMoaMmCuePoint</span> struct representing the cue point passed</TD>
+</TR>
+
+<TR>
+    <TD WIDTH=100>Animation state changed</TD>
+    <TD WIDTH=225>
+      <p><span class="code">NID_DrAnimationState</span></p>
+      <p>This was added in D8.</p>
+    </TD>
+    <TD WIDTH=244>NULL</TD>
+    <TD WIDTH=314>
+      <p><span class="code">PMoaShort </span> &lt;=0 not animating, &gt;0 animating</p>
+    </TD>
+  </TR>
+
+<TR>
+    <TD WIDTH=100>Movie was rewound</TD>
+    <TD WIDTH=225> 
+      <p><span class="code">NID_DrNRewind</span></p>
+      <p>This was added in D8.5.</p>
+    </TD>
+    <TD WIDTH=244>NULL</TD>
+    <TD WIDTH=314>
+      <p>NULL</p>
+    </TD>
+  </TR>
+
+<TR>
+    <TD WIDTH=100>Movie halted due to lingo debugger stop</TD>
+    <TD WIDTH=225> 
+      <p><span class="code">NID_DrNEnteringDebugger</span></p>
+      <p>This was added in D8.5.</p>
+    </TD>
+    <TD WIDTH=244>NULL</TD>
+    <TD WIDTH=314> 
+      <p><span class="code">NULL</span></p>
+    </TD>
+  </TR>
+
+<TR>
+    <TD WIDTH=100>Movie continues after stopping</TD>
+    <TD WIDTH=225> 
+      <p><span class="code">NID_DrNLeavingDebugger</span></p>
+      <p>This was added in D8.5.</p>
+    </TD>
+    <TD WIDTH=244>NULL</TD>
+    <TD WIDTH=314>
+      <p>NULL</p>
+    </TD>
+  </TR>
+<TR>
+    <TD WIDTH=100>Window reveal</TD>
+    <TD WIDTH=225> <p>NID_DrNStageWindowOpen</p>
+      <p>This was added in DMX 2004.</p>
+    </TD>
+    <TD WIDTH=244>NULL</TD>
+    <TD WIDTH=314>
+      <p>NULL</p>
+    </TD>
+  </TR>
+<TR>
+    <TD WIDTH=100>Window collapse</TD>
+    <TD WIDTH=225> <p>NID_DrNStageWindowClose</p>
+      <p>This was added in DMX 2004.</p>
+    </TD>
+    <TD WIDTH=244>NULL</TD>
+    <TD WIDTH=314>
+      <p>NULL</p>
+    </TD>
+  </TR>
+</TABLE>
+
+<P>
+The step, idle, and palette changed events are equivalent to events
+sent to sprite actors through the <A HREF="../mmref/mmxsprta.htm#Notify">IMoaMmSpriteActor::Notify()</A>
+method. However, any Xtra can implement the IMoaNotificationClient
+class and subscribe to these events through the host application's
+<A HREF="../moref/montfctn.htm">IMoaNotification</A> callback
+interface.
+
+<P>
+Note: The <span class="code">IMoaDrUtils</span> methods <span class="code">RegisterNotificationClient()</span>
+and <span class="code">UnregisterNotificationClient()</span> which enabled Director
+Xtras to receive notification in the previous release of this
+XDK are obsolete, though still provided by Director.
+
+<H4><A NAME="RTFToC63">Asset Xtra support interfaces</A></H4>
+
+<P>
+The Director services provide two interfaces that support media
+asset Xtras: <span class="code">IMoaDrAssetCallback</span> and <span class="code">IMoaDrSpriteCallback</span>.
+
+<H5><A NAME="RTFToC64">IMoaDrAssetCallback</A></H5>
+
+<P>
+After a media asset Xtra's <span class="code">IMoaMmXAsset</span> interface is
+initialized by the host application, its <span class="code">SetCallback()</span>
+method is called. This method provides an <span class="code">IMoaMmAssetCallback</span>
+interface to the Xtra. This interface is described in &quot;<A HREF="../mmdg/mmdgc2.htm">Asset Xtras</A>&quot; in the <I>Multimedia Developer's Guide</I>.
+<P>
+In Director, the object that provides <span class="code">IMoaMmAssetCallback</span>
+also implements the <span class="code">IMoaDrAssetCallback</span> interface. To
+acquire this interface, the media asset calls <span class="code">QueryInterface()</span>
+on <span class="code">IMoaMmAssetCallback</span>. It can then call the methods
+described here to interact with its internal representation within
+a Director movie.
+
+<H6><A NAME="RTFToC65">Cast member properties </A></H6>
+
+<P>
+<span class="code">IMoaDrAssetCallback</span> provides the standard property owner
+methods <span class="code">GetProp()</span> and <span class="code">SetProp()</span>, which enable
+the media asset to access its Director-specific properties. These
+are the same properties described earlier in the discussion of
+the <span class="code">IMoaDrCastMem</span> interface. In addition, the asset Xtra
+can access properties it defines in its own implementations of
+<span class="code">GetProp()</span> and <span class="code">SetProp()</span>. However, this isn't
+the most efficient way to access these properties and can create
+endless loops, so it should be used with caution.
+
+<H6><A NAME="RTFToC66">Scripting support </A></H6>
+
+<P>
+<span class="code">IMoaDrAssetCallback</span> provides the <span class="code">CallCMHandler()</span>
+method to enable a media asset Xtra to call any Lingo handlers
+defined in the cast member script.
+
+<H6><A NAME="RTFToC67">Internal cast member access </A></H6>
+
+<span class="code">IMoaDrAssetCallback</span> provides the <span class="code">GetCMRef()</span>
+method to enable a media asset Xtra to get the structure representing
+its current position in the movie and cast.<BR>
+
+<H5><A NAME="RTFToC68">IMoaDrSpriteCallback</A></H5>
+
+<P>
+After a sprite asset Xtra's <span class="code">IMoaMmXSpriteActor</span> interface
+is initialized by the host application, its <span class="code">SetCallback()</span>
+method is called. This method provides an <span class="code">IMoaMmSpriteCallback</span>
+interface to the Xtra. This interface is described in &quot;<A HREF="../mmdg/mmdgc2.htm">Asset Xtras</A>&quot; in the <I>Multimedia Developer's Guide</I>.
+<P>
+In Director, the object that provides <span class="code">IMoaMmSpriteCallback</span>
+also implements the <span class="code">IMoaDrSpriteCallback</span> interface. To
+acquire this interface, the sprite actor calls <span class="code">QueryInterface()</span>
+on <span class="code">IMoaMmSpriteCallback</span>. It can then call the methods
+described here to interact with its Director movie.
+
+<H6><A NAME="RTFToC69">Acquiring IMoaDrMovie </A></H6>
+
+<P>
+To get access to the <span class="code">IMoaDrMovie</span> interface for its movie,
+the sprite can call <span class="code">IMoaDrSpriteCallback::GetMovie()</span>.
+It can then access other interfaces within the movie, using the
+techniques described in &quot;<A HREF = "#DRUSEMOD">Using the Director Object Model</A>&quot;.
+
+<H6><A NAME="RTFToC70">Sprite channel
+access</A></H6>
+
+<P>
+To determine its sprite channel in the score, the sprite calls
+<span class="code">IMoaDrSpriteCallback::GetSpriteChanIndex().
+</span>
+<H6><A NAME="RTFToC71">Scripting support </A></H6>
+
+<P>
+To call a handler in its sprite script, the sprite can invoke
+the method <span class="code">IMoaDrSpriteCallback::SendSpriteMessage()</span>.
+This method ensures that handler calls are passed up the normal
+message passing chain, from sprite script to cast member script
+to frame script to movie script.
+
+<H4>Playing sound data</H4>
+
+The <A HREF="../drref/drsound.htm"><span class="code">IMoaDrSound</span></A>
+interface provides a way for any Xtra to access the sound mixing
+capabilities built into Director. Through this interface, you
+can access any available channel in the mixer and use it to play
+a stream of audio data in any format that Director supports. This
+enables an Xtra to play along with other sounds in the score.
+
+<H4><A NAME="RTFToC72">Accessing palette
+data</A></H4>
+
+<P>
+The <A HREF="../drref/drplttac.htm">IMoaDrPaletteAccess</A> interface
+provides a way for any Xtra to access Director's built in palettes
+and to get the platform-specific media of the palettes.
+
+<HR width=45% align=left>
+<h4><A NAME="DREXAMP">Director Services Examples</A></h4>
+
+<P>
+The following fragments provide a couple examples of calls using
+the Director services interfaces.
+
+<H4><A NAME="RTFToC73">Calling a method in the movie interface</A> </H4>
+
+<P>
+As illustrated earlier, the Director services are accessible via
+callback interfaces available to all Director Xtras. Each Xtra
+is provided with a pointer to the Director callback object. Within
+a C implementation of an Xtra interface method, you'd acquire
+a pointer to the callback object using code similar to the following
+fragment:
+<PRE  class="code">
+        PIMoaCallback pMyCallback;
+        PIMoaDrPlayer pPlayer;
+        PIMoaDrMovie pMovie;
+        MoaError err;
+        pMyCallback = This-&gt;pObj-&gt;pCallback; 
+        err = pMyCallback-&gt;lpVtbl-&gt;QueryInterface(pMyCallback, &amp;IID_IMoaDrPlayer, &amp;pPlayer);
+</PRE>
+
+<P>
+In this example, the specified interface is returned in the pointer
+variable <span class="code">pPlayer</span>. Interface ID's for the various Director
+services interfaces (such as <span class="code">IID_IMoaDrPlayer</span>) are listed
+with each interface description in <A HREF="../drref/index.htm">Director Interfaces</A> in the <I>Director API Reference</I>.
+<P>
+Once you have the player interface, a you can call any of its
+methods through its function table (referenced through the standard
+pointer <span class="code">lpVtbl</span>). For example, after using the above fragment
+to get an interface to the player interface, you'd make the following
+call to get the player's active movie:
+<P>
+<span class="code">err = pPlayer-&gt;lpVtbl-&gt;GetActiveMovie(pPlayer, &amp;pMovie);
+<BR>
+<BR>
+</span>IMPORTANT: In all cases when you specifically request an
+interface through a callback service method, you are responsible
+for releasing it when you're through. See the documentation for
+methods which return interfaces for more details. To release an
+interface, you call its <span class="code">Release()</span> method. Like <span class="code">QueryInterface()</span>,
+<span class="code">Release()</span> is a standard method of all MOA interfaces,
+provided by inheritance from the <span class="code">IMoaUnknown</span> interface.
+<P>
+<span class="code">pMovie-&gt;lpVtbl-&gt;Release(pMovie); <BR>
+pPlayer-&gt;lpVtbl-&gt;Release(pPlayer);</span>
+
+<H4><A NAME="RTFToC74">Accessing casts in the active movie</A> </H4>
+
+<P>
+Here's a chunk of C code that determines the number of casts in
+the active movie. It is assumed that this code is the implementation
+of an Xtra method; &quot;This&quot; is a pointer to the object
+instance which is passed in to all implementation functions.
+<PRE class="code">
+STDMETHODIMP TestClass_TestMethod(TestClass_ITestInterface * This) 
+{
+	MoaError err = kMoaErr_NoErr;
+	PIMoaCallback pMyCallback;
+	PIMoaDrPlayer pPlayer = NULL;
+	PIMoaDrMovie pMovie = NULL;
+	MoaLong castCount;
+
+	// Get interface to player
+	pMyCallback = This-&gt;pObj-&gt;pCallback;
+	err = pMyCallback-&gt;lpVtbl-&gt;QueryInterface(pMyCallback, 
+	&amp;IID_IMoaDrPlayer, &amp;pPlayer);
+	if (err == kMoaErr_NoErr)
+	{
+		// Get interface to currently active movie 
+		err = pPlayer-&gt;lpVtbl-&gt;GetActiveMovie(pPlayer, &amp;pMovie); 
+		if (err == kMoaErr_NoErr)
+		{
+			// Get number of casts 
+			err = pMovie-&gt;lpVtbl-&gt;GetCastCount(pMovie, &amp;castCount); 
+			// number of casts is in castCount ...
+			pMovie-&gt;lpVtbl-&gt;Release(pMovie);
+		} 
+		pPlayer-&gt;lpVtbl-&gt;Release(pPlayer);
+	}
+	return err;
+}
+</PRE>
+
+<H4><A NAME="RTFToC75">Accessing cast member properties</A></H4>
+
+<P>
+The following examples assume you have an instance of <span class="code">PIMoaMmUtils</span>
+in <span class="code">pMmUtils</span>, a <span class="code">PIMoaDrUtils</span> in <span class="code">pDrUtils</span>,
+and the <span class="code">PIMoaDrCastMem</span> for the cast member of interest
+in <span class="code">pCastMem</span>.
+
+<H5><A NAME="RTFToC76"></A>Setting to a built-in palette</H5>
+
+<P>
+The following code fragment sets a cast member's palette to the built-in NTSC palette:
+<PRE class="code">
+        pMmUtils-&gt;lpVtbl-&gt;StringToSymbol(pMmUtils, &quot;paletteRef&quot;, &amp;myPropSym);
+        pMmUtils-&gt;lpVtbl-&gt;StringToSymbol(pMmUtils, &quot;NTSC&quot;, &amp;myPalSym);
+        pMmUtils-&gt;lpVtbl-&gt;SymbolToValue(pMmUtils, &amp;myPalSym, &amp;myPalValue);
+        pCastMem-&gt;lpVtbl-&gt;SetProp(pMmUtils, &amp;myPropSym, &amp;myPalValue); 
+        pMmUtils-&gt;lpVtbl-&gt;ValueRelease(pMmUtils, &amp;myPalValue); 
+</PRE>
+
+<H5><A NAME="RTFToC77">Setting to a cast palette </A></H5>
+
+<P>
+Setting a cast member's palette to a cast-based palette member 5 of cast 1:
+<PRE class="code">
+	pMmUtils-&gt;lpVtbl-&gt;StringToSymbol(pMmUtils, &quot;paletteRef&quot;, &amp;myPropSym);
+	CMRef_Make(&amp;myCMRef, 1, 5);
+	pDrUtils-&gt;lpVtbl-&gt;CMRefToValue(pDrUtils, &amp;myCMRef, &amp;myPalValue);
+	pCastMem-&gt;lpVtbl-&gt;SetProp(pCastMem, &amp;myPropSym, &amp;myPalValue);
+	pMmUtils-&gt;lpVtbl-&gt;ValueRelease(pMmUtils, &amp;myPalValue);
+</PRE>
+<H5><A NAME="RTFToC78">Finding the
+type of palette </A></H5>
+
+<P>
+The following code fragment shows how to get a cast member's palette,
+and see what kind it is:
+<PRE class="code">
+pMmUtils-&gt;lpVtbl-&gt;StringToSymbol(pMmUtils, &quot;paletteRef&quot;, &amp;myPropSym);
+pCastMem-&gt;lpVtbl-&gt;GetProp(pCastMem, &amp;myPropSym, &amp;myPalValue); 
+if (pDrUtils-&gt;lpVtbl-&gt;ValueToCMRef(pDrUtils, &amp;myPalValue, &amp;myCMRef) == kMoaErr_NoErr)
+{
+	// it's a cast-based palette, CMRef is in myCMRef
+}
+
+else if (pMmUtils-&gt;lpVtbl-&gt;ValueToSymbol(pMmUtils, 
+		&amp;myPalValue, &amp;myPalSym) == kMoaErr_NoErr)
+{
+	// it's a built-in palette, the symbol is in myPalSym
+}
+
+...
+
+pMmUtils-&gt;lpVtbl-&gt;ValueRelease(pMmUtils, &amp;myPalValue);</PRE>
+
+<HR width=45% align=left>
+<h4><a name="PropertyPages">VDL</a> files and Property page interfaces</h4>
+<p> Director 8 allows developers to create and customize tabs in the Property 
+  Inspector by editing (or adding) the VDL (View Description List) files in the 
+  props folder. Use the information in View Description List File Syntax along 
+  with the information about the Property page interfaces section to define Property 
+  pages for Xtras that you create. 
+<p> For information on creating and editing VDL files, see <a href="vdlsyntax.htm">View Description List File Syntax</a>. 
+<p>
+			The Property page interfaces allows you to define Property pages in the Property Inspector for Asset Xtras. 
+			If the Asset Xtra has a simple Property page that does not require any custom property processing, you do 
+			not need to use the <span class="code">IMuiPropertyPage</span> interfaces to create a Property page for your Xtra, 
+			simply create a VDL (View Description List) file and place it in the props folder. If the Xtra requires 
+			a Property page with special logic, code, or property handling, you need to provide the logic for the 
+			Property page using the <span class="code">IMuiPropertyPage</span> interfaces.
+<p> The following Property 
+  page interfaces are available starting in Director 8:
+
+<table cellspacing="0" cellpadding="4">
+<tr>
+    <td valign="top" width="14"><img src="tri.gif" width="14" height="10" vspace="2"></td>
+    <td valign="top"><span class="code"> <a href="../drref/drproppage.htm#PropertyPage">IMuiPropertyPage</a> 
+      </span> Provides a mechanism for sending special logic, code, property handling, or special 
+      cases to Property pages for Asset Xtras. </td>
+</tr>
+
+<tr>
+    <td valign="top" width="14"><img src="tri.gif" width="14" height="10" vspace="2"></td>
+<td valign="top"><span class="code"><a href="../drref/drproppagetarget.htm">IMuiPropertyPageTarget</a></span>
+A support interface creating an abstraction layer above the object targeted by the Property page. Use this 
+interface when the Property inspector targets multiple objects and you want to get or set the properties for
+ all of the objects at the same time.</td>
+</tr>
+
+<tr>
+    <td valign="top" width="14"><img src="tri.gif" width="14" height="10" vspace="2"></td>
+    <td valign="top"><span class="code"><a href="../drref/drproppageinstance.htm">IMuiPropertyPageInstance</a></span>
+	Represents the current state of the instantiated Property page as generated from the 
+      VDL data provided by the Xtra or the Xtra's VDL file in the props folder. 
+      Use this interface to get or set the state/value of specific controls in 
+      the <span class="code"> UpdateItems </span> 
+      or <span class="code"> ItemClicked </span> 
+      methods of the <span class="code">IMuiPropertyPage</span>
+      interface.</td>
+</tr>
+
+</table>
+
+<p> The VDL file information 
+  for Asset Xtras can be handled in one of two ways: you can create a VDL file 
+  for your Xtra, place it in the props folder located next to the Director application, 
+  and register its name and location using the <span class="code">Register()</span> method; or you can include 
+  the VDL information inside the Xtra, in which case it is returned as a formatted 
+  string when Director calls the <span class="code"> GetDescriptor </span> 
+  method.</p>
+
+<HR width=45% align=left>
+
+<h4><a name="XtraVersions">Version</a> information and Xtra downloading</h4> 
+<p> For information about xtra downloading, see the overview provided in <b><a href="http://www.adobe.com/support">TechNote 
+  13653, Xtras downloading overview</a></b>.This section answers some questions 
+  about the version information of xtras and how it applies to xtra packages and 
+  xtra downloading. 
+<h4>How does Shockwave determine what version of the Xtra is on the machine? 
+Is it the class ID or version resource?</h4>
+<p> The version resource is used to determine which xtra is on the machine. The only time the version info internal to the 
+  Xtra comes into play is after an xtra has been downloaded and installed. For the remainder of that session, both versions 
+  of the xtra are installed and available to MOA. If the internal versions are the same, the MOA code selects one in an indeterminate 
+  manner. Otherwise the xtra with the higher internal version number is chosen. The internal version number is defined with 
+  the BEGIN_XTRA_DEFINES_CLASS and CLASS_DEFINES_INTERFACE macros.
+<h4>How does the movie know which version 
+  of an Xtra it needs? </h4>
+<p>This only comes into play if the movie has the &quot;download when needed&quot; 
+box checked in the modify\movie\xtras dialog. If this box isn't 
+checked then the movie has no information about what version of any 
+xtra was used. When the movie author selects the &quot;download when 
+needed&quot; box in the dialog, director looks up the package file on the 
+net. Information about each file in the package - including the 
+external version number - is pulled out of the package file at this 
+time and saved in the movieXtraList. If the package is later updated 
+with a newer version of the xtra, the movie does not automatically 
+check under any circumstances. The movie author would have to 
+uncheck/recheck the download box to update the movie with the version 
+info about the xtra package updated.
+<h4>We are releasing version 1 of our 
+  product. What would you expect to see in the version resource on the Mac and 
+  PC? </h4>
+<p>Although some of the examples in the XDK don't have version information, the 
+  ValueChecker example and all of the skeleton projects have been updated to have 
+  version resources. As as external versions go, Shockwave/Director check 
+  3 levels of version information. So:<br>
+<ul>
+<li>1.0.0 and 1.0.0d50 and 1.0.0r55 and 1.0 are all the same version</li>
+<li>1.0.1 is newer than 1.0.0</li>
+<li>1.1.0 is newer than 1.0.1</li>
+</ul>
+In Director you can check what versions of xtras are installed by 
+typing into the message window.<br>
+<span class="code">put the xtralist<br>
+-- or get a sorted list with<br>
+xlist = the xtralist<br>
+sort xlist<br>
+put xlist<br>
+</span><br>
+<span class="code">the xtraList</span> property and <span class="code">the movieXtraList</span> property are also 
+available in Shockwave if a movie wants to do its own xtra existence 
+and/or version checking. Some authors do this so they can have
+customized download movies for those situations where a package will 
+need to get downloaded.
+
+<HR width=45% align=left>
+
+<h4><a name="CrossPlatform">Cross</a> Platform Projectors</h4> 
+<p>Director MX 2004 added support for creating projectors on the &quot;other&quot; platform: 
+  macintosh projectors on windows and windows projectors on macintosh. 
+  To support this for your custom Xtra, first make sure there is an entry for your Xtra in the xtrainfo.txt file that gives the proper filename for the Xtra on each platform. 
+  Unless this information is provided, the code assumes your Xtra only exists on the current platform. 
+<p>To make your custom Windows Xtra availabe for a Mac-created projector, simply put the Xtra in the <dfn>/Cross Platform Resources/Windows/Xtras/</dfn> 
+  folder of the Macintosh Director installation. 
+<p>On the macintosh there is a complication:  a Mach-O Xtra is actually a bundle which consists of multiple folders and files - which could have resource forks.
+  Although, the Adobe Xtras and example xtras no longer use resource forks.
+  So here's how its handled.
+You use the ditto command line tool to create a data fork archive of the entire xtra bundle.
+This archive file can be placed into the <dfn>/Cross Platform Resources/Macintosh/Xtras/</dfn> folder of the Windows Director installation.
+For example:<br><br>
+<span class="code">ditto -c -X --rsrc /Volumes/plum/XDK/examples/OvalSprite.xtra /Volumes/plum/XDK/examples/OvalSprite.cpio</span><br></p>
+  
+<HR width=45% align=left>
+
+<h4><a name="Unicode">Unicode</a></h4>
+<p>Director 11 was changed to support Unicode text.
+When passing strings to Director 11, you need to convert them to UTF8 format
+When retrieving a string from Director 11, it will be converted to UTF8 before it is passed to you.
+This includes movie names, file names, lingo variables, etc.
+A new example xtra, <span class="heading5">ComputerUser</span>, has been added that demonstrates how to deal with converting Unicode text from the operating system on both Macintosh and Windows.
+Note that UTF8 encoding is the same as standard ASCII for values from 0 - 127, so normal C strings work fine in many cases.
+Also note that with UTF8, some characters take 1 byte, and some characters take more than 1 byte of data.</p>
+
+<p> Director 11 does not support Unicode text in VDL files. 
+Note that for some dictionary properties, the maximum supported length is actually in  bytes rather than Unicode characters. 
+For example,
+with <span class="code">kMoaMmDictKey_DisplayCategoryString</span> the maximum length may be less than 64 Unicode characters.</p>
+
+<HR width=45% align=left>
+<A HREF = "../copyrite.htm">Copyright &#169; 1995-2008 Adobe Macromedia Software LLC, Inc.</A>
+</BODY>
+</HTML>

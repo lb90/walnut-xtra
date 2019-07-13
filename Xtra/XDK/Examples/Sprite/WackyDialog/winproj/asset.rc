@@ -1,0 +1,23 @@
+/*
+ADOBE SYSTEMS INCORPORATED
+Copyright 1994 - 2007 Adobe Macromedia Software LLC
+All Rights Reserved
+
+NOTICE:  Adobe permits you to use, modify, and distribute this file in accordance with the 
+terms of the Adobe license agreement accompanying it.  If you have received this file from a 
+source other than Adobe, then your use, modification, or distribution of it requires the prior 
+written permission of Adobe.
+*/
+
+
+#define VER_FILETYPE            VFT_DLL
+#define VER_COMPONENTNAME       "Adobe Sample Xtra"
+
+#define VER_WINFILENAME         "SampleAsset.X32"
+#define VER_WINMODULENAME       "SampleAsset"
+
+#define DVER_PRODUCTNAME         "Adobe Director"
+
+colorpicon	BITMAP  DISCARDABLE     "CPicon.bmp"
+bwpicon		BITMAP  DISCARDABLE     "bwPicon.bmp"
+

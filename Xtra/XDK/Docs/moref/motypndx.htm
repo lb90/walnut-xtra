@@ -1,0 +1,916 @@
+<HTML>
+<HEAD>
+<TITLE>MOA Types and Miscellaneous API</TITLE>
+<link href="../xdk.css" rel="stylesheet" type="text/css">
+</HEAD>
+<body>
+<P> <A HREF="../moadg/index.htm">MOA Developer's Guide</A> <BR>
+  <A HREF="index.htm">MOA Interfaces</A> | <A HREF="momthndx.htm">MOA Methods</A>
+<HR width=45% align=left>
+<H3><A NAME="RTFToC2">Director Xtra Development Kit: MOA API Reference</A></H3>
+<h3>MOA Types and Miscellaneous API</h3>
+<P>This document contains the following sections:
+<UL>
+  <LI><A HREF = "#MOTYPES">MOA Types</A>
+  <LI><A HREF = "#MOCONSTS">MOA Constants</A>
+  <LI><A HREF = "#MOGLOBS">MOA Globals</A>
+  <LI><A HREF = "#MOFUNCS">MOA Functions</A>
+  <LI><A HREF = "#MOMACROS">MOA Macros</A>
+  <LI><A HREF = "#MOERRS">MOA Errors</A>
+</UL>
+<HR width=45% align=left>
+<H3><A NAME="MOTYPES">MOA Types</A></H3>
+Defined in: moatypes.h
+<P> The following standard types are defined by MOA for use in various
+  interfaces, including both MOA standard interfaces and application
+  specific interfaces. <BR>
+<h4>General types </h4>
+<BR>
+<h5><A NAME="RTFToC3"></A><A NAME="MoaChar">MoaChar</A>,<BR>
+  PMoaChar, <BR>
+  ConstPMoaChar </h5>
+<P>
+<TABLE BORDER="2">
+  <TR>
+    <TD WIDTH=252><span class="code">MoaChar</span> </TD>
+    <TD WIDTH=252>Signed character type </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=252><span class="code">PMoaChar</span> </TD>
+    <TD WIDTH=252>Pointer to null-terminated C string</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=252><span class="code">ConstPMoaChar</span> </TD>
+    <TD WIDTH=252>Pointer to constant character string</TD>
+  </TR>
+</TABLE>
+<BR>
+<BR>
+<h5><A NAME="MoaBool">MoaBool</A></h5>
+<P>
+<P> Boolean value type
+<P><BR>
+<h5><A NAME="MoaByte">MoaByte</A> </h5>
+<P>
+<P> Byte value type
+<P><BR>
+<h5><A NAME="MoaShort">MoaShort</A> </h5>
+<P>
+<P> Short integer type
+<P><BR>
+<h5><A NAME="MoaUshort">MoaUshort</A> </h5>
+<P>
+<P> Unsigned short integer type
+<P><BR>
+<h5><A NAME="MoaLong">MoaLong</A> </h5>
+<P>
+<P> Long integer type
+<P><BR>
+<h5><A NAME="MoaUlong">MoaUlong</A> </h5>
+<P>
+<P> Unsigned long integer type
+<P><BR>
+<h5><A NAME="MoaFixed">MoaFixed</A> </h5>
+<P>
+<P> 16.16 fixed-point number
+<P><BR>
+<h5><A NAME="MoaError">MoaError</A> </h5>
+<P>
+<P> Standard error type used as return value to most methods
+<P><BR>
+<h5><A NAME="MoaFloat">MoaFloat</A> </h5>
+<P>
+<P> 32-bit IEEE floating point number
+<P><BR>
+<h5><A NAME="MoaDouble">MoaDouble</A> </h5>
+<P>
+<P> Double floating point number. In Metrowerks, defined as a 64-bit
+  type, regardless of &quot;8-byte double&quot; and &quot;Gen 881&quot;;
+  64-bit IEEE floating point number in other environments
+<P><BR>
+<h5><A NAME="RTFToC14"><A NAME="PMoaVoid">PMoaVoid</A>,</A> <BR>
+  ConstPMoaVoid,<BR>
+  PPMoaVoid </h5>
+<P>
+<TABLE BORDER=2>
+  <TR>
+    <TD WIDTH=252><span class="code">PMoaVoid</span> </TD>
+    <TD WIDTH=252>Pointer to a void type</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=252><span class="code">ConstPMoaVoid</span> </TD>
+    <TD WIDTH=252>Pointer to a void type constant</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=252><span class="code">PPMoaVoid</span> </TD>
+    <TD WIDTH=252>Pointer to pointer to a void type constant </TD>
+  </TR>
+</TABLE>
+<BR>
+<P><BR>
+<h5><A NAME="MoaCharParam">MoaCharParam</A> </h5>
+<P>
+<P> Character parameter type; for types &lt; 32 bits, this is the
+  long-sized versions for argument lists
+<P><BR>
+<h5><A NAME="MoaBoolParam">MoaBoolParam</A> </h5>
+<P>
+<P> Boolean parameter type
+<P><BR>
+<h5><A NAME="MoaWide">MoaWide</A> </h5>
+<P>
+<P> Double long integer, defined differently (but compatibly) for
+  the two platforms currently supported. On the Macintosh, defined
+  to match the <span class="code">wide</span> integer type. In Windows defined to match the <span class="code">LARGE_INTEGER</span> type
+<h4>2D Graphics Types </h4>
+<P><BR>
+<h5><A NAME="MoaCoord">MoaCoord</A> </h5>
+<P> <span class="code">MoaCoord</span> <span class="code">MoaLong</span>
+<P> Moa graphic coordinate type<BR>
+<P><BR>
+<h5><A NAME="MoaPoint">MoaPoint</A> </h5>
+<PRE class="code">typedef struct MoaPoint {
+        MoaCoord y;
+        MoaCoord x;
+} MoaPoint;
+</PRE>
+<P> Type representing a position in two-dimensional coordinate space. <span class="code">y</span> represents the vertical
+  position of the point, <span class="code">x</span> represents the horizontal position.
+<P>
+<TABLE BORDER="2">
+  <TR>
+    <TD WIDTH=252><span class="code">MoaPoint</span> </TD>
+    <TD WIDTH=252>Structure type </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=252><span class="code">PMoaPoint</span> </TD>
+    <TD WIDTH=252>Pointer type</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=252><span class="code">ConstPMoaPoint</span> </TD>
+    <TD WIDTH=252>Constant pointer type</TD>
+  </TR>
+</TABLE>
+<BR>
+<P><BR>
+<h5><A NAME="MoaRect">MoaRect</A></h5>
+<PRE class="code">typedef struct MoaRect {
+        MoaCoord top;
+        MoaCoord left;
+        MoaCoord bottom;
+        MoaCoord right;
+} MoaRect;</PRE>
+<P> Structure representing a rectangular area in two-dimensional coordinate
+  space. <span class="code">top</span> represents
+  the upper bounding coordinate of the area, <span class="code">left</span> represents the left side bounding coordinate, <span class="code">bottom</span> represents the bottom bounds and <span class="code">right</span> represents the right side coordinate.
+<P>
+<TABLE BORDER=2>
+  <TR>
+    <TD WIDTH=252><span class="code">MoaRect</span> </TD>
+    <TD WIDTH=252>Structure type</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=252><span class="code">PMoaRect</span> </TD>
+    <TD WIDTH=252>Pointer type</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=252><span class="code">ConstPMoaRect</span> </TD>
+    <TD WIDTH=252>Constant pointer type</TD>
+  </TR>
+</TABLE>
+<BR>
+<h4><A NAME="MOSTRMTYPE">IMoaStream types</A></h4>
+<BR>
+<h5><A NAME="MoaStreamPosition">MoaStreamPosition</A> </h5>
+<P> Type for specifying current position
+<P><BR>
+<h5><A NAME="MoaStreamCount">MoaStreamCount</A> </h5>
+<P> Type for specifying size
+<h4><A NAME="MOFILETYPE">IMoaFile types</A></h4>
+<BR>
+<h5><A NAME="MoaSystemFileSpec">MoaSystemFileSpec</A> </h5>
+<P> <span class="code">typedef MoaChar MoaSystemFileSpec[MOA_MAX_PATHNAME] <BR>
+  </span>
+<P><BR>
+<h5><A NAME="MoaFileEachProc">MoaFileEachProc</A> </h5>
+<PRE class="code">
+MoaError MoaFileEachProc(
+        ConstPMoaSystemFileSpec <I>pSpec</I>,
+        ConstPMoaChar <I>pFileName</I>,
+        MoaBoolParam <I>isDirectory</I>, 
+        MoaWide <I>lastModDate</I>,
+        MoaUlong <I>fileType</I>,
+        PMoaVoid <I>refCon</I>)
+</PRE>
+Enumeration function prototype for <A HREF = "file.htm#EachFile">IMoaFile::EachFile()</A> method.
+<P>
+<HR width=45% align=left>
+<H3><A NAME="MOCONSTS">MOA Constants</A></H3>
+<P> Defined in: moatypes.h
+<h4>Boolean Constants </h4>
+<P>
+<TABLE BORDER=2>
+  <TR>
+    <TD WIDTH=252><span class="code">TRUE</span> </TD>
+    <TD WIDTH=252> 1 </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=252><span class="code">FALSE</span> </TD>
+    <TD WIDTH=252> 0 </TD>
+  </TR>
+</TABLE>
+<h4><A NAME="MOINFOCONST">IMoaAppInfo constants</A></h4>
+<P> These constants are used for obtaining information about the Xtra's
+  host application through the <A HREF="appinfo.htm" >IMoaAppInfo</A> callback interface. The desiredInfo parameter specifies the type
+  of information being requested; it can be one of the following
+  enumerated constants:<BR>
+<P>
+<TABLE BORDER=2>
+  <TR>
+    <TD WIDTH=205>Constant</TD>
+    <TD WIDTH=299>Description</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=205><span class="code">kMoaAppInfo_SerialNumber</span> </TD>
+    <TD WIDTH=299>Application serial number as a string. Format of a serial number is unspecified, except that it is guaranteed to be less than 256 bytes long. An empty string may be returned. </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=205><span class="code">kMoaAppInfo_RunMode</span> </TD>
+    <TD WIDTH=299>RunMode of the app as a string. Defined modes are: <BR>
+      &quot;Author&quot; authoring application<BR>
+      &quot;Projector&quot; projector-only application<BR>
+      These values are not localized. </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=205><span class="code">kMoaAppInfo_UserName</span></TD>
+    <TD WIDTH=299>the user name entered at registration. </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=205><span class="code">kMoaAppInfo_OrganizationName</span></TD>
+    <TD WIDTH=299>the company/organization name entered at registration. </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=205><span class="code">kMoaAppInfo_AppFileSpec</span></TD>
+    <TD WIDTH=299>a MoaSystemFileSpec to the application/projector executable. This is a MoaSystemFileSpec, not a character string, thus on the Macintosh you will receive an FSSpec. </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=205><span class="code">kMoaAppInfo_ProductName</span></TD>
+    <TD WIDTH=299>The name of the product, minus version information. This is not localized. Currently defined are &quot;Director&quot;, &quot;SoundEdit&quot;, &quot;FreeHand&quot; </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=205><span class="code">kMoaAppInfo_ProductVersion</span></TD>
+    <TD WIDTH=299>Version of the product, generally a character string representing a number, though it may include letters as well, e.g., &quot;5.0&quot;,&quot;5.0a&quot;, &quot;5.5&quot; </TD>
+  </TR>
+</TABLE>
+<BR>
+Note that not all apps will support all these; you must be prepared
+for an app to return kMoaErr_NoSuchKey for any or all of these.
+additional values may be added in the future.<BR>
+<BR>
+The parameters <span class="code"><I>pInfoBuffer</I></span> and <span class="code"><I>infoBufferLen</I></span> provide the application with a buffer to write the corresponding
+information to.<BR>
+<h4><A NAME="MODICTCONST">IMoaDict constants</A></h4>
+<H6><A NAME="RTFToC33">Entry Constant</A></h6>
+<P>
+<TABLE BORDER=2>
+  <TR>
+    <TD WIDTH=252><span class="code">MoaDictTypeID</span> </TD>
+    <TD WIDTH=252>32 bit numbers representing the type of an entry. </TD>
+  </TR>
+</TABLE>
+<BR>
+The first 2^16 MoaDictTypeID values are reserved by MOA. (The
+types IDs enumerated so are listed above.) Type ID values
+above the reserved range are dynamically assigned at runtime and
+map to an object exporting the <span class="code">IMoaDict</span> interface. These can be looked up either using the well known
+types dictionary or by enumerating MOA interfaces.<BR>
+<H6><A NAME="RTFToC34">Data Type Constants</A></h6>
+<P>
+<TABLE BORDER=2>
+  <TR>
+    <TD WIDTH=216><span class="code">kMoaDictType_Bogus</span> </TD>
+    <TD WIDTH=288>Illegal entry type.</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=216><span class="code">kMoaDictType_Long</span> </TD>
+    <TD WIDTH=288><span class="code">MoaLong</span> </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=216><span class="code">kMoaDictType_Float</span> </TD>
+    <TD WIDTH=288>32 bit IEEE single-precision floating-point number </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=216><span class="code">kMoaDictType_Wide</span> </TD>
+    <TD WIDTH=288><span class="code">MoaWide</span> </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=216><span class="code">kMoaDictType_Bool</span> </TD>
+    <TD WIDTH=288><span class="code">MoaBool</span> </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=216><span class="code">kMoaDictType_MoaID</span> </TD>
+    <TD WIDTH=288><span class="code">MoaID</span> </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=216><span class="code">kMoaDictType_Bytes</span> </TD>
+    <TD WIDTH=288>Arbitrary bytes</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=216><span class="code">kMoaDictType_CString</span> </TD>
+    <TD WIDTH=288>Null-terminated C String </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=216><span class="code">kMoaDictType_Dict</span> </TD>
+    <TD WIDTH=288><span class="code">PIMoaDict</span> (see note) </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=216><span class="code">kMoaDictType_PIMoaUnknown</span> </TD>
+    <TD WIDTH=288>Arbitrary MOA interface. When storing interfaces in a dictionary, calling <span class="code">Put()</span> on the containing <span class="code">IMoaDict</span> calls <span class="code">AddRef()</span> on the interface being stored; calling <span class="code">Remove()</span> on the <span class="code">IMoaDict</span> calls <span class="code">Release()</span> on the interface. </TD>
+  </TR>
+</TABLE>
+<BR>
+<P><BR>
+<h5><A NAME="RTFToC35">Runtime Key Identifier Constant </A><BR>
+  </h5>
+<P> <span class="code">MOADICT_RUNTIME_KEY_PREFIX</span> <span class="code">&quot;_rt_&quot; <BR>
+  <BR>
+  </span>By convention, all keys beginning with these characters
+  will never be written to persistent storage; they are runtime-only
+  keys.<BR>
+<h4><A NAME="MOSTRMCONST">IMoaStream constants</A></h4>
+<P> These constants are used with methods of the <A HREF="stream.htm" >IMoaStream</A> interface.
+<H6><A NAME="RTFToC37">Access Mode Constants</A></h6>
+<P>
+<TABLE BORDER=2>
+  <TR>
+    <TD WIDTH=252><span class="code">kMoaStreamOpenAccess_ReadOnly </span> </TD>
+    <TD WIDTH=252>Open stream for reading</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=252><span class="code">kMoaStreamOpenAccess_ReadWrite </span> </TD>
+    <TD WIDTH=252>Open stream for reading and writing</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=252><span class="code">kMoaStreamOpenAccess_WriteOnly </span> </TD>
+    <TD WIDTH=252>Open stream for writing</TD>
+  </TR>
+</TABLE>
+<BR>
+<P><BR>
+<h5><A NAME="RTFToC38">ReadAhead Limit Constants </A></h5>
+<P>
+<TABLE BORDER=2>
+  <TR>
+    <TD WIDTH=252><span class="code">kMoaStreamReadAheadLimit</span> </TD>
+    <TD WIDTH=252>Bytes available to ReadAhead() (value may be implementation dependent) </TD>
+  </TR>
+</TABLE>
+<BR>
+<P><BR>
+<h5><A NAME="RTFToC39">Set Position Constants</A> </h5>
+<P> These constants are passed to <A HREF="stream.htm#Open" >Open()</A> to specify use of <A HREF="stream.htm#SetPosition" >SetPosition()</A>.
+  This API enables the stream to optimize for particular seeking
+  needs. <BR>
+<P>
+<TABLE BORDER=2>
+  <TR>
+    <TD WIDTH=252><span class="code">kMoaStreamSetPositionType_None</span> </TD>
+    <TD WIDTH=252>Never calls SetPosition()</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=252><span class="code">kMoaStreamSetPositionType_Expensive</span> </TD>
+    <TD WIDTH=252>Rarely calls SetPosition(); don't optimize </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=252><span class="code">kMoaStreamSetPositionType_Cheap </span> </TD>
+    <TD WIDTH=252>Often calls SetPosition(); optimize seek</TD>
+  </TR>
+</TABLE>
+<h4><A NAME="MOFILECONST">IMoaFile constants</A></h4>
+<P> These constants are used with methods of the <A HREF="file.htm" >IMoaFile</A> interface.
+<P><BR>
+<h5><A NAME="RTFToC41">File access constants</A> </h5>
+<PRE class="code">
+kMoaFileAccessPerm_Read
+kMoaFileAccessPerm_Write
+</PRE>
+<P><BR>
+<h5><A NAME="RTFToC42">File name size constants</A> </h5>
+<PRE class="code">
+MOA_MAX_PATHNAME 		(1024) // This value was increased for D11
+MOA_MAX_FILENAME 		(1024)
+</PRE>
+<P>
+<HR width=45% align=left>
+<H3><A NAME="MOGLOBS">MOA Globals</A></H3>
+<h4><A NAME="RTFToC44">gXtraFileRef</A> </h4>
+<P> Defined in: moatxtra.h
+<P> MOA reference to the Xtra object file. This value is a <span class="code">MoaFileRef</span>,
+  a MOA-specific type used only as an argument to the <A HREF="callback.htm" >IMoaCallback</A> interface methods <A HREF="callback.htm#MoaBeginUsingResources" >MoaBeginUsingResources()</A> and <A HREF="callback.htm#MoaEndUsingResources" >MoaEndUsingResources()</A>.
+  This value enables MOA to identify the resource file associated
+  with an Xtra. <BR>
+<P>
+<HR width=45% align=left>
+<H3><A NAME="MOFUNCS">MOA Functions</A></H3>
+<h4>MOAID comparison function</h4>
+<P> Defined in: moaxtra.h
+<P><BR>
+<h5><A NAME="RTFToC46"><A NAME="MoaEqualID">MoaEqualID()</A> </A></h5>
+<PRE class="code">
+MoaLong MoaEqualID(ConstPMoaID <span class="code"><I>a</I></span>,
+        ConstPMoaID <span class="code"><I>b</I></span>)
+</PRE>
+<P>
+<TABLE BORDER="2">
+  <TR>
+    <TD WIDTH=49><span class="code"><I>a</I></span>, <span class="code"><I>b</I></span> </TD>
+    <TD WIDTH=216> MoaIDs to compare </TD>
+  </TR>
+</TABLE>
+<BR>
+Returns Boolean result of comparison<BR>
+<BR>
+Use this function to test the values in two MoaIDs, for example,
+to find an entry for a particular interface in the cache. <BR>
+<P>
+<HR width=45% align=left>
+<H3><A NAME="MOMACROS">MOA Macros</A></H3>
+<h4>Wide Integer Handlers </h4>
+<P> Defined in: moatypes.h
+<P> The following macros are defined in MOA for use in evaluating
+  and converting values of type <span class="code">s</span>. <BR>
+<P><BR>
+<h5><A NAME="RTFToC49"><A NAME="LONG_TO_WIDE">LONG_TO_WIDE</A>() </A></h5>
+<P> <span class="code">LONG_TO_WIDE(<I>L</I>, <I>W</I>) <BR>
+  </span>
+<P>
+<TABLE BORDER=2>
+  <TR>
+    <TD WIDTH=43><span class="code"><I>L</I> </span> </TD>
+    <TD WIDTH=354>Long integer to convert</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=43><span class="code"><I>W</I> </span> </TD>
+    <TD WIDTH=354>Wide integer to contain the return value</TD>
+  </TR>
+</TABLE>
+<P> Converts the <span class="code">MoaLong</span> integer <span class="code"><I>L</I></span> to
+  a <span class="code">MoaWide</span> integer
+  and puts the result in <span class="code"><I>W</I></span>. <BR>
+<P><BR>
+<h5><A NAME="RTFToC50"><A NAME="WIDE_ADD_WIDE">WIDE_ADD_WIDE</A>() </A></h5>
+<P> <span class="code">WIDE_ADD_WIDE(<I>x</I>, <I>y</I>) <BR>
+  </span>
+<P>
+<TABLE BORDER=2>
+  <TR>
+    <TD WIDTH=43><span class="code"><I>x</I> </span> </TD>
+    <TD WIDTH=354><span class="code">MoaWide</span> to add and return result </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=43><span class="code"><I>y</I> </span> </TD>
+    <TD WIDTH=354><span class="code">MoaWide</span> to add</TD>
+  </TR>
+</TABLE>
+<BR>
+<P><BR>
+<h5><A NAME="RTFToC51"><A NAME="WIDE_EQ_ZERO">WIDE_EQ_ZERO</A>() </A></h5>
+<P> <span class="code">WIDE_EQ_ZERO(<I>x</I>)<BR>
+  </span>
+<P>
+<TABLE BORDER=2>
+  <TR>
+    <TD WIDTH=43><span class="code"><I>W</I> </span> </TD>
+    <TD WIDTH=354>Wide integer to test</TD>
+  </TR>
+</TABLE>
+<P> <BR>
+  Tests the <span class="code">MoaWide</span> value <span class="code"><I>x</I></span> to
+  see if it represents zero.  Returns MoaBool result of test<BR>
+<P><BR>
+<h5><A NAME="RTFToC52"><A NAME="WIDE_FITS">WIDE_FITS</A>() </A></h5>
+<P> <span class="code">WIDE_FITS(<I>W</I>)</span>
+<P>
+<TABLE BORDER=2>
+  <TR>
+    <TD WIDTH=43><span class="code"><I>W</I> </span> </TD>
+    <TD WIDTH=353>Wide integer to test</TD>
+  </TR>
+</TABLE>
+<P> <BR>
+  Returns: MoaBool result of test<BR>
+  <BR>
+  Tests whether the <span class="code">MoaWide</span> integer <span class="code"><I>W</I></span> can
+  be converted to a <span class="code">MoaLong</span>. <BR>
+<P><BR>
+<h5><A NAME="RTFToC53"><A NAME="WIDE_GT_ZERO">WIDE_GT_ZERO</A>()</A> </h5>
+<P> <span class="code">WIDE_GT_ZERO(<I>x</I>) <BR>
+  <BR>
+  <I>W</I> </span>Wide integer to test<BR>
+  <BR>
+  Returns MoaBool result of test<BR>
+  <BR>
+  Tests the <span class="code">MoaWide</span> value <span class="code"><I>x</I></span> to
+  see if it represents a positive number. <BR>
+<P><BR>
+<h5><A NAME="RTFToC54"><A NAME="WIDE_LT_ZERO">WIDE_LT_ZERO</A>() </A></h5>
+<span class="code">WIDE_LT_ZERO(x)</span>
+<TABLE BORDER=2>
+  <TR>
+    <TD WIDTH=257><span class="code"><I>X</I> </span> </TD>
+    <TD WIDTH=257>Wide integer to test</TD>
+  </TR>
+</TABLE>
+<P> <BR>
+  Returns: MoaBool result of test
+<P> Tests the <span class="code">MoaWide</span> value <span class="code"><I>x</I></span> to
+  see if it represents a negative number.
+<P><BR>
+<h5><A NAME="RTFToC55"><A NAME="WIDE_NEGATE">WIDE_NEGATE</A>() </A></h5>
+<P> <span class="code">WIDE_NEGATE(<I>x</I>)<BR>
+  </span>
+<TABLE BORDER=2>
+  <TR>
+    <TD COLSPAN=2 WIDTH=252><P> <span class="code"><I>x</I> </span> </TD>
+    <TD WIDTH=-251><span class="code">MoaWide</span> to negate and return result </TD>
+  </TR>
+</TABLE>
+<P> Negates the <span class="code">MoaWide</span> value <span class="code"><I>x</I></span>.<BR>
+<P><BR>
+<h5><A NAME="RTFToC56"><A NAME="WIDE_TO_LONG">WIDE_TO_LONG</A>() </A></h5>
+<P> <span class="code">WIDE_TO_LONG(<I>W</I>, <I>L</I>) <BR>
+  </span>
+<P>
+<TABLE BORDER=2>
+  <TR>
+    <TD WIDTH=37><span class="code"><I>W</I> </span> </TD>
+    <TD WIDTH=360> Wide integer to convert </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=37><span class="code"><I>L</I> </span> </TD>
+    <TD WIDTH=360> Long integer to contain the return value </TD>
+  </TR>
+</TABLE>
+<P> <BR>
+  Converts the <span class="code">MoaWide</span> integer <span class="code"><I>W</I></span> to
+  a <span class="code">MoaLong</span> integer
+  and puts the result in <span class="code"><I>L</I></span>.
+<h4>2D Graphics Macros<BR>
+  </h4>
+<P><BR>
+<h5><A NAME="RTFToC58"><A NAME="MoaToMacPoint">MoaToMacPoint</A>() </A></h5>
+<P> <span class="code">MoaToMacPoint(<I>moa</I>,<I>mac</I>) <BR>
+  </span>
+<P>
+<TABLE BORDER=2>
+  <TR>
+    <TD WIDTH=55><span class="code"><I>moa</I></span> </TD>
+    <TD WIDTH=342>MOA point to convert</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=55><span class="code"><I>mac</I></span> </TD>
+    <TD WIDTH=342>Mac point to receive the result</TD>
+  </TR>
+</TABLE>
+<BR>
+<P><BR>
+<h5><A NAME="RTFToC59"><A NAME="MacToMoaPoint">MacToMoaPoint</A>() </A></h5>
+<P> <span class="code">MacToMoaPoint(<I>mac</I>,<I> moa</I>) <BR>
+  </span>
+<P>
+<TABLE BORDER=2>
+  <TR>
+    <TD WIDTH=55><span class="code"><I>mac</I></span> </TD>
+    <TD WIDTH=342>Mac point to convert</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=55><span class="code"><I>moa</I></span> </TD>
+    <TD WIDTH=342>MOA point to receive the result</TD>
+  </TR>
+</TABLE>
+<BR>
+<P><BR>
+<h5><A NAME="RTFToC60"><A NAME="MoaToMacRect">MoaToMacRect</A>() </A></h5>
+<P> <span class="code">MoaToMacRect(<I>a</I>,<I>b</I>) <BR>
+  </span>
+<P>
+<TABLE BORDER=2>
+  <TR>
+    <TD WIDTH=55><span class="code"><I>a</I></span> </TD>
+    <TD WIDTH=342>MOA rect to convert</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=55><span class="code"><I>b</I></span> </TD>
+    <TD WIDTH=342>Mac rect to receive the result</TD>
+  </TR>
+</TABLE>
+<P>
+<P><BR>
+<h5><A NAME="RTFToC61"><A NAME="MacToMoaRect">MacToMoaRect</A>() </A></h5>
+<P> <span class="code">MacToMoaRect(<I>a</I>,<I> b</I>) <BR>
+  </span>
+<P>
+<TABLE BORDER=2>
+  <TR>
+    <TD WIDTH=55><span class="code"><I>a</I></span> </TD>
+    <TD WIDTH=342>Mac rect to convert</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=55><span class="code"><I>b</I></span> </TD>
+    <TD WIDTH=342>MOA rect to receive the result</TD>
+  </TR>
+</TABLE>
+<BR>
+<P><BR>
+<h5><A NAME="RTFToC62"><A NAME="MoaToWinPoint">MoaToWinPoint</A>() </A></h5>
+<P> <span class="code">MoaToWinPoint(<I>moa</I>,<I>win</I>) <BR>
+  </span>
+<P>
+<TABLE BORDER=2>
+  <TR>
+    <TD WIDTH=55><span class="code"><I>moa</I></span> </TD>
+    <TD WIDTH=342>MOA point to convert</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=55><span class="code"><I>win</I></span> </TD>
+    <TD WIDTH=342>Windows point to receive the result</TD>
+  </TR>
+</TABLE>
+<P> <BR>
+<h5><A NAME="RTFToC63"></A><A NAME="WinToMoaPoint">WinToMoaPoint</A>()</h5>
+<P> <span class="code">WinToMoaPoint(<I>win, moa</I>) <BR>
+  </span>
+<P>
+<TABLE BORDER=2>
+  <TR>
+    <TD WIDTH=55><span class="code"><I>win</I></span> </TD>
+    <TD WIDTH=342>Windows point to convert</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=55><span class="code"><I>moa</I></span>
+    </TD>
+    <TD WIDTH=342>MOA point to receive the result</TD>
+  </TR>
+</TABLE>
+<P> <BR>
+<h5><A NAME="RTFToC64"></A><A NAME="MoaToWinRect">MoaToWinRect</A>()</h5>
+<P> <span class="code">MoaToWinRect(<I>a</I>,<I>b</I>) <BR>
+  </span>
+<P>
+<TABLE BORDER=2>
+  <TR>
+    <TD WIDTH=55><span class="code"><I>a</I></span>
+    </TD>
+    <TD WIDTH=342>Moa rect to convert</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=55><span class="code"><I>b</I></span>
+    </TD>
+    <TD WIDTH=342>Windows rect to receive result</TD>
+  </TR>
+</TABLE>
+<BR>
+<P><BR>
+<h5><A NAME="RTFToC65"></A><A NAME="WinToMoaRect">WinToMoaRect</A>()</h5>
+<P> <span class="code">WinToMoaRect(<I>a</I>,<I> b</I>) <BR>
+  </span>
+<P>
+<TABLE BORDER=2>
+  <TR>
+    <TD WIDTH=55><span class="code"><I>a</I></span>
+    </TD>
+    <TD WIDTH=342>Windows rect to convert</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=55><span class="code"><I>b</I></span>
+    </TD>
+    <TD WIDTH=342>MOA rect to receive result</TD>
+  </TR>
+</TABLE>
+<h4>Error Code Generator <BR>
+  </h4>
+<P><BR>
+<h5><A NAME="RTFToC67"></A><A NAME="MAKE_MOAERR">MAKE_MOAERR</A>()</h5>
+<P> <span class="code">MAKE_MOAERR(<I>code</I>)<BR>
+  </span>
+<P>
+<TABLE BORDER=2>
+  <TR>
+    <TD WIDTH=55><span class="code"><I>code</I></span> </TD>
+    <TD WIDTH=378> MoaLong to convert to standard MOA error code </TD>
+  </TR>
+</TABLE>
+<P> <BR>
+  Converts <span class="code"><I>code</I></span> to a value that conforms with standard MOA error code conventions. <BR>
+<P>
+<HR width=45% align=left>
+<H3><A NAME="MOERRS">MOA Errors</A></H3>
+<P> Header files: moatypes.h<BR>
+  <BR>
+  <BR>
+  The following constants provide standard return values for MOA
+  methods that return MoaError. Certain MOA and application-specific
+  interfaces define additional error codes; see interface descriptions
+  for details. <BR>
+<h4>Success code </h4>
+<P> This error code is the standard return value for successful MOA
+  method calls.<BR>
+<P>
+<TABLE BORDER=2>
+  <TR>
+    <TD WIDTH=252><span class="code">kMoaErr_NoErr</span> </TD>
+    <TD WIDTH=252>Successful call</TD>
+  </TR>
+</TABLE>
+<BR>
+<h4>Calling errors </h4>
+<P> The following codes represent standard errors that may be returned
+  from a number of MOA methods, in interfaces implemented by the
+  application and in the interfaces you implement. Your code may
+  encounter these errors when calling MOA methods; you can write
+  your code to handle these errors in the appropriate ways. Your
+  code should return these codes when it encounters corresponding
+  error conditions. <BR>
+<P>
+<TABLE BORDER=2>
+  <TR>
+    <TD WIDTH=252><span class="code">kMoaErr_BadParam</span> </TD>
+    <TD WIDTH=252>Bogus argument to a method</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=252><span class="code">kMoaErr_OutOfMem</span> </TD>
+    <TD WIDTH=252>Core &quot;memory full&quot; error</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=252><span class="code">kMoaErr_XtraInUse</span> </TD>
+    <TD WIDTH=252>Xtra has objects in use</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=252><span class="code">kMoaErr_BadInterface</span> </TD>
+    <TD WIDTH=252>Interface not recognized</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=252><span class="code">kMoaErr_BadClass</span> </TD>
+    <TD WIDTH=252>Class not recognized</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=252><span class="code">kMoaErr_FileNotFound</span> </TD>
+    <TD WIDTH=252>File not found or not opened</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=252><span class="code">kMoaErr_XtraNotFound</span> </TD>
+    <TD WIDTH=252>Xtra not found in file</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=252><span class="code">kMoaErr_FuncNotFound</span> </TD>
+    <TD WIDTH=252>Function missing from Xtra</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=252><span class="code">kMoaErr_ClassInfoNotFound</span> </TD>
+    <TD WIDTH=252>Class information missing from Xtra</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=252><span class="code">kMoaErr_ConnectionNotOpen</span> </TD>
+    <TD WIDTH=252>Xtra not properly opened (internal error)</TD>
+  </TR>
+</TABLE>
+<P>
+<h4>Initialization errors </h4>
+<P> The following codes enable Xtras to report when they can't run
+  on a given configuration. Xtras should return these codes to indicate
+  failure in their <A HREF="register.htm" >IMoaRegister</A> or <A HREF="intfrmdc.htm" >IMoaInitFromDict</A> interface. <BR>
+<P>
+<TABLE BORDER=2>
+  <TR>
+    <TD WIDTH=262><span class="code">kMoaErr_NotEnoughCPU</span> </TD>
+    <TD WIDTH=242>Xtra requires newer CPU</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=262><span class="code">kMoaErr_NotEnoughFPU</span> </TD>
+    <TD WIDTH=242>Xtra requires an FPU</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=262><span class="code">kMoaErr_NotEnoughHardware</span> </TD>
+    <TD WIDTH=242>Extra hardware required</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=262><span class="code">kMoaErr_NotEnoughSSW</span> </TD>
+    <TD WIDTH=242>System software incompatible</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=262><span class="code">kMoaErr_NotEnoughExtraSSW</span> </TD>
+    <TD WIDTH=242>Missing extensions (e.g., QuickTime)</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=262><span class="code">kMoaErr_NotEnoughDiskSpace</span> </TD>
+    <TD WIDTH=242>Need more free space on disk</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=262><span class="code">kMoaErr_NoUnusedFreed</span> </TD>
+    <TD WIDTH=242>MoaFreeUnused couldn't free mem</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=262><span class="code">kMoaErr_RequiredCallbackMissing</span> </TD>
+    <TD WIDTH=242>A required interface wasn't supplied</TD>
+  </TR>
+</TABLE>
+<BR>
+<h4><A NAME="MODICTERRS">IMoaDict errors</A></h4>
+<P> Errors returned by methods of <A HREF="dict.htm" >IMoaDict</A>.
+<P>
+<TABLE BORDER=2>
+  <TR>
+    <TD WIDTH=252><span class="code">kMoaDictErr_NotFound</span> </TD>
+    <TD WIDTH=252>Lookup of a nonexistent key.</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=252><span class="code">kMoaDictErr_WrongType</span> </TD>
+    <TD WIDTH=252>Key exists but holds different type than requested. </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=252><span class="code">kMoaDictErr_CantWrite</span> </TD>
+    <TD WIDTH=252>Attempt to put or remove value where not allowed (e.g. structure dicts). </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=252><span class="code">kMoaDictErr_BufferTooSmall </span> </TD>
+    <TD WIDTH=252>Value won't fit into the buffer you passed. </TD>
+  </TR>
+</TABLE>
+<P>
+<h4><A NAME="MOFILEERRS">IMoaFile errors</A></h4>
+<P> Errors returned by methods of <A HREF="file.htm" >IMoaFile</A>.
+<P>
+<TABLE BORDER=2>
+  <TR>
+    <TD WIDTH=252>kMoaFileErr_IoError</TD>
+    <TD WIDTH=252></TD>
+  </TR>
+  <TR>
+    <TD WIDTH=252>kMoaFileErr_BufferTooSmall </TD>
+    <TD WIDTH=252></TD>
+  </TR>
+  <TR>
+    <TD WIDTH=252>kMoaFileErr_DuplicateSpec </TD>
+    <TD WIDTH=252></TD>
+  </TR>
+  <TR>
+    <TD WIDTH=252>kMoaFileErr_DiskFull</TD>
+    <TD WIDTH=252></TD>
+  </TR>
+  <TR>
+    <TD WIDTH=252>kMoaFileErr_FileBusy</TD>
+    <TD WIDTH=252></TD>
+  </TR>
+  <TR>
+    <TD WIDTH=252>kMoaFileErr_BadFileSpec </TD>
+    <TD WIDTH=252></TD>
+  </TR>
+</TABLE>
+<P>
+<h4><A NAME="MOSTRMERRS">IMoaStream errors</A></h4>
+<P> Errors returned by methods of <A HREF="stream.htm" >IMoaStream</A>.
+<P>
+<TABLE BORDER=2>
+  <TR>
+    <TD WIDTH=247><span class="code">kMoaStreamErr_StreamNotOpen</span> </TD>
+    <TD WIDTH=257>Returned when calling any method before <span class="code">Open()</span> </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=247><span class="code">kMoaStreamErr_StreamAlreadyOpen</span> </TD>
+    <TD WIDTH=257>Returned when re-calling Open()</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=247><span class="code">kMoaStreamErr_BadParameter</span> </TD>
+    <TD WIDTH=257>Bad parameter</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=247><span class="code">kMoaStreamErr_IoError</span> </TD>
+    <TD WIDTH=257>Read/write/positioning error</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=247><span class="code">kMoaStreamErr_ReadPastEnd</span> </TD>
+    <TD WIDTH=257>Attempted to read past end</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=247><span class="code">kMoaStreamErr_BadAccessMode</span> </TD>
+    <TD WIDTH=257>Not an allowable read/write parameter</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=247><span class="code">kMoaStreamErr_BadSetPositionMode</span> </TD>
+    <TD WIDTH=257>Not an allowable seek parameter</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=247><span class="code">kMoaStreamErr_ReadAheadToo</span></TD>
+    <TD WIDTH=257>Requested too many bytes from ReadAhead()</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=247><span class="code">kMoaStreamErr_WrotePastEnd </span> </TD>
+    <TD WIDTH=257>Attempted to write too much: disk full, etc. </TD>
+  </TR>
+</TABLE>
+<BR>
+<BR>
+<hr width=45% align=left>
+<A HREF = "../copyrite.htm">Copyright &#169; 1995-2007 Adobe Macromedia Software LLC, Inc.</A>
+</BODY>
+</html>

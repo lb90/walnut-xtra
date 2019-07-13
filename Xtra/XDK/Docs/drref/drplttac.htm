@@ -1,0 +1,99 @@
+<HTML>
+<HEAD>
+<TITLE>IMoaDrPaletteAccess</TITLE>
+<link href="../xdk.css" rel="stylesheet" type="text/css">
+</HEAD>
+<body>
+<A HREF = "../drdg/index.htm">DR Developer's Guide</A> <BR>
+<A HREF = "index.htm"> DR Interfaces</A> | <A HREF = "drmthndx.htm">DR Methods</A> | <A HREF = "drtypndx.htm">DR Types and Misc API</A>
+<hr width=45% align=left>
+<h3><A NAME="IMoaDrPaletteAccess">IMoaDrPaletteAccess</A></h3>
+<P> Interface ID: <span class="code">IID_IMoaDrPaletteAccess<BR>
+  </span>Pointer type: <span class="code">PIMoaDrPaletteAccess<BR>
+  </span>Inheritance: <span class="code">IMoaUnknown<BR>
+  </span>Header file: <A HREF = "../../include/driservc.h">driservc.h</A>
+<H3>Description</H3>
+<DL>
+  <DD>
+    The <span class="code">IMoaDrPaletteAccess</span> interface is provided in Director
+    by the main callback object. Use this interface to access the
+    media of the built in palettes supplied by director. To acquire <span class="code">IMoaDrPaletteAccess,</span> call <span class="code">QueryInterface()</span> on
+  the main callback object.</DD>
+</DL>
+<h3>Methods</h3>
+<h4>Media access </H4>
+<DL>
+  <DD><A HREF = "#GetBuiltInPaletteCount">GetBuiltInPaletteCount()</A> <BR>
+    <A HREF = "#GetNthBuiltInPaletteSymbol">GetNthBuiltInPaletteSymbol()</A> <BR>
+    <A HREF = "#GetBuiltInPaletteMedia">GetBuiltInPaletteMedia()</A>
+</DL>
+<hr width=45% align=left>
+<h3><A NAME="GetBuiltInPaletteCount">GetBuiltInPaletteCount()</A> </H3>
+<h4>Syntax</H4>
+<DL>
+  <DT class="code">GetBuiltInPaletteCount(MoaUlong * <I>pCount</I>)</DT>
+</DL>
+<h4>Parameters</H4>
+<DL>
+<DT class="codearg">pCount</DT>
+  <DD>returns the number of build in palettes in Director</DD>
+</DL>
+<h4>Returns</H4>
+<DL>
+  <DD><span class="code">MoaError</span>
+</DL>
+<h4>Description</H4>
+<DL>
+  <DD>
+    Returns the number of palettes supported internally by Director. </DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="GetBuiltInPaletteMedia">GetBuiltInPaletteMedia()</A> </H3>
+<h4>Syntax</H4>
+<DL>
+  <DT class="code">GetBuiltInPaletteMedia(MoaMmSymbol <I>paletteSymbol</I>, PMoaVoid * <I>pPaletteMedia</I>)</DT>
+</DL>
+<h4>Parameters</H4>
+<DL>
+<DT class="codearg">paletteSymbol</DT>
+  <DD>the symbol for the palette to access</DD>
+  <DT class="code">pPaletteMedia</DT>
+  <DD>returns the actual palette media</DD>
+</DL>
+<h4>Returns</H4>
+<DL>
+  <DD><span class="code">MoaError</span> </DD>
+</DL>
+<h4>Description</H4>
+<DL>
+  <DD>Returns the system-dependent palette media as a handle in <span class="codearg">pPaletteMedia</span>.  
+  This handle references a <span class="code">CTable</span> on the Macintosh, and an <span class="code">HTable</span> on Windows.  
+  The caller owns rule applies to the returned media.
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="GetNthBuiltInPaletteSymbol">GetNthBuiltInPaletteSymbol()</A> </H3>
+<h4>Syntax</H4>
+<DL>
+<DT class="code">GetNthBuiltInPaletteSymbol(MoaUlong <I>nPalette</I>, PMoaMmSymbol <I>pPaletteSymbol</I>)</DT>
+</DL>
+<h4>Parameters</H4>
+<DL>
+<DT class="codearg">nPalette</DT>
+  <DD>the index of the palette to access.</DD>
+  <DT class="codearg">pPaletteSymbol</DT>
+  <DD>returns the symbol for the palette</DD>
+</DL>
+<h4>Returns</H4>
+<DL>
+  <DD><span class="code">MoaError</span> </DD>
+  </DL>
+<h4>Description</H4>
+<DL>
+  <DD>Returns the symbol for the built in palette at <span class="codearg">nPalette</span>
+</DL>
+<hr width=45% align=left>
+<A HREF = "../copyrite.htm">Copyright &#169; 1995-2008 Adobe Macromedia Software LLC, Inc.</A>
+</BODY>
+</HTML>

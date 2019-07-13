@@ -1,0 +1,954 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+
+<HEAD>
+<TITLE>Tips, Guidelines, and Gotchas</TITLE>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link href="../xdk.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+<body>
+
+<A NAME="RTFToC2"></A><A HREF="index.htm">MM Developer's Guide</A><BR>
+<A HREF="../mmref/index.htm">MM Interfaces</A> | <A HREF="../mmref/mmmthndx.htm">MM Methods</A>
+| <A HREF="../mmref/mmtypndx.htm">MM Types and Misc API</A>
+<HR width=45% align=left>
+
+<h4>Director Xtra Development Kit: Multimedia Developer's Guide</h4>
+
+<h4>Tips, Guidelines, and Gotchas</h4>
+<HR width=45% align=left>
+<P>
+This discussion contains some general guidelines for all types
+of Xtra development, as well as specific suggestions for developing
+the four types of Xtras supported by the Director XDK.
+It's somewhat of a grab bag, including both very general and very
+specific coverage of a number of topics.<BR>
+<BR>
+You may want to read through this information before you start
+developing Xtras. You should also review the information here
+as you develop your Xtras, since much of the information applies
+to specific areas of Xtra development.</P>
+
+<h4><A NAME="RTFToC5">General</A></h4>
+
+<h5><A NAME="RTFToC6">Use the skeleton and example projects </A></h5>
+
+<P> This XDK comes with skeleton projects in the Examples folder for Interrogator, 
+  Transition, Sprite, Scripting, and Tool Xtras. These templates include projects 
+  for Visual C++ and Metrowerks CodeWarrior, and skeleton code files containing 
+  comments that briefly describe modifications to make to create your Xtra. <BR>
+<BR>
+There are also a number of working example projects that demonstrate
+various coding features described in this documentation. One way
+to begin Xtra development is to start with a working example that
+implements many of the features you plan to provide, and modify
+it to include your code. <BR>
+<BR>
+Note that when modifying the template and example projects, you
+should only need to change source file names--and possibly add
+new source files--in the projects. If you are developing in C++,
+you can change the code model in the project. <BR>
+<BR>
+<B>IMPORTANT: </B><I>YOU MAY FREELY CHANGE SOURCE FILES IN THE
+EXAMPLE PROJECTS. HOWEVER, TAKE CARE IN MODIFYING ANY PROJECT
+SETTINGS. THESE PROJECTS PROVIDE A NUMBER OF STANDARD SETTINGS
+REQUIRED TO MAKE XTRAS WORK CORRECTLY.
+  </I></P>
+<h5><A NAME="RTFToC7">Use unique values </A></h5>
+<P>
+Be sure all class IDs you define are unique; these should be generated
+with the MSVC GUID program or the uuidgen unix tool on Macintosh.<BR>
+<BR>
+Windows DLLs: Make sure the library name in your .DEF files is
+unique
+<h5><A NAME="RTFToC8">Use resource files </A></h5>
+<P>
+If possible, use resources to store any strings, including your
+type symbol, display name, etc. This will provide a way for some
+users to resolve conflicts if there is a duplicate symbol name.
+Also it will make it easier to localize your Xtra.
+
+<h5><A NAME="RTFToC9">Coding details</A></h5>
+
+<P>
+Unless otherwise noted, all string lengths specified include the terminating NULL (0x00) character (ie, standard C strings).
+Thus, where a string length is specified as 32, the maximum number of useable characters in the string is actually 31.
+Starting with D11, most strings are Unicode strings in UTF-8 format.
+These UTF-8 strings are a sequence of bytes that is null terminated - just like standard C strings.
+However, the number of valid characters in a string may be less since some unicode characters take multiple bytes in UTF-8 format.
+<BR>
+<BR>
+  Do not depend on globals being initialized in Xtras. The behavior of global 
+  variables in code resources/code fragments/DLLs varies.<BR>
+<BR>
+Remember that your code may be shared by multiple applications
+or projectors running simultaneously. Again, this makes it very
+difficult to rely on global variables on platforms that only initialize
+them on a per-load basis (rather than per-instance).<BR>
+<BR>
+Make your code re-entrant. Your Xtra may be called back as a result
+of a call your xtra makes to the host application. For example,
+if you post a moveable modal dialog using <span class="code">MacModalDialog</span>,
+your Xtra may be called back (from within the <span class="code">MacModalDialog()</span>
+call) to redraw thumbnails, re-image a sprite on the stage, etc.,
+if the dialog is moved. This means that the data required to perform
+these operations must never be left in an inconsistent state while
+a call back to the host application is being made.
+<h5><A NAME="RTFToC10">Registration and Initialization</A></h5>
+
+<P>
+In general, all interfaces you acquire through QueryInterface
+should be tested before you attempt any calls to them  This is
+particularly crucial with regard to application-specific calls
+in your registration class (supporting <A HREF="../moref/REGISTER.HTM" >IMoaRegister</A><span class="code">)</span>.
+The <span class="code">MoaCreate()</span>, <span class="code">MoaDestroy()</span>, and <span class="code">Register()</span>
+methods of this class may be called by <EM>any</EM> MOA application.
+One approach is for your <span class="code">Register()</span> implementation
+to test for the interfaces your Xtra needs from an application
+by calling <span class="code">QueryInterface()</span>, and not register itself
+if they aren't present.<BR>
+<BR>
+The IMoaMmInterrogate interface is provided for initializing libraries
+and allocating large blocks of memory at startup time.  This process
+slows application startup, so you should be certain you need it
+before adding it to your Xtra.  Whenever possible, use the <span class="code">IMoaRegister</span>
+interface to cache initialization information, since it 's only
+instantiated the first time an application encounters your Xtra.
+<h5><A NAME="RTFToC11">Testing</A></h5>
+<UL>
+<LI>Test your Xtra in low memory.
+<LI>Test your Xtra in both authoring and playback applications.
+<LI>Test your Xtra with other Xtras installed. This will help
+identify possible conflicts ahead of time. 
+<LI>Test your Xtra with other MOA-enabled applications. Even if
+your Xtra is not intended to work with another MOA app, such as
+SoundEdit or Authorware, try launching one of these apps with
+your Xtra in its Xtras folder. Your Xtra must fail gracefully
+and not register if it is not running in an application that supports
+the callback interfaces it needs. 
+</UL>
+
+<h5>Cast Member Media Notes</h5>
+
+<P>
+You can only get the media in the formats listed for <span class="code">IMoaDrCastMem</span>.
+The available formats depend on the cast member type and the platform
+(Macintosh or Windows). Only the <span class="code">macPICT</span> and <span class="code">winDIB</span>
+formats are currently supported for image media.<BR>
+<BR>
+If you are specifying <span class="code">macPICT</span> format media for an
+image, the <span class="code">pMoaVoid mediaData</span> parameter to <span class="code">IMoaDrUtils::NewMediaInfo()</span>
+must be of type <span class="code">Handle</span>, or more precisely a <span class="code">PicHandle</span>;
+in other words, it must be a pointer to a pointer to a <span class="code">Picture
+</span>structure.<BR>
+<BR>
+<span class="code">IMoaDrUtils::NewMediaInfo() </span>encourages you to provide
+the parameters to fill in the <span class="code">MoaDrMediaInfo </span>structure.
+The <span class="code">IMoaDrCastMem::SetMedia() </span>call will actually
+test. <BR>
+<BR>
+Director tends to report an out-of-memory condition for errors
+in setting bitmap media, assuming that the bitmap was too large.
+<BR>
+<BR>
+Although the table of media formats gives <span class="code">&quot;composite&quot;</span>
+and <span class="code">&quot;moaHandle&quot;</span> as the media label and
+format for Digital Video, digital video is not currently stored
+in a movie. Instead, Digital Video is always linked, regardless
+of whether you check the Linked box or not when you import it.
+As a result, you can't get the media of digital video cast members.
+You have to read the linked file (accessible with the <span class="code">fileName
+</span>property).
+<h5><A NAME="CastSelection">How do I get the Cast selection?</A></h5>
+<P>
+The selection of a <span class="code">castLib </span>is a Lingo list of lists.
+Each sublist represents a continuous range of selected cast members
+in that cast. Try selecting a bunch of cast members (using shift
+and command/control to do continuous and non-contiguous selections),
+then view the list in Lingo: <BR>
+<BR>
+<span class="code">put the selection of castlib 1<BR>
+[[3,5], [6,6] [10, 14]]<BR>
+<BR>
+</span>This means that cast members 3, 4, 5, 6, 10, 11,
+12, 13, and 14 are selected. <BR>
+<BR>
+To traverse a list-type <span class="code">MoaMmValue</span>, use the callback
+class' <span class="code">IMoaMmList </span>interface. See MMISERVC.H for the
+interface declaration. Use this interface to create new lists
+and to traverse existing lists. You can find out how many items
+are in a list <span class="code">MoaMmValue </span>(<span class="code">CountElements()</span>),
+get the nth item (<span class="code">GetValueByIndex()</span>), and so on.
+This interface lets you manipulate both linear and property lists.
+<BR>
+<BR>
+The cast selection is a linear list where each element is itself
+a linear list containing two elements. You are guaranteed that
+each sublist which describes a range always contains exactly two
+elements-- the start and end of the range-- and that these elements
+are integers. <BR>
+<BR>
+How do you know which cast to get the selection from in a multiple-cast
+movie? You should first obtain the <span class="code">&quot;activeCastLib&quot;
+</span>property from the movie interface using <span class="code">IMoaDrMovie::GetProp()</span>.
+This tells you the index of the castLib in the currently active
+cast window (or the most recently active cast window if one is
+not currently active). Then using <span class="code">IMoaDrMovie::GetNthCast()
+</span>to get the corresponding cast interface.
+<h5>Bitmap Media</h5>
+<P> <span class="code">macPICT</span> is only supported on the Macintosh; <span class="code">winDIB</span> 
+  is only supported on Windows. Director doesn't have the notion of a single, 
+  cross-platform image format in the MOA APIs.
+<h5>DIB's</h5>
+<P>
+When supplying a DIB to <span class="code">SetMedia() </span>or <span class="code">AttachMedia()</span>,
+it must be a global handle. If you get errors, make sure you can
+lock the handle with <span class="code">GlobalLock()</span>.<BR>
+<BR>
+  Manipulating DIB's is tricky. Microsoft provides samples with routines that 
+  manipulate DIB's in MSVC 5.0 and higher (see Samples\Win32\Wincap32).
+<h5>What is a winDIB, the media format for a Windows PICT castmember type?</h5>
+<P>
+Also known as a &quot;packed DIB,&quot; winDIB is a Windows global
+HANDLE containing the BITMAPINFO followed by the pixel data. This
+turns out to be the same format as a Windows BITMAP resource.
+Remember that the color table, whose length depends on the pixel
+depth, is part of the BITMAPINFO structure, so you need to account
+for the pixel depth when calculating the offset to the lpBits.
+To see an example of calculating the offset to the bits and using
+the <span class="code">IMoaMmGC::Blit()</span> callback to do blitting with
+DIBs, see the file IMAGEWIN.C in the Windows &quot;INKTEST&quot;
+sprite xtra sample.<BR>
+<BR>
+Also, remember to check out the <span class="code">SetMedia() </span>options
+for image media. These are defined in DRTYPES.H. The options let
+you specify new pixel depth and/or palette to use when applying
+the image media to a bitmap cast member.
+<h5>PICT's</h5>
+<P>
+Typically, to manipulate a <span class="code">PICT</span>, you render it into
+a GWorld. Create a GWorld which is the bounds, pixel depth, and
+palette of the <span class="code">PICT. Y</span>ou can get this information
+using the <span class="code">PICT</span> utilities Macintosh toolbox calls,
+then call <span class="code">DrawPicture() </span>to draw it into the GWorld.
+There, you've got direct access to the pixels, just like a DIB
+on Windows. Also, since it's a GWorld, you can use the normal
+Macintosh QuickDraw calls to draw into it and manipulate it like
+a GrafPort. To create a <span class="code">PICT </span>again, you open a picture,
+<span class="code">CopyBits()</span> the GWorld onto itself, and close the
+picture. This is somewhat cumbersome and relatively slow, but
+<span class="code">PICT </span>is pretty universal on the Macintosh and as
+such is the most convenient choice as an interchange format.
+<h5>Bitmaps provided by Director</h5>
+<P>
+Everything should be uncompressed, flat pixels by the time you
+get it (in your GWorld on the Macintosh or DIB on Windows). The
+pixel depth can be 1, 2, 4, 8, 16, or 32. The palette can be any
+palette if the pixel depth is less than or equal to 8. 
+<P>
+When setting bitmap media, there are several useful options for
+specifying the pixel depth and palette to use. You can:
+<UL>
+<LI>Have Director remap the image for you to fit the current pixel
+depth/palette of the cast member to which you're setting 
+<LI>Have Director use the pixel depth/palette in the image data
+from which you're setting 
+<LI>Specify the pixel depth/palette explicitly using an <span class="code">auxInfo
+</span>structure, optionally having Director dither it if necessary
+<LI>Have Director put up a dialog to let the end-user specify
+the pixel depth/palette
+</UL>
+<h5>The Xtras Menu in Director</h5>
+<P>
+Director has an Xtras menu in authoring mode. Director places
+various items in this from the Xtras folders.<BR>
+<BR>
+Tool Xtras appear in the Xtras menu automatically, displaying
+using the user interface name and category (organized as a submenu
+of Xtras) that you register. You can supply an About box for any
+kind of Xtra this way.<BR>
+<BR>
+  Director will display movies and casts that it finds in its Xtras folder in 
+  the Xtras menu. Director recognizes their type and puts them in its Xtras menu. 
+  You can supply a sample movie or user interface that manipulates your Lingo 
+  or sprite Xtra this way.<BR>
+<BR>
+You can combine the two approaches to provide a sample movie in
+a submenu. Movies and casts don't ordinarily appear in a submenu,
+but you can create a simple Tool Xtra that loads a related movie
+by sending Lingo commands with <span class="code">IMoaDrPlayer::CallHandler()</span>.
+This way your movie will be grouped in your submenu of the Xtras
+menu. You can still keep the movie in a subdirectory within the
+Xtras folder by giving it a name starting with a dash (-). It
+appears that Director will not display movie names start with
+a dash (-) in its Xtras menu.<BR>
+<BR>
+Be aware that not all products implement all kinds of Xtras, so
+don't depend on all Xtras being loaded.
+<h5>If I register two menu items 
+  for a Tool Xtra (so that I have a submenu under &quot;Xtras&quot;, with two 
+  items on it), how can I tell which menu item was selected in my Invoke method?</h5>
+<P>
+There are two ways to do this; the first method is to register
+a different class for each item. You'll know which item is selected
+because Director will create an instance of the corresponding
+class. The drawbacks are that there is more code for you to write
+and you need to generate multiple class IDs, and so on.<BR>
+<BR>
+The second technique is to register the same class multiple times,
+once for each item. To distinguish each entry, you must put a
+private piece of data into the registry for each entry, then,
+when your <span class="code">IMoaInitFromDict </span>is called and you get
+access to the registry entry, you can look at your private data
+to figure out which entry was chosen.<BR>
+<BR>
+This is why there's a for loop in the sample code for <span class="code">IMoaRegister_Register</span>.
+Simply increase <span class="code">&quot;kToolCount&quot;</span> to the number
+of items you want to register. Add the name, category, and <span class="code">&quot;alwaysEnabled&quot;</span>
+setting to the registry array initializers declared in <span class="code">CToolRegister_IMoaRegister_Register</span>.
+The <span class="code">&quot;myData&quot; </span>array in this function is
+there to show you that you can put any arbitrary info into the
+registry and then retrieve it later at initialization time. <BR>
+<BR>
+A simple way to distinguish your entries is just to put an index
+here, if you have four items to register:<BR>
+<BR>
+<span class="code">myData[kMyToolCount] = {0, 1, 2, 3};<BR>
+<BR>
+</span>Inside the for loop, add a statement to put the correct
+element of the <span class="code">myData</span> array into the registry:
+
+<pre class="code">
+for (count = 0; count &lt; kMyToolCount; count ++)
+{
+	MyData myData;
+	...AddRegistryEntry()...
+	/* Register standard tool entries */
+	...
+	/* Register private entry - we use made up key called &quot;myData&quot; to use to reference the data */
+	/* Add a line like this that puts the myData value into the registry */
+	if ((err = pRegDict-&gt;Put(kMoaDictType_Bytes, &amp;&amp;myData[count], sizeof(MyData), &quot;myData&quot;)) != kMoaErr_NoErr)
+		break;
+}
+</pre>
+Now, the time to access this data is in your <span class="code">IMoaInitFromDict</span>
+call. Here you are passed in a pointer to the corresponding registry
+for the entry that was used to create the instance (ie, corresponds
+to the item selected). For example:
+<pre class="code">
+STDMETHODIMP CMyTool_IMoaInitFromDict_InitFromDict(... This, PIMoaRegistryEntryDict pRegistryDict)
+{
+	MyData myData;
+	
+	if (pRegistryDict)
+	{
+		if (pRegistryDict-&gt;Get(kMoaDictType_Bytes, &amp;&amp;myData, sizeof(MyData), &quot;myData&quot;) == kMoaErr_NoErr)
+		{
+			/* Found the &quot;myData&quot; entry in the dictionary and stuffed it into the local variable myData. 
+			This is one of the { 0, 1, 2, 3 } values we stuffed in earlier. Use this value to initialize
+			your instance data so you know which item was selected when your Invoke() method is called. */
+			
+			/* Example - assumes we have an instance variable called itemSelected */
+			This-&gt;pObj-&gt;itemSelected = (MoaLong) myData; /* Just save off the index */
+		}
+		else
+			This-&gt;pObj-&gt;itemSelected = -1L; /* Use to indicate an initialization error */
+	}
+
+	return kMoaErr_NoErr;
+}
+</pre>
+<br>
+Later in your <span class="code">Invoke()</span> method, switch off of <span class="code">This-&gt;pObj-&gt;itemSelected
+</span>to determine which item was chosen. If using the case above,
+if itemSelected is (-1) there was some kind of error, otherwise,
+it's 0, 1, 2, or 3-- the index into the item selected. This index
+does not necessarily correspond to the order in which the items
+appear in the menu; it corresponds to the order in which the items
+were registered.
+<h5>What happens to Director's 
+  event loop when a menu is active?</h5>
+
+<P>
+In general, the Director event loop is suspended while a menu
+is active. This is also the case if you're in a tight Lingo repeat
+loop or the host application is busy doing some other processing;
+it is a general issue with cooperative multitasking.<BR>
+<BR>
+  If you want to ensure you get time slices on a more regular basis, you should 
+  use threads or VBL tasks on the Macintosh. Use periodic multimedia timers on 
+  Windows. You have to be careful when executing code at interrupt time, however, 
+  since there are memory restrictions, reentrancy issues, and context-switching 
+  to deal with.
+<h5>Xtras and resources</h5>
+
+<P>
+On the Macintosh, put any custom resources for your Xtra in the
+resource file associated with your CodeWarrior project. To use
+your resources, you must surround calls which access your resources
+with calls to <span class="code">MoaBeginUsingResources() </span>and <span class="code">MoaEndUsingResources()</span>.
+This is necessary to allow the host application to set up the
+resource chain to point to your Xtra's resources (otherwise, using
+Macintosh resource manager calls will look for the resources in
+the host application, not your Xtra). You should do this on Macintosh
+and Windows although it currently is not operational on Windows.
+For example:
+<pre class="code">
+{
+	XtraResourceCookie myCookie, saveCookie;
+	
+	/* Set up resource chain */
+	myCookie = This-&gt;pObj-&gt;pCallback-&gt;MoaBeginUsingResources(gXtraFileRef, &amp;saveCookie);
+	
+	/* Access your resources here */
+	GetIndString(myString, kMyStringListID, kMyStringID);
+	
+	/* Restore resource chain */
+	This-&gt;pObj-&gt;pCallback-&gt;MoaEndUsingResources(gXtraFileRef, saveCookie);
+}
+</pre>
+IMPORTANT: You must call <span class="code">MoaEndUsingResources()</span>before returning from your Xtra method implementation function,
+otherwise, when control returns to the application, the resource
+chain will still be set to point to your Xtra; the application
+may not be able to access its own resources. So, your <span class="code">MoaBeginUsingResources()
+</span>and <span class="code">MoaEndUsingResources() </span>calls must both
+occur in the context of a single call to one of your Xtra's methods.
+<h5>Xtras and Shockwave</h5>
+
+<P> Xtras needed to run a movie in Shockwave or in projectors can be downloaded 
+  automatically (Xtra downloading). For an explanation of this feature, see the 
+  related TechNotes on the Director support section of www.adobe.com. (Search 
+  for &quot;Xtra Downloading&quot;.)<BR>
+<BR>
+In all cases, the host MOA application (Shockwave for Director
+in this case) traverses subdirectories of the support folder,
+up to four levels deep, so you can place Xtras in folders. It
+is a particularly good idea to put Xtras for Microsoft Internet
+Explorer in a \Windows\System\Xtras\.... folder.
+<h5>Xtras must be unique</h5>
+<P>
+Remember that in general, Xtras have more than one GUID. There's
+a GUID for each class, so if you have a separate registration
+class, you need a unique GUID for that in addition to your asset
+and actor, Lingo, or tool classes. To ensure this, try running
+your Xtra with every sample Xtra in the Xtras folder; you should
+not get any conflict notices.<BR>
+<BR>
+When you create an Xtra in addition to making sure that all of
+your GUID's are unique, you want to ensure that other items for
+your Xtra are unique.<BR>
+<BR>
+If you create an asset Xtra (sprite or transition), your asset's
+type symbol (<span class="code">kMoaMmDictKey_SymbolString</span>) must be
+unique. This is a single string, maximum 32 characters (including
+a trailing null) that's typically defined in your implementation
+file and registered in your <span class="code">IMoaRegister::Register() </span>implementation.
+Note that this is separate from your Xtra's display name (<span class="code">kMoaMmDictType_DisplayNameString</span>)
+and display category (<span class="code">kMoaMmDictType_DisplayCategoryString</span>),
+which are what the user sees in the host application's user interface.
+The type symbol is used internally to differentiate your Xtra
+from others, and is used when referring to your asset from Lingo.
+<BR>
+<BR>
+If you create a Lingo Xtra, your Lingo Xtra's name (the name after
+Xtra in the <span class="code">msgTable</span>) must not conflict with other
+Lingo reserved words and other Xtras. Also, any global handlers
+(names that appear with an asterisk (*) before them in the <span class="code">msgTable</span>)
+must not conflict with other Lingo words.<BR>
+<BR>
+It's a good idea to use a unique short prefix for your organization,
+which can be the same for all the Xtras you implement. Adobe does not register these symbols and keywords. 
+Adobe will not register GUID's.
+<h5>Handling Errors</h5>
+<P>
+Here is one way to handle errors in a Director-only Xtra: <BR>
+<BR>
+Trap the error internally and use <span class="code">CallHandler() </span>to
+execute the Lingo <span class="code">Alert()</span> function to display your
+own error dialog.
+<h5><A NAME="RTFToC12">Managing interfaces and values</A></h5>
+<P>
+Throughout this API, you'll find cases where you create or use
+instances of MOA interfaces, sets of methods for manipulating
+objects, and <span class="code">MoaMmValues</span>, object-like entities that
+represent specific types of values. Both MOA interfaces and <span class="code">MoaMmValues</span>
+use reference counting to determine when they can be removed from
+memory.<BR>
+<BR>
+There are various ways to acquire a value or interface, and the
+way you acquire it determines whether or not you are responsible
+for releasing it. Call the <span class="code">IMoaUnknown::Release()</span>
+method to remove a reference to an interface; call the <span class="code">IMoaMmUtils::ValueRelease()</span>
+method to remove a reference to a <span class="code">MoaMmValue</span>.
+<h5><A NAME="RTFToC13">The &quot;caller owns&quot; rule </A></h5>
+<P>
+Objects acquire interfaces and values by calling methods or by
+having their methods called. The &quot;caller owns&quot; rule
+define who is responsible for releasing an interface or value.
+<BR>
+<BR>
+The rule is this: <I>The owner of an interface or value is the
+object that calls the method requesting or providing it.</I> The
+owner is always responsible for releasing an interface or value
+when through with it. <BR>
+<BR>
+Here are the four cases to help clarify this rule:<BR>
+<BR>
+* When your Xtra calls a method to request a value or interface
+from another object, you own the interface or value returned.
+<BR>
+<BR>
+Examples of methods that your Xtra might call are <span class="code">IMoaUnknown::QueryInterface()</span>
+and <span class="code">IMoaMmPropOwner::GetProp()</span>. You must call <span class="code">IMoaUnknown::Release()</span>
+on interfaces or <span class="code">IMoaMmPropOwner::ValueRelease()</span>
+on values acquired by calling these methods when you are through
+with them. <BR>
+<BR>
+* When another object calls a method in your Xtra to request a
+value or interface, the other object owns the interface or value
+you pass back. <BR>
+<BR>
+Examples of such methods are <span class="code">NewXActor()</span> and <span class="code">GetProp()</span>
+in the <span class="code">IMoaMmXAsset</span> Xtra interface. Note that this
+transfers ownership to the caller. That is, if you create the
+interface of value within the function being called, your ownership
+ends once you have passed it along. However, if you pass an interface
+or value that you are holding in an instance variable, you must
+call <span class="code">IMoaUnknown::AddRef()</span> or <span class="code">IMoaMmUtils::ValueAddRef()</span>
+to increment the reference count before passing it to the caller.
+<BR>
+<BR>
+* When your Xtra calls a method in another object, providing a
+value or interface as one of the arguments, you own the interface
+or value. <BR>
+<BR>
+An example of such a method is <span class="code">IMoaMmUtils::MacRegisterWindow()</span>.
+When you call this method to register a window, one of the arguments
+you pass is an <span class="code">IMoaMmMacEventHandler</span> interface. After
+you call <span class="code">MacUnregisterWindow</span>, you are responsible
+for disposing of the event handler interface. <BR>
+<BR>
+* When another object calls a method in your Xtra, providing an
+interface or value as one of the arguments it passes to you, that
+object retains ownership.<BR>
+<BR>
+An example of this type of method is <span class="code">IMoaMmXAsset::SetCallback()</span>,
+used to pass a callback interface to media asset Xtras. If your
+asset wants to hold onto this interface, it must call <span class="code">IMoaUnknown::AddRef()</span>
+on it to assert ownership, then call <span class="code">IMoaUnknown::Release()</span>
+on it when finished. <BR>
+<BR>
+As you develop your Xtras, make sure the instances and values
+you create and released when you expect. Similarly, make sure
+memory you allocate (via <span class="code">IMoaCalloc</span> or <span class="code">IMoaHandle</span>)
+is being released properly as your Xtra performs.
+<h5>Notes on using CallHandler()</h5>
+<P>
+There are some commands that you can execute in Lingo that don't
+comply with the syntax which <span class="code">CallHandler() </span>is built
+for: <BR>
+<BR>
+command value1, value2, value3, ...<BR>
+<BR>
+or<BR>
+<BR>
+result = function(value1, value2, value3, ...) <BR>
+<BR>
+Luckily, you can use Lingo to get around this. You basically have
+to execute or evaluate a command or function as a string. You
+do this with the &quot;do&quot; command and &quot;value()&quot;
+functions, respectively.<BR>
+<BR>
+To execute the COMMAND <span class="code">&quot;open window foo&quot; </span>use
+<span class="code">CallHandler() </span>with <BR>
+<span class="code">mmethod: &quot;do&quot;<BR>
+nArgs: 1<BR>
+arg[1]: string MoaMmValue containing &quot;open window foo&quot;
+or &quot;set the loc of sprite 3 to point(5,10)&quot;<BR>
+pResult: NULL<BR>
+<BR>
+</span>To evaluate an EXPRESSION like <span class="code">&quot;the loc
+of sprite 3&quot;</span> use <span class="code">CallHandler() </span>with 
+<BR>
+<span class="code">mmethod &quot;value&quot;<BR>
+nArgs: 1<BR>
+arg1: string MoaMmValue containing &quot;the loc of sprite 3&quot;
+<BR>
+pResult: pointer to MoaMmValue to get value of expression
+</span>
+<h5>Windows Xtras</h5>
+  Xtras must match the platform of Director, a projector, the Shockwave for Director 
+  plugin because Director doesn't go through a thunking layer for Xtras. This 
+  is good, it helps performance and a .x32 Xtra can work under Windows NT. <BR>
+  <BR>
+  If you use <span class="code">openxlib </span>to force opening a Lingo Xtra, don't include 
+  the extension -- use <span class="code">openxlib(&quot;D:\Special\MyXtra&quot;)</span>, not 
+  <span class="code">openxlib(&quot;D:\MyXtra.x32&quot;)</span>.<BR>
+  <BR>
+  If you include the extension and you're on the wrong platform, Director will 
+  open the file and it will show up in the list from 'showxlib' (but not in 'put 
+  the number of xtras' or 'put the name of xtra 3'). But it doesn't do anything 
+  with the code.
+
+<h4><A NAME="RTFToC14">Asset Xtras</A></h4>
+
+<P>
+Use a unique symbol string for your Xtra. We recommend a symbol
+in the format &quot;vendorName_assetType&quot;. There is a 32
+character maximum length. <BR>
+<BR>
+Don't forget to pick a category and display name (both have a
+64 character maximum) for your asset type. These should be localized,
+human-readable strings.<BR>
+<BR>
+Do not invoke UI in your <span class="code">IMoaMmXAsset::PrepareNewContent()</span>
+method unless the <span class="code">newFlags</span> <span class="code">kMoaMmNewFlags_UiPermitted</span>
+flag is set. If this bit is not set, you should silently initialize
+default props/media for your asset. This will be the case if your
+asset is being created programatically or at a time where UI should
+be deferred until explicitly requested by the user (ie, a call
+to your InvokePropsEditor() or InvokeMediaEditor()).<BR>
+<BR>
+  If supporting animated thumbnails, remember that you are responsible for &quot;pacing&quot; 
+  the animation. The host app will call your ServiceImageAnimThumb() method as 
+  quickly as possible; you should be prepared to run on very fast machines, which 
+  may cause this to get called hundreds of times per second. Use a system OS timer 
+  to &quot;throttle&quot; your animation speed; simply return immediately from 
+  ServiceImageAnimThumb() if it is not yet time for you to draw a new frame.<BR>
+<BR>
+Test your Xtra in Movies in a Window and in projectors in addition
+to the main movie.
+<h5><A NAME="RTFToC15">Byte swapping</A></h5>
+<P>
+If streaming media and/or data into/out of the host application
+document file, don't forget to consider byte-swapping issues.
+If you intend to read the data back in on a different platform,
+are responsible for byte swapping it. In general, there are two
+solutions for byte-swapping:<BR>
+<BR>
+* When writing to a stream, always use a fixed byte-ordering,
+regardless of the executing platform. This way, you know that
+your file always contains data in a certain byte order, and you
+only need to do swapping if reading/writing on the &quot;other&quot;
+platform. The drawback is that this always penalizes one platform
+since you must always swap when both reading and writing files
+on that platform.<BR>
+<BR>
+* When writing to a stream, begin the sequence with a &quot;tag&quot;
+byte which indicates the byte ordering for the sequence. When
+reading the data, check the tag byte value; if it's the same byte-ordering
+as the executing platform, no need to do any swapping; if it isn't,
+swap the bytes. This technique never causes penalties if you're
+only working on a single platform. It can, however, cause penalties
+on either platform if the data read is in the wrong byte order--
+this means that both the Motorola and Intel versions of your code
+must do byte-swapping checks.
+<h4><A NAME="RTFToC16">Sprite Xtras</A></h4>
+<P>
+Make sure you're getting events when you expect. Use the message
+window to print debug information when receiving events. If you
+wish these events to be passed on to Director, be sure to set
+the *pHandled flag to kMoaMmSprEvent_Pass.<BR>
+<BR>
+SPAN events: understand that when a movie is stopped, you will
+not get an SpanEnd event if your sprite is still on the stage
+(you will, however, get a PlayEnd event). Span and Play events
+must be used together when determining when to &quot;start&quot;
+and &quot;stop&quot; your sprite from playing.<BR>
+<BR>
+Your Xtra is responsible for handling the appearance of your sprite
+in different ink modes, colors, etc. which may be applied to it.
+It is not required that your xtra support these parameters, however
+(although many users may expect it). Try to support the common
+ink modes, Copy and Background Transparent, if possible. The IMoaMmGC::Blit()
+method is provided to aid you in supporting ink modes and colorization.
+<BR>
+<BR>
+Test your sprite along side other built-in sprites and xtra-based
+sprites. Make sure compositing is happening correctly if you are
+imaging &quot;off screen&quot;.<BR>
+<BR>
+Your asset and sprite SetProp(), CallFunction(), InvokeMediaEditor,
+and InvokePropsEditor() methods are responsible for invalidating
+any of your sprites that may appear on the stage if your appearance
+is affected by one of these calls. Use the IMoaMmSpriteCallback::InvalSpriteRect()
+sprite callback for this purpose. <BR>
+<BR>
+  Your asset is responsible for &quot;dirtying&quot; itself if any changes are 
+  made to its props or media that are to be saved on disk. Otherwise, your StreamOutProps() 
+  and/or StreamOutMedia() methods may not get called. This is handled easily by 
+  returning the correct &quot;modifyFlags&quot; from your InvokeMediaEditor() 
+  and InvokePropsEditor() methods. However, if a SetProp() or CallFunction() call 
+  modifies your data, you must explicitly call back the host app to notify it. 
+  Use the IMoaMmAssetCallback::SetModified() asset callback for this purpose. 
+  This allows you to &quot;dirty&quot; your asset at any time.<BR>
+<BR>
+Test your Xtra in filmloops, linked movies and projectors
+<h5>What's the best way for a sprite 
+  actor to intercept a mouse event and generate an event of its own? How do you 
+  write widget-type sprite Xtras?</h5>
+
+<P>
+A sprite actor can send an arbitrary Lingo event that will progress
+through the normal Lingo message chain (sprite --&gt; cast member
+--&gt; frame --&gt; movie) using the <span class="code">SendSpriteMessage()</span>
+sprite callback in the <span class="code">IMoaDrSpriteCallback</span> interface.
+The sprite callback object, which supports two interfaces (<span class="code">IMoaMmSpriteCallback
+</span>and <span class="code">IMoaDrSpriteCallback</span>), is supplied to
+your sprite actor through its <span class="code">SetCallback() </span>method
+just after instantiation. You are supplied with the IMoaMmSpriteCallback
+interface. If you want to use the <span class="code">IMoaMmSpriteCallback </span>callbacks,
+you should call <span class="code">AddRef() </span>on the interface and store
+it off; if you want to use the <span class="code">IMoaDrSpriteCallback </span>interface,
+<span class="code">QueryInterface() </span>for it and store it off.<BR>
+<BR>
+This mechanism lets you emit an arbitrary message from your sprite
+object. It was intended for allowing widget-type sprite Xtras
+to be written. You'll get a return value indicating whether it
+was handled or not. So, for example, in your code that handles
+your <span class="code">mouseDown </span>or <span class="code">mouseUp </span>event, you
+could pipe off a <span class="code">&quot;customEvent&quot;</span> message.
+If you have a <span class="code">&quot;customEvent&quot; </span>handler at
+for that sprite, that gets called, otherwise the cast member,
+frame, movie is tried. You can use the standard Lingo scheme for
+passing events down the chain too.<BR>
+<BR>
+If you want the original mouse event sent to your Xtra passed
+off to lingo as well, simply set the <span class="code">&quot;pHandled&quot;
+</span>return value for the <span class="code">Event() </span>call to <span class="code">FALSE</span>.
+This results in the <span class="code">mouseDown </span>or <span class="code">mouseUp L</span>ingo
+handler for the sprite being called. The corresponding Lingo handler
+then gets called after control is returned from your <span class="code">Event()
+</span>method. This also works for keyboard events.
+
+<h4><A NAME="RTFToC17">Transition Xtras</A></h4>
+
+<P>
+Test in Movies in a Window and in projectors<BR>
+<BR>
+Test with Export to QuickTime, AVI, BMP.<BR>
+<BR>
+Test with the playback window obscured by other authoring windows,
+especially if doing direct screen memory access.<BR>
+<BR>
+You are responsible for &quot;throttling&quot; your transition;
+the host app will call your Continue() method as often as possible.
+Use the supplied elapsedTime or an OS timer to guage the rate
+of your transition and pace it accordingly. Do not depend on a
+fixed CPU performance.
+
+<h4><A NAME="RTFToC18">Scripting Xtras</A></h4>
+
+<P> Use a unique string for your Xtra name (the first line of your message table)<BR>
+  <BR>
+  Use unique names for any global handlers you define. <BR>
+  <BR>
+  Make sure your global handler names don't conflict with any built-in scripting language commands, handlers, or keywords.<BR>
+  <BR>
+  In Director, test your Scripting Xtra with both &quot;manual&quot; and &quot;automatic&quot; loading. Placing it in your 
+  Xtras folder(s) will cause it to be automatically loaded at start-up. Placing it elsewhere requires the Lingo programmer 
+  to open the file using &quot;openxlib&quot; and close it using &quot;closexlib&quot;.
+<h5><A NAME="JSMemory">Javascript and Memory Issues</A></h5>
+<P>Here's a little more detail on the new behavior of memory management in Director MX 2004. The addition of JavaScript supoort 
+  has created some new memory behavior that may affect your xtra.<br>
+  <br>
+  The JS Spider Monkey Engine reclaims memory by doing a mark-and-sweep garbage collection (gc) when it allocates over a certain 
+  threshold (currently 8Meg). Therefore, JS object are only finally reclaimed when this threshold is hit or when a _sytem.gc() 
+  call is made. When you use JS code you'll usually see memory usage creep higher, and then bounce down. Also if an Xtra instance 
+  is held in JS memory it will only be finally released when a gc is triggered. This can cause problems with existing Xtras 
+  that do critical clean up in their de-allocate method. Specifiically, if a global variable has the only reference to an 
+  xtra object, setting the value of the variable to zero will NOT cause the xtra object to get deleted because there is a 
+  JS &quot;wrapper object&quot; reference to the object.
+<P>The other thing to note is the JS Engine can get involved when you don&#8217;t expect it. Once *any* JS code is used the 
+  JS Engine is initialized and any subsequent setting of Lingo globals is also reflected in JS. To work around this issue 
+  scripting xtra developers can:
+<ol>
+  <li>Avoid all JS code. This is not really practical when you are offering your extra to other users, but it may be practical 
+    if you are using an xtra internally in projector based projects where you control the entire environment. Note: Director 
+    MX 2004's start-page-movie uses JS scripts.</li>
+  <li>Use the undocumented _system.gc() call to explicitly free xtra instance
+  references. This can be an expensive operation since JS has to scan thru all
+  referenced objects.</li>
+  <li>Add an explicit &quot;close&quot; or &quot;finish&quot; method method to your scripting xtra. I would strongly recommend 
+    this approach, since it does not involved the gc overhead, and example scripts can continue to work in pre-Director 2004 
+    MX.</li>
+</ol>
+<h4><A NAME="RTFToC19">Tool Xtras</A></h4>
+<P>
+Use the &quot;alwaysEnabled&quot; setting if possible; this allows
+the host app to defer loading your xtra until it is actually selected.
+Otherwise, it must be loaded early for its GetEnabledState() method
+to be called to determine if it should be enabled or not. <BR>
+<BR>
+Remember that Tool Xtras only function in the Director authoring
+application, not in projectors
+
+<h4><A NAME="RTFToC20">Protecting your Xtras</A></h4>
+<P>
+If you want to ensure that your Xtras are used only by authorized
+customers should follow some simple guidelines. <BR>
+<BR>
+Create two versions of your Xtras, one for authoring and one for
+playback. You can use the <span class="code">IMoaAppInfo</span> interface (documented
+in the <I>Moa Reference</I> document) to determine whether the
+Xtra is being presented in the authoring or playback environment.
+To work correctly, each version of your Xtra should have the same
+CLSID for the various classes it implements. (Note that Tool Xtras
+work only in the authoring application.) <BR>
+<BR>
+One way to implement protection is to simply choose not to register
+your Xtra if the context provided by <span class="code">IMoaAppInfo</span>
+is wrong. Another way to provide protection for the authoring
+Xtra is to cache and test the serial number provided by <span class="code">IMoaAppInfo</span>.
+You could implement a registration scheme for your Xtra using
+this technique:<BR>
+<BR>
+* Implement <span class="code">IMoaRegister::Register()</span> to request a
+registration number for your Xtra from the user. (You provide
+the algorithm for testing your registration numbers.) <BR>
+<BR>
+* If the user inputs the registration correctly, get the host
+application registration number from <span class="code">IMoaAppInfo</span>,
+and put it in the dictionary provided by <span class="code">AddRegistryEntry()</span>.
+<BR>
+<BR>
+* Implement <span class="code">IMoaInitFromDict</span> to compare the serial
+number in the registry with that provided by <span class="code">IMoaAppInfo</span>,
+and to initialize the Xtra only if there's a match. <BR>
+<BR>
+Note that this mechanism requires the user to re-register the
+Xtra for each authoring application that supports MOA Xtras. Note
+also that the serial number isn't provided in Director projectors,
+so it works only for authoring mode Xtras. <BR>
+<BR>
+To protect media asset Xtras, you can tailor the functionality
+to the version. The authoring Xtra could be implemented to support
+features such as media and property editing and streaming data
+to disk. The playback version could support only features required
+for presentation, such as streaming data from disk and drawing.
+<BR>
+<BR>
+You could also alter the drawing mode or some other user interface
+feature of your Xtra so that if it's run in the wrong context,
+it's immediately obvious to the user. <BR>
+<BR>
+Be sure to advise authors in your Xtra documentation that they
+need to test their presentations using the playback version of
+the Xtra. You should also include a restriction in your licensing
+agreement that authors can only ship the playback version of the
+Xtra with presentations they create.
+<hr width=45% align=left>
+<h4><A NAME="FileStream">Streaming Files</a> </h4>
+<p>
+  Developers can use IMoaFile2 interface provided in Netfile to stream files from 
+  the internet. 
+<p><span class="code">This-&gt;pCallback-&gt;MoaCreateInstance(&amp;CLSID_CNetFile, &amp;IID_IMoaFile2, (PPMoaVoid)&amp;This-&gt;pMoaFile);</span> 
+<p><b>Important</b>: When streaming a file you must return control to Director/Shockwave 
+  periodically. You can't just sit in a code loop in your xtra waiting for the 
+  file download. The stream support code in Director (or the browser) needs to 
+  get control.
+<h4> File Streaming Code Snippet</h4>
+
+<p>Here's a bit of code that can be used to find out if an entire file has been 
+  successfully downloaded. This illustrates how to check for EOF conditions for 
+  streams. 
+<pre class="code">
+// returns TRUE if the file is completely streamed in from the net, or if there has been an error
+// note that a kMoaStreamErr_DataNotAvail error just means that the information hasn't been 
+// retrieved from the internet yet.
+// returns FALSE if the file hasn't completely streamed in yet
+MoaBool IsStreamDone(PIMoaStream2 piStream, MoaError *pErr)
+{
+	bool done = false;
+	MoaError err;
+	MoaStreamPosition endPos, length;
+
+	*pErr = kMoaErr_NoErr;
+
+	err = piStream-&gt;GetEnd(&amp;endPos);
+	if (err == kMoaErr_NoErr)
+	{
+		err = piStream->GetCurrentLength(&amp;length);
+		if (err == kMoaErr_NoErr &amp;&amp; length >= endPos)
+			done = TRUE;
+	}
+	if (err != kMoaErr_NoErr &amp;&amp; err != kMoaStreamErr_DataNotAvail)
+	{
+		done = TRUE;
+		*pErr = err;
+	}
+
+	return done;
+}
+</pre>
+
+<hr width=45% align=left>
+<h4><A NAME="StringsWithNulls">Strings with Nulls</a></h4>
+<p>Prior to Director 11, Lingo scripts could deal with strings that had null chars both as parameters and return values to Xtra methods.
+The ability to do this was lost with the Unicode changes made in D11.
+On a related note, in D11 there is a bug which affects Javascript only.
+The problem is that a Director function returns a string of length 1 with a single NULL character instead of returning an empty string.</p>
+
+<hr width=45% align=left>
+<h4><A NAME="XtraMemberInteface"></a>Getting the Interface of an Xtra Asset for a Cast Member</h4>
+<p>In Director you may want to access the interface for an Cast Member that is based on an xtra. But there's no obvious way to do do this. Here is an approach that will work.</p>
+<p>First, in lingo consider the following:</p>
+<p>
+  <span class="code">-- assume member 1 is an xtra based cast member<br>
+  put member(1).interface<br>
+  -- 8830092 -- this number is actually the interface reference<br>
+  -- i don't think you can use this value from lingo, but you could pass it to an xtra if you want<br>
+  -- you get an error if member(1) is not based on an xtra<br>
+  -- There's no way to release this interface from lingo, so you just created a memory leak
+  </span></p>
+<p>
+  And here's some pseudo C++ code that shows how to use this information in an xtra.<br>
+  <br>
+<pre class="code">
+  MoaMmValue item; // value reference to a cast member you got previously
+  PIMoaDrValue pValue; // value interface you got previously
+  PIMoaDrMove pMovie; // movie interface you got previously
+  MoaMmSymbol symInterface;
+  PIMoaDrCastMem pCastMem;
+  MoaDrCmRef assetCMR;
+  MoaMmValue assetInterface;
+  
+  pValue->StringToSymbol("interface", &symInterface);
+  pValue->ValueToCMRef(&item, &assetCMR);
+  pMovie->GetCastMemFromCMRef(&assetCMR, &pCastMem);
+  pCastMem->GetProp(symInterface, &assetInterface);
+</pre>
+  The <span class="code">assetInterface valueType</span> will be an integer, and the actual value is the xtra interface for the member.
+  The player did an <span class="code">AddRef()</span> on this interface before passing it on to you, so do a <span class="code">Release()</span> when you're done with it. <br>
+    <br>
+    
+<hr width=45% align=left>
+<h4><A NAME="SoundVolume"></a>Determining the Sound Volume</h4>
+<p>Here is a code snippet from Glenn Picher that shows how to determine the sound volume inside an xtra.</p>
+<pre class="code">
+{
+	MoaMmSymbol doSym;
+	MoaMmValue callHandlerArgs[2];
+	PIMoaMmUtils pMmUtils;
+	PIMoaDrPlayer pPlayer;
+	MoaLong iVolume;
+
+	err = pObj->pCallback->QueryInterface(&IID_IMoaMmUtils, (PPMoaVoid)&pMmUtils);
+	err = pObj->pCallback->QueryInterface(&IID_IMoaDrPlayer, (PPMoaVoid)&pPlayer);
+	err = pMmUtils->StringToSymbol("do", &doSym);
+	err = pMmUtils->StringToValue("return _sound.channel(1).volume", &callHandlerArgs[0]);
+	err = pPlayer->CallHandler(doSym, 1, &callHandlerArgs[0], &callHandlerArgs[1]);
+	pMmUtils->ValueRelease(&callHandlerArgs[0]);
+	pMmUtils->ValueToInteger(&callHandlerArgs[1], &iVolume);
+	                pMmUtils->ValueRelease(&callHandlerArgs[1]);
+	pPlayer->Release();
+	pMmUtils->Release();
+}
+</pre>
+    
+<hr width=45% align=left>
+<A HREF="../copyrite.htm" >Copyright &#169; 1995-2008 Adobe Macromedia Software LLC, Inc.</A></p>
+</BODY>
+</HTML>

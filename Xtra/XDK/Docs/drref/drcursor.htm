@@ -1,0 +1,107 @@
+<HTML>
+<HEAD>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<TITLE>IMoaDrCursor</TITLE>
+<link href="../xdk.css" rel="stylesheet" type="text/css">
+</HEAD>
+<body>
+
+<A HREF = "../drdg/index.htm">DR Developer's Guide</A>
+<BR>
+<A HREF = "index.htm"> DR Interfaces</A> | 
+<A HREF = "drmthndx.htm">DR Methods</A> | 
+<A HREF = "drtypndx.htm">DR Types and Misc API</A>
+<hr width=45% align=left>
+
+<h3><A name = "IMoaDrCursor">IMoaDrCursor</A></h3>
+
+Interface ID: <span class="code">IID_IMoaDrCursor</span><BR>
+Pointer type: <span class="code">PIMoaDrCursor</span><BR>
+Inheritance: <A HREF = "drmdaccs.htm" class="code">IMoaUnknown</A><br>
+Header file: <A HREF = "../../include/driservc.h">driservc.h</A><br>
+
+<h4>Description</h4>
+<DL>
+<DD>
+The <span class="code">IMoaDrCursor</span> interface consists of a single method, which lets Xtras set animated cursors or static cursors on Sprites or the Stage.</DD>
+</DL>
+
+<h4>Methods</h4>
+<DL>
+<DD><A HREF = "#SetSpriteCursor">SetSpriteCursor()</A></DD>
+</DL>
+
+
+<h4><A NAME="SetSpriteCursor">SetSpriteCursor()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">SetSpriteCursor(MoaDrSpriteChanIndex <em>spriteNum</em>, MoaDrCursorID <em>cursorID</em>, PMoaDrCMRef <em>pCursorBitmap</em>, PMoaDrCMRef <em>pCursorMask</em>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">spriteNum</DT>
+<dd>The sprite channel number of the sprite whose cursor you wish to set. 
+A value of 0 indicates setting the stage cursor</dd>
+<DT class="codearg">cursorID</DT>
+<dd>One of the built in types or a resource ID. The built in cursors are as follows:
+<PRE class="code">
+#define kMoaDrCursor_Arrow      -1
+#define kMoaDrCursor_Default     0
+#define kMoaDrCursor_IBeam       1
+#define kMoaDrCursor_Crosshair   2
+#define kMoaDrCursor_Crossbar    3
+#define kMoaDrCursor_Watch       4
+#define kMoaDrCursor_Finger    280
+typedef MoaLong MoaDrCursorID;
+</PRE>
+</dd>
+<DT class="codearg">pCursorBitmap</DT>
+<dd>The CMRef of a cast member (either a 1-bit bitmap or a Cursor Xtra asset) to be used as the sprite cursor</dd>
+<DT class="codearg">pCursorMask</DT>
+<dd>An optional 1-bit mask bitmap (used only with a 1-bit bitmap cursor)</dd>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DT class="code">MoaError</DT>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>This method sets the cursor from within an Xtra.</DD>
+</DL>
+<DL>
+<dt class="heading5">Examples</dt>
+<DD>
+The following example sets the cursor of the Xtra's sprite to either the arrow or the I-Beam.
+<PRE class="code">
+PIMoaDrSpriteCallback    pDrSpriteCallback = NULL;
+PIMoaDrCursor            pDrCursor = NULL;
+MoaDrCursorID            cursorID = kMoaDrCursor_Arrow;
+MoaDrSpriteChanIndex     spriteChanIndex = 0;    /* our own sprite channel index */
+
+/* fpSpriteCallback was saved earlier as an instance variable.
+/  First get the DrSpriteCallback and find out what your sprite channel index is. */
+pObj->fpSpriteCallback->QueryInterface(&IID_IMoaDrSpriteCallback, (PPMoaVoid)&pDrSpriteCallback);
+if(pDrSpriteCallback)
+    pDrSpriteCallback->GetSpriteChanIndex(&spriteChanIndex);
+
+pObj->pCallback->QueryInterface(&IID(IMoaDrCursor), (PPMoaVoid)&pDrCursor);
+
+if ( foo == 1 ) /* whatever :) */
+    // Set the Arrow cursor
+    cursorID = kMoaDrCursor_Arrow;
+else
+    // Set the I-Beam cursor
+    cursorID = kMoaDrCursor_IBeam;
+
+/* Set the sprite cursor of your own sprite to the appropriate type, determined above.
+/  Don't do this if no sprite was returned because we don't want to set the stage cursor
+/  ( 0 as the sprite channel means set the stage cursor) */
+if(pDrCursor & spriteChanIndex)
+    pDrCursor->SetSpriteCursor(spriteChanIndex, cursorID, NULL, NULL);
+</PRE></DD>
+</DL>
+
+<hr width=45% align=left>
+<A HREF = "../copyrite.htm">Copyright &#169; 1995-2008 Adobe Macromedia Software LLC, Inc.</A>
+
+</body></html>

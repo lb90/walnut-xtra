@@ -1,0 +1,61 @@
+<HTML>
+<HEAD>
+<TITLE>IMoaMmTerminator</TITLE>
+<link href="../xdk.css" rel="stylesheet" type="text/css">
+</HEAD>
+<body>
+<P> <A HREF="../mmdg/index.htm">MM Developer's Guide</A> <BR>
+  <A HREF="index.htm" >MM Interfaces</A> | <A HREF="mmmthndx.htm" >MM Methods</A> | <A HREF="mmtypndx.htm">MM Types and Misc API</A>
+<hr width=45% align=left>
+<h3>IMoaMmTerminator</h3>
+<P> Interface ID: <span class="code">IID_IMoaMmTerminator<BR>
+  </span>Pointer type: <span class="code">PIMoaMmTerminator<BR>
+  </span>Inheritance: <A HREF = "../moref/unknown.htm">IMoaUnknown</FONT></A> <BR>
+  Header file: <A HREF = "../../include/mmiservc.h">mmiservc.h</A> <BR>
+<h3>Description</h3>
+<DL>
+  <DD>
+    All classes supporting this interface are instantiated at shut-down
+    before the application quits. The class' <span class="code">Terminate()</span> method is called; 
+    the class is released. This allows Xtras to
+    perform their own shut- down and global clean-up. The corresponding
+    start-up interface is <span class="code">IMoaMmInterrogator</span>. <BR>
+    <BR>
+    Implement <span class="code">IMoaMmInterrogator</span> and <span class="code">IMoaMmTerminator</span> 
+    only when absolutely necessary to make your Xtra work. Using these
+    interfaces means that your Xtra is always called at start-up and
+    shutdown, which eliminates the benefits of having an Xtra registry. <BR>
+    <BR>
+    <B>Important</B>: You must register the class that implements <span class="code">IMoaMmTerminator</span> for
+    it to be instantiated at shutdown. You do this by calling<span class="code"> AddRegistryEntry()</span> with the class and interface in
+    the <span class="code">Register()</span> method
+    of your Xtra's registsration class. <BR>
+    <BR>
+    If you support both <span class="code">IMoaMmInterrogator </span>and <span class="code">IMoaMmTerminator</span> on the same class, 
+    two instances are created--one at start-up and one at shut-down.</DD>
+</DL>
+<h3>Methods</h3>
+<DL>
+  <DD><A HREF = "#Terminate">Terminate()</A>
+</DL>
+<hr width=45% align=left>
+<h3><A NAME="Terminate">Terminate()</A></h3>
+<h4>Syntax</h4>
+<DL>
+  <DT class="code">Terminate()</span></DT></DL>
+<h4>Parameters</h4>
+<DL>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD><span class="code">void</span>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD>Implement this method to perform shutdown deallocation, process termination, and other activities 
+    required to free an Xtra.
+</DL>
+<hr width=45% align=left>
+<A HREF = "../copyrite.htm">Copyright &#169; 1995-2008 Adobe Macromedia Software LLC, Inc.</A>
+</BODY>
+</html>

@@ -1,0 +1,475 @@
+<html><head><title>IMoaMmPropertyReference</title>
+<link href="../xdk.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<A HREF="../mmdg/index.htm">MM Developer's Guide</A><BR>
+<A HREF="index.htm" >MM Interfaces</A> | <A HREF="mmmthndx.htm" >MM Methods</A>
+| <A HREF="mmtypndx.htm">MM Types and Misc API</A>
+<BR><BR>
+<hr width=45% align=left>
+<h3><A name = "IMoaMmPropertyReference"></A>IMoaMmPropertyReference</h3>
+
+Interface ID: <span class="code">IID_IMoaMmPropertyReference</span><BR>
+Pointer type: <span class="code">PIMoaMmPropertyReference</span><BR>
+Inheritance: <span class="code">IMoaUnknown</span><BR>
+Header file: <A HREF = "../../include/mmipref.h">mmipref.h</A><BR>
+
+<h3>Description</h3>
+<DL>
+<DD>
+The <span class="code">ImoaMmPropertyReference</span> methods provide a way for a Director Object inspector to get
+information on the actual properties (not just their values) that
+your Xtra implements. For your Xtra to be compatible with the Object
+inspector, your Xtra needs to provide these interfaces.</DD>
+</DL>
+
+<h3>Methods</h3>
+
+<h4>Inspection Methods</h4>
+<DL><DD>
+The following methods provide information on the actual properties, as opposed to the values of the properties, 
+implemented by the interface. The idea is to support an Object inspector that can query the object for the property supported.<br><br>
+<B>Note:</B> Director does not call these methods. They are reserved for future use.
+</DD>
+</DL>
+<DL>
+<DD><A HREF = "#GetPropCount">GetPropCount()</A>
+<BR><A HREF = "#GetPropNameByIndex">GetPropNameByIndex()</A>
+<BR><A HREF = "#GetPropTypeByIndex">GetPropTypeByIndex()</A>
+</DL>
+
+<h4>Basic Property Access Methods</h4>
+<DL>
+<DD>The following methods provide basic property access: getting and setting properties and index properties.</DD>
+</DL>
+
+<DL>
+<DD><A HREF = "#GetCount">GetCount()</A>
+<BR><A HREF = "#GetProp">GetProp()</A>
+<BR><A HREF = "#SetProp">SetProp()</A>
+</DL>
+
+<h4>Extended Property Access Methods</h4>
+<DL>
+<DD>The following methods allow for cascaded property references and put-into/before/after
+functionality. Return <span class="code">kMoaMmErr_AccessNotSupported</span> if you do not want
+to support these capabilities.</DD>
+</DL>
+<DL>
+<DD><A HREF = "#AccessPropRef">AccessPropRef()</A>
+<BR><A HREF = "#GetContents">GetContents()</A>
+<BR><A HREF = "#SetContents">SetContents()</A>
+<BR><A HREF = "#SetContentsBefore">SetContentsBefore()</A>
+<BR><A HREF = "#SetContentsAfter">SetContentsAfter()</A>
+<BR><A HREF = "#CallHandler">CallHandler()</A>
+</DL>
+
+
+<hr width=45% align=left>
+<h3><A name = "AccessPropRef">AccessPropRef()</A></h3>
+<h4>Syntax</h4>
+<DL>
+<DT class="code">AccessPropRef(ConstPMoaMmValue <I>selfRef</I>, MoaMmSymbol <I>propName</I>, MoaLong <I>indexCount</I>, ConstPMoaMmValue <I>pIndexValues</I>, PMoaMmValue <I>pResult</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+<DT><span class="code"><I>selfRef</I></span></DT>
+<DD>The property reference object, as a Lingo value. Assign to <span class="codearg">pResult</span> and AddRef to return self.</DD>
+<DT><span class="code"><I>propName</I></span></DT>
+<DD>The property name to look up</DD>
+<DT><span class="code"><I>indexCount</I></span></DT>
+<DD>The number of indices. Specify 0, 1, or 2.</DD>
+<DT><span class="code"><I>pIndexValues</I></span></DT>
+<DD>An array of indices</DD>
+<DT><span class="code"><I>pResult</I></span></DT>
+<DD>Optional return value. To return a new property reference Lingo object, use IMoaMmPropReferenceValue::PropReferenceToValue.</DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+<DT><span class="code">MoaError:</span></DT>
+<DD>
+<TABLE BORDER="2">
+<TR><TD ALIGN="LEFT" VALIGN="TOP" WIDTH=201><span class="code">kMoaMmErr_PropertyNotFound</span>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH=303>The property is not found.
+</TD></TR>
+<TR><TD ALIGN="LEFT" VALIGN="TOP" WIDTH=201><span class="code">kMoaMmErr_AccessNotSupported</span>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH=303>If your Xtra does not support cascaded property access, return this.
+</TD></TR>
+</TABLE>
+</DD>
+</DL>
+<h4>Description</h4>
+<DL>
+<DD>This method sets up a reference to a set of hierarchical properties. A property name and (optionally) index values may be specified. A cascaded index property reference series will begin and continue with <span class="code">AccessPropRef</span> calls, up to the last access which will be any of <span class="code">GetProp</span>, <span class="code">SetProp</span>, <span class="code">SetContents</span>, <span class="code">SetBefore</span>, or <span class="code">SetAfter</span>.</DD>
+</DL>
+<h4>Examples</h4>
+<DL>
+<DD>
+<pre class="code">put x.sel[33].foo
+--&gt; i.AccessProp(propName=#sel, indexCount=1, pIndexValues={33} )
+--&gt; i.GetProp( propName=foo, indexCount=0 )
+put x.sel[33].foo[10]
+--&gt; i.AccessProp(propName=#sel, indexCount=1, pIndexValues={33} )
+--&gt; i.GetProp( propName=#foo, indexCount=1, pIndexValues={10} )
+set x.sel[33].foo[9..11] = &quot;Done!&quot;
+--&gt; i.AccessProp(propName=#sel, indexCount=1, pIndexValues={33} )
+--&gt; i.SetProp( propName=#foo, indexCount=2, pIndexValues={9,11}, pNewValue=&quot;Done!&quot; )
+</pre>
+</DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A name = "CallHandler">CallHandler()</A></h3>
+<h4>Syntax</h4>
+<DL>
+<DT class="code">CallHandler(PMoaMmCallInfo <I>callPtr</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+<DT><span class="code"><I>callPtr</I></span></DT>
+<DD><span class="code">PMoaMmCallInfo</span>&nbsp;&nbsp;</DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+<DT><span class="code">MoaError:</span></DT>
+<DD>
+<TABLE BORDER="2">
+<TR><TD ALIGN="LEFT" VALIGN="TOP" WIDTH=201><span class="code">kMoaMmErr_FunctionNotFound</span>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH=303>If you do not support the handler call.
+</TD></TR>
+</TABLE>
+</DL>
+<h4>Description</h4>
+<DL>
+<DD>This method lets you implement what your Xtra does when it is used as a Lingo handler.</DD>
+</DL>
+<h4>Examples</h4>
+<DL>
+<DD>
+<pre class="code">x.sel[1].goDown(99)
+--&gt; AccesProp( propName=#sel, indexCount=1, pIndexValues={1})
+--&gt; CallHandlers( callPtr-&gt;nargs=2, args={instance, 99} )
+</pre>
+</DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A name = "GetContents">GetContents()</A></h3>
+<h4>Syntax</h4>
+<DL>
+<DT class="code">GetContents(ConstPMoaMmValue <I>selfRef</I>, PMoaMmValue <I>pResult</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+<DT><span class="code"><I>selfRef</I></span></DT>
+<DD>The property reference object, as a Lingo value. Assign to <span class="code"><I>pResult</I></span> and AddRef to return self.</DD>
+<DT><span class="code"><I>pResult</I></span></DT>
+<DD>The return value</DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+<DT><span class="code">MoaError</span></DT>
+</DL>
+<h4>Description</h4>
+<DL>
+<DD>This method returns the contents of a property reference. It is issued when index property reference is used with the <span class="code">put</span> command.
+<br><br><B>Note:</B> This method is not used by Director 7 or eariler. It is reserved for future versions.</DD>
+</DL>
+<h4>Examples</h4>
+<DL><DD>
+<pre class="code">put &quot;Banana&quot; into x.sel[33].foo
+--&gt; i.AccessProp(propName=#sel, indexCount=1, pIndexValues={33} )
+</pre>
+</DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A name = "GetCount">GetCount()</A></h3>
+<h4>Syntax</h4>
+<DL>
+<DT class="code">GetCount(MoaMmSymbol <I>propName</I>, MoaLong * <I>pCount</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+<DT><span class="code"><I>propName</I></span></DT>
+<DD>The name of the property to look up</DD>
+<DT><span class="code"><I>pCount</I></span></DT>
+<DD>The return count</DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+<DT><span class="code">MoaError:</span></DT>
+<DD>
+<TABLE BORDER="2">
+<TR><TD ALIGN="LEFT" VALIGN="TOP" WIDTH=201><span class="code">kMoaMmErr_PropertyNotFound</span>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH=303>The property is not found.
+</TD></TR>
+<TR><TD ALIGN="LEFT" VALIGN="TOP" WIDTH=201><span class="code">kMoaMmErr_AccessNotSupported</span>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH=303>The property is not countable.
+</TD></TR>
+</TABLE>
+</DD>
+</DL>
+<h4>Description</h4>
+<DL>
+<DD>This method returns the number of &quot;chunks&quot; for the given <span class="codearg">propName</span>.</DD>
+</DL>
+<h4>Examples</h4>
+<DL>
+<DD>
+<pre class="code">put x.word.count
+--&gt; i.GetCount(propName=#word).
+</pre>
+</DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A name = "GetProp">GetProp()</A></h3>
+<h4>Syntax</h4>
+<DL>
+<DT class="code">GetProp(ConstPMoaMmValue <I>selfRef</I>, MoaMmSymbol <I>propName</I>, MoaLong <I>indexCount</I>, ConstPMoaMmValue <I>pIndexValues</I>, PMoaMmValue <I>pResult</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+<DT><span class="code"><I>selfRef</I></span></DT>
+<DD>The property reference object, as a Lingo value. Assign this to <span class="code"><I>pResult</I></span> and AddRef to return the same property reference. Use this parameter to support properties that are further references as opposed to final values.</DD>
+<DT><span class="code"><I>propName</I></span></DT>
+<DD>The property name to look up</DD>
+<DT><span class="code"><I>indexCount</I></span></DT>
+<DD>The number of indices. Specify 0, 1, or 2.</DD>
+<DT><span class="code"><I>pIndexValues</I></span></DT>
+<DD>An array of indices</DD>
+<DT><span class="code"><I>pResult</I></span></DT>
+<DD>The return value</DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+<DT><span class="code">MoaError:</span></DT>
+<DD>
+<TABLE BORDER="2">
+<TR>
+<TD><span class="code">kMoaMmErr_PropertyNotFound</span></TD>
+<TD>The property is not found.</TD>
+</TR>
+<TR>
+<TD><span class="code">kMoaMmErr_AccessNotSupported</span></TD>
+<TD>If your Xtra does not support property access, then return this. 
+(If you do not support <span class="codearg">indexCount</span> values greater than 0, for example.)</TD>
+</TR>
+</TABLE>
+</DL>
+<h4>Description</h4>
+<DL>
+<DD>
+This method retrieves the value of a property. A property name and (optionally) index values may be specified.</DD>
+</DL>
+<h4>Examples</h4>
+<DL>
+<DD>
+<pre class="code">put x.foo
+--&gt; i.GetProp( propName=foo, indexCount=0 )
+put x.foo[10]
+--&gt; i.GetProp( propName=#foo, indexCount=1, pIndexValues={10} )
+put x.foo[9..11]
+--&gt; i.GetProp( propName=#foo, indexCount=2, pIndexValues={9,11} )
+</pre>
+</DL>
+
+<hr width=45% align=left>
+<h3><A name = "GetPropCount">GetPropCount()</A></h3>
+<h4>Syntax</h4>
+<DL>
+<DT class="code">GetPropCount(MoaLong * <I>pCount</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+<DT><span class="code"><I>pCount</I></span></DT>
+<DD><span class="code">MoaLong *</span>&nbsp;&nbsp;</DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+<DT><span class="code">MoaError</span></DT>
+</DL>
+
+<hr width=45% align=left>
+<h3><A name = "GetPropNameByIndex">GetPropNameByIndex()</A></h3>
+<h4>Syntax</h4><DL>
+<DT class="code">GetPropNameByIndex(MoaLong <I>index</I>, PMoaMmSymbol <I>pSymbol</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+<DT><span class="code"><I>index</I></span></DT>
+<DD><span class="code">MoaLong</span>&nbsp;&nbsp;</DD>
+<DT><span class="code"><I>pSymbol</I></span></DT>
+<DD><span class="code">PMoaMmSymbol</span>&nbsp;&nbsp;</DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+<DT><span class="code">MoaError</span></DT>
+</DL>
+
+<hr width=45% align=left>
+<h3><A name = "GetPropTypeByIndex">GetPropTypeByIndex()</A></h3>
+<h4>Syntax</h4>
+<DL>
+<DT class="code">GetPropTypeByIndex(MoaLong <I>index</I>, PMoaMmValue <I>pType</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+<DT><span class="code"><I>index</I></span></DT>
+<DD><span class="code">MoaLong</span>&nbsp;&nbsp;</DD>
+<DT><span class="code"><I>pType</I></span></DT>
+<DD><span class="code">PMoaMmValue</span>&nbsp;&nbsp;</DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+<DT><span class="code">MoaError</span></DT>
+</DL>
+
+
+<hr width=45% align=left>
+<h3><A name = "SetContents">SetContents()</A></h3>
+<h4>Syntax</h4>
+<DL>
+<DT class="code">SetContents(ConstPMoaMmValue <I>selfRef</I>, PMoaMmValue <I>pResult</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+<DT><span class="code"><I>selfRef</I></span></DT>
+<DD><span class="code">ConstPMoaMmValue</span>&nbsp;&nbsp;The new value to stuff into the target</DD>
+<DT><span class="code"><I>pResult</I></span></DT>
+<DD><span class="code">PMoaMmValue</span>&nbsp;&nbsp;</DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+<DT><span class="code">MoaError</span></DT>
+</DL>
+<h4>Description</h4>
+<DL>
+<DD>
+This method is issued when index property reference is used with the <span class="code">put-into</span> command.
+</DL>
+<h4>Examples</h4>
+<DL><DD>
+<pre class="code">put &quot;Banana&quot; into x.sel[33].foo
+--&gt; i.AccessProp(propName=#sel, indexCount=1, pIndexValues={33} )
+--&gt; i.SetContents( pNewValue=&quot;Banana&quot; )
+</pre>
+</DD>
+</DL>
+
+<hr width=45% align=left><h3>
+<A name = "SetContentsAfter">SetContentsAfter()</A></h3>
+<h4>Syntax</h4>
+<DL>
+<DT class="code">SetContentsAfter(PMoaMmValue <I>pNewValue</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+<DT><span class="code"><I>pNewValue</I></span></DT>
+<DD>The new value to stuff into the target</DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+<DT><span class="code">MoaError</span></DT>
+</DL>
+<h4>Description</h4>
+<DL><DD>
+This method is issued when index property reference is used with the <span class="code">put-after</span> command.</DD>
+</DL>
+<h4>Examples</h4>
+<DL><DD>
+<pre class="code">put &quot;Banana&quot; before x.sel[33].foo
+--&gt; i.AccessProp(propName=#sel, indexCount=1, pIndexValues={33} )
+--&gt; i.SetContents( pNewValue=&quot;Banana&quot; )
+</pre>
+</DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A name = "SetContentsBefore">SetContentsBefore()</A></h3>
+<h4>Syntax</h4>
+<DL>
+<DT class="code">SetContentsBefore(PMoaMmValue <I>pNewValue</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+<DT><span class="code"><I>pNewValue</I></span></DT>
+<DD>The new value to stuff into the target</DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+<DT><span class="code">MoaError</span></DT>
+</DL>
+<h4>Description</h4>
+<DL>
+<DD>This method is issued when index property reference is used with the put-before command.</DD>
+</DL>
+<h4>Examples</h4>
+<DL>
+<DD>
+<pre class="code">put &quot;Banana&quot; before x.sel[33].foo
+--&gt; i.AccessProp(propName=#sel, indexCount=1, pIndexValues={33} )
+--&gt; i.SetContents( pNewValue=&quot;Banana&quot; )
+</pre>
+</DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A name = "SetProp">SetProp()</A></h3>
+<h4>Syntax</h4>
+<DL>
+<DT class="code">SetProp(MoaMmSymbol <I>propName</I>, MoaLong <I>indexCount</I>, ConstPMoaMmValue <I>pIndexValues</I>, ConstPMoaMmValue <I>pNewValue</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+<DT><span class="code"><I>propName</I></span></DT>
+<DD>The property name to look up</DD>
+<DT><span class="code"><I>indexCount</I></span></DT>
+<DD>The number of indices. Specify 0, 1, or 2.</DD>
+<DT><span class="code"><I>pIndexValues</I></span></DT>
+<DD>An array of indices</DD>
+<DT><span class="code"><I>pNewValue</I></span></DT>
+<DD>The new value to assign</DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+<DT><span class="code">MoaError:</span></DT>
+<DD>
+<TABLE BORDER="2">
+<TR><TD ALIGN="LEFT" VALIGN="TOP" WIDTH=201><span class="code">kMoaMmErr_PropertyNotFound</span>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH=303>The property is not found.
+</TD></TR>
+
+<TR><TD ALIGN="LEFT" VALIGN="TOP" WIDTH=201><span class="code">kMoaMmErr_AccessNotSupported</span>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH=303>If your Xtra does not support property access, then return this. (If you do not  support <span class="code"><I>indexCount</I></span> values greater than 0, for example.)
+</TD></TR>
+
+<TR><TD ALIGN="LEFT" VALIGN="TOP" WIDTH=201><span class="code">kMoaMmErr_CannotSetProperty</span>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH=303>Set not allowed on specified property.
+</TD></TR>
+
+</TABLE>
+</DD>
+</DL>
+<h4>Description</h4>
+<DL><DD>
+This method assigns a value to a property or range within a property. A property name and (optionally) index values may be specified.</DD>
+</DL>
+<h4>Examples</h4>
+<DL>
+<DD>
+<pre class="code">set x.foo = 99
+--&gt; i.SetProp( propName=foo, indexCount=0, pNewValue=99 )
+set x.foo[10] = 99
+--&gt; i.GetProp( propName=#foo, indexCount=1, pIndexValues={10}, pNewValue=99 )
+set x.foo[9..11] = 123
+--&gt; i.GetProp( propName=#foo, indexCount=2, pIndexValues={9,11}, pNewValue=123 )
+</pre>
+</DD>
+</DL>
+
+<hr width=45% align=left>
+<A HREF = "../copyrite.htm">Copyright &#169; 1995-2008 Adobe Macromedia Software LLC, Inc.</A>
+</body></html>
+

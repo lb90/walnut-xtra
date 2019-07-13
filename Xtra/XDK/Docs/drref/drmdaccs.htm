@@ -1,0 +1,190 @@
+<HTML>
+<HEAD>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<TITLE>IMoaDrMediaAccess</TITLE>
+<link href="../xdk.css" rel="stylesheet" type="text/css">
+</HEAD>
+<body>
+
+<A HREF = "../drdg/index.htm">DR Developer's Guide</A>
+<BR>
+<A HREF = "index.htm"> DR Interfaces</A> | <A HREF = "drmthndx.htm">DR Methods</A> | <A HREF = "drtypndx.htm">DR Types and Misc API</A>
+<hr width=45% align=left>
+
+<h3><A name = "IMoaDrMediaAccess">IMoaDrMediaAccess</A></h3>
+
+Interface ID: <span class="code">IID_IMoaDrMediaAccess</span><BR>
+Pointer type: <span class="code">PIMoaDrMediaAccess</span><BR>
+Inheritance: <A HREF = "drmdaccs.htm" class="code">IMoaUnknown</A><br>
+Header file: <A HREF = "../../include/driservc.h">driservc.h</A><br>
+
+<h4>Description</h4>
+<DL>
+<DD>
+This interface contains the core methods supported by all <span class="code">MediaAccess</span> classes. 
+<span class="code">MediaAccess</span> objects, such as <span class="code">ScoreAccess</span>,
+handle communication with the media owner object to provide a task-specific interface for accessing its media.<BR>
+<BR>
+<span class="code">MediaAccess</span> is typically buffered; 
+the <span class="code">MediaAccess</span> interface operates on a copy of media data owned by an associated <span class="code">IMoaDrMediaOwner</span> object.
+Changes are only reflected in the associated owner object when <span class="code">Commit()</span> is called.
+Using <span class="code">SetAccessInfo()</span>, the owner object can be changed on-the-fly, 
+allowing you to obtain media data from one object, modify it, and commit it back to a different object.<BR>
+<BR>
+In Director 5.0, the only type of <span class="code">MediaAccess</span> interface supported is <span class="code">IMoaDrScoreAccess</span>,
+used for editing score data associated with a filmloop cast member or Director movie. 
+Director API provides three ways to obtain a <span class="code">MediaAccess</span> interface.<br><br>
+<UL>
+  <LI><span class="code">IMoaDrMovie::GetScoreAccess()</span> - This method returns a score access interface for the Director movie.</LI>
+  <LI><span class="code">IMoaDrCastMem::GetScoreAccess()</span> - This method returns a score access interface for a filmloop cast member</LI>
+  <LI><span class="code">IMoaDrPlayer::NewScoreAccess()</span> - This method creates a new score access interface without an owner.
+  To save the resulting score to a filmloop cast member or movie, 
+  use <span class="code">IMoaDrScoreAccess::SetOwner()</span> or <span class="code">MoaDrMediaAccess::SetAccessInfo()</span> to set the owner before committing.</LI>
+</UL></DD>
+</DL>
+
+<h4>Methods</h4>
+<span class="heading5">Creating</span> 
+<DL>
+<DD><A HREF = "#New">New()</A></DD>
+</DL>
+<span class="heading5">Editing</span> 
+<DL>
+<DD><A HREF = "#Refresh">Refresh()</A> <BR>
+<A HREF = "#Commit">Commit()</A></DD>
+</DL>
+<span class="heading5">Access Information</span> 
+<DL>
+<DD><A HREF = "#GetAccessInfo">GetAccessInfo()</A> <BR>
+<A HREF = "#SetAccessInfo">SetAccessInfo()</A></DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A NAME="Commit">Commit()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">Commit()</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DT class="code">MoaError</DT>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>
+Commits changes made to the media being accessed back to the object owning the media data.
+Changes are not reflected in the media-owning object unless this method is called.
+For example, after creating a sequence of score frames using <span class="code">IMoaDrScoreAccess</span>,
+calling <span class="code">Commit()</span> updates the corresponding movie or film loop cast member.
+If no media owner has been set, this call fails and returns <span class="code">kMoaDrErr_OwnerNotSet</span>.
+The media owner is set automatically if the <span class="code">IMoaDrScoreAccess</span> interface was obtained directly from the owner using a <span class="code">GetScoreAccess()</span> call.
+If you have created a new ScoreAccess object from scratch (using <span class="code">IMoaDrPlayer::NewScoreAccess()</span>),
+it is up to you to associate the media owner object using <span class="code">SetAccessInfo()</span> (or <span class="code">SetOwner()</span> in <span class="code">IMoaDrScoreAccess</span>).
+The owner is the object that gets updates when <span class="code">Commit()</span> is called</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A NAME="GetAccessInfo">GetAccessInfo()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">GetAccessInfo(PMoaDrAccessInfo <em>pAccessInfo</em>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">pAccessInfo</DT>
+<dd>Pointer to <span class="code">MoaDrAccessInfo</span> structure to receive information</dd>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DT class="code">MoaError</DT>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>
+Obtains the current <span class="code">accessInfo</span> for the media accessor. 
+<span class="codearg">pAccessInfo</span> is a pointer to a <span class="code">MoaDrAccessInfo</span> structure to receive the information.
+This call populates the structure with the <span class="code">PIMoaDrMediaOwner</span> for the media owner, the label symbol for the media being accessed,
+and the format symbol for the media being accessed.
+Since an interface is being supplied in this structure (<span class="code">pOwner</span>), the caller is responsible for releasing it.
+</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A NAME="New">New()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">New()</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DT class="code">MoaError</DT>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>Creates new empty media data.</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A NAME="Refresh">Refresh()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">Refresh()</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DT class="code">MoaError</DT>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>Disposes of the current working media and obtains a fresh copy of the media data from the associated media owner object.
+If there is no media owner, the call fails and <span class="code">kMoaDrErr_OwnerNotSet</span> is returned.
+This call causes you to lose any edits made to your media data since the last <span class="code">Refresh()</span> or <span class="code">Commit()</span> calls.</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A NAME="SetAccessInfo">SetAccessInfo()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">SetAccessInfo(ConstPMoaDrAccessInfo <em>pAccessInfo</em>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">pAccessInfo</DT>
+<dd>Pointer to a <span class="code">MoaDrAccessInfo</span> structure to receive the information</dd>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DT class="code">MoaError</DT>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>Sets the current <span class="code">accessInfo</span> for the media accessor. 
+<span class="codearg">pAccessInfo</span> is a pointer to a <span class="code">MoaDrAccessInfo</span> structure containing the new access information to be used. 
+This call sets a new media owner, media label, and media format for the media being accessed.
+If a <span class="code">mediaOwner</span> is already set, the media accessor's hold on the previous owner interface is released.
+The caller owns the owner interface (<span class="code">pOwner</span>) provided in the structure. <BR>
+<BR>
+You may change the <span class="code">accessInfo</span> during an editing session.
+For example, you could obtain an <span class="code">IMoaDrScoreAccess</span> interface for a film loop cast member, 
+edit the score, set the access information to different film loop cast member (or movie), and call <span class="code">Commit()</span>.
+This leaves the original film loop untouched, and updates the new filmloop or movie with the edited version of the source film loop score.</DD>
+</DL>
+
+<hr width=45% align=left>
+<A HREF = "../copyrite.htm">Copyright &#169; 1995-2008 Adobe Macromedia Software LLC, Inc.</A>
+</BODY>
+</html>

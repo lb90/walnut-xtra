@@ -1,0 +1,139 @@
+
+<html>
+<head>
+<title>Director Notification</title>
+<link href="../xdk.css" rel="stylesheet" type="text/css">
+</head>
+<body link="#333399" vlink="#660033" alink="#000000" bgcolor="#FFFFFF">
+      
+<p> <b>Custom Notification Processing</b>
+<p> &nbsp;<br>
+  Developers can provide their own custom notification IDs and handling. This 
+  file contains some code showing how this can be done. 
+      <HR width=45% align=left>
+
+<b>Code Snippets</b> 
+<p> 
+      <pre class="code">
+// Asset interface constructors
+// This is where the notification interfaces are Queried for and 
+// notifications are registered for.
+
+CMoaMyAsset_IMoaMmXAsset::CMoaMyAsset_IMoaMmXAsset( MoaError *pErr )
+{
+	if ( pErr )
+	{
+		fpIMoaNotification = NULL;
+		fpIMoaNotificationClient = NULL;
+
+		// register for Step and rewind notifications 
+		pObj->pCallback->QueryInterface( &IID_IMoaNotification, (PPMoaVoid) &fpIMoaNotification );
+		QueryInterface( &IID_IMoaNotificationClient, (PPMoaVoid) &fpIMoaNotificationClient );
+		if(fpIMoaNotificationClient && fpIMoaNotification) {
+			fpIMoaNotification->RegisterNotificationClient( fpIMoaNotificationClient, &NID_DrNStep, 0, 0 );
+			fpIMoaNotification->RegisterNotificationClient( fpIMoaNotificationClient, &NID_DrNCastMemberModified, NULL, NULL);
+			fpIMoaNotification->RegisterNotificationClient( fpIMoaNotificationClient, &NID_CustomNotificationID, NULL, NULL);
+		}
+
+		MoaError	err	= kMoaErr_NoErr;
+
+		// We don't want to fail the creation of the asset interface if this failed.
+		*pErr = kMoaErr_NoErr;
+	}
+}
+
+CMoaMyAsset_IMoaMmXAsset::~CMoaMyAsset_IMoaMmXAsset(  )
+{
+
+	// release the notifications here.  Can't do it in the asset class 
+	// destructor as references to these interfaces will still be 
+	// around, preventing destruction
+	if(fpIMoaNotification && fpIMoaNotificationClient) 
+	{
+		fpIMoaNotification->UnregisterNotificationClient( fpIMoaNotificationClient, &NID_DrNStep, 0 );
+		fpIMoaNotification->UnregisterNotificationClient( fpIMoaNotificationClient, &NID_DrNCastMemberModified, 0 );
+		fpIMoaNotification->UnregisterNotificationClient( fpIMoaNotificationClient, &NID_CustomNotificationID, 0 );
+	}
+
+	if(fpIMoaNotificationClient)
+	{
+		fpIMoaNotificationClient->Release();
+		fpIMoaNotificationClient = NULL;
+	}
+
+	if(fpIMoaNotification)
+	{
+		fpIMoaNotification->Release();
+		fpIMoaNotification = NULL;
+	}
+}
+
+/*
+	// define this in a common header - ** remember the INITGUID rules.)
+	DEFINE_GUID(NID_CustomNotificationID, 
+		0xF7B2B0C2L, 0x5763, 0x11D1, 0xB4, 0x3B, 0x04, 0x05, 0x02, 0x76, 0x8F, 0x1D);
+
+*/
+
+STDMETHODIMP_(MoaError)
+CMoaMyAsset_IMoaMmXAsset::WhateverFunction( PMoaVoid privateDataToSend )
+{
+
+	X_ENTER
+	MoaError err = kMoaErr_NoErr;
+
+	// SENDING CUSTOM NOTIFICATIONS***
+	// you can define your own notification IDs and send them out to any other Xtras 
+	// that are registered to get them.  (Note: You can use custom or built in notifications here)
+	fpIMoaNotification->SendNotification(&NID_CustomNotificationID, &privateDataToSend);
+
+	X_RETURN(MoaError, err);	
+	X_EXIT
+}
+
+BEGIN_DEFINE_CLASS_INTERFACE(CMoaMyAsset, IMoaNotificationClient)
+END_DEFINE_CLASS_INTERFACE
+
+STD_INTERFACE_CREATE_DESTROY(CMoaMyAsset, IMoaNotificationClient)
+
+/* --------------------------------- CMoaMyAsset_IMoaNotificationClient::Notify */
+STDMETHODIMP CMoaMyAsset_IMoaNotificationClient::Notify(ConstPMoaNotifyID nid, PMoaVoid pNData, PMoaVoid pRefCon)
+{
+moa_try
+
+	if (MoaEqualID( nid, &NID_DrNStep )  )
+	{
+		// do stuff
+	}
+
+	else if (MoaEqualID(nid,&NID_DrNCastMemberModified) )
+	{
+		// do other stuff
+	}
+	else if (MoaEqualID(nid,&NID_CustomNotificationID) )
+	{
+		// do custom notification stuff (can access privateDataToSend that was sent, above)
+	}
+
+moa_catch
+moa_catch_end
+moa_try_end
+}
+
+
+//In xxxXta.cpp file, make sure to add the notificationClient interface
+BEGIN_XTRA
+	BEGIN_XTRA_DEFINES_CLASS(CMoaMyAsset, XTRA_CLASS_VERSION )
+		CLASS_DEFINES_INTERFACE(CMoaMyAsset,  IMoaMmXAsset, _INTERFACE_VERSION)
+		CLASS_DEFINES_INTERFACE(CMoaMyAsset,  IMoaNotificationClient, _INTERFACE_VERSION)
+	END_XTRA_DEFINES_CLASS
+
+
+END_XTRA
+
+</pre>
+<HR width=45% align=left>
+<A HREF = "../copyrite.htm">Copyright &#169; 2001-2008 Adobe Macromedia Software LLC, Inc.</A>
+
+</body>
+</html>

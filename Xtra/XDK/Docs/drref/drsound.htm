@@ -1,0 +1,75 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>IMoaDrSound</title>
+<link href="../xdk.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+
+<A HREF = "../drdg/index.htm">DR Developer's Guide</A><BR>
+<A HREF = "index.htm"> DR Interfaces</A> | 
+<A HREF = "drmthndx.htm">DR Methods</A> | 
+<A HREF = "drtypndx.htm">DR Types and Misc API</A>
+<hr width=45% align=left>
+
+<p>This file documents the <span class="code">IMoaDrSound</span> interface.
+   Note that there is <span class="code">IMoaDrSound2</span> which has all of the methods of <span class="code">IMoaDrSound</span>, 
+   plus an additional PauseSound method.
+   The method descriptions can be found in the <span class="code">IMoaDrSound2</span> file.</p>
+
+<h3><A name = "IMoaDrSound">IMoaDrSound</A></h3>
+
+<hr width=45% align=left><BR>
+
+Interface ID: <span class="code">IID_IMoaDrSound</span><BR>
+Pointer type: <span class="code">PIMoaDrSound</span><BR>
+Inheritance: <span class="code">IMoaUnknown</span><BR>
+Header file: <a href="../../Include/driservc.h">driservc.h</a><BR>
+<DL> 
+<DT class="heading4">Description</DT>
+  <DD> This callback interface provides platform-independent access to the sound mixing capabilities of Director. 
+  On the Macintosh, up to 8 sound channels are available, each of which can simultaneously play sounds independent of the others. 
+  There are also 8 sound channels available on Windows. 
+  On older Windows systems, up to 4 sound channels were available for playing independent sounds. 
+  Sound channel numbering is 1-based.</DD>
+</DL>
+
+<DL><DT class="heading4">Methods</DT>
+<DD><A HREF = "#GetSoundChannelCount">GetSoundChannelCount()</A> Determines the number of available sound channels.
+<BR><A HREF = "#GetSoundChannelStatus">GetSoundChannelStatus()</A> Returns the status of a specified sound channel.
+<BR><A HREF = "#GetFreeSoundChannel">GetFreeSoundChannel()</A> Returns the number of the next available sound channel.
+<BR><A HREF = "#PlaySoundFormat">PlaySoundFormat()</A> Plays the specified sound.
+<BR><A HREF = "#PlaySoundRaw">PlaySoundRaw()</A> Similar to <span class="codearg">PlaySoundFormat</span>, but has an additional <span class="codearg">pRawSoundStream</span> 
+parameter and cue point support.
+<BR><A HREF = "#StopSoundChannel">StopSoundChannel()</A> Stops the sound in the specified channel.
+<BR><A HREF = "#SetSoundChannelVolume">SetSoundChannelVolume()</A> Sets the volume for a particular sound channel.
+<BR><A HREF = "#GetTime">GetTime()</A> Returns the amount of time the sound in the specified channel has been playing.</DD>
+</DL>
+
+<hr width=45% align=left>
+<span class="heading5"><A NAME="GetFreeSoundChannel" href="drsound2.htm#GetFreeSoundChannel">GetFreeSoundChannel()</a></span> see IMoaDrSound
+
+<hr width=45% align=left>
+<span class="heading5"><A NAME="GetSoundChannelCount" href="drsound2.htm#GetSoundChannelCount">GetSoundChannelCount()</a></span> see IMoaDrSound
+
+<hr width=45% align=left>
+<span class="heading5"><A NAME="GetSoundChannelStatus" href="drsound2.htm#GetSoundChannelStatus">GetSoundChannelStatus()</a></span> see IMoaDrSound
+
+<hr width=45% align=left>
+<span class="heading5"><A NAME="GetTime" href="drsound2.htm#GetTime">GetTime()</a></span> see IMoaDrSound
+
+<hr width=45% align=left>
+<span class="heading5"><A NAME="PlaySoundFormat" href="drsound2.htm#PlaySoundFormat">PlaySoundFormat()</a></span> see IMoaDrSound
+
+<hr width=45% align=left>
+<span class="heading5"><A NAME="PlaySoundRaw" href="drsound2.htm#PlaySoundRaw">PlaySoundRaw()</a></span> see IMoaDrSound
+
+<hr width=45% align=left>
+<span class="heading5"><A NAME="SetSoundChannelVolume" href="drsound2.htm#SetSoundChannelVolume">SetSoundChannelVolume()</a></span> see IMoaDrSound
+
+<hr width=45% align=left>  
+<span class="heading5"><A NAME="StopSoundChannel" href="drsound2.htm#StopSoundChannel">StopSoundChannel()</a></span> see IMoaDrSound
+
+<hr width=45% align=left>
+<A HREF = "../copyrite.htm">Copyright &#169; 1995-2008 Adobe Macromedia Software LLC, Inc.</A>
+</body></html>
+

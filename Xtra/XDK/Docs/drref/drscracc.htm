@@ -1,0 +1,508 @@
+<HTML>
+<HEAD>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<TITLE>IMoaDrScoreAccess</TITLE>
+<link href="../xdk.css" rel="stylesheet" type="text/css">
+</HEAD>
+<body>
+
+<A HREF = "../drdg/index.htm">DR Developer's Guide</A>
+<BR>
+<A HREF = "index.htm"> DR Interfaces</A> | 
+<A HREF = "drmthndx.htm">DR Methods</A> | 
+<A HREF = "drtypndx.htm">DR Types and Misc API</A>
+<hr width=45% align=left>
+
+<h3>IMoaDrScoreAccess</h3>
+
+Interface ID: <span class="code">IID_IMoaDrScoreAccess</span><BR>
+Pointer type: <span class="code">PIMoaDrScoreAccess</span><BR>
+Inheritance: <A HREF = "drmdaccs.htm" class="code">IMoaDrMediaAccess</A><br>
+Header file: <A HREF = "../../include/driservc.h">driservc.h</A><br>
+
+<DL>
+<DT class="heading4">Description</DT>
+<DD>
+<span class="code">IMoaDrScoreAccess</span> inherits from <span class="code">IMoaDrMediaAccess</span>.
+This interface provides specific methods for accessing and editing the contents of a Director movie's score.
+You can acquire a score interface by calling the <span class="code">IMoaDrMovie::GetScoreAccess()</span> method. 
+Film loop cast members also have scores, which can be acquired by <span class="code">IMoaDrCastMem::GetScoreAccess()</span>.
+<BR>
+<BR>
+See the section entitled <span class="code">IMoaDrMediaAccess</span> for information regarding the 
+inherited <span class="code">IMoaDrMediaAccess</span>-specific methods of this interface. 
+This file now uses C++ style syntax.</DD>
+</DL>
+
+<h4>Methods</h4>
+
+<DL>
+<DT class="heading5">Editing support</DT>
+
+<DD><A HREF = "#New">New()</A> <BR>
+<A HREF = "#Refresh">Refresh()</A> <BR>
+<A HREF = "#Commit">Commit()</A> <BR>
+<A HREF = "#BeginUpdate">BeginUpdate()</A> <BR>
+<A HREF = "#EndUpdate">EndUpdate()</A></DD>
+</DL>
+
+<DL>
+<DT class="heading5">Media access</DT>
+<DD><A HREF = "#GetAccessInfo">GetAccessInfo()</A> <BR>
+<A HREF = "#SetAccessInfo">SetAccessInfo()</A> <BR>
+<A HREF = "#SetOwner">SetOwner()</A></DD>
+</DL>
+
+<DL>
+<DT class="heading5">Frame access</DT>
+<DD><A HREF = "#SetCurFrameIndex">SetCurFrameIndex()</A> <BR>
+<A HREF = "#GetCurFrameIndex">GetCurFrameIndex()</A> <BR>
+<A HREF = "#GetLastFrameIndex">GetLastFrameIndex()</A> <BR>
+<A HREF = "#GetFrame">GetFrame()</A></DD>
+</DL>
+
+<DL>
+<DT class="heading5">Frame editing</DT>
+<DD><A HREF = "#UpdateFrame">UpdateFrame()</A> <BR>
+<A HREF = "#InsertFrame">InsertFrame()</A> <BR>
+<A HREF = "#DuplicateFrame">DuplicateFrame()</A> <BR>
+<A HREF = "#ClearFrame">ClearFrame()</A> <BR>
+<A HREF = "#DeleteFrame">DeleteFrame()</A></DD>
+</DL>
+
+<DL>
+<DT class="heading5">Channel access</DT>
+<DD><A HREF = "#GetSound">GetSound()</A> <BR>
+<A HREF = "#GetSprite">GetSprite()</A></DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A NAME="BeginUpdate">BeginUpdate()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">BeginUpdate()</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DT class="code">MoaError</DT>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>
+Begins a score editing session.
+Before inserting or deleting frames, or modifying score frames, sounds, or sprites, you must call <span class="code">BeginUpdate()</span>.
+When done with your changes, call <span class="code">EndUpdate()</span>.</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A NAME="ClearFrame">ClearFrame()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">ClearFrame()</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DT class="code">MoaError</DT>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>
+Clears all of the cells in the current frame to their default (empty) values.</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A NAME="Commit">Commit()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">Commit()</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DT class="code">MoaError</DT>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>
+Commits changes made to media back since the last <span class="code">BeginUpdate()</span>, <span class="code">Commit()</span>, or <span class="code">Refresh().</span> 
+Call this method to apply changes to media back to the owner. 
+Call this method after calling EndUpdate().</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A NAME="DeleteFrame">DeleteFrame()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">DeleteFrame()</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DT class="code">MoaError</DT>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>
+Deletes the current frame from the score.</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A NAME="DuplicateFrame">DuplicateFrame()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">DuplicateFrame()</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DT class="code">MoaError</DT>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>
+Duplicates the current frame.
+The new frame is inserted at position <I>&lt;currentFrame + 1&gt;</I>. 
+The current frame is incremented to the new frame (<I>&lt;currentFrame + 1&gt;</I>).</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A NAME="EndUpdate">EndUpdate()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">EndUpdate()</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DT class="code">MoaError</DT>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>
+Finishes an update session initiated by a call to <span class="code">BeginUpdate()</span>.
+If you wish to keep score changes, call <span class="code">Commit()</span> after calling this method; 
+to revert to previous score, simply call this method without committing the media.</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A NAME="GetAccessInfo">GetAccessInfo()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">GetAccessInfo(PMoaDrAccessInfo <I>pAccessInfo</I>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">pAccessInfo</DT>
+<DD>Pointer to <span class="code">MoaDrAccessInfo</span> structure to receive information</DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DT class="code">MoaError</DT>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>
+Obtains the current <span class="code">accessInfo </span>for the score accessor. 
+<span class="codearg">pAccessInfo</span> is a pointer to a <span class="code">MoaDrAccessInfo</span> structure to receive the information. 
+This call populates the structure with the <span class="code">PIMoaDrMediaOwner </span>for the media owner, 
+the label symbol for the media being accessed, and the format symbol for the media being accessed.
+Since an interface is being supplied in this structure (<span class="code">pOwner</span>), the caller is responsible for releasing it.</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A NAME="GetCurFrameIndex">GetCurFrameIndex()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT>GetCurFrameIndex(PMoaDrFrameIndex <I>pFrameIndex</I>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="code"><I>pFrameIndex</I></DT>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DD>The current frame is returned. Note that this does not return a MoaError.</DD>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>
+Obtains the frame number of the current frame being accessed.</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A NAME="GetFrame">GetFrame()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT>GetFrame(PIMoaDrScoreFrame * <I>ppFrame</I>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">ppFrame</DT>
+<DD>address to store the interface</DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DT class="code">MoaError</DT>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>
+Obtains the <span class="code">IMoaDrScoreFrame</span> interface for the score data being accessed.
+This interface is used to get and set frame-level properties of the score data.</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A NAME="GetLastFrameIndex">GetLastFrameIndex()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">GetLastFrameIndex(PMoaDrFrameIndex <I>pFrameIndex</I>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">pFrameIndex</DT>
+<dd>address to store the last frame</dd>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DD>The last frame is returned. Note that this does not return a MoaError.</DD>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>
+Obtains the frame number of the last occupied frame in the score.</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A NAME="GetSound">GetSound()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT>GetSound(MoaDrSoundChanIndex <I>chanIndex</I>, PIMoaDrScoreSound * <I>ppSound</I>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">chanIndex</DT>
+<DD>Specifies the sound channel to access</DD>
+<DT class="codearg">ppSound</DT>
+<dd>address to store the interface</dd>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DT class="code">MoaError</DT>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>
+Obtains the <span class="code">IMoaDrScoreSound </span>interface for a certain sound channel of the score data being accessed. 
+<span class="codearg">chanIndex</span> specifies the sound channel to access; in Director 5.0, this must be either 1 or 2. 
+This interface is used to get and set sound channel-level properties of the score data.</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A NAME="GetSprite">GetSprite()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT>GetSprite(MoaDrSpriteChanIndex <I>chanIndex</I>, PIMoaDrScoreSprite * <I>ppSprite</I>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT>chanIndex</DT>
+<DD>Specifies the sprite channel to access</DD>
+<DT>ppSprite</DT>
+<dd>address to store the interface</dd>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DT class="code">MoaError</DT>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>
+Obtains the <span class="code">IMoaDrScoreSprite</span> interface for a certain sprite channel of the score data being accessed. 
+<span class="codearg">chanIndex</span> specifies the sprite channel to access; in Director 5.0, this must be in the range 1 to 48.
+This interface is used to get and set sprite channel-level properties of the score data.</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A NAME="InsertFrame">InsertFrame()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">InsertFrame()</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DT class="code">MoaError</DT>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>
+Inserts a frame at the current frame position.
+This has the same effect as <span class="code">DuplicateFrame()</span>.</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A NAME="New">New()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">New()</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DT class="code">MoaError</DT>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>See <span class="code"><a href="drmdaccs.htm#New">IMoaDrMediaAccess</a></span></DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A NAME="Refresh">Refresh()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">Refresh()</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DT class="code">MoaError</DT>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>See <span class="code"><a href="drmdaccs.htm#Refresh">IMoaDrMediaAccess</a></span></DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A NAME="SetAccessInfo">SetAccessInfo()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT>SetAccessInfo(ConstPMoaDrAccessInfo <I>pAccessInfo</I>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">pAccessInfo</DT>
+<DD>Pointer to <span class="code">MoaDrAccessInfo</span> structure to receive information</DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DT class="code">MoaError</DT>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>
+Sets the current <span class="code">accessInfo </span>for the score accessor.
+<span class="codearg">pAccessInfo</span> is a pointer to a <span class="code">MoaDrAccessInfo</span> structure providing the information.
+This call populates the structure with the <span class="code">PIMoaDrMediaOwner </span>for the media owner, the label symbol for the media being accessed,
+and the format symbol for the media being accessed.
+Since the caller supplies an interface in this structure (<span class="code">pOwner</span>), the caller is responsible for releasing it.</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A NAME="SetCurFrameIndex">SetCurFrameIndex()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+  <DT>SetCurFrameIndex(MoaDrFrameIndex <I>frameIndex</I>)</DT> 
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">frameIndex</DT>
+<DD>Frame number of the new current frame</DD>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DT class="code">MoaError</DT>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>
+Sets the current frame being accessed. <span class="codearg">frameIndex</span> is the frame number of the new current frame.</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A NAME="SetOwner">SetOwner()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT>SetOwner(PIMoaDrMediaOwner <I>pOwner</I>)</DT> 
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">pOwner</DT>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DT class="code">MoaError</DT>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>
+Convenience method to set the access information for the <span class="code">ScoreAccess </span>object.
+Calling this method results in the same behavior as calling <span class="code">SetAccessInfo()</span> with 
+<span class="code">score</span> and <span class="code">MoaHandle </span>as the label and format symbols, respectively.</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A NAME="UpdateFrame">UpdateFrame()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">UpdateFrame()</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DT class="code">MoaError</DT>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>
+Updates the current frame. This method has two effects, it
+<UL>
+<LI>saves any changes made to frame, sound, and sprite channels to the working score data</LI>
+<LI>increments the current frame by 1.</LI>
+</UL></DD>
+</DL>
+
+<hr width=45% align=left>
+<A HREF = "../copyrite.htm">Copyright &#169; 1995-2008 Adobe Macromedia Software LLC, Inc.</A>
+</BODY>
+</html>

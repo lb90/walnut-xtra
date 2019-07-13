@@ -1,0 +1,640 @@
+<HTML>
+<HEAD>
+<TITLE>MUI Developer's Guide</TITLE>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=ISO-8859-1">
+<link href="../xdk.css" rel="stylesheet" type="text/css">
+</HEAD>
+<BODY>
+<A HREF="../index.htm">Director XDK</A> <BR>
+<A HREF="../muref/index.htm">MUI Interfaces</A> | <A HREF="../muref/mumthndx.htm">MUI Methods</A> | <A HREF="../muref/mutypndx.htm">MUI Types and Misc API</A>
+<HR width=45% align=left>
+<H3><A NAME="RTFToC2">Director Xtra Development Kit </A></H3>
+<h3>MUI (Macromedia User Interface) Developer's Guide </h3>
+<HR width=45% align=left>
+<P>This document contains the following sections:
+<UL>
+  <LI><A HREF = "#MUIINTRO">Introduction</A>
+  <LI><A HREF = "#MUIDB">Dialog Boxes</A>
+  <LI><A HREF = "#MUIALERTS">Alerts</A>
+  <LI><A HREF = "#MUIFILE">MUI File Dialogs</A>
+  <LI><A HREF = "#MUIURL">MUI URL Dialogs</A>
+</UL>
+<P>
+<HR width=45% align=left>
+<H3><A NAME="MUIINTRO">Introduction</A></H3>
+<P> The MUI XDK and MUI Xtra provide a cross-platform API for displaying and interacting with several different types of user interface dialog boxes. The following interfaces are available:
+<P>
+<UL>
+  <LI><span class="code">IMuiDialog</span> provides a general mechanism
+    for presenting and interacting with complex dialog windows containing
+    text fields, buttons, sliders, bitmaps, groups of widgets, and
+    other user interface elements.
+  <LI><span class="code">IMuiAlert</span> provides a way to display simple user alert dialogs.
+  <LI><span class="code">IMuiFile</span> provides a way to display file open dialogs for local
+    files.
+  <LI><span class="code">IMuiURL</span> provides a way to display
+    a dialog for accepting URLs and returning them in <span class="code">IMoaPathName</span> interfaces.<BR>
+</UL>
+<P> <B>Note:</B> The MUI Xtra and MUI API are supported on PPC Macintosh, and 
+  on Windows 95 and Windows NT. They are supported only in Director 6 and higher. <BR>
+<P>
+<HR width=45% align=left>
+<H3><A NAME="MUIDB">Dialog Boxes</A></H3>
+<P> The <A HREF="../muref/mudialog.htm"><span class="code">IMuiDialog</span></A> interface supports dialog boxes displaying a variety of UI widgets.
+  Provided by the MUI Xtra, this interface offers a number of widgets,
+  such as buttons, sliders, text boxes, bitmaps, horizontal and
+  vertical separators, and other features for presentation in a
+  dialog box. The Xtra supports manual or automatic layout of widgets,
+  and provides a mechanism, using the standard <span class="code">IMoaNotification</span> interface, to interact with your Xtra as the user manipulates
+  those widgets. <BR>
+<H4>Creating a Dialog Box</H4>
+To create a MUI Dialog, you first create an instance of the MUI
+  Xtra's Dialog class and <span class="code">IMuiDialog</span> interface. To
+  do so, you call the <A HREF="../moref/callback.htm#MoaCreateInstance">IMoaCallback::MoaCreateInstance()</A> method, passing <span class="code">CLSID_CMui</span>, the CLSID for the Dialog
+  class, and <span class="code">IID_IMuiDialog</span>, the IID for the IMuiDialog
+  interface, as follows:
+<PRE class="code">
+PIMuiDialog    pMuiDialog;
+pObj-&gt;pCallback-&gt;MoaCreateInstance(&amp;CLSID(CMui), 
+     &amp;IID(IMuiDialog), (PPMoaVoid)&amp;pMuiDialog);
+</PRE>
+<H4>Initializing a Dialog Box</H4>
+<P> To initialize a dialog box, you call <A HREF="../muref/mudialog.htm#Initialize">IMuiDialog::Initialize()</A>,
+  passing parameters to define the window and the widgets that appear
+  in it. <BR>
+<H5>Defining the Window</H5>
+<P> The <A HREF="../muref/mutypndx.htm#TMuiWindow">TMuiWindow</A> type is a structure designed for passing information to the MUI
+  Xtra about the characteristics of the window you want to display.
+  When you call <span class="code">IMuiDialog::Initialize()</span>, you pass
+  a populated instance of this structure to define these characteristics
+  through the <span class="code">pWindow</span> parameter.
+<P> The fields of the <span class="code">TMuiWindow</span> structure include:<BR>
+<P>
+<TABLE BORDER=2>
+  <TR>
+    <TD WIDTH=86><B>Field</B></TD>
+    <TD WIDTH=125><B>Type</B></TD>
+    <TD WIDTH=293><B>Description</B></TD>
+  </TR>
+  <TR>
+    <TD WIDTH=86><span class="code">iStructSize</span></TD>
+    <TD WIDTH=125><span class="code">MoaLong</span> </TD>
+    <TD WIDTH=293>use to determine version of struct, = sizeof(TMuiWindow) </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=86><span class="code">iType</span></TD>
+    <TD WIDTH=125><span class="code">TMuiWindowType</span> </TD>
+    <TD WIDTH=293>window type (one of <span class="code">kMuiWindowType_None</span>, <span class="code">kMuiWindowType_Palette</span>, <span class="code">kMuiWindowType_Standard</span>, or <span class="code">kMuiWindowType_NonMovable</span>) </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=86><span class="code">pTitle</span></TD>
+    <TD WIDTH=125><span class="code">ConstPMoaChar</span> </TD>
+    <TD WIDTH=293>name of window, set to NULL for none</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=86><span class="code">iLayout</span></TD>
+    <TD WIDTH=125><span class="code">TMuiLayoutType</span> </TD>
+    <TD WIDTH=293>how to layout the widgets (one of <span class="code">kMuiLayout_Dynamic</span>, <span class="code">kMuiLayout_DialogUnit</span>, <span class="code">kMuiLayout_Pixel</span>, <span class="code">kMuiLayout_Resource</span>, or <span class="code">kMuiLayout_MAX</span>) </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=86><span class="code">iPosition</span></TD>
+    <TD WIDTH=125><span class="code">TMuiWindowPosition</span> </TD>
+    <TD WIDTH=293>if this set, the <span class="code">iXPosition</span> and <span class="code">iYPosition</span> fields may be ignored (one of <span class="code">kMuiWindowPosition_Alert</span>, <span class="code">kMuiWindowPosition_Centered</span>) </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=86><span class="code">iXPosition</span></TD>
+    <TD WIDTH=125><span class="code">MoaLong</span> </TD>
+    <TD WIDTH=293>position of upper left of window, from upper left of dialog, NULL = Center </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=86><span class="code">iYPosition</span></TD>
+    <TD WIDTH=125><span class="code">MoaLong</span> </TD>
+    <TD WIDTH=293>position of upper left of window, from upper left of dialog, NULL = Center </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=86><span class="code">iWidth</span></TD>
+    <TD WIDTH=125><span class="code">MoaLong</span> </TD>
+    <TD WIDTH=293>pixel width of window, NULL = automatic</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=86><span class="code">iHeight</span></TD>
+    <TD WIDTH=125><span class="code">MoaLong</span> </TD>
+    <TD WIDTH=293>pixel height of window, NULL = automatic</TD>
+  </TR>
+  <TR>
+    <TD WIDTH=86><span class="code">bModal</span></TD>
+    <TD WIDTH=125><span class="code">MoaBool</span> </TD>
+    <TD WIDTH=293><span class="code">TRUE</span> if modal </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=86><span class="code">bToolTipsOn</span></TD>
+    <TD WIDTH=125><span class="code">MoaBool</span> </TD>
+    <TD WIDTH=293><span class="code">TRUE</span> if dialog should display tool tips initially </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=86><span class="code">bHasCloseBox</span></TD>
+    <TD WIDTH=125><span class="code">MoaBool</span> </TD>
+    <TD WIDTH=293><span class="code">TRUE</span> if dialog has close box </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=86><span class="code">bCanZoom</span></TD>
+    <TD WIDTH=125><span class="code">MoaBool</span> </TD>
+    <TD WIDTH=293><span class="code">TRUE</span> if window zooms </TD>
+  </TR>
+</TABLE>
+<P> The <span class="code">iLayout</span> entry <span class="code">kMuiLayout_Dynamic</span> supports automatic layout of dialog boxes. This provides a convenient
+  way to build a dialog box without having to design the position
+  and size of all widgets. The automatic layout feature is described
+  in more detail in the following discussion. <BR>
+<H5>Defining widgets in a dialog </H5>
+<P> The <A HREF="../muref/mutypndx.htm#TMuiItem">TMuiItem</A> type
+  is a structure designed for passing information about the characteristics
+  of the widgets you want to display. When you call <span class="code">IMuiDialog::Initialize(),</span> you pass an array of instances of this structure through the <span class="code">pInputStrucArray[]</span> parameter, with one entry for each widget to appear in the dialog.
+<P> The fields of the <span class="code">TMuiItem</span> structure include:<BR>
+<P>
+<Table>
+<TR>
+  <TD WIDTH=95><B>Field</B></TD>
+  <TD WIDTH=95><B>Type</B></TD>
+  <TD WIDTH=314><B>Description</B></TD>
+</TR>
+<TR>
+  <TD WIDTH=95><span class="code">iStructSize</span></TD>
+  <TD WIDTH=95><span class="code">MoaLong</span> </TD>
+  <TD WIDTH=314>Determine version of struct, = sizeof(TMuiWindow) </TD>
+</TR>
+<TR>
+  <TD WIDTH=95><span class="code">vValue</span></TD>
+  <TD WIDTH=95><span class="code">MoaMmValue</span> </TD>
+  <TD WIDTH=314>initial value/data to be modified. When an ItemChanged event is passed back to the NotificationClient, this value is updated to represent the change. </TD>
+</TR>
+<TR>
+  <TD WIDTH=95><span class="code">iType</span></TD>
+  <TD WIDTH=95><span class="code">TMuiWidgetType</span> </TD>
+  <TD WIDTH=314>contextual: if data driven, a widget TIMui_WidgetType; if DU driven, a widget TIMui_WidgetType; if Pixel driven, a widget TIMui_WidgetType; if resource driven, a resource ID </TD>
+</TR>
+<TR>
+  <TD WIDTH=95><span class="code">vAttributeList</span></TD>
+  <TD WIDTH=95><span class="code">MoaMmValue</span> </TD>
+  <TD WIDTH=314>contextual: if enum list of valid values; if int/float list with min 1st, and optionally, max 2nd; if a label, a list with #center, #right, and #left for justification. </TD>
+</TR>
+<TR>
+  <TD WIDTH=95><span class="code">pTitle</span></TD>
+  <TD WIDTH=95><span class="code">ConstPMoaChar</span> </TD>
+  <TD WIDTH=314>widget title, NULL no title</TD>
+</TR>
+<TR>
+  <TD WIDTH=95><span class="code">pToolTip</span></TD>
+  <TD WIDTH=95><span class="code">ConstPMoaChar</span> </TD>
+  <TD WIDTH=314>string with tool tip to display when floating over, NULL = not tip </TD>
+</TR>
+<TR>
+  <TD WIDTH=95><span class="code">iXPosition</span></TD>
+  <TD WIDTH=95><span class="code">MoaLong</span> </TD>
+  <TD WIDTH=314>position of upper left of item, from upper left of dialog </TD>
+</TR>
+<TR>
+  <TD WIDTH=95><span class="code">iYPosition</span></TD>
+  <TD WIDTH=95><span class="code">MoaLong</span> </TD>
+  <TD WIDTH=314>position of upper left of item, from upper left of dialog </TD>
+</TR>
+<TR>
+  <TD WIDTH=95><span class="code">iWidth</span></TD>
+  <TD WIDTH=95><span class="code">MoaLong</span> </TD>
+  <TD WIDTH=314>pixel width of item, NULL = automatic</TD>
+</TR>
+<TR>
+  <TD WIDTH=95><span class="code">iHeight</span></TD>
+  <TD WIDTH=95><span class="code">MoaLong</span> </TD>
+  <TD WIDTH=314>pixel height of item, NULL = automatic</TD>
+</TR>
+<TR>
+  <TD WIDTH=95><span class="code">bEnabled</span></TD>
+  <TD WIDTH=95><span class="code">MoaBool</span> </TD>
+  <TD WIDTH=314>the UI information related to value</TD>
+</TR>
+</TABLE>
+<P> <BR>
+<H5>Types of widgets</H5>
+<P> The <span class="code">iType</span> field of the <span class="code">TMuiItem</span> structure
+  represents the type of widget defined by the structure. The MUI
+  Xtra supports a number of widget types. The following table lists
+  the various types of widgets and the attributes they support.
+  Note that particular widget types support particular attributes,
+  which are described in greater detail below. <BR>
+<P>
+<TABLE>
+<TR>
+  <TD WIDTH=248><B>Widget type</B></TD>
+  <TD WIDTH=62><B>Title</B> </TD>
+  <TD WIDTH=195><B>Attributes </B></TD>
+</TR>
+<TR>
+  <TD WIDTH=248><span class="code">kMuiWidgetType_None</span></TD>
+  <TD WIDTH=62>No </TD>
+  <TD WIDTH=195>none</TD>
+</TR>
+<TR>
+  <TD WIDTH=248><span class="code">kMuiWidgetType_Void_VDivider</span></TD>
+  <TD WIDTH=62>No</TD>
+  <TD WIDTH=195>none</TD>
+</TR>
+<TR>
+  <TD WIDTH=248><span class="code">kMuiWidgetType_Void_HDivider</span></TD>
+  <TD WIDTH=62>No</TD>
+  <TD WIDTH=195>none</TD>
+</TR>
+<TR>
+  <TD WIDTH=248><span class="code">kMuiWidgetType_Bitmap</span></TD>
+  <TD WIDTH=62>No </TD>
+  <TD WIDTH=195>&lt;bitmapStyle&gt;</TD>
+</TR>
+<TR>
+  <TD WIDTH=248><span class="code">kMuiWidgetType_Actor</span></TD>
+  <TD WIDTH=62>? </TD>
+  <TD WIDTH=195>?</TD>
+</TR>
+<TR>
+  <TD WIDTH=248><span class="code">kMuiWidgetType_Boolean_Checkbox</span> </TD>
+  <TD WIDTH=62>Yes</TD>
+  <TD WIDTH=195>&lt;textSize&gt;</TD>
+</TR>
+<TR>
+  <TD WIDTH=248><span class="code">kMuiWidgetType_Boolean_RadioButton</span> </TD>
+  <TD WIDTH=62>Yes</TD>
+  <TD WIDTH=195>&lt;textSize&gt;</TD>
+</TR>
+<TR>
+  <TD WIDTH=248><span class="code">kMuiWidgetType_Enum_PopupList</span></TD>
+  <TD WIDTH=62>No</TD>
+  <TD WIDTH=195>&lt;popupStyle&gt;&lt;valueList&gt; </TD>
+</TR>
+<TR>
+  <TD WIDTH=248><span class="code">kMuiWidgetType_Char_EditText</span></TD>
+  <TD WIDTH=62>No</TD>
+  <TD WIDTH=195>&lt;textSize&gt;&lt;justification&gt;&lt;editStyle&gt; </TD>
+</TR>
+<TR>
+  <TD WIDTH=248><span class="code">kMuiWidgetType_Label_Normal</span></TD>
+  <TD WIDTH=62>No</TD>
+  <TD WIDTH=195>&lt;textSize&gt;&lt;justification&gt;&lt;editStyle&gt; </TD>
+</TR>
+<TR>
+  <TD WIDTH=248><span class="code">kMuiWidgetType_Long_HSlider</span></TD>
+  <TD WIDTH=62>No</TD>
+  <TD WIDTH=195>&lt;sliderStyle&gt;&lt;valueRange&gt; </TD>
+</TR>
+<TR>
+  <TD WIDTH=248><span class="code">kMuiWidgetType_Float_HSlider</span></TD>
+  <TD WIDTH=62>No</TD>
+  <TD WIDTH=195>&lt;sliderStyle&gt;&lt;valueRange&gt; </TD>
+</TR>
+<TR>
+  <TD WIDTH=248><span class="code">kMuiWidgetType_Button_DefaultPushButton</span> </TD>
+  <TD WIDTH=62>Yes</TD>
+  <TD WIDTH=195>&lt;textSize&gt;</TD>
+</TR>
+<TR>
+  <TD WIDTH=248><span class="code">kMuiWidgetType_Button_PushButton</span> </TD>
+  <TD WIDTH=62>Yes</TD>
+  <TD WIDTH=195>&lt;textSize&gt;</TD>
+</TR>
+<TR>
+  <TD WIDTH=248><span class="code">kMuiWidgetType_Button_CancelButton</span> </TD>
+  <TD WIDTH=62>Yes</TD>
+  <TD WIDTH=195>&lt;textSize&gt;</TD>
+</TR>
+<TR>
+  <TD WIDTH=248><span class="code">kMuiWidgetType_Button_Toggle</span></TD>
+  <TD WIDTH=62>Yes</TD>
+  <TD WIDTH=195>&lt;textSize&gt;</TD>
+</TR>
+</TABLE>
+<P> <BR>
+<H5>Widget attributes</H5>
+<P> As noted in the list of widget types, certain widgets support
+  specific attributes. Widget attributes are defined through the <span class="code">vAttributeList</span> field of the <span class="code">TMuiItem</span> structure. The possible attributes and their values are:
+<P>
+<TABLE BORDER="2">
+  <TR>
+    <TD WIDTH=111><B>Attribute</B></TD>
+    <TD WIDTH=393><B>Values</B> </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=111>&lt;textSize&gt;</TD>
+    <TD WIDTH=393>#large, #tiny, #normal (default) </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=111>&lt;textStyle&gt;</TD>
+    <TD WIDTH=393>[#bold, #italic, #underline, #plain (default)] </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=111>&lt;justification&gt;</TD>
+    <TD WIDTH=393>#left, #right, #center (defaults to system language standard) </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=111>&lt;popupStyle&gt;</TD>
+    <TD WIDTH=393>#tiny, #cramped, #normal (default) </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=111>&lt;valueList&gt;</TD>
+    <TD WIDTH=393>[&quot;one&quot;, #two, 3, 4.0] (list of mmvalues, all coerced to strings) </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=111>&lt;valueRange&gt;</TD>
+    <TD WIDTH=393>[#min:0.0, #max:1000.0, #increment:1.0, #jump:10.0, #acceleration:0.5] </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=111>&lt;sliderStyle&gt;</TD>
+    <TD WIDTH=393>[#ticks, #value] </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=111>&lt;editStyle&gt;</TD>
+    <TD WIDTH=393>#VScrollBar, #HScrollBar, #BothScrollBars </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=111>&lt;bitmapStyle&gt;</TD>
+    <TD WIDTH=393>[#bitmapIcon: #stop/#note/#caution/#question/#error] </TD>
+  </TR>
+  <TR>
+    <TD WIDTH=111>&lt;layoutStyle&gt;</TD>
+    <TD WIDTH=393>[#lockPosition, #lockSize, #center, #right, #left, #minimize] </TD>
+  </TR>
+</TABLE>
+<P> As indicated, some attributes have standard default values. For
+  these attributes, you need not provide an entry the <span class="code">vAttributeList</span>.
+  Entries in the <span class="code">vAttributeList</span> take the following
+  form:
+<P> [#attributeName:#valueName, ...]
+<P> Note that the <span class="code">layoutStyle</span> attribute applies to all
+  widget types except groups. <BR>
+<H5>Automatic layout support </H5>
+<P> In addition to defining widget types, entries in the <span class="code">pInputStrucArray[]</span> parameter passed to <span class="code">IMuiDialog::Initialize()</span> can
+  define groupings of widgets. These groupings apply when the window's <span class="code">iLayout</span> field has been set to <span class="code">kMuiLayout_Dynamic</span>.
+  The MUI Xtra uses these groupings to determine how to organize
+  the layout of the widgets in the dialog.
+<P> The grouping entries in the array can include the following:<BR>
+<TABLE>
+<TR>
+  <TD WIDTH=203><B>Layout grouping type</B></TD>
+  <TD WIDTH=301><B>Purpose</B> </TD>
+</TR>
+<TR>
+  <TD WIDTH=203><span class="code">kMuiWidgetType_Group_WindowBegin</span> </TD>
+  <TD WIDTH=301>First entry in the <span class="code">pInputStructArray</span> (always required) </TD>
+</TR>
+<TR>
+  <TD WIDTH=203><span class="code">kMuiWidgetType_Group_WindowEnd</span> </TD>
+  <TD WIDTH=301>Last entry in the <span class="code">pInputStructArray</span> (always required) </TD>
+</TR>
+<TR>
+  <TD WIDTH=203><span class="code">kMuiWidgetType_Group_HBegin</span></TD>
+  <TD WIDTH=301>Entry preceding a group of widgets arranged horizontally </TD>
+</TR>
+<TR>
+  <TD WIDTH=203><span class="code">kMuiWidgetType_Group_HEnd</span></TD>
+  <TD WIDTH=301>Entry following a group of widgets arranged horizontally </TD>
+</TR>
+<TR>
+  <TD WIDTH=203><span class="code">kMuiWidgetType_Group_VBegin</span></TD>
+  <TD WIDTH=301>Entry preceding a group of widgets arranged vertically </TD>
+</TR>
+<TR>
+  <TD WIDTH=203><span class="code">kMuiWidgetType_Group_VEnd</span></TD>
+  <TD WIDTH=301>Entry following a group of widgets arranged vertically </TD>
+</TR>
+</TABLE>
+<P> <BR>
+  Each grouping of widgets is bracketed by the corresponding <span class="code">...Begin</span> and <span class="code">...End</span> pair, and groupings can be nested.
+<P> Note that you're always required to provide the entries <span class="code">kMuiWidgetType_Group_WindowBegin</span> and <span class="code">kMuiWidgetType_Group_WindowEnd</span> as the first and
+  last entries in the input structure array, regardless of whether
+  or not you're using automatic layout support.
+<P> To specify a group of radio buttons, enclose them in an <span class="code">HBegin/HEnd</span> or <span class="code">VBegin/VEnd</span> grouping. Any buttons within these
+  entries will be treated as mutually exclusive radio buttons (clicking
+  one deselects the previous selection), regardless of whether or
+  not you are using the automatic layout feature. <BR>
+<H5>Dialog initialization example </H5>
+<P> See beeptool.cpp in the BeepTool example for a complete initialization
+  sequence for an IMuiDialog instance. <BR>
+<H4>Dialog notification</H4>
+<P> As the user manipulates a dialog, the dialog generates a specific
+  set of events that represent user interaction with the widgets
+  it contains. For your Xtra to interact with these events, it implements
+  an <A HREF="../moref/montfctn.htm"><span class="code">IMoaNotificationClient</span></A> interface, and passes this interface to the dialog through the <A HREF="../muref/mudialog.htm#SetCallback">IMuiDialog::SetCallback()</A> method. <BR>
+<H5>Implementing the Notification Client </H5>
+<P> Events are passed from the dialog to your notification client
+  in a <A HREF="../muref/mutypndx.htm#TMuiEventRecord"><span class="code">TMuiEventRecord</span></A> structure, with the following definition:
+<PRE class="code">
+typedef struct
+{
+        MoaLong                 itemHit;
+        TMuiDialogEvent         event;
+        PIMuiDialog             pDialog;
+        MoaLong                 reserved;
+} TMuiEventRecord;
+</PRE>
+<P> The <span class="code">itemHit</span> field represents the index of the widget
+  in the <span class="code">pInputStrucArray[]</span> passed when the dialog
+  is iniatialized. You can use the <span class="code">itemHit</span> to index
+  into your stored array of widgets to get information about the
+  specific widget that received the event.
+<P> The <span class="code">event</span> field represents the type of event passed.
+  The possible types are listed in the following table, along with
+  the item represented in the <span class="code">itemHit</span> field and the
+  data passed in the <span class="code"><I>refCon</I></span> parameter. <BR>
+<TABLE>
+<TR>
+  <TD WIDTH=173><B>Event type</B></TD>
+  <TD WIDTH=166><span class="code"><B>itemHit</B></span><B> </B> </TD>
+  <TD WIDTH=166><B>Data in refCon</B></TD>
+</TR>
+<TR>
+  <TD WIDTH=173><span class="code">kMuiDialogItemChanged</span></TD>
+  <TD WIDTH=166>item changed </TD>
+  <TD WIDTH=166>-</TD>
+</TR>
+<TR>
+  <TD WIDTH=173><span class="code">kMuiDialogItemClicked</span></TD>
+  <TD WIDTH=166>item clicked </TD>
+  <TD WIDTH=166>-</TD>
+</TR>
+<TR>
+  <TD WIDTH=173><span class="code">kMuiDialogWindowOpening</span></TD>
+  <TD WIDTH=166>- </TD>
+  <TD WIDTH=166>-</TD>
+</TR>
+<TR>
+  <TD WIDTH=173><span class="code">kMuiDialogWindowClosed</span></TD>
+  <TD WIDTH=166>- </TD>
+  <TD WIDTH=166>-</TD>
+</TR>
+<TR>
+  <TD WIDTH=173><span class="code">kMuiDialogWindowResize</span></TD>
+  <TD WIDTH=166>- </TD>
+  <TD WIDTH=166>PMoaRect</TD>
+</TR>
+<TR>
+  <TD WIDTH=173><span class="code">kMuiDialogWindowZoom</span></TD>
+  <TD WIDTH=166>- </TD>
+  <TD WIDTH=166>PMoaRect</TD>
+</TR>
+<TR>
+  <TD WIDTH=173><span class="code">kMuiDialogItemEnteringFocus</span></TD>
+  <TD WIDTH=166>item about to get focus</TD>
+  <TD WIDTH=166>-</TD>
+</TR>
+<TR>
+  <TD WIDTH=173><span class="code">kMuiDialogItemLosingFocus</span></TD>
+  <TD WIDTH=166>item about to lose focus</TD>
+  <TD WIDTH=166>-</TD>
+</TR>
+</TABLE>
+<P> <BR>
+  <B>Note:</B> a modal dialog must handle at least one event by
+  stopping the dialog. Otherwise, the host application will hang.
+<P> Note: <span class="code">kMuiDialogItemChanged</span> and <span class="code">kMuiDialogItemClicked</span> are mutually exclusive. Widgets whose <span class="code">vValue</span> can
+  change (e.g., EditText, Slider) generate <span class="code">ItemChanged</span> events. Widgets such as bitmaps and default push buttons generate <span class="code">ItemClicked</span> events. <BR>
+  <BR>
+  Here's a sample implementation of the notification client for
+  interacting with an <span class="code">IMuiDialog</span>.
+<PRE class="code">
+STDMETHODIMP MyMuiDialog_IMoaNotificationClient::Notify(
+        ConstPMoaNotifyID notifyID,     
+        PMoaVoid itemPtr, 
+        PMoaVoid refcon )
+{
+        // sanity
+        if( !MoaEqualID(notifyID, &amp;IID(IMuiDialog) ) )
+                return kMoaErr_BadInterface;
+        PTMuiEventRecord        item = (PTMuiEventRecord)itemPtr;
+        MoaLong                 notifyCode = 0L;
+        switch( item-&gt;event )
+        {
+                case kMuiDialogItemClicked:
+                        // handle this event type;
+                        break;
+                case kMuiDialogItemChanged:
+                        // handle this event type;
+                        break;
+                case kMuiDialogWindowOpening:
+                        // handle this event type;
+                        break;
+                case kMuiDialogWindowClosed:
+                        // handle this event type;
+                        break;
+                case kMuiDialogWindowResize:
+                        // handle this event type;
+                        break;
+                case kMuiDialogWindowZoom:
+                        // handle this event type;
+                        break;
+                case kMuiDialogItemEnteringFocus:
+                        // handle this event type;
+                        break;
+                case kMuiDialogItemLosingFocus:
+                        // handle this event type;
+                        break;
+                default:
+                        break;
+        }
+        return kMoaErr_NoErr;
+}
+</PRE>
+<P> When implementing a dialog containing multiple widgets, you would
+  include a secondary switch statement within each of the event
+  cases above to determine the identity of the item being manipulated
+  and perform operations specific to particular items.
+<P> Within your implementation of the <span class="code">Notify()</span> method,
+  you can update widgets in the dialog by calling the <A HREF="../muref/mudialog.htm#ItemUpdate"><span class="code">IMuiDialog::ItemUpdate()</span></A> method, passing the ID of the item to update and a a handle to
+  a <span class="code">TMuiItem</span> structure representing the new state of
+  the item.
+<P> One crucial bit of functionality in the <span class="code">Notify()</span> method is to enable the user to dismiss the dialog, generally
+  in response to clicking Update or Cancel buttons. To do so, you
+  call the <A HREF="../muref/mudialog.htm#Stop"><span class="code">IMuiDialog::Stop()</span></A> method. <BR>
+<H4>Displaying a dialog</H4>
+<P> When you've initialized the dialog and set its notification interface,
+  you can display it.
+<P> To display a modal dialog, call the method <A HREF="../muref/mudialog.htm#run"><span class="code">IMuiDialog::Run()</span></A>.
+  This method blocks until the user dismisses the dialog.
+<P> To display a non-modal dialog, call the method <A HREF="../muref/mudialog.htm#WindowOp" >IMuiDialog::WindowOp()</A>,
+  passing <span class="code">kMui_WindowOp_Show</span> as the operation parameter.
+  This method returns immediately.  To hide a non-modal dialog,
+  call the <span class="code">WindowOps()</span> method with <span class="code">kMui_WindowOp_Hide</span> as the operation parameter.
+<P>
+<HR width=45% align=left>
+<H3><A NAME="MUIALERTS">Alerts</A></H3>
+<P> The IMuiAlert interface and MUI Xtra provide a platform-independent
+  mechanism to present user alerts from any MOA Xtra. <BR>
+<H4>Creating an Alert</H4>
+<P> To create a MUI Alert, you first create an instance of the MUI
+  Xtra's Alert class and <span class="code">IMuiAlert</span> interface. To do
+  so, you call the <A HREF="../moref/callback.htm#MoaCreateInstance">IMoaCallback::MoaCreateInstance()</A> method, passing <span class="code">CLSID_CMuiAlert</span>, the CLSID for the
+  Alert class, and <span class="code">IID_IMuiAlert</span>, the IID for the <span class="code">IMuiAlert</span> interface.
+<H4>Invoking the Alert</H4>
+<P> To invoke an alert, you call the one method of the <span class="code">IMuiAlert</span> interface, <A HREF="../muref/mualert.htm#Alert"><span class="code">Alert()</span></A>.
+  The parameters to this method let you define the title of the
+  Alert window, the message and icon to display in the alert box,
+  the buttons to present the user, and the default button to activate
+  if the user presses Return.
+<H5>Alert buttons</H5>
+<P> An alert may display several different combinations of buttons,
+  specified by the following constants:
+<TABLE>
+<TR>
+  <TD WIDTH=208><B>Constant</B></TD>
+  <TD WIDTH=296><B>Buttons</B> </TD>
+</TR>
+<TR>
+  <TD WIDTH=208><span class="code">kMuiAlertButtons_Ok </span></TD>
+  <TD WIDTH=296>1: OK </TD>
+</TR>
+<TR>
+  <TD WIDTH=208><span class="code">kMuiAlertButtons_OkCancel</span></TD>
+  <TD WIDTH=296>2: OK, Cancel</TD>
+</TR>
+<TR>
+  <TD WIDTH=208><span class="code">kMuiAlertButtons_AbortRetryIgnore</span> </TD>
+  <TD WIDTH=296>3: Abort, Retry, Ignore</TD>
+</TR>
+<TR>
+  <TD WIDTH=208><span class="code">kMuiAlertButtons_YesNoCancel</span></TD>
+  <TD WIDTH=296>3: Yes, No, Cancel</TD>
+</TR>
+<TR>
+  <TD WIDTH=208><span class="code">kMuiAlertButtons_YesNo</span></TD>
+  <TD WIDTH=296>2: Yes, No </TD>
+</TR>
+<TR>
+  <TD WIDTH=208><span class="code">kMuiAlertButtons_RetryCancel</span></TD>
+  <TD WIDTH=296>2: Retry, Cancel</TD>
+</TR>
+</TABLE>
+<P> The return value of the <span class="code">Alert()</span> method represents
+  the left-to-right order of the button pressed in the alert dialog:
+  the first button in the lists above returns 1, the second returns
+  2, etc. <BR>
+<P>
+<HR width=45% align=left>
+<H3><A NAME="MUIFILE">MUI File Dialogs</A></H3>
+<P> The <span class="code">IMuiFile</span> interface displays the standard system
+  file open and file save dialogs. It is available by calling <span class="code">IMoaCallback::CreateInstance()</span> with the class identifier <span class="code">CLSID_CMuiFile</span> and the
+  interface identifier <span class="code">IID_IMuiFile</span>. This interface
+  consists of two methods.
+<P> <A HREF="../muref/mufile.htm#SimpleFileOpen">IMuiFile::SimpleFileOpen()</A> displays the standard system dialog for opening files. <A HREF="../muref/mufile.htm#SimpleFileSave">IMuiFile::SimpleFileSave()</A> displays the dialog for saving files. In both methods, you can
+  pass in a user prompt string and an <A HREF="../mfref/mfpthnm.htm">IMoaPathName</A> interface representing the default path, or pass NULL to let the
+  MUI Xtra allocate a path name interface for you. (In either case,
+  you own the returned <span class="code">IMoaPathName</span> interface and must
+  release it when you're through with it.) The value returned in
+  the path name represents the user's selection. Use this interface
+  in conjunction with the <A HREF="../mfdg/index.htm">Moa File Support II API</A> to open the file specified by the user. <BR>
+<P>
+<HR width=45% align=left>
+<H3><A NAME="MUIURL">MUI URL Dialogs</A></H3>
+<P> The <span class="code">IMuiURL</span> interface displays displays the standard
+  system file open and file save dialogs. It is available by calling <span class="code">IMoaCallback::CreateInstance()</span> with the class identifier <span class="code">CLSID_CMuiURL</span> and the interface identifier <span class="code">IID_IMuiURL</span>.
+  This interface consists of two methods.
+<P> <A HREF="../muref/muurl.htm#ModalGetURLPath">IMuiURL::ModalGetURLPath()</A> displays a modal dialog for getting URLS. <A HREF="../muref/muurl.htm#MovableGetURLPath">IMuiURL::MovableGetURLPath()</A> displays a movable dialog for getting URLS.
+<HR width=45% align=left>
+<A HREF = "../copyrite.htm">Copyright &#169; 1995-2007 Adobe Macromedia Software LLC, Inc.</A>
+</BODY>
+</HTML>

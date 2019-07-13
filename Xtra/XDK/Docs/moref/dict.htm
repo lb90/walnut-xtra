@@ -1,0 +1,304 @@
+<HTML>
+<HEAD>
+<TITLE>IMoaDict</TITLE>
+<link href="../xdk.css" rel="stylesheet" type="text/css">
+</HEAD>
+<body>
+<A HREF="../moadg/index.htm">MOA Developer's Guide</A> <BR>
+<A HREF="index.htm">MOA Interfaces</A> | <A HREF="momthndx.htm">MOA Methods</A> | <A HREF="motypndx.htm">MOA Types and Misc API</A>
+<hr width=45% align=left>
+<h3>IMoaDict</h3>
+<P> Interface ID: <span class="code">IID_IMoaDict<BR>
+  </span>Pointer type: <span class="code">PIMoaDict<BR>
+  </span>Inheritance: <A HREF = "unknown.htm">IMoaUnknown</A> <BR>
+  Header file: <A HREF = "../../include/moastdif.h">moastdif.h</A> <BR>
+<h3>Description</h3>
+<DL>
+  <DD>
+    This standard MOA callback interface is provided by the application
+    for use in registering an Xtra. The description of the <span class="code">IMoaCache</span> interface (earlier in this section) provides a detailed discussion
+    of the Xtra registry.<BR>
+    <BR>
+    The Xtra cache is organized into hierarchies of dictionaries,
+    all represented by instances of the <span class="code">IMoaDict</span> interface. Within the cache, each file is represented by a <span class="code">PIMoaFileEntryDict</span>,
+    each Xtra in a file is represented by a <span class="code">PIMoaXtraEntryDict</span>,
+    and each class/interface combination in an Xtra is represented
+    by a <span class="code">PIMoaRegistryEntryDict</span>.
+    All these types are synonyms for <span class="code">PIMoaDict</span>. <BR>
+    <BR>
+    Each entry in a dictionary consists of three parts: a key, a type,
+    and a value. The key is used to locate a specific entry. Keys
+    for certain entries may be specified by an application. If an
+    Xtra adds its own data to the cache, it can specify the keys to
+    associate with particular values. A number of value types can
+    be stored in a dictionary. The <span class="code">IMoaDict</span> interface defines a set of constants to specify these types; these
+    are documented in <A href="motypndx.htm#MODICTCONST">IMoaDict constants</A>. <BR>
+    <BR>
+    Xtras register themselves and add other entries to their registry
+    dictionary by implementing the <span class="code">IMoaRegister</span> interface. They can initialize themselves from information in
+    the registry dictionary by implementing the <span class="code">IMoaInitFromDict</span> interface. The <span class="code">IMoaDict</span> interface is used to get and set individual entries in a dictionary.
+</DL>
+<h3>See also</h3>
+<DL>
+  <DD><A href="motypndx.htm#MODICTCONST">IMoaDict constants</A>, <A href="motypndx.htm#MODICTERRS">IMoaDict errors</A>
+</DL>
+<h3>Methods</h3>
+
+<h4>Creating and initializing </h4>
+<DL>
+  <DD><A HREF = "#SetSize">SetSize()</A> <BR>
+    <A HREF = "#MakeDict">MakeDict()</A>
+</DL>
+<h4>Accessing entries </h4>
+<DL>
+  <DD><A HREF = "#Get">Get()</A> <BR>
+    <A HREF = "#Count">Count()</A> <BR>
+    <A HREF = "#GetNth">GetNth()</A> <BR>
+    <A HREF = "#GetInfo">GetInfo()</A> <BR>
+    <A HREF = "#FindKey">FindKey()</A>
+</DL>
+<h4>Modifying entries </h4>
+<DL>
+  <DD><A HREF = "#Put">Put()</A> <BR>
+    <A HREF = "#Remove">Remove()</A>
+</DL>
+<hr width=45% align=left>
+<h3><A NAME="Count">Count()</A></h3>
+<h4>Syntax</h4>
+<DL>
+  <DT class="code">Count(MoaUlong * <I>pCount</I>)
+</DL>
+<h4>Parameters</h4>
+<DL>
+  <DT><span class="code"><I>pCount</I></span>
+  <DD>Integer pointer for return value </DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD>Internal lookup key
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD>Returns how many (key, type, value) tuples are in a dictionary. <BR>
+</DL>
+<P>
+<hr width=45% align=left>
+<h3><A NAME="FindKey">FindKey()</A></h3>
+<h4>Syntax</h4>
+<DL>
+  <DT class="code">FindKey(ConstPMoaChar <I>key</I>)
+</DL>
+<h4>Parameters</h4>
+<DL>
+  <DT><span class="code"><I>key</I></span>
+  <DD>Key for the entry </DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD>Internal lookup key
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD>The method <span class="code">FindKey()</span> returns the &quot;magic&quot; key used internally by the cache
+    for fast access to a dictionary entry. Calling this method and
+    storing the return value can provide much faster dictionary access
+    to frequently accessed values. NULL will be returned when out
+    of memory.
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="Get">Get()</A></h3>
+<h4>Syntax</h4>
+<DL>
+  <DT class="code">Get(MoaDictTypeID <I>type</I>, PMoaVoid <I>pValueBuffer</I>, MoaLong <I>bufferSize</I>, ConstPMoaChar <I>key</I>)
+</DL>
+<h4>Parameters</h4>
+<DL>
+  <DT><span class="code"><I>type</I></span>
+  <DD><span class="code">MoaDictTypeID</span> of the value <BR>
+    <BR>
+  <DT><span class="code"><I>pValueBuffer</I></span>
+  <DD>Pointer to buffer for the returned value <BR>
+    <BR>
+  <DT><span class="code"><I>bufferSize</I></span>
+  <DD>Size of buffer for returned value <BR>
+    <BR>
+  <DT><span class="code"><I>key</I></span>
+  <DD>Key for the entry <BR>
+    <BR>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD><span class="code">MoaError</span>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD>Returns a value from a dictionary given its key. </DD>
+</DL>
+<hr width=45% align=left>
+<h3><A NAME="GetInfo">GetInfo()</A></h3>
+<h4>Syntax</h4>
+<DL>
+  <DT class="code">GetInfo(MoaDictTypeID * <I>pType</I>, MoaLong * <I>pValueSize</I>, ConstPMoaChar <I>key</I>)
+</DL>
+<h4>Parameters</h4>
+<DL>
+  <DT><span class="code"><I>pType</I></span>
+  <DD>Returns the type of the value <BR>
+    <BR>
+  <DT><span class="code"><I>pValueSize</I></span>
+  <DD>Returns the size of the value <BR>
+    <BR>
+  <DT><span class="code"><I>key</I></span>
+  <DD>Key for entry <BR>
+    <BR>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD><span class="code">MoaError</span>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD>Returns information on the entry for the specified key in
+    a dictionary. Pass NULL for pType or pValueSize if you're not
+    interested in the specific information. </DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="GetNth">GetNth()</A></h3>
+<h4>Syntax</h4>
+<DL>
+  <DT class="code">GetNth(MoaUlong <I>index</I>, MoaDictTypeID * <I>pType</I>, MoaLong * <I>pValueSize</I>, ConstPMoaChar * <I>pKey</I>)
+</DL>
+<h4>Parameters</h4>
+<DL>
+  <DT><span class="code"><I>index</I></span>
+  <DD>Entry number to access <BR>
+    <BR>
+  <DT><span class="code"><I>pType</I></span>
+  <DD>Returns the type of the value <BR>
+    <BR>
+  <DT><span class="code"><I>pValueSize</I></span>
+  <DD>Returns the size of the value <BR>
+    <BR>
+  <DT><span class="code"><I>pKey</I></span>
+  <DD>Returns the key of the value <BR>
+    <BR>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD><span class="code">MoaError</span>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD>Returns information about entry number index in a dictionary.
+    Pass NULL for pType, pValueSize, or pKey if you're not interested
+    in the specific information. </DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="MakeDict">MakeDict()</A></h3>
+<h4>Syntax</h4>
+<DL>
+  <DT class="code">MakeDict(struct IMoaDict * * <I>pNewDict</I>, ConstPMoaChar <I>key</I>)
+</DL>
+<h4>Parameters</h4>
+<DL>
+  <DT><span class="code"><I>pNewDict</I></span>
+  <DD>Allocated pointer
+    to <span class="code">IMoaDict</span> <BR>
+    <BR>
+  <DT><span class="code"><I>key</I></span>
+  <DD>Key for the entry <BR>
+    <BR>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD><span class="code">MoaError</span>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD>Call this method to create a new instance of <span class="code">IMoaDict</span> and place it in the dictionary represented by This under the specified
+    key. Pass an allocated <span class="code">PIMoaDict</span> as pNewDict to get a pointer to the new instance; otherwise, pass
+    NULL. The newly created dictionary is &quot;owned&quot; by This;
+    the caller need not call <span class="code">Release()</span> on it. </DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="Put">Put()</A></h3>
+<h4>Syntax</h4>
+<DL>
+  <DT class="code">Put(MoaDictTypeID <I>type</I>, ConstPMoaVoid <I>pValueBuffer</I>, MoaLong <I>bufferSize</I>, ConstPMoaChar <I>key</I>)
+</DL>
+<h4>Parameters</h4>
+<DL>
+  <DT><span class="code"><I>type</I></span>
+  <DD><span class="code">MoaDictTypeID</span> of the value <BR>
+    <BR>
+  <DT><span class="code"><I>pValueBuffer</I></span>
+  <DD>Pointer to buffer for the value <BR>
+    <BR>
+  <DT><span class="code"><I>bufferSize</I></span>
+  <DD>Size of buffer for value <BR>
+    <BR>
+  <DT><span class="code"><I>key</I></span>
+  <DD>Key for the entry <BR>
+    <BR>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD><span class="code">MoaError</span>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD>Inserts the value pValueBuffer of the specified type, bufferSize,
+    and key into the dictionary This. </DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="Remove">Remove()</A></h3>
+<h4>Syntax</h4>
+<DL>
+  <DT class="code">Remove(ConstPMoaChar <I>key</I>)
+</DL>
+<h4>Parameters</h4>
+<DL>
+  <DT><span class="code"><I>key</I></span>
+  <DD>Key for the entry <BR>
+    <BR>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD><span class="code">MoaError</span>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD>Looks up the value associated with key and removes it from
+    a dictionary. For reference counted types (interfaces), the count
+    will simply be decremented. </DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="SetSize">SetSize()</A></h3>
+<h4>Syntax</h4>
+<DL>
+  <DT class="code">SetSize(MoaUlong <I>numEntries</I>)
+</DL>
+<h4>Parameters</h4>
+<DL>
+  <DT><span class="code"><I>numEntries</I></span>
+  <DD>Integer representing number of entries </DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD><span class="code">MoaError</span>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD>Call this method to pre-allocate space in a dictionary. 
+  This makes adding to the dictionary more efficient if the size is more-or-less known before hand. <BR>
+</DL>
+<hr width=45% align=left>
+<A HREF = "../copyrite.htm">Copyright &#169; 1995-2008 Adobe Macromedia Software LLC, Inc.</A>
+</BODY>
+</html>

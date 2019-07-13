@@ -1,0 +1,321 @@
+<HTML>
+<HEAD>
+<TITLE>IMoaMmXTransitionActor</TITLE>
+<link href="../xdk.css" rel="stylesheet" type="text/css">
+</HEAD>
+<body>
+<P> <A HREF="../mmdg/index.htm">MM Developer's Guide</A> <BR>
+  <A HREF="index.htm" >MM Interfaces</A> | <A HREF="mmmthndx.htm" >MM Methods</A> | <A HREF="mmtypndx.htm">MM Types and Misc API</A>
+<hr width=45% align=left>
+<h3>IMoaMmXTransitionActor</h3>
+<P> Interface ID: <span class="code">IID_IMoaMmXTransitionActor<BR>
+  </span>Pointer type: <span class="code">PIMoaMmXTransitionActor<BR>
+  </span>Inheritance: <A HREF = "../moref/unknown.htm">IMoaUnknown</A> <BR>
+  Header file: <A HREF = "../../include/mmixasst.h">mmixasst.h</A>
+<h3>Methods</h3>
+
+<h4>Asset interaction </h4>
+<DL>
+  <DD><A HREF = "#Notify">Notify()</A>
+</DL>
+<h4>Performance </h4>
+<DL>
+  <DD><A HREF = "#Cue">Cue()</A> <BR>
+    <A HREF = "#Continue">Continue()</A> <BR>
+    <A HREF = "#Finish">Finish()</A>
+</DL>
+<hr width=45% align=left>
+<h3><A NAME="Continue"></A>Continue()</h3>
+<h4>Syntax</h4>
+<DL><DT class="code">Continue(PIMoaMmGC <I>pDestGC</I>, PIMoaMmGC <I>pSrcGC</I>, ConstPMoaRect <I>pRect</I>, ConstPMoaMmTransInfo <I>pTransInfo</I>,<br>
+  &nbsp;&nbsp; MoaBoolParam * <I>pFinished</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL><DT><span class="code"><I>pDestGC</I></span>
+  <DD>Pointer to an <span class="code">IMoaMmGC </span>interface for the graphics context of the destination
+    buffer or window. <BR>
+    <BR>
+  <DT><span class="code"><I>pSrcGC</I></span>
+  <DD>Pointer to an <span class="code">IMoaMmGC</span> interface for the graphics context of the source buffer. <BR>
+    <BR>
+  <DT><span class="code"><I>pRect</I></span>
+  <DD>Pointer to a <span class="code">ConstPMoaRect</span> describing the area to be transitioned. <BR>
+    <BR>
+  <DT><span class="code"><I>pTransInfo</I></span>
+  <DD>Pointer to a <span class="code">ConstPMoaMmTransInfo </span>structure containing values for the standard property
+    settings <BR>
+    <BR>
+  <DT><span class="code"><I>pFinished</I></span>
+  <DD>Pointer to a <span class="code">MoaBoolParam, </span>telling the host application whether or not your transition
+    is complete. <BR>
+    <BR>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD>
+    <TABLE BORDER="2">
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=240><span class="code">kMoaErr_NoErr</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=372>Successful, transition serviced </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=240><span class="code">kMoaMmErr_GCTypeNotSupported</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=372>Doesn't support supplied GC type </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=240><span class="code">kMoaErr_OutOfMem</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=372>Couldn't service transition due to memory error </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=240><span class="code">kMoaMmErr_InternalError</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=372>Couldn't service transition due to internal error </TD>
+      </TR>
+    </TABLE>
+</DL>
+<h4>Description</h4>
+<DL><DD>
+Called when it's time to image more of the transition. This call
+    occurs only after the <span class="code">IMoaMmXTransitionActor::Cue() </span>method is called. If your transition is being stepped
+    by the calling application, it can be interrupted by user action
+    before your code has a chance to finish; in this case, the <span class="code">IMoaMmXTransitionActor::Finish() </span>method gets called even if you did not set <span class="code"><I>pFinished </I></span>to <span class="code">TRUE</span> in this call.<BR>
+    <BR>
+    <span class="code"><I>pDestGC </I></span>is
+    a pointer to an <span class="code">IMoaMmGC</span> interface for the graphics context of the destination buffer or
+    window. Typically, the graphics context corresponds to a native
+    operating system window, but may be an offscreen buffer, for example,
+    if the transition is rendered for export to digital video or other
+    sequential image file. The destination graphics context is the
+    one in which the transition is rendered or displayed. Upon calling <span class="code">Cue()</span>, the destination
+    graphics context contains the image from which to transition. <BR>
+    <BR>
+    <span class="code"><I>pSrcGC </I></span>is a
+    pointer to an <span class="code">IMoaMmGC</span> interface for the graphics context of the source buffer. The source
+    is never a window; it is always an offscreen buffer. The source
+    graphics context is the one for the buffer containing the final
+    image. The final image is displayed in the <span class="code"><I>pDestGC</I> </span>graphics context after the transition is complete.
+    If your transition effect requires access to the original image
+    over the duration of the effect, you should copy the image in
+    the destination graphics context to a private offscreen buffer
+    in your <span class="code">Cue() </span>method. <BR>
+    <BR>
+    <span class="code"><I>pRect </I></span>is a
+    pointer to a <span class="code">MoaRect </span>describing
+    the area to be transitioned. The same area applies to both the
+    source and destination graphics contexts.<BR>
+    <BR>
+    <span class="code"><I>pTransInfo </I></span>is
+    a pointer to a structure containing values for the standard property
+    settings, such as c<span class="code">hangeArea</span>, <span class="code">chunkSize</span>, <span class="code">duration,</span> a flag indicating whether the transition should be performed in
+    real-time, and the elapsed time since the start of the transition.
+    The elapsed time is 0 when <span class="code">Cue() </span>is called.<BR>
+    <BR>
+    <span class="code"><I>pFinished </I></span>is
+    a Boolean value indicating whether or not your transition is complete.
+    When set to <span class="code">FALSE</span>,
+    it signifies that the transition is not yet complete and indicates
+    that <span class="code">IMoaMmXTransitionActor::Continue() </span>should be called again. When set to <span class="code">TRUE</span>,
+    it indicates that the transition has been completed; <span class="code">IMoaMmXTransitionActor::Continue()</span> won't be called again, <span class="code">IMoaMmXTransitionActor::Finish() </span>will be called next.</DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="Cue"></A>Cue()</h3>
+<h4>Syntax</h4>
+<DL><DT class="code">Cue(PIMoaMmGC <I>pDestGC</I>, PIMoaMmGC <I>pSrcGC</I>, ConstPMoaRect <I>pRect</I>, ConstPMoaMmTransInfo <I>pTransInfo</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL><DT><span class="code"><I>pDestGC</I></span>
+  <DD>Pointer to <span class="code">IMoaMmGC </span>interface for destination buffer or window <BR>
+    <BR>
+  <DT><span class="code"><I>pSrcGC</I></span>
+  <DD>Pointer to <span class="code">IMoaMmGC</span> interface for the source buffer <BR>
+    <BR>
+  <DT><span class="code"><I>pRect</I></span>
+  <DD>Pointer to a <span class="code">ConstPMoaRect</span> for area to transition <BR>
+    <BR>
+  <DT><span class="code"><I>pTransInfo</I></span>
+  <DD>Pointer to a <span class="code">ConstPMoaMmTransInfo </span>structure containing values for standard property
+    settings <BR>
+    <BR>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD>
+    <TABLE BORDER="2">
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=232><span class="code">kMoaErr_NoErr</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=409>Successful, ready to begin transition sequence </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=232><span class="code">kMoaMmErr_GCTypeNotSupported</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=409>Doesn't support supplied GC type </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=232><span class="code">kMoaErr_OutOfMem</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=409>Couldn't prepare for transition due to memory error </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=232><span class="code">kMoaMmErr_InternalError</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=409>Couldn't prepare for transition due to internal error </TD>
+      </TR>
+    </TABLE>
+</DL>
+<h4>Description</h4>
+<DL>
+<DD>
+    Called when the host application is preparing to perform a transition. <BR>
+    <BR>
+    <span class="code"><I>pDestGC </I></span>is
+    a pointer to an <span class="code">IMoaMmGC</span> interface for the graphics context of the destination buffer or
+    window. Typically, the graphics context corresponds to a native
+    operating system window, but may be an offscreen buffer, for example,
+    if the transition is rendered for export to digital video or other
+    sequential image file. The destination graphics context is the
+    one in which the transition is rendered or displayed. Upon calling <span class="code">Cue()</span>, the destination
+    graphics context contains the image from which to transition.
+    Imaging should not occur while <span class="code">Cue() </span>is invoked; the graphics contexts are supplied only
+    for reference and preparation.<BR>
+    <BR>
+    <span class="code"><I>pSrcGC </I></span>is a
+    pointer to an <span class="code">IMoaMmGC</span> interface for the graphics context of the source buffer. The source
+    is never a window; it is always an offscreen buffer. The source
+    graphics context is the one for the buffer containing the final
+    image. The final image is displayed in the <span class="code"><I>pDestGC</I> </span>graphics context after the transition is complete.
+    If your transition effect requires access to the original image
+    over the duration of the effect, you should copy the image in
+    the destination graphics context to a private offscreen buffer
+    in your <span class="code">Cue() </span>method. <BR>
+    <BR>
+    <span class="code"><I>pRect </I></span>is a
+    pointer to a <span class="code">MoaRect </span>describing
+    the area to be transitioned. The same area applies to both the
+    source and destination graphics contexts.<BR>
+    <BR>
+    <span class="code"><I>pTransInfo </I></span>is
+    a pointer to a structure containing values for the standard property
+    settings, such as c<span class="code">hangeArea</span>, <span class="code">chunkSize</span>, <span class="code">duration,</span> a flag indicating whether the transition should be performed in
+    real-time, and the elapsed time since the start of the transition.
+    The elapsed time is 0 when <span class="code">Cue() </span>is called).<BR>
+    <BR>
+    If the Cue routine returns <span class="code">kMoaErr_NoError</span>,
+    the <span class="code">Continue() </span>method
+    is called at least once, and the <span class="code">Finish() </span>method is called after the <span class="code">Continue() </span>method has signaled that the transition is complete. <BR>
+    <BR>
+    If the Cue routine returns an error code, the <span class="code">Continue()</span>and
+    the <span class="code">Finish() </span>methods
+    are not called<BR>
+    <BR>
+</DL>
+<hr width=45% align=left>
+<h3><A NAME="Finish"></A>Finish()</h3>
+<h4>Syntax</h4>
+<DL><DT class="code">Finish(PIMoaMmGC <I>pDestGC</I>, PIMoaMmGC <I>pSrcGC</I>, ConstPMoaRect <I>pRect</I>, ConstPMoaMmTransInfo <I>pTransInfo</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL><DT><span class="code"><I>pDestGC</I></span>
+  <DD>Pointer to <span class="code">IMoaMmGC </span>interface for the destination buffer or window. <BR>
+    <BR>
+  <DT><span class="code"><I>pSrcGC</I></span>
+  <DD>Pointer to <span class="code">IMoaMmGC</span> interface for the source buffer. <BR>
+    <BR>
+  <DT><span class="code"><I>pRect</I></span>
+  <DD>Pointer to a <span class="code">ConstPMoaRect</span> for area to transition <BR>
+    <BR>
+  <DT><span class="code"><I>pTransInfo</I></span>
+  <DD>Pointer to a <span class="code">ConstPMoaMmTransInfo </span>structure containing values for the standard property
+    settings <BR>
+    <BR>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD>
+    <TABLE BORDER="2">
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=114><span class="code">kMoaErr_NoErr</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=390>Successful, transition completed </TD>
+      </TR>
+    </TABLE>
+</DL>
+<h4>Description</h4>
+<DL><DD>
+Called when the host has completed playing the transition. This
+    call occurs only after the <span class="code">Cue() </span>method has been called. If your transition is being
+    stepped by the calling application it may have been interrupted
+    by user action before finishing. In this case, the <span class="code">Finish() </span>method is responsible for updating any parts of the
+    destination graphics context with the final image from the source
+    graphics context which did not get imaged.<BR>
+    <BR>
+    <span class="code"><I>pDestGC </I></span>is
+    a pointer to an <span class="code">IMoaMmGC</span> interface for the graphics context of the destination buffer or
+    window. Typically, the graphics context corresponds to a native
+    operating system window, but may be an offscreen buffer, for example,
+    if the transition is rendered for export to digital video or other
+    sequential image file. The destination graphics context is the
+    one in which the transition is rendered or displayed. Upon calling <span class="code">Cue()</span>, the destination
+    graphics context contains the image from which to transition.
+    Imaging should not occur while <span class="code">Cue() </span>is invoked; the graphics contexts are supplied only
+    for reference and preparation.<BR>
+    <BR>
+    <span class="code"><I>pSrcGC </I></span>is a
+    pointer to an <span class="code">IMoaMmGC</span> interface for the graphics context of the source buffer. The source
+    is never a window; it is always an offscreen buffer. The source
+    graphics context is the one for the buffer containing the final
+    image. The final image is displayed in the <span class="code"><I>pDestGC </I></span>graphics context after the transition is complete.
+    If your transition effect requires access to the original image
+    over the duration of the effect, you should copy the image in
+    the destination graphics context to a private offscreen buffer
+    in your <span class="code">Cue() </span>method. <BR>
+    <BR>
+    <span class="code"><I>pRect </I></span>is a
+    pointer to a <span class="code">MoaRect </span>describing
+    the area to be transitioned. The same area applies to both the
+    source and destination graphics contexts.<BR>
+    <BR>
+    <span class="code"><I>pTransInfo </I></span>is
+    a pointer to a structure containing values for the standard property
+    settings, such as c<span class="code">hangeArea</span>, <span class="code">chunkSize</span>, <span class="code">duration,</span> a flag indicating whether the transition should be performed in
+    real-time, and the elapsed time since the start of the transition.
+    The elapsed time is 0 when <span class="code">Cue() </span>is called).<BR>
+    <BR>
+</DL>
+<hr width=45% align=left>
+<h3><A NAME="Notify"></A>Notify()</h3>
+<h4>Syntax</h4>
+<DL><DT class="code">Notify(MoaLong <I>msgCode</I>, PMoaVoid <I>refCon</I>)</DT>  
+</DL>
+<h4>Parameters</h4>
+<DL><DT><span class="code"><I>msgCode</I></span>
+  <DD>MoaLong<BR>
+    <BR>
+  <DT><span class="code"><I>refCon</I></span>
+  <DD>PMoaVoid<BR>
+    <BR>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD>
+    <TABLE BORDER="2">
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=232><span class="code">kMoaErr_NoErr</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=272>Successful</TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=232><span class="code">kMoaMmErr_UnknownNotifyMsgCode</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=272>Notify message code not supported </TD>
+      </TR>
+    </TABLE>
+</DL>
+<h4>Description</h4>
+<DL><DD>
+Used for communicating between assets and their actors. Call this
+    method from your implementation of the <span class="code">IMoaMmXAsset</span> interface to notify an actor at any time. You defined the message
+    codes used to pass messages from your asset to its actors. To
+    call this method on all sprites, an asset can call <span class="code">IMoaMmAssetCallback::NotifySprites()</span>. <BR>
+    <BR>
+    <B>Note: </B>Xtra developers may specify values in the range of
+    0 to 65535 for their notification codes. Higher values are reserved
+    by Adobe for future use.
+</DL>
+<hr width=45% align=left>
+<A HREF = "../copyrite.htm">Copyright &#169; 1995-2008 Adobe Macromedia Software LLC, Inc.</A>
+</BODY>
+</html>

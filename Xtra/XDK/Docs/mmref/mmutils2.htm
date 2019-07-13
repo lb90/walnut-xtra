@@ -1,0 +1,208 @@
+<HTML>
+<HEAD><TITLE>IMoaMmUtils2</TITLE>
+<link href="../xdk.css" rel="stylesheet" type="text/css">
+</HEAD>
+<body>
+
+<A HREF="../mmdg/index.htm">MM Developer's Guide</A><BR>
+<A HREF="index.htm" >MM Interfaces</A> | <A HREF="mmmthndx.htm" >MM Methods</A>
+| <A HREF="mmtypndx.htm">MM Types and Misc API</A>
+<hr width=45% align=left>
+
+<h3><A NAME="IMoaMmUtils2"></A>IMoaMmUtils2</h3>
+
+Interface ID: <span class="code">IID_IMoaMmUtils2<BR>
+</span>Pointer type: <span class="code">PIMoaMmUtils2<BR>
+</span>Inheritance: <span class="code">IMoaUnknown<BR>
+</span>Header file: <A HREF = "../../include/mmiutil.h">mmiutil.h</A>
+
+<h4>Description</h4>
+
+<DL>
+<DD>
+This interface provides utilities for printing messages in the
+scripting window, for getting a graphics context from the host
+platform, and for converting colors between RGB and the current
+palette. 
+<P>
+With <A HREF="mmvalue.htm">IMoaMmValue</A>, <A HREF="mmwndmac.htm">IMoaMmWndMac</A>,
+and <A HREF="mmwndwin.htm">IMoaMmWndWin</A>, this interface supersedes
+<span class="code">IMoaMmUtils</span>, which has been made redundant. </P></DD>
+</DL>
+<h4>Methods</h4>
+
+<h4>General utilities </h4>
+<DL>
+<DD><A HREF = "#PrintMessage">PrintMessage()</A> <BR>
+<A HREF = "#PrintMessage1">PrintMessage1()</A> <BR>
+<A HREF = "#PrintMessage2">PrintMessage2()</A> <BR>
+<A HREF = "#PrintMessage3">PrintMessage3()</A> <BR>
+<A HREF = "#PrintMessage4">PrintMessage4()</A> </DD>
+</DL>
+
+<h4>Imaging support </h4>
+<DL>
+<DD><A HREF = "#NewGC">NewGC()</A> <BR>
+<A HREF = "#RGBToIndex">RGBToIndex()</A> <BR>
+<A HREF = "#IndexToRGB">IndexToRGB()</A> </DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A NAME="IndexToRGB">IndexToRGB()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">IndexToRGB(MoaMmColorIndex <em>index</em>, PMoaMmRGBTriple <em>pRGBColor</em>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+<DT><span class="code"><I>index</I></span></DT>
+<DD>The color index of the palette entry</DD>
+<DT><span class="code"><I>pRGBColor</I></span></DT>
+  <DD>Pointer to a<span class="code">MoaMmRGBTriple</span> to receive the result</DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+<DD class="code">MoaError</DD>
+</DL>
+<h4>Description</h4>
+<DL> 
+  <DD>
+    Replaces <span class="code">Index2Color()</span> on the Macintosh. <BR><BR>
+    Cross-platform method to convert color index specified to the corresponding 
+    RGB color in the current color palette. The palette currently in use by the 
+    playback window device is used for the lookup,. The device must be set to 
+    indexed color (less than or equal to 8 bits pixel depth) for this method to 
+    work properly. If the device is set to a direct color mode (greater than 8 
+    bits), the results are unpredictable. <span class="codearg">index</span> specifies the 
+    color index of the palette entry of interest. <span class="codearg">pRGBColor</span> contains 
+    a pointer to a <span class="code">MoaMmRGBTriple</span> to receive the result.
+  </DD>
+  </DL>
+  
+    <hr width=45% align=left>
+
+    <h4><a name = "RGBToIndex">RGBToIndex()</a></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<dt class="code">RGBToIndex(ConstPMoaMmRGBTriple <i>pRGBColor</i>, PMoaMmColorIndex <i>pIndex</i>)</dt></dl>
+<DL>
+<dt class="heading5">Parameters</dt>
+<dt><span class="code"><i>pRGBColor</i></span></dt>
+      <dd><span class="code">ConstPMoaMmRGBTriple</span></dd>
+      <dt><span class="code"><i>pIndex</i></span></dt>
+      <dd><span class="code">PMoaMmColorIndex</span></dd>
+    </dl>
+        <h4>Returns</h4>
+    <dl> 
+      <dd class="code">MoaError</dd> 
+    </dl>
+    <h4>Description</h4>
+    <DL>
+    <dd>Cross-platform method to convert RGB value specified to the closest corresponding 
+      index in the current color palette.</dd>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A NAME="NewGC">NewGC()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">NewGC(ConstPMoaMmNativeGCInfo <I>pNativeGCInfo</I>, PIMoaMmGC * <em>ppGC</em>)</DT></DL>
+<h4>Parameters</h4>
+<DL>
+<DT><span class="code"><I>pNativeGCInfo</I></span></DT>
+<DD>ConstPMoaMmNativeGCInfo</DD>
+<DT><span class="code"><I>ppGC</I></span></DT>
+<DD>PIMoaMmGC *</DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+<DD class="code">MoaError</DD>
+</DL>
+<h4>Description</h4>
+<DL>
+<DD>
+    Creates a new <span class="code">IMoaMmGC </span>interface for the native drawing context you 
+    specify (Macintosh <span class="code">WindowPtr </span>or <span class="code">GWorld</span>; Windows HWND, DDB 
+    DC, or DIB DC). Note that for Macintosh graphic contexts, you need to fill 
+    in only the <span class="code">WindowPtr</span> or the <span class="code">GWorldPtr </span>of the <span class="code">MoammNativeGCInfo</span>. For OS X and later, the qdGlobalsPtr is not relevant.<BR>
+<BR>
+For Windows HWND, DIB, or DDB-based graphics contexts,
+you must supply an HDC (device context). The caller continues
+to own the DC and is responsible for releasing it after releasing
+the GC interface. Specific Windows GC types require additional
+information (such as the HWND for a Window GC).</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A NAME="PrintMessage">PrintMessage()</A>, <A NAME="PrintMessage1">PrintMessage1()</A>,
+<A NAME="PrintMessage2">PrintMessage2()</A>, <A NAME="PrintMessage3">PrintMessage3()</A>,
+<A NAME="PrintMessage4">PrintMessage4()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<dt class="code">PrintMessage(ConstPMoaChar <I>pMsg</I>)</DT>
+<dt class="code">PrintMessage1(ConstPMoaChar <I>pMsg</I>, MoaLong <I>arg1</I>)</DT>
+<dt class="code">PrintMessage2(ConstPMoaChar <I>pMsg</I>, MoaLong <I>arg1</I>, MoaLong <I>arg2</I>)</DT>
+<dt class="code">PrintMessage3(ConstPMoaChar <I>pMsg</I>, MoaLong <I>arg1</I>, MoaLong <I>arg2</I>, MoaLong <I>arg3</I>)</DT>
+<dt class="code">PrintMessage4(ConstPMoaChar <I>pMsg</I>, MoaLong <I>arg1</I>, MoaLong <I>arg2</I>, MoaLong <I>arg3</I>, MoaLong <I>arg4</I>)</dt>
+</DL>
+<h4>Parameters</h4>
+<DL>
+<DT><span class="code"><I>pMsg</I></span></DT>
+<DD>Pointer to the <span class="code">ConstPMoaChar</span> containing the message string</DD>
+<DT><span class="code"><I>arg1</I></span></DT>
+<DD><span class="code">MoaLong</span> used in place of printf() % constructions, which format variables</DD>
+<DT><span class="code"><I>arg2</I></span></DT>
+<DD><span class="code">MoaLong</span> used in place of printf() % constructions, which format variables</DD>
+<DT><span class="code"><I>arg3</I></span></DT>
+<DD><span class="code">MoaLong</span> used in place of printf() % constructions, which format variables</DD>
+<DT><span class="code"><I>arg4</I></span></DT>
+<DD><span class="code">MoaLong</span> used in place of printf() % constructions, which format variables</DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+<DD class="code">MoaError</DD>
+</DL>
+<h4>Description</h4>
+<DL>
+<DD>Prints the message <span class="codearg">pMsg</span> in
+the host application debugging or message window. These methods
+are similar to the standard C <span class="code">printf()
+</span>function, except that they support only fixed numbers
+of arguments. The first argument, <span class="codearg">pMsg</span>,
+is the message string. The arguments which follow are inserted
+into <span class="codearg">pMsg</span> in
+place of &quot;%&quot; constructions, as in <span class="code">printf()</span>.
+The constructions available in <span class="codearg">pMsg</span> are:
+
+<TABLE BORDER="2">
+<TR><TH ALIGN="LEFT" VALIGN="TOP" WIDTH=104><B>Construction</B> 
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH=400><B>Argument type</B> 
+</TH></TR>
+
+<TR><TD ALIGN="LEFT" VALIGN="TOP" WIDTH=104>%s</TD><TD ALIGN="LEFT"  VALIGN="TOP" WIDTH=400>C-string 
+</TD></TR>
+
+<TR><TD ALIGN="LEFT" VALIGN="TOP" WIDTH=104>%d</TD><TD ALIGN="LEFT"  VALIGN="TOP" WIDTH=400>integer 
+</TD></TR>
+
+<TR><TD ALIGN="LEFT" VALIGN="TOP" WIDTH=104>%ld</TD><TD ALIGN="LEFT"  VALIGN="TOP" WIDTH=400>long integer 
+</TD></TR>
+
+<TR><TD ALIGN="LEFT" VALIGN="TOP" WIDTH=104>%x</TD><TD ALIGN="LEFT"  VALIGN="TOP" WIDTH=400>hex integer 
+</TD></TR>
+
+<TR><TD ALIGN="LEFT" VALIGN="TOP" WIDTH=104>%lx</TD><TD ALIGN="LEFT"  VALIGN="TOP" WIDTH=400>long hex integer 
+</TD></TR>
+
+<TR><TD ALIGN="LEFT" VALIGN="TOP" WIDTH=104>%v</TD><TD ALIGN="LEFT"  VALIGN="TOP" WIDTH=400>pointer to <span class="code">MoaMmValue</span>.
+</TD></TR>
+</TABLE></DD>
+</DL>
+
+<hr width=45% align=left>
+<A HREF = "../copyrite.htm">Copyright &#169; 1995-2008 Adobe Macromedia Software LLC, Inc.</A>
+</BODY>
+</html>

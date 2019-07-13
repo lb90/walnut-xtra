@@ -1,0 +1,274 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>IMoaDrUtils</title>
+<link href="../xdk.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+
+<A HREF = "../drdg/index.htm">DR Developer's Guide</A><br>
+<A HREF = "index.htm"> DR Interfaces</A> | 
+<A HREF = "drmthndx.htm">DR Methods</A> | 
+<A HREF = "drtypndx.htm">DR Types and Misc API</A>
+<hr width=45% align=left>
+
+<h3><A name = "IMoaDrUtils">IMoaDrUtils</A></h3>
+
+Interface ID: <span class="code">IID_IMoaDrUtils</span><br>
+Pointer type: <span class="code">PIMoaDrUtils</span><br>
+Inheritance: <A HREF = "../moref/unknown.htm" class="code">IMoaUnknown</A><br>
+Header file: <A HREF = "../../include/driservc.h">driservc.h</A>
+
+<h4>Description</h4>
+<DL>
+  <DD>This interface provides Director-specific utilities.
+  It complements the features of the <span class="code">IMoaMmUtils</span> interface, providing application-specific services to Xtras.</DD>
+</DL>
+
+<h4>Methods</h4>
+<span class="heading5">Data conversion</span>
+<DL>
+  <DD><A HREF = "#ValueToCMRef">ValueToCMRef()</A><BR>
+  <A HREF = "#CMRefToValue">CMRefToValue()</A></DD>
+</DL>
+
+<span class="heading5">Media management</span>
+<DL>
+  <DD><A HREF = "#NewMediaInfo">NewMediaInfo()</A><BR>
+    <A HREF = "#MediaRelease">MediaRelease()</A></DD>
+</DL>
+
+<span class="heading5">Acquiring IMoaDrScoreAccess</span>
+<DL>
+  <DD><A HREF = "#NewScoreAccess">NewScoreAccess()</A></DD>
+</DL>
+
+<span class="heading5">Managing notification clients</span>
+<DL>
+  <DD><A HREF = "#RegisterNotificationClient">RegisterNotificationClient()</A><BR>
+    <A HREF = "#UnregisterNotificationClient">UnregisterNotificationClient()</A></DD>
+</DL>
+
+<hr width=45% align=left>
+
+
+<h4><A NAME="CMRefToValue">CMRefToValue()</A></h4>
+<dl>
+<dt class="heading5">Syntax</dt>
+<dt class="code">CMRefToValue(ConstPMoaDrCMRef <em>pCMRef</em>, PMoaMmValue <em>pValue</em>)</dt>
+</dl>
+<dl>
+<dt class="heading5">Parameters</dt>
+<dt class="codearg">pCMRef</dt>
+<dd>Pointer to a <span class="code">ConstPMoaDrCMRef</span> to be used as the basis for the new value</dd>
+<dt class="codearg">pValue</dt>
+<dd>Pointer to <span class="code">MoaMmValue</span> to receive the result</dd>
+</dl>
+<dl>
+<dt class="heading5">Returns</dt>
+<dt class="code">MoaError</dt>
+</dl>
+<dl>
+<dt class="heading5">Description</dt>
+<dd>This method has been superseded by methods of the <A HREF="drvalue.htm" class="code">IMoaDrValue</A> interface</dd>
+</dl>
+
+<hr width=45% align=left>
+
+<h4><A NAME="MediaRelease">MediaRelease()</A></h4>
+<dl>
+<dt class="heading5">Syntax</dt>
+<dt class="code">MediaRelease(PMoaDrMediaInfo <em>pMediaInfo</em>)</dt>
+</dl>
+<dl>
+<dt class="heading5">Parameters</dt>
+<dt class="codearg">pMediaInfo</dt>
+<dd>Pointer to a Media Info structure filled with valid data</dd>
+</dl>
+<dl>
+<dt class="heading5">Returns</dt>
+<dt class="code">MoaError</dt>
+</dl>
+<dl>
+<dt class="heading5">Description</dt>
+<dd>Releases the bulk media data referenced by the <span class="code">MoaDrMediaInfo</span> structure in <span class="codearg">pMediaInfo</span>.
+The <span class="code">formatSymbol</span> and <span class="code">mediaData</span> fields of <span class="codearg">pMediaInfo</span> must be
+    valid on entry. If the format of the media data is unknown to
+    the host application, <span class="code">kMoaDrErr_MediaFormatNotSupported</span> is returned and the media data is not be released.
+    You can also release the data yourself using the appropriate native
+    memory manager call (if the media data is a native data type),
+    such as <span class="code">KillPicture()</span> for
+    &quot;<span class="code">macPICT</span>&quot;.
+    The host application does not guarantee that it can dispose media
+    data of all formats; only those that are built-in data types of
+    the host application are supported by this call.</dd>
+</dl>
+
+<hr width=45% align=left>
+
+<h4><A NAME="NewMediaInfo">NewMediaInfo()</A></h4>
+<dl>
+<dt class="heading5">Syntax</dt>
+<dt class="code">NewMediaInfo(MoaMmSymbol <em>labelSymbol</em>, MoaMmSymbol <em>formatSymbol</em>, PMoaVoid <em>mediaData</em>, MoaLong <em>options</em>,<br>
+&nbsp;&nbsp;PMoaVoid <em>aux</em>, PMoaDrMediaInfo <em>pMediaInfo</em>)</dt>
+</dl>
+<dl>
+<dt class="heading5">Parameters</dt>
+<dt class="codearg">labelSymbol</dt>
+<dd>Symbol with a label for the type of media</dd>
+<dt class="codearg">formatSymbol</dt>
+<dd>Symbol describing the format of the media</dd>
+<dt class="codearg">mediaData</dt>
+<dd>Pointer to the actual data for the media</dd>
+<dt class="codearg">options</dt>
+<dd>Used when setting image media. Use a <span class="code">kMoaDrImgMediaOpts_</span> constant</dd>
+<dt class="codearg">aux</dt>
+<dd>Pointer to a <span class="code">MoaDrImageAuxInfo</span> structure if you use the &quot;AuxInfo&quot; option</dd>
+<dt class="codearg">pMediaInfo</dt>
+<dd>Pointer to the structure to be filled out</dd>
+</dl>
+<dl>
+<dt class="heading5">Returns</dt>
+<dt class="code">MoaError</dt>
+</dl>
+<dl>
+<dt class="heading5">Description</dt>
+<dd>Populates a <span class="code">MoaDrMediaInfo</span> structure.
+    This call does not allocate any media data, it simply populates
+    the supplied structure. If populating the structure for a call to <span class="code">SetMedia()</span>, you
+    must populate the <span class="codearg">labelSymbol</span>, <span class="codearg">formatSymbol</span>, <span class="codearg">mediaData</span>, 
+	<span class="codearg">options</span>, and <span class="codearg">aux</span> fields accordingly.
+	<span class="codearg">options</span> tells Director how the palette and color depth of the image should be set;
+	it currently varies only for &quot;image&quot; label media. 
+	<span class="codearg">aux</span> is used only when specifying <span class="code">AuxInfo</span> options;
+    it is ignored for other options. If populating the structure for a call to <span class="code">GetMedia()</span>,
+    only the <span class="codearg">labelSymbol</span> and <span class="codearg">formatSymbol</span> fields are required.<BR>
+    <BR>
+    Before a <span class="code">GetMedia()</span>, <span class="code">SetMedia()</span>, or <span class="code">AttachMedia()</span> call, 
+	use this method to fill out the supplied structure, specifying NULL for the <span class="code">aux</span> field.
+    Using this call forces you to fill out all the needed parameters.<BR>
+    <BR>
+    When setting or getting any media label other than &quot;image&quot;,
+    use the value <span class="code">kMoaDrMediaOpts_None</span> for the <span class="codearg">options</span> argument. 
+	When setting or attaching an &quot;image&quot; media label type, there are a number of image media constants
+    to use as the <span class="codearg">options</span> argument. 
+	These are described in the &quot;Constants&quot; section in this <a href="drtypndx.htm#RTFToC67">document</a>.</dd>
+</dl>
+
+<hr width=45% align=left>
+
+<h4><A NAME="NewScoreAccess">NewScoreAccess()</A></h4>
+<dl>
+<dt class="heading5">Syntax</dt>
+<dt class="code">NewScoreAccess(PIMoaDrScoreAccess * <em>ppScore</em>)</dt>
+</dl>
+<dl>
+<dt class="heading5">Parameters</dt>
+<dt class="codearg">ppScore</dt>
+<dd>Pointer to place to store the new interface.</dd>
+</dl>
+<dl>
+<dt class="heading5">Returns</dt>
+<dt class="code">MoaError</dt>
+</dl>
+<dl>
+<dt class="heading5">Description</dt>
+<dd>Creates a new instance of an object supporting <span class="code">IMoaDrScoreAccess</span>.
+    The <span class="code">IMoaDrScoreAccess</span> interface is used to access and edit score data for movies and film loops.
+	Normally, if you want to access an existing movie
+    or film loop, you would call <span class="code">IMoaDrMovie::GetScoreAccess()</span> or <span class="code">IMoaDrCastMem::GetScoreAccess()</span>.
+    However, if you do not want to create new score from scratch which
+    is not yet associated with a movie or film loop, this method can be used.
+	To save the resulting score, you must call the <span class="code">IMoaDrScoreAccess::SetOwner()</span> method to associate an owner object with the score,
+    and then call <span class="code">Commit()</span> to
+    save the score to the object.</dd>
+</dl>
+
+<hr width=45% align=left>
+
+<h4><A NAME="RegisterNotificationClient">RegisterNotificationClient()</A></h4>
+<dl>
+<dt class="heading5">Syntax</dt>
+<dt class="code">RegisterNotificationClient(PIMoaDrNotificationClient <em>pNotificationClient</em>, MoaDrNotifyType <em>notifyType</em>, PMoaVoid <em>refCon</em>)</dt>
+</dl>
+<dl>
+<dt class="heading5">Parameters</dt>
+<dt class="codearg">pNotificationClient</dt>
+<dd>Pointer to a pre-existing <span class="code">IMoaDrNotificationClient</span> interface</dd>
+<dt class="codearg">notifyType</dt>
+<dd>Value indicating the type of notification requested</dd>
+<dt class="codearg">refCon</dt>
+<dd>Reference - may be NULL</dd>
+</dl>
+<dl>
+<dt class="heading5">Returns</dt>
+<dt class="code">MoaError</dt>
+</dl>
+<dl>
+<dt class="heading5">Description</dt>
+<dd>This method has been superseded by methods of the <A HREF="../moref/montfctn.htm" class="code">IMoaNotification</A> interface.</dd>
+</dl>
+
+<hr width=45% align=left>
+<h4><A NAME="UnregisterNotificationClient">UnregisterNotificationClient()</A></h4>
+<dl>
+<dt class="heading5">Syntax</dt>
+<dt class="code">UnregisterNotificationClient(PIMoaDrNotificationClient <em>pNotificationClient</em>, MoaDrNotifyType <em>notifyType</em>, PMoaVoid <em>refCon</em>)</dt>
+</dl>
+<dl>
+<dt class="heading5">Parameters</dt>
+<dt class="codearg">pNotificationClient</dt>
+<dd>Pointer to a pre-existing <span class="code">IMoaDrNotificationClient</span> interface</dd>
+<dt class="codearg">notifyType</dt>
+<dd>Value indicating the type of notification requested</dd>
+<dt class="codearg">refCon</dt>
+<dd>Reference - may be NULL</dd>
+</dl>
+<dl>
+<dt class="heading5">Returns</dt>
+<dt class="code">MoaError</dt>
+</dl>
+<dl>
+<dt class="heading5">Description</dt>
+<dd>This method has been superseded by methods of the <A HREF="../moref/montfctn.htm" class="code">IMoaNotification</A> interface.</dd>
+</dl>
+
+<hr width=45% align=left>
+
+<h4><A NAME="ValueToCMRef">ValueToCMRef()</A></h4>
+<dl>
+<dt class="heading5">Syntax</dt>
+<dt class="code">ValueToCMRef(ConstPMoaMmValue <em>pValue</em>, PMoaDrCMRef <em>pCMRef</em>)</dt>
+</dl>
+<dl>
+<dt class="heading5">Parameters</dt>
+<dt class="codearg">pValue</dt>
+<dd>Pointer to a value with a cast member reference</dd>
+<dt class="codearg">pCMRef</dt>
+<dd>Pointer to a MoaDrCMRef to receive the result</dd>
+</dl>
+<dl>
+<dt class="heading5">Returns</dt>
+<dt class="code">MoaError</dt>
+  <DD>
+    <TABLE BORDER="2">
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=258><span class="code">kMoaErr_NoErr</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=389>successful</TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=258><span class="code">kMoaDrErr_CastMemberExpected</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=389>Type mismatch: <span class="code">CMRef</span> expected </TD>
+      </TR>
+    </TABLE></DD>
+</dl>
+<dl>
+<dt class="heading5">Description</dt>
+<dd>This method has been superseded by methods of the <A HREF="drvalue.htm" class="code">IMoaDrValue</A> interface</dd>
+</dl>
+
+<hr width=45% align=left>
+
+<A HREF = "../copyrite.htm">Copyright &#169; 1995-2008 Adobe Macromedia Software LLC, Inc.</A>
+</BODY>
+</html>

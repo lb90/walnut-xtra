@@ -1,0 +1,23 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ValueChecker", "ValueChecker.vcproj", "{6C5CEAA8-3C0C-43C3-9402-E498E273523F}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Release = Release
+	EndGlobalSection
+	GlobalSection(ProjectDependencies) = postSolution
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{6C5CEAA8-3C0C-43C3-9402-E498E273523F}.Debug.ActiveCfg = Debug|Win32
+		{6C5CEAA8-3C0C-43C3-9402-E498E273523F}.Debug.Build.0 = Debug|Win32
+		{6C5CEAA8-3C0C-43C3-9402-E498E273523F}.Release.ActiveCfg = Release|Win32
+		{6C5CEAA8-3C0C-43C3-9402-E498E273523F}.Release.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

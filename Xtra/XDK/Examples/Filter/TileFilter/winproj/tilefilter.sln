@@ -1,0 +1,23 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TileFilter", "TileFilter.vcproj", "{33889CE9-BE1A-48EE-93F7-1186C301AC5C}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Release = Release
+	EndGlobalSection
+	GlobalSection(ProjectDependencies) = postSolution
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{33889CE9-BE1A-48EE-93F7-1186C301AC5C}.Debug.ActiveCfg = Debug|Win32
+		{33889CE9-BE1A-48EE-93F7-1186C301AC5C}.Debug.Build.0 = Debug|Win32
+		{33889CE9-BE1A-48EE-93F7-1186C301AC5C}.Release.ActiveCfg = Release|Win32
+		{33889CE9-BE1A-48EE-93F7-1186C301AC5C}.Release.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

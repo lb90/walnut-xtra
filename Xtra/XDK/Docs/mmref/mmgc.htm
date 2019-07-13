@@ -1,0 +1,273 @@
+<HTML>
+<HEAD>
+<TITLE>IMoaMmGC</TITLE>
+<link href="../xdk.css" rel="stylesheet" type="text/css">
+</HEAD>
+<body>
+<P> <A HREF="../mmdg/index.htm">MM Developer's Guide</A> <BR>
+  <A HREF="index.htm" >MM Interfaces</A> | <A HREF="mmmthndx.htm" >MM Methods</A> | <A HREF="mmtypndx.htm">MM Types and Misc API</A>
+<hr width=45% align=left>
+<h3>IMoaMmGC</h3>
+<P> Interface ID: <span class="code">IID_IMoaMmGC<BR>
+  </span>Pointer type: <span class="code">PIMoaMmGC<BR>
+  </span>Inheritance: <A HREF = "../moref/unknown.htm"><span class="code">IMoaUnknown</span></A> <BR>
+  Header file: <A HREF = "../../include/mmiservc.h">mmiservc.h</A> <BR>
+<h3>Description</h3>
+<DL>
+  <DD>
+    This standard multimedia interface is provided by various Xtra
+    interface methods that enable an object to draw itself, including
+    the <span class="code">IMoaMmXAsset</span> methods
+    for drawing thumbnail images, the <span class="code">IMoaMmXSpriteActor::Image()</span> method, and the <span class="code">IMoaMmXTransitionActor</span> methods for performing a transition. You can also acquire a graphics
+    context interface for doing other drawing by calling <span class="code">IMoaMmUtils::NewGC()</span>. <BR>
+    <BR>
+    This interface provides both platform-independent and platform-specific
+    access to the graphics context of the current platform. Methods
+    in this interface provide information about the native operating
+    system windows and offscreen buffers into which an Xtra should
+    draw.</DD>
+</DL>
+<h3>Methods</h3>
+<DL>
+  <DT>
+  <DD><A HREF = "#GetContentRect">GetContentRect()</A> <BR>
+    <A HREF = "#GetPixelDepth">GetPixelDepth()</A> <BR>
+    <A HREF = "#GetNativeGCInfo">GetNativeGCInfo()</A> <BR>
+    <A HREF = "#SetNativeGCInfo">SetNativeGCInfo()</A> <BR>
+    <A HREF = "#Blit">Blit()</A>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="Blit">Blit()</A></h3>
+<h4>Syntax</h4>
+<DL>
+  <DT class="code">Blit(ConstPMoaRect <I>pDestRect</I>, struct IMoaMmGC * <I>pSrcGC</I>,ConstPMoaRect <I>pSrcRect</I>, MoaMmInk <I>ink</I>,<br>
+&nbsp;&nbsp;ConstPMoaMmInkParams <I>pInkParams</I>, PMoaVoid <I>nativeClipRegion</I>)
+</DL>
+<h4>Parameters</h4>
+<DL>
+  <DT><span class="code"><I>pDestRect</I></span>
+  <DD><span class="code">ConstPMoaRect </span>representing the area to which to copy </DD>
+  <DT><span class="code"><I>pSrcGC</I></span>
+  <DD><span class="code">struct IMoaMmGC *</span></DD>
+  <DT><span class="code"><I>pSrcRect</I></span>
+  <DD><span class="code">ConstPMoaRect</span></DD>
+  <DT><span class="code"><I>ink</I></span>
+  <DD><span class="code">MoaMmInk</span> see <A HREF="mmtypndx.htm#MoaMmInk">mmtypndx</A></DD>
+  <DT><span class="code"><I>pInkParams</I></span>
+  <DD>Optional <span class="code">ConstPMoaMmInkParams</span> specifying ink parameters </DD>
+  <DT><span class="code"><I>nativeClipRegion</I></span>
+  <DD>Macintosh <span class="code">RgnHandle</span> or Window <span class="code">HRGN</span> </DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DT>
+  <DD><span class="code">MoaError</span>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD>
+    If you're using <span class="code">Blit()</span> within the <span class="code">Image()</span> method of a <span class="code">IMoaMmXSpriteActor</span> implementation, you can use the <span class="code">ink</span> and <span class="code">inkParams</span> from
+    the <span class="code">SpriteInfo</span> structure
+    supplied to your <span class="code">Image()</span> method. This allows you to support whatever ink mode (and parameters)
+    which were specified by the user for your sprite easily. In Director,
+    the <span class="code">ink</span> and <span class="code">inkParams</span> values are stored in each score cell.<BR>
+    <BR>
+    The supported ink modes depend on the host application. Some host
+    applications support only <span class="code">MoaMmInk_Copy</span>. <span class="code">Blit()</span>returns the
+    error message <span class="code">kMoaMmErr_NotImplemented</span> if you attempt to use an ink which is not supported by the host
+    application. Always check the error code when using <span class="code">Blit()</span>.
+    If there's an error, the operation was not performed. Try the
+    operation again specifying another ink.<BR>
+    <BR>
+    Director 5.0's <span class="code">Blit()</span> implementation supports all Director ink modes except Matte and
+    Mask. You'll get the <span class="code">kMoaMmErr_NotImplemented </span>error if you try to use those modes.<BR>
+    <BR>
+    Director 5.0 supports Blend as well. You do a blend by specifying
+    the blend amount (0-255) in the <span class="code">blendValue</span> field of the <span class="code">inkParams</span>.
+    You must also set the <span class="code">obeyBlend</span> field to TRUE.<BR>
+    <BR>
+    In Director 5.0, the ink mode is ignored when doing a blend: a
+    Copy-style blend is always performed. This behavior is slightly
+    different from Director's ink support with bitmap cast members.
+    For bitmap cast members, you can do a <span class="code">backgroundTransparent </span>blend; with Director 5.0's <span class="code">Blit() </span>method, a Copy-style blend is performed. . In future
+    releases, Director 5.0's <span class="code">Blit() </span>may support blend combined with various ink modes. <BR>
+    <BR>
+    Colorization and transparent background operations are supported
+    by Director 5.0's <span class="code">Blit()</span>.
+    Use a non-black foreground color to colorize the image. To use <span class="code">backgroundTransparent</span>,
+    set <span class="code">ink</span> to <span class="code">kMoaMmInk_BackgroundTransparent</span> and set <span class="code">bgColor</span> to
+    the color you to have the transparent effect. <BR>
+    <BR>
+    If you want to use <span class="code">Blit() </span>with
+    your own window or offscreen buffer(s), use <span class="code">IMoaMmUtils::NewGC() </span>to create a graphics context interface for an existing
+    window or buffer that you own. Releasing the GC interface does <B>not</B> dispose of your window or buffer; you must do this
+    yourself after releasing the GC.<BR>
+    <BR>
+    <B>Windows</B>: In Director 5.0, ink modes other than <span class="code">kMoaMmInk_Copy </span>are supported only if <B>both</B> graphics contexts
+    are DIB-based. If either GC is a window or DDB DC, the ink mode
+    is ignored and copy ink is used. Stretching and <span class="code">clipRegion</span>,
+    however, are still supported. Director 5.0's offscreen buffer
+    is always a DIB on Windows.<BR>
+    <BR>
+    See the InkTest Sprite Xtra sample for an example of creating
+    a GC from an offscreen buffer and using the <span class="code">Blit()</span> method to image a sprite.<BR>
+    <BR>
+    In summary, the main differences between Director's ink support
+    for bitmap cast members and ink support in <span class="code">Blit() </span>include the following:<BR>
+    <BR>
+    <DL>
+      <DD><span class="code">Blit()</span> does not
+        support mask or matte inks. If you try to use an unsupported ink,
+        the error code <span class="code">kMoaMmErr_NotImplemented </span>is returned and the operation fails. <BR>
+        <BR>
+        <span class="code">Blit() </span>does not
+        support blends combined with inks. <span class="code">Blit()</span>ignores
+        the ink mode if <span class="code">obeyBlend </span>is
+        set, and performs a simple Copy-style blend. No error code is
+        returned; the Blit operation occurs with the specified <span class="code">blendAmount </span>and the ink mode is ignored. Blends combined with
+        some ink modes (such as <span class="code">bgTransparent</span>, <span class="code">matte</span>, <span class="code">mask</span>)
+        may be supported in future releases.
+    </DL>
+    <BR>
+    Director may implement some ink modes differently than the <span class="code">Blit()</span> method does. <span class="code">Blit()</span> uses standard
+    system ink modes, while Director uses internal code. Director
+    supplies some ink modes combined with a Matte ink. As a result,
+    images drawn with <span class="code">Blit()</span> may have visible borders, while images drawn with Director have
+    their borders matted out. The following list summarizes the ink
+    modes that <span class="code">Blit()</span> may draw somewhat differently than Director. <BR>
+    <UL>
+      <LI><span class="code">Not Copy<BR>
+        </span>
+      <LI><span class="code">Not Transparent<BR>
+        </span>
+      <LI><span class="code">Not Reverse<BR>
+        </span>
+      <LI><span class="code">Not Ghost<BR>
+        </span>
+      <LI><span class="code">Darkest<BR>
+        </span>
+      <LI><span class="code">Lightest<BR>
+        </span>
+      <LI><span class="code">Add<BR>
+        </span>
+      <LI><span class="code">Add Pin<BR>
+        </span>
+      <LI><span class="code">Subtract Pin</span>
+    </UL>
+    <BR>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="GetContentRect">GetContentRect()</A></h3>
+<h4>Syntax</h4>
+<DL>
+  <DT class="code">GetContentRect(PMoaRect <I>pContentRect</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+  <DT><span class="codearg">pContentRect</span>
+  <DD>Pointer to a <span class="code">MoaRect</span> to receive the graphics context bounds </DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DT>
+  <DD><span class="code">MoaError</span>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DT>
+  <DD>Obtains a rectangle demarking the bounds of the drawing area
+    of the graphics context and places it in the <span class="code">MoaRect</span> pointed to 
+    by <span class="code"><I>pContentRect</I></span>.</DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="GetNativeGCInfo">GetNativeGCInfo()</A></h3>
+<h4>Syntax</h4>
+<DL>
+  <DT class="code">GetNativeGCInfo(PMoaMmNativeGCInfo <I>pNativeGCInfo</I>)
+</DL>
+<h4>Parameters</h4>
+<DL>
+  <DT><span class="codearg">pNativeGCInfo</span>
+  <DD>Pointer to a <span class="code">MoaMmNativeGCInfo</span> structure to receive the information </DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DT>
+  <DD><span class="code">MoaError</span>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DT>
+  <DD>Obtains platform-specific graphics context information for
+    the graphics context. This populates the <span class="code">PMoaMmNativeGCInfo </span>structure supplied by the caller in <span class="code"><I>pNativeGCInfo</I></span> with platform-dependent information about the graphics context.
+    The <span class="code">PMoaMmNativeGCInfo </span>type
+    is a union structure with variants for various platforms and window
+    versus offscreen state. </DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="GetPixelDepth">GetPixelDepth()</A></h3>
+<h4>Syntax</h4>
+<DL>
+  <DT class="code">GetPixelDepth(MoaLong * <I>pPixelDepth</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+  <DT><span class="codearg">pPixelDepth</span>
+  <DD>Pointer to a MoaLong to receive the pixel depth. </DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD><span class="code">MoaError</span>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD>Retrieves the a pixel depth of the graphics context. Possible
+    values returned in <span class="code"><I>pPixelDepth</I></span> are 1, 2, 4, 8, 16, 24, and 32. </DD>
+</DL>
+
+<hr width=45% align=left>
+<h3><A NAME="SetNativeGCInfo">SetNativeGCInfo()</A></h3>
+<h4>Syntax</h4>
+<DL>
+  <DT class="code">SetNativeGCInfo(ConstPMoaMmNativeGCInfo <I>pNativeGCInfo</I>)
+</DL>
+<h4>Parameters</h4>
+<DL>
+  <DT><span class="codearg">pNativeGCInfo</span>
+  <DD>Pointer to a <span class="code">ConstPMoaMmNativeGCInfo</span></DD>
+</DL>
+<h4>Returns</h4>
+<TABLE BORDER="2">
+  <TR>
+    <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=193><span class="code">kMoaMmErr_GCNotModifiable</span> </TD>
+    <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=311>Attempted to modify an application-owned GC </TD>
+  </TR>
+</TABLE>
+<h4>Description</h4>
+<DL>
+  <DD>
+    Releases the current native information associated with the specified
+    graphics context and sets new information. <BR>
+    <BR>
+    <B>Windows</B>: If the existing graphics contexts is HWND-style
+    and the handle to the device context is owned by the graphics
+    context (that is, the graphics context and the device context
+    are owned by the host application), the device context is released
+    automatically when setting the new data. If the device context
+    is owned by someone else (for example, <span class="code">NewGC()</span> is used to create the graphics context), the new graphics context
+    information replaces the old. The caller of <span class="code">NewGC()</span>owns
+    the original device context and should dispose of it after changing
+    it with <span class="code">SetNativeGC()</span>.
+    You can dispose of the graphics context entirely using <BR>
+    <BR>
+    <span class="code">pMyGC-&gt;lpVtbl-&gt;Release(pMyGC)</span>.
+</DL>
+
+<hr width=45% align=left>
+<A HREF = "../copyrite.htm">Copyright &#169; 1995-2008 Adobe Macromedia Software LLC, Inc.</A>
+</BODY>
+</html>

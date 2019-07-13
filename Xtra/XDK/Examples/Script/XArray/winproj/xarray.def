@@ -1,0 +1,8 @@
+LIBRARY   XARRAY
+EXPORTS
+			DllGetClassObject	PRIVATE
+			DllGetInterface	PRIVATE
+			DllGetClassForm	PRIVATE
+			DllCanUnloadNow	PRIVATE
+			DllGetClassInfo	PRIVATE
+

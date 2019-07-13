@@ -1,0 +1,643 @@
+<HTML>
+<HEAD>
+<TITLE>IMoaFile</TITLE>
+<link href="../xdk.css" rel="stylesheet" type="text/css">
+</HEAD>
+<body>
+<A HREF="../moadg/index.htm">MOA Developer's Guide</A> <BR>
+<A HREF="index.htm">MOA Interfaces</A> | <A HREF="momthndx.htm">MOA Methods</A> | <A HREF="motypndx.htm">MOA Types and Misc API</A>
+<hr width=45% align=left>
+<h3>IMoaFile</h3>
+Interface ID: <span class="code">IID_IMoaFile<BR>
+  </span>Pointer type: <span class="code">PIMoaFile<BR>
+  </span>Inheritance: <A HREF = "unknown.htm">IMoaUnknown</A> <BR>
+  Header file: <A HREF = "../../include/moafile.h">moafile.h</A> <BR>
+<h4>Description</h4>
+<DL>
+  <DD>
+    The <span class="code">IMoaFile</span> interface is the original file interface for Moa. 
+    It has been superseded by the <a href="../mfref/mffile2.htm" class="code">IMoaFile2</a> interface. 
+    This interface provides platform-independent methods to represent a specific file in a directory structure.<BR>
+    <BR>
+    <span class="code">MoaFile</span> is packaged
+    as an independent Xtra, containing just the <span class="code">CMoaFile</span> class. <span class="code">CMoaFile</span> implements
+    the <span class="code">IMoaFile</span> interface,
+    as well as an <span class="code">IMoaStream</span> interface used in conjunction with <span class="code">IMoaFile</span> (see the <span class="code">IMoaFile::GetStream()</span> method for details).<BR>
+    <BR>
+    Call the method <A HREF = "callback.htm#MoaCreateInstance">IMoaCallback::MoaCreateInstance()</A> using the arguments <span class="code">&amp;CLSID_CMoaFile</span> and <span class="code">&amp;IID_IMoaFile</span> to create a new instance of <span class="code">IMoaFile</span> for your use. After creating it, use <span class="code">SetSpec()</span>, <span class="code">SetSysSpec()</span>, or <span class="code">SetPathnameSpec()</span> to fill in the file information.<BR>
+    <BR>
+    To access a stream to the given file, call the <span class="code">GetStream()</span> method. Remember that both the <span class="code">MoaStream</span> and the <span class="code">MoaFile</span> belong
+    to you; you must release both. The <span class="code">MoaStream</span> may or may not be an interface onto the same object as the <span class="code">MoaFile</span>;
+    this is an implementation detail that is undefined.</DD>
+</DL>
+
+<h4>See also</h4>
+<DL>
+  <DD><A href="motypndx.htm#MOFILETYPE">IMoaFile types</A>, <A href="motypndx.htm#MOFILECONST">IMoaFile constants</A>, <A href="motypndx.htm#MOFILEERRS">IMoaFile errors</A>
+</DL>
+<h4>Methods</h4>
+<h4>File specification </h4>
+<DL>
+  <DD><A HREF = "#SetSpec">SetSpec()</A> <BR>
+    <A HREF = "#SetNewTempSpec">SetNewTempSpec()</A> <BR>
+    <A HREF = "#GetSysSpec">GetSysSpec()</A> <BR>
+    <A HREF = "#SetSysSpec">SetSysSpec()</A> <BR>
+    <A HREF = "#GetPathnameSpec">GetPathnameSpec()</A> <BR>
+  <A HREF = "#SetPathnameSpec">SetPathnameSpec()</A></DD>
+</DL>
+<h4>Creating and deleting files </h4>
+<DL>
+  <DD><A HREF = "#CreateFile">CreateFile()</A> <BR>
+    <A HREF = "#CreateDirectory">CreateDirectory()</A> <BR>
+    <A HREF = "#Delete">Delete()</A> <BR>
+  <A HREF = "#Clone">Clone()</A></DD>
+</DL>
+<h4>Exchanging files </h4>
+<DL>
+  <DD><A HREF = "#SwapFile">SwapFile()</A></DD>
+</DL>
+<h4>Naming files </h4>
+<DL>
+  <DD><A HREF = "#GetFilename">GetFilename()</A> <BR>
+    <A HREF = "#SetFilename">SetFilename()</A> <BR>
+  <A HREF = "#Rename">Rename()</A></DD>
+</DL>
+<h4>File information </h4>
+<DL>
+  <DD><A HREF = "#GetSize">GetSize()</A> <BR>
+    <A HREF = "#SetSize">SetSize()</A> <BR>
+    <A HREF = "#GetAccess">GetAccess()</A> <BR>
+    <A HREF = "#GetDates">GetDates()</A> <BR>
+    <A HREF = "#GetDirectory">GetDirectory()</A> <BR>
+    <A HREF = "#IsDirectory">IsDirectory()</A> <BR>
+  <A HREF = "#IsExisting">IsExisting()</A></DD>
+</DL>
+<h4>Comparing files </h4>
+<DL>
+  <DD><A HREF = "#IsSameFile">IsSameFile()</A></DD>
+</DL>
+<h4>Iterating </h4>
+<DL>
+  <DD><A HREF = "#EachFile">EachFile()</A></DD>
+</DL>
+<h4>Accessing file data </h4>
+<DL>
+  <DD><A HREF = "#GetStream">GetStream()</A></DD>
+</DL>
+<hr width=45% align=left>
+<h4><A NAME="Clone">Clone()</A></h4>
+<h4>Syntax</h4>
+<DL>
+  <DT class="code">Clone(struct IMoaFile ** <I>ppFile</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+<DT class="codearg">ppFile</DT>
+  <DD>struct IMoaFile **</DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD><span class="code">MoaError</span></DD>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD><span class="code">Clone()</span> returns
+    a copy of the <span class="code">MoaFile</span> with the same file spec. It does NOT duplicate, copy, or modify
+    the underlying file in any way; it's just a utility method used
+    to make a new <span class="code">MoaFile</span> and assign the same file spec to it. The caller must <span class="code">Release()</span> the newly returned <span class="code">MoaFile</span> when done. </DD>
+</DL>
+
+<hr width=45% align=left>
+<h4><A NAME="CreateDirectory">CreateDirectory()</A></h4>
+<h4>Syntax</h4>
+<DL>
+  <DT class="code">CreateDirectory()</DT>
+</DL>
+<h4>Parameters</h4>
+<h4>Returns</h4>
+<DL>
+  <DD><span class="code">MoaError</span></DD>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD>Creates a directory matching the current spec. If a file or
+    directory matching that spec already exists, an error is returned. </DD>
+</DL>
+
+<hr width=45% align=left>
+<h4><A NAME="CreateFile">CreateFile()</A></h4>
+<h4>Syntax</h4>
+<DL>
+  <DT class="code">CreateFile()</DT>
+</DL>
+<h4>Parameters</h4>
+<h4>Returns</h4>
+<DL>
+  <DD><span class="code">MoaError</span></DD>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD>Creates a file matching the current spec. If a file or directory
+    matching that spec already exists, an error is returned. </DD>
+</DL>
+
+<hr width=45% align=left>
+<h4><A NAME="Delete">Delete()</A></h4>
+<h4>Syntax</h4>
+<DL>
+  <DT class="code">Delete()</DT>
+</DL>
+<h4>Parameters</h4>
+<h4>Returns</h4>
+<DL>
+  <DD><span class="code">MoaError</span></DD>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD>Deletes the file or directory matching the current spec. If
+    the spec is a directory, all files and directories contained will
+    be deleted. If there is no file or directory, an error is returned. </DD>
+</DL>
+
+<hr width=45% align=left>
+<h4><A NAME="EachFile">EachFile()</A></h4>
+<h4>Syntax</h4>
+<DL>
+  <DD>
+  <DT class="code">EachFile(MoaBoolParam <I>resolveAlias</I>, MoaFileEachProc <I>proc</I>, PMoaVoid <I>refCon</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+resolveAlias</DT>
+  <DD>MoaBoolParam</DD>
+  <DT class="codearg">proc</DT>
+  <DD>MoaFileEachProc</DD>
+  <DT class="codearg">refCon</DT>
+  <DD>PMoaVoid</DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD><span class="code">MoaError</span>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD><span class="code">EachFile()</span> is
+    used to iterate the files and directories in a given directory.
+    If the file spec is a directory, the files and directories will
+    be enumerated. If the file spec is a file, just that file will
+    be enumerated. If resolveAlias is TRUE, all alias/shortcut files
+    will be resolved prior to passing them to the enumeration proc
+    (note that in this case, some enumerated files might not actually
+  be &quot;in&quot; the directory!). </DD>
+</DL>
+
+<hr width=45% align=left>
+<h4><A NAME="GetAccess">GetAccess()</A></h4>
+<h4>Syntax</h4>
+<DL>
+  <DT class="code">GetAccess(MoaLong * <I>pAccessPerm</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+<DT><span class="code"><I>pAccessPerm</I></span></DT>
+  <DD>MoaLong *</DD></DL>
+<h4>Returns</h4>
+<DL>
+  <DD><span class="code">MoaError</span>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD><span class="code">GetAccess()</span> returns
+    the access privileges allowable for this file (in the form of
+    a bit mask). </DD>
+</DL>
+
+<hr width=45% align=left>
+<h4><A NAME="GetDates">GetDates()</A></h4>
+<h4>Syntax</h4>
+<DL>
+  <DT class="code">GetDates(MoaWide * <I>pCreate</I>, MoaWide * <I>pModify</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+<DT><span class="code"><I>pCreate</I></span></DT>
+  <DD>MoaWide *</DD>
+  <DT><span class="code"><I>pModify</I></span></DT>
+  <DD>MoaWide *</DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD><span class="code">MoaError</span>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD><span class="code">GetDates()</span> returns
+    the creation and modification dates of this file. This method
+    does not operate on directories (an error is returned). </DD>
+</DL>
+
+<hr width=45% align=left>
+<h4><A NAME="GetDirectory">GetDirectory()</A></h4>
+<h4>Syntax</h4>
+<DL>
+  <DT class="code">GetDirectory(struct IMoaFile ** <I>pDir</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+<DT><span class="code"><I>pDir</I></span></DT>
+  <DD>struct IMoaFile * *</DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD><span class="code">MoaError</span>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD><span class="code">GetDirectory()</span> returns a <span class="code">PIMoaFile</span> for this file's parent directory. The caller must <span class="code">Release()</span> it when done. </DD>
+</DL>
+
+<hr width=45% align=left>
+<h4><A NAME="GetFilename">GetFilename()</A></h4>
+<h4>Syntax</h4>
+<DL>
+  <DT class="code">GetFilename(PMoaChar <I>pNameBuf</I>, MoaLong <I>nameBufSize</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+<DT><span class="code"><I>pNameBuf</I></span></DT>
+  <DD>PMoaChar</DD>
+  <DT><span class="code"><I>nameBufSize</I></span></DT>
+  <DD>MoaLong</DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD><span class="code">MoaError</span>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD>Returns the file/directory name from the current spec. <span class="code">SetFilename()</span> changes the filename portion of the file spec without renaming
+    the file. In other words, you can use this call to change just
+    the &quot;leaf&quot; portion of the file spec. Note that this
+  call causes the <span class="code">MoaFile</span> to refer to another file, while <span class="code">Rename()</span> causes the <span class="code">MoaFile</span> to rename the given file and refer to the file by the given name. </DD>
+</DL>
+
+<hr width=45% align=left>
+<h4><A NAME="GetPathnameSpec">GetPathnameSpec()</A></h4>
+<h4>Syntax</h4>
+<DL>
+  <DT class="code">GetPathnameSpec(PMoaChar <I>pNameBuf</I>, MoaLong <I>nameBufSize</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+<DT><span class="code"><I>pNameBuf</I></span></DT>
+  <DD>PMoaChar</DD>
+  <DT><span class="code"><I>nameBufSize</I></span></DT>
+  <DD>MoaLong</DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD><span class="code">MoaError</span>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD>Takes the file description from a pathname on all platforms. <span class="code">GetPathnameSpec</span> returns
+    the existing file description in similar form. <span class="code">SetPathnameSpec</span> and <span class="code">GetPathnameSpec</span> will return errors if directories in the path are missing, but
+  not if the file is missing. </DD>
+</DL>
+
+<hr width=45% align=left>
+<h4><A NAME="GetSize">GetSize()</A></h4>
+<h4>Syntax</h4>
+<DL>
+  <DD>
+  <DT class="code">GetSize(MoaLong * <I>pFileLen</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+<DT><span class="code"><I>pFileLen</I></span></DT>
+  <DD>MoaLong *</DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD><span class="code">MoaError</span>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD><span class="code">GetSize()</span> returns
+    the size, in bytes, of the data fork of a file. </DD>
+</DL>
+
+<hr width=45% align=left>
+<h4><A NAME="GetStream">GetStream()</A></h4>
+<h4>Syntax</h4>
+<DL>
+  <DT>GetStream(MoaLong <I>bufferSize</I>, PIMoaStream * <I>ppStream</I>)</DT>
+  </DL>
+<h4>Parameters</h4>
+<DL>
+<DT><span class="code"><I>bufferSize</I></span></DT>
+  <DD>MoaLong</DD>
+  <DT><span class="code"><I>ppStream</I></span></DT>
+  <DD>PIMoaStream *</DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD><span class="code">MoaError</span>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD><span class="code">GetStream()</span> creates
+    an <span class="code">IMoaStream</span> to the
+    given file. If the spec is a directory, an error is returned.
+    The caller must <span class="code">Release()</span> the stream when done. </DD>
+</DL>
+
+<hr width=45% align=left>
+<h4><A NAME="GetSysSpec">GetSysSpec()</A></h4>
+<h4>Syntax</h4>
+<DL>
+  <DT class="code">GetSysSpec(PMoaSystemFileSpec <I>pSpec</I>, MoaLong <I>specBufSize</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+<DT><span class="code"><I>pSpec</I></span></DT>
+  <DD>PMoaSystemFileSpec</DD>
+  <DT><span class="code"><I>specBufSize</I></span></DT>
+  <DD>MoaLong</DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD><span class="code">MoaError</span>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD>Takes the file description from an FSSpec (Macintosh) or pathname
+  (Windows). It optionally resolves alias/shortcut files. <span class="code">GetSysSpec()</span> returns the existing file description in a similar form. </DD>
+</DL>
+
+<hr width=45% align=left>
+<h4><A NAME="IsDirectory">IsDirectory()</A></h4>
+<h4>Syntax</h4>
+<DL>
+  <DT class="code">IsDirectory()</DT>
+</DL>
+<h4>Parameters</h4>
+<h4>Returns</h4>
+<DL>
+  <DD><span class="code">MoaError</span>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD><span class="code">IsDirectory()</span> is used to determine if the <span class="code">IMoaFile</span> specifies a directory (vs. a file); <span class="code">kMoaErr_NoErr</span> is returned if the spec is a directory. </DD>
+</DL>
+
+<hr width=45% align=left>
+<h4><A NAME="IsExisting">IsExisting()</A></h4>
+<h4>Syntax</h4>
+<DL>
+  <DT class="code">IsExisting()</DT>
+</DL>
+<h4>Parameters</h4>
+<h4>Returns</h4>
+<DL>
+  <DD><span class="code">MoaError</span>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD><span class="code">IsExisting()</span> is
+    used to determine if the <span class="code">IMoaFile</span> specifies an existing file entity; <span class="code">kMoaErr_NoErr</span> is returned if the spec exists. </DD>
+</DL>
+
+<hr width=45% align=left>
+<h4><A NAME="IsSameFile">IsSameFile()</A></h4>
+<h4>Syntax</h4>
+<DL>
+  <DT class="code">IsSameFile(struct IMoaFile * <I>pOther</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+<DT><span class="code"><I>pOther</I></span></DT>
+  <DD>struct IMoaFile *</DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD><span class="code">MoaError</span>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD><span class="code">IsSameFile()</span> is
+    used to determine if to <span class="code">IMoaFiles</span> refer to the same file entity; 
+    <span class="code">kMoaErr_NoErr</span> is returned if they do. The file entities need not exist for the
+  result to be valid. </DD>
+</DL>
+
+<hr width=45% align=left>
+<h4><A NAME="Rename">Rename()</A></h4>
+<h4>Syntax</h4>
+<DL>
+  <DT class="code">Rename(ConstPMoaChar <I>pNameBuf</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+<DT><span class="code"><I>pNameBuf</I></span></DT>
+  <DD>ConstPMoaChar</DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD><span class="code">MoaError</span>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD>
+    Returns the file/directory name from the current spec. 
+    <span class="code">SetFilename()</span> changes the filename portion of the file spec without renaming
+    the file. In other words, you can use this call to change just
+    the &quot;leaf&quot; portion of the file spec. Note that this
+    call causes the <span class="code">MoaFile</span> to refer to another file, 
+    while <span class="code">Rename()</span> causes the <span class="code">MoaFile</span> to rename the given file 
+    and refer to the file by the given name.
+    Rename() renames the file.<BR>
+    <BR>
+    Note that this call will NOT move the file (ie, the argument is
+    a filename, not a pathname). The <span class="code">MoaFile's</span> internal file spec is updated to reflect the new name.
+  </DD>
+</DL>
+
+<hr width=45% align=left>
+<h4><A NAME="SetFilename">SetFilename()</A></h4>
+<h4>Syntax</h4>
+<DL>
+  <DT class="code">SetFilename(ConstPMoaChar <I>pNameBuf</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+<DT><span class="code"><I>pNameBuf</I></span></DT>
+  <DD>ConstPMoaChar</DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD><span class="code">MoaError</span>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD>Returns the file/directory name from the current spec. 
+  <span class="code">SetFilename()</span> changes the filename portion of the file spec without renaming
+    the file. In other words, you can use this call to change just
+    the &quot;leaf&quot; portion of the file spec. Note that this
+    call causes the <span class="code">MoaFile</span> to refer to another file, 
+    while <span class="code">Rename()</span> causes the <span class="code">MoaFile</span> to rename the given file 
+    and refer to the file by the given name. </DD>
+</DL>
+
+<hr width=45% align=left>
+<h4><A NAME="SetNewTempSpec">SetNewTempSpec()</A></h4>
+<h4>Syntax</h4>
+<DL>
+  <DT class="code">SetNewTempSpec(struct IMoaFile * <I>pDir</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+<DT><span class="code"><I>pDir</I></span></DT>
+  <DD>struct IMoaFile *</DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD><span class="code">MoaError</span>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD>Creates a unique file description that matches no existing
+    file. It does not create the file itself. The file description
+    is in pDir, or an arbitrary directory if pDir is NULL. </DD>
+</DL>
+
+<hr width=45% align=left>
+<h4><A NAME="SetPathnameSpec">SetPathnameSpec()</A></h4>
+<h4>Syntax</h4>
+<DL>
+  <DT class="code">SetPathnameSpec(ConstPMoaChar <I>pNameBuf</I>, MoaBoolParam <I>resolveAlias</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+<DT><span class="code"><I>pNameBuf</I></span></DT>
+  <DD>ConstPMoaChar</DD>
+  <DT><span class="code"><I>resolveAlias</I></span></DT>
+  <DD>MoaBoolParam</DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD><span class="code">MoaError</span>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD>Takes the file description from a pathname on all platforms. <span class="code">GetPathnameSpec</span> returns
+    the existing file description in similar form. <span class="code">SetPathnameSpec</span> 
+    and <span class="code">GetPathnameSpec</span> will return errors if directories in the path are missing, but
+    not if the file is missing. </DD>
+</DL>
+
+<hr width=45% align=left>
+<h4><A NAME="SetSize">SetSize()</A></h4>
+<h4>Syntax</h4>
+<DL>
+  <DT class="code">SetSize(MoaLong <I>fileLen</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+<DT><span class="code"><I>fileLen</I></span></DT>
+  <DD>MoaLong</DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD><span class="code">MoaError</span>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD><span class="code">SetSize()</span> sets
+    the size, in bytes, of the data fork of a file; if the file is
+    shorter, enough space is reserved for the given number of bytes;
+    if the file is longer, all extra bytes are removed. </DD>
+</DL>
+
+<hr width=45% align=left>
+<h4><A NAME="SetSpec">SetSpec()</A></h4>
+<h4>Syntax</h4>
+<DL>
+  <DT class="code">SetSpec(struct IMoaFile * <I>pDir</I>, ConstPMoaChar <I>pFileName</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+<DT><span class="code"><I>pDir</I></span></DT>
+  <DD>struct IMoaFile *</DD>
+  <DT><span class="code"><I>pFileName</I></span></DT>
+  <DD>ConstPMoaChar</DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD><span class="code">MoaError</span>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD>Takes the file description from a file name and directory
+    specifier; the directory is provided by another <span class="code">IMoaFile</span>.
+    NULL can be passed for the directory spec, in which case the file
+    will be specified in the &quot;current&quot; directory (implementation
+    defined). </DD>
+</DL>
+
+<hr width=45% align=left>
+<h4><A NAME="SetSysSpec">SetSysSpec()</A></h4>
+<h4>Syntax</h4>
+<DL>
+  <DT class="code">SetSysSpec(ConstPMoaSystemFileSpec <I>pSpec</I>, MoaBoolParam <I>resolveAlias</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+<DT><span class="code"><I>pSpec</I></span></DT>
+  <DD>ConstPMoaSystemFileSpec</DD>
+  <DT><span class="code"><I>resolveAlias</I></span></DT>
+  <DD>MoaBoolParam</DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD><span class="code">MoaError</span>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD>Takes the file description from an FSSpec (Macintosh) or pathname
+    (Windows). It optionally resolves alias/shortcut files. 
+    <span class="code">GetSysSpec()</span> returns the existing file description in a similar form. </DD>
+</DL>
+
+<hr width=45% align=left>
+<h4><A NAME="SwapFile">SwapFile()</A></h4>
+<h4>Syntax</h4>
+<DL>
+  <DT class="code">SwapFile(struct IMoaFile * <I>pOther</I>)</DT>
+</DL>
+<h4>Parameters</h4>
+<DL>
+<DT><span class="code"><I>pOther</I></span></DT>
+  <DD>struct IMoaFile *</DD>
+</DL>
+<h4>Returns</h4>
+<DL>
+  <DD><span class="code">MoaError</span>
+</DL>
+<h4>Description</h4>
+<DL>
+  <DD><span class="code">SwapFile()</span>: If
+    this and other are both existing files (not directories), the
+    files are swapped such that the spec for &quot;this&quot; now
+    points to &quot;other&quot; and vice versa. If &quot;this&quot;
+    exists, but &quot;other&quot; does not, &quot;this&quot; is moved
+    (not copied) to &quot;other&quot;. If this doesn't exist but other
+    does, it's an error. <span class="code">SwapFile()</span> only works 
+    if this and other are on the same volume. <span class="code">SwapFile()</span> 
+    doesn't work if either this or other are directories. </DD>
+</DL>
+
+<hr width=45% align=left>
+<A HREF = "../copyrite.htm">Copyright &#169; 1995-2008 Adobe Macromedia Software LLC, Inc.</A>
+</BODY>
+</html>

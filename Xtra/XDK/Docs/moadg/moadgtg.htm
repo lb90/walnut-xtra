@@ -1,0 +1,314 @@
+<HTML>
+
+<HEAD><TITLE>Tips, Guidelines, and Gotchas</TITLE>
+<link href="../xdk.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+<body>
+
+<A HREF="index.htm">MOA Developer's Guide</A><BR>
+<A HREF="../moref/index.htm" >MOA Interfaces</A> | <A HREF="../moref/momthndx.htm" >MOA Methods</A>
+| <A HREF="../moref/motypndx.htm" >MOA Types and Misc API</A>
+
+<HR width=45% align=left>
+
+<H3><A NAME="RTFToC2">Director Xtra Development Kit: MOA Developer's Guide</A></H3>
+
+<h3>Tips, Guidelines, and Gotchas
+</h3>
+
+<HR width=45% align=left>
+
+<P>
+This discussion contains some general guidelines for all types
+of Xtra development, as well as specific suggestions for developing
+the four types of Xtras supported by the Director XDK.
+It's somewhat of a grab bag, including both very general and very
+specific coverage of a number of topics.<BR>
+<BR>
+You may want to read through this information before you start
+developing Xtras. You should also review the information here
+as you develop your Xtras, since much of the information applies
+to specific areas of Xtra development.<BR>
+
+<h4><A NAME="RTFToC5">General</A> </h4>
+
+<h5><A NAME="RTFToC6">Use the template and example projects</A><BR>
+</h5>
+
+<P>
+This XDK comes with template projects in the Examples folder for
+Transition, Sprite, Scripting, and Tool Xtras. These templates
+include projects for Visual C++ and Metrowerks CodeWarrior, and
+template code files containing comments that briefly describe
+modifications to make to create your Xtra. <BR>
+<BR>
+There are also a number of working example projects that demonstrate
+various coding features described in this documentation. One way
+to begin Xtra development is to start with a working example that
+implements many of the features you plan to provide, and modify
+it to include your code. <BR>
+<BR>
+Note that when modifying the template and example projects, you
+should only need to change source file names--and possibly add
+new source files--in the projects. If you are developing in C++,
+you can change the code model in the project. <BR>
+<BR>
+<B>IMPORTANT: </B><I>YOU MAY FREELY CHANGE SOURCE FILES IN THE
+EXAMPLE PROJECTS. HOWEVER, TAKE CARE IN MODIFYING ANY PROJECT
+SETTINGS. THESE PROJECTS PROVIDE A NUMBER OF STANDARD SETTINGS
+REQUIRED TO MAKE XTRAS WORK CORRECTLY. <BR>
+<BR>
+</I>See the Readme file in the Examples folder for more details
+on using the example projects.<BR>
+
+<h5><A NAME="RTFToC7">Use unique values</A>
+</h5>
+<BR>
+
+<P>
+Be sure all class IDs you define are unique; these should be generated
+with the MSVC GUID program or the uuidgen command line tool on Macintosh.<BR>
+<BR>
+Windows DLLs: Make sure the library name in your .DEF files is
+unique<BR>
+
+<h5><A NAME="RTFToC8">Use resource files</A>
+</h5>
+<BR>
+
+<P>
+If possible, use resources to store any strings, including your
+type symbol, display name, etc. This will provide a way for some
+users to resolve conflicts if there is a duplicate symbol name.
+Also it will make it easier to localize your Xtra.<BR>
+
+<h5><A NAME="RTFToC9">Coding details</A>
+</h5>
+<BR>
+
+<P>
+Unless otherwise noted, all string lengths specified include the
+terminating NULL (0x00) character (ie, standard C strings). Thus,
+where a string length is specified as 32, the maximum number of
+useable characters in the string is actually 31. <BR>
+<BR>
+Do not depend on globals being initialized in Xtras. The behavior
+of global variables in code resources/code fragments/DLLs varies.  Better yet: don't
+use globals at all.<BR>
+<BR>
+Remember that your code may be shared by multiple applications
+or projectors running simultaneously. Again, this makes it very
+difficult to rely on global variables on platforms that only initialize
+them on a per-load basis (rather than per-instance).<BR>
+<BR>
+Make your code re-entrant. Your Xtra may be called back as a result
+of a call your xtra makes to the host application. For example,
+if you post a moveable modal dialog using <span class="code">MacModalDialog</span>,
+your Xtra may be called back (from within the <span class="code">MacModalDialog()</span>
+call) to redraw thumbnails, re-image a sprite on the stage, etc.,
+if the dialog is moved. This means that the data required to perform
+these operations must never be left in an inconsistent state while
+a call back to the host application is being made.<BR>
+
+<h5><A NAME="RTFToC10">Registration and Initialization</A> 
+</h5>
+<BR>
+
+<P>
+In general, all interfaces you acquire through QueryInterface
+should be tested before you attempt any calls to them This is
+particularly crucial with regard to application-specific calls
+in your registration class (supporting <A HREF="../moref/REGISTER.HTM">IMoaRegister</A><span class="code">)</span>.
+The <span class="code">MoaCreate()</span>, <span class="code">MoaDestroy()</span>, and <span class="code">Register()</span>
+methods of this class may be called by <EM>any</EM> MOA application.
+One approach is for your <span class="code">Register()</span> implementation
+to test for the interfaces your Xtra needs from an application
+by calling <span class="code">QueryInterface()</span>, and not register itself
+if they aren't present.<BR>
+<BR>
+The IMoaMmInterrogate interface is provided for initializing libraries
+and allocating large blocks of memory at startup time. This process
+slows application startup, so you should be certain you need it
+before adding it to your Xtra. Whenever possible, use the <span class="code">IMoaRegister</span>
+interface to cache initialization information, since it 's only
+instantiated the first time an application encounters your Xtra.
+<BR>
+
+<h5><A NAME="RTFToC11">Testing</A></h5>
+
+<UL>
+<LI>Test your Xtra in low memory.
+<LI>Test your Xtra in both authoring and playback applications.
+<LI>Test your Xtra with other Xtras installed. This will help
+identify possible conflicts ahead of time. 
+<LI>Test your Xtra with other MOA-enabled applications. Even if
+your Xtra is not intended to work with another MOA app, such as
+SoundEdit or Authorware, try launching one of these apps with
+your Xtra in its Xtras folder. Your Xtra must fail gracefully
+and not register if it is not running in an application that supports
+the callback interfaces it needs. 
+</UL>
+
+
+<h5> Accessing QuickDraw Globals on the Macintosh</h5>
+
+<P> Prior to Macintosh OS X, there was a global memory structure called &quot;Quickdraw 
+  globals.&quot; This global data does not exist with OS X, so the following discussion 
+  only applies to earlier versions of the Macintosh operating system. There are 
+  two methods to access QuickDraw globals. Here is the first method:<BR>
+<BR>
+<span class="code">#include &lt;LowMem.h&gt;<BR>
+#include &lt;Quickdraw.h&gt;<BR>
+#define qd (*((QDGlobals *) (*((GrafPtr **) LMGetCurrentA5())
++ 1) - 1))
+</span>
+<BR>
+<BR>
+If you're already accessing Director's stage window's
+graphics context, then the pointer to Director's QuickDraw globals
+is available as part of the <span class="code">nativeGCInfo </span>which you
+can get using the <span class="code">IMoaMmGC:GetNativeGCInfo </span>interface.
+<span class="code">IMoaMmGC </span>interfaces are supplied to sprite and transition
+Xtras at drawing time; you can also get the graphics context for
+a movie's stage window by calling <span class="code">IMoaDrMovie::GetStageWindowGC()</span>.
+Note that at start-up initialization time, a movie is not yet
+open so you'll get an error if you try to obtain its graphics
+context at that time. However, it should be available in normal
+circumstances. (Always check your error codes!) Here is an example
+of the second technique:<BR>
+<BR>
+<span class="code">MoaMmNativeGCInfo nativeInfo;<BR>
+PIMoaDrMovie pMovie = NULL;<BR>
+PIMoaMmGC pGC = NULL;<BR>
+QDGlobals * pQDGlobals = NULL;<BR>
+<BR>
+HANDLE_ERR( DrPlayer_GetActiveMovie(&amp;pMovie) );<BR>
+HANDLE_ERR( pMovie-&gt;lpVtbl-&gt;GetStageWindowGC(pMovie, &amp;pGC)
+);<BR>
+HANDLE_ERR( pGC-&gt;lpVtbl-&gt;GetNativeGCInfo(pGC, &amp;nativeInfo
+) );<BR>
+<BR>
+pQDGlobals = nativeInfo.mac_window.qdGlobalsPtr;<BR>
+<BR>
+/* Do your stuff with the QuickDraw globals. It's okay to save
+it too, since it won't change during the session.<BR>
+*/<BR>
+<BR>
+done:<BR>
+<BR>
+/* Release interfaces we obtained */<BR>
+if (pGC) pGC-&gt;lpVtbl-&gt;Release(pGC);<BR>
+if (pMovie) pMovie-&gt;lpVtbl-&gt;Release(pMovie);<BR>
+<BR>
+ </span>You might have to be careful with the first technique
+since support for A5 on PPC may go away in some future system
+software release (then again, so might the QuickDraw globals!).
+The second technique is currently Director API-specific, so it
+won't work if you're writing Xtras to be used in multiple products
+(for example, transitions for Director 5/Authorware 3.5).<BR>
+<BR>
+
+<h5> Xtras must be unique<BR>
+ </h5>
+
+<P>
+Remember that in general, Xtras have more than one GUID. There's
+a GUID for each class, so if you have a separate registration
+class, you need a unique GUID for that in addition to your asset
+and actor, Lingo, or tool classes. To ensure this, try running
+your Xtra with every sample Xtra in the Xtras folder; you should
+not get any conflict notices.<BR>
+<BR>
+
+<h5><A NAME="RTFToC12">Managing interfaces and values</A><BR>
+</h5>
+
+<P>
+Throughout this API, you'll find cases where you create or use
+instances of MOA interfaces, sets of methods for manipulating
+objects, and <span class="code">MoaMmValues</span>, object-like entities that
+represent specific types of values. Both MOA interfaces and <span class="code">MoaMmValues</span>
+use reference counting to determine when they can be removed from
+memory.<BR>
+<BR>
+There are various ways to acquire a value or interface, and the
+way you acquire it determines whether or not you are responsible
+for releasing it. Call the <span class="code">IMoaUnknown::Release()</span>
+method to remove a reference to an interface; call the <span class="code">IMoaMmUtils::ValueRelease()</span>
+method to remove a reference to a <span class="code">MoaMmValue</span>. <BR>
+
+<h5><A NAME="RTFToC13">The &quot;caller owns&quot; rule</A><BR>
+</h5>
+
+<P>
+Objects acquire interfaces and values by calling methods or by
+having their methods called. The &quot;caller owns&quot; rule
+define who is responsible for releasing an interface or value.
+<BR>
+<BR>
+The rule is this: <I>The owner of an interface or value is the
+object that calls the method requesting or providing it.</I> The
+owner is always responsible for releasing an interface or value
+when through with it. <BR>
+<BR>
+Here are the four cases to help clarify this rule:<BR>
+<BR>
+<UL>
+<LI>When your Xtra calls a method to request a value or interface
+from another object, you own the interface or value returned.
+<BR>
+<BR>
+Examples of methods that your Xtra might call are <span class="code">IMoaUnknown::QueryInterface()</span>
+and <span class="code">IMoaMmPropOwner::GetProp()</span>. You must call <span class="code">IMoaUnknown::Release()</span>
+on interfaces or <span class="code">IMoaMmPropOwner::ValueRelease()</span>
+on values acquired by calling these methods when you are through
+with them. <BR>
+<BR>
+<LI>When another object calls a method in your Xtra to request a
+value or interface, the other object owns the interface or value
+you pass back. <BR>
+<BR>
+Examples of such methods are <span class="code">NewXActor()</span> and <span class="code">GetProp()</span>
+in the <span class="code">IMoaMmXAsset</span> Xtra interface. Note that this
+transfers ownership to the caller. That is, if you create the
+interface of value within the function being called, your ownership
+ends once you have passed it along. However, if you pass an interface
+or value that you are holding in an instance variable, you must
+call <span class="code">IMoaUnknown::AddRef()</span> or <span class="code">IMoaMmUtils::ValueAddRef()</span>
+to increment the reference count before passing it to the caller.
+<BR>
+<BR>
+<LI>When your Xtra calls a method in another object, providing a
+value or interface as one of the arguments, you own the interface
+or value. <BR>
+<BR>
+An example of such a method is <span class="code">IMoaMmUtils::MacRegisterWindow()</span>.
+When you call this method to register a window, one of the arguments
+you pass is an <span class="code">IMoaMmMacEventHandler</span> interface. After
+you call <span class="code">MacUnregisterWindow</span>, you are responsible
+for disposing of the event handler interface. <BR>
+<BR>
+<LI>When another object calls a method in your Xtra, providing an
+interface or value as one of the arguments it passes to you, that
+object retains ownership.<BR>
+<BR>
+An example of this type of method is <span class="code">IMoaMmXAsset::SetCallback()</span>,
+used to pass a callback interface to media asset Xtras. If your
+asset wants to hold onto this interface, it must call <span class="code">IMoaUnknown::AddRef()</span>
+on it to assert ownership, then call <span class="code">IMoaUnknown::Release()</span>
+on it when finished.
+</UL>
+
+As you develop your Xtras, make sure the instances and values
+you create and released when you expect. Similarly, make sure
+memory you allocate (via <span class="code">IMoaCalloc</span> or <span class="code">IMoaHandle</span>)
+is being released properly as your Xtra performs. <BR>
+<BR>
+
+<hr width=45% align=left>
+
+<P>
+<A HREF = "../copyrite.htm">Copyright &#169; 1995-2007 Adobe Macromedia Software LLC, Inc.</A>
+</BODY>
+</html>

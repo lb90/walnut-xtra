@@ -1,0 +1,77 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>IMoaDrDate</title>
+<link href="../xdk.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+
+<A HREF = "../drdg/index.htm">DR Developer's Guide</A><br>
+<A HREF = "index.htm"> DR Interfaces</A> | 
+<A HREF = "drmthndx.htm">DR Methods</A> | 
+<A HREF = "drtypndx.htm">DR Types and Misc API</A>
+<hr width=45% align=left>
+
+<h3><A name = "IMoaDrDate">IMoaDrDate</A></h3>
+
+Interface ID: <span class="code">IID_IMoaDrDate</span><br>
+Pointer type: <span class="code">PIMoaDrDate</span><br>
+Inheritance: <A HREF = "drmdaccs.htm" class="code">IMoaDrMediaAccess</A><br>
+Header file: <A HREF = "../../include/mmiDate.h">mmiDate.h</A>
+
+<h4>Methods</h4>
+<DL>
+<DD><A HREF = "#TotalSecondsToDateValue">TotalSecondsToDateValue()</A><br>
+<A HREF = "#DateValueToTotalSeconds">DateValueToTotalSeconds()</A></DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A NAME="DateValueToTotalSeconds">DateValueToTotalSeconds()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">DateValueToTotalSeconds(PMoaMmValue <em>pValue</em>, MoaWide * <em>pTotalSecondsSince1970</em>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">pValue</DT>
+<dd>value that contains a date object </dd>
+<DT class="codearg">pTotalSecondsSince1970</DT>
+<dd>place to store the number of seconds</dd>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DT class="code">MoaError</DT>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>This method extracts the total seconds value from a MOA date object.</DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A NAME="TotalSecondsToDateValue">TotalSecondsToDateValue()</A></h4>
+<DL>
+<dt class="heading5">Syntax</dt>
+<DT class="code">TotalSecondsToDateValue(MoaWide <em>TotalSecondsSince1970</em>, PMoaMmValue <em>pValue</em>)</DT>
+</DL>
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">TotalSecondsSince1970</DT>
+<dd>number of seconds to use for the date</dd>
+<DT class="codearg">pValue</DT>
+<dd>address of place where the new date object will be returned to you</dd>
+</DL>
+<DL>
+<dt class="heading5">Returns</dt>
+<DT class="code">MoaError</DT>
+</DL>
+<DL>
+<dt class="heading5">Description</dt>
+<DD>This method sets the value in a MOA date object.</DD>
+</DL>
+
+<hr width=45% align=left>
+<A HREF = "../copyrite.htm">Copyright &#169; 1995-2008 Adobe Macromedia Software LLC, Inc.</A>
+
+</body></html>

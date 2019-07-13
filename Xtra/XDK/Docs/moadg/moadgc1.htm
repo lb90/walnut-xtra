@@ -1,0 +1,509 @@
+<HTML>
+<HEAD>
+<TITLE>MOA Technical Concepts</TITLE>
+<link href="../xdk.css" rel="stylesheet" type="text/css">
+</HEAD>
+<BODY>
+<A HREF="index.htm">MOA Developer's Guide</A><BR>
+<A HREF="../moref/index.htm" >MOA Interfaces</A> | <A HREF="../moref/momthndx.htm" >MOA Methods</A> | <A HREF="../moref/motypndx.htm" >MOA Types and Misc API</A>
+<HR width=45% align=left>
+<H3><A NAME="RTFToC2">Director Xtra Development Kit: MOA Developer's Guide</A></H3>
+<h3>MOA Technical Concepts </h3>
+<HR width=45% align=left>
+<h3>The MOA object model</h3>
+<DL>
+  <DT>
+  <DD>This section covers the main conceptual points of the MOA
+    object model, beginning with the central mechanism of MOA, the
+    interface. It then goes on to describe the conceptual relationship
+    among MOA objects, classes, and interfaces. <BR>
+    <BR>
+    <BR>
+</DL>
+<h4><A NAME="RTFToC4">Interfaces and interaction</A> </h4>
+<DL>
+  <DT>
+  <DD>MOA is built on the fundamental concept of <I>interface</I>,
+    one of the foundations of COM. Interfaces are the basic mechanism
+    by which an application and an external code module--an Xtra--interact.
+    <P>
+  <DD>An interface can be thought of as a template that specifies
+    how independent code modules interact.<BR>
+    <BR>
+    <IMG SRC="moadgc11.gif" ALIGN="MIDDLE"><BR>
+    <BR>
+    <BR>
+    For two modules to interact through an interface, each plays a
+    specific role: either providing or using the interface. A <I>provider</I> is a module that implements the interface by providing specific
+    behavior that conforms to the template. <BR>
+    <BR>
+    <IMG SRC="moadgc12.gif"> <BR>
+    A <I>user</I> is a module that relies on the behavior specified
+    by the interface. <BR>
+    <BR>
+    <IMG SRC="moadgc13.gif"> <BR>
+    When a provider and user of the interface come together, they
+    can interact through the template of the interface. <BR>
+    <BR>
+    <IMG SRC="moadgc14.gif"> <BR>
+    Interfaces can be defined independently of both providers and
+    users: one programmer or organization may define an interface,
+    while others implement or use it. This separation makes the MOA
+    object model well-suited to defining and implementing Xtras.<BR>
+    <BR>
+    For two independent modules to interact, each must provide an
+    interface to the other, and use an interface provided by another. <BR>
+    <BR>
+    <IMG SRC="moadgc15.gif"> <BR>
+    Interfaces define self-contained units of behavior. Each interface
+    has a specific, coherent purpose. For complex behaviors, a single
+    module provides more than one interface, and uses more than one
+    interface in other modules. <BR>
+    <BR>
+    <IMG SRC="moadgc16.gif"> <BR>
+    A MOA application may provide a number of interfaces to
+    its Xtras. It may also define several interfaces intended to be
+    provided by Xtras.<BR>
+    <BR>
+    <BR>
+</DL>
+<h4><A NAME="RTFToC5">Defining interfaces</A></h4>
+<DL>
+  <DT>
+  <DD>In C-language terms, an interface is a set of prototypes--names,
+    argument types, and return types--for a set of related functions.
+    These function prototypes are referred to as methods. Because
+    an interface declares only the external signature of its methods,
+    it can be declared independently of both its providers and users. <BR>
+    <BR>
+    For example, consider an interface named Shape. This interface
+    specifies standard behavior for rendering 2D graphic shapes. In
+    this simple example, the Shape interface specifies just one method:
+    Draw. An application may use the Shape interface by calling the
+    Draw method.<BR>
+    <BR>
+    <IMG SRC="moadgc17.gif"> <BR>
+    An Xtra that provides the Shape interface includes code for the
+    Draw method. For example, a rectangle Xtra would include code
+    to render a rectangle. <BR>
+    <BR>
+    <IMG SRC="moadgc18.gif"> <BR>
+    <BR>
+</DL>
+<h4><A NAME="RTFToC6">Objects and interfaces</A></h4>
+<DL>
+  <DT>
+  <DD>Traditionally, a program consists of two types of entities:
+    data and procedures. Data represents things such as names, addresses,
+    or the position and size of a graphic shape. Procedures operate
+    on data--for example, by adding two numbers and returning the
+    result, sorting a list of names, and so on. Frequently, programmers
+    develop suites of functions to operate on specific types of data. <BR>
+    <BR>
+    Object-oriented programming formalizes and extends this approach
+    to programming. Data and procedures are combined in a single unit,
+    the object. Generally, the data of an object can only be accessed
+    and manipulated through procedures belonging to the object. This
+    is referred to as encapsulation. <BR>
+    <BR>
+    <IMG SRC="moadgc19.gif"> <BR>
+    Encapsulation helps ensure data integrity. Since the data is controlled
+    by the object, the user is less likely to make inadvertent changes
+    than with traditional data structures. Encapsulation also facilitates
+    code maintenance, because objects are manipulated solely through
+    procedures. The structure of an object's data can be designed
+    and modified to suit its own needs, without affecting the users. <BR>
+    <BR>
+    Because interfaces represent units of behavior agreed on by separate
+    code modules, they're well suited to object-oriented programming.
+    By providing one or more interfaces, a MOA object provides a specific
+    set of behavior to its users, while keeping its data encapsulated. <BR>
+    <BR>
+    <IMG SRC="modgc110.gif"> <BR>
+    In addition to encapsulation, interfaces enable different types
+    of objects to respond to the same procedures in their own way.
+    In object-oriented terms, this is referred to as polymorphism.
+    Because of polymorphism, a user can interact with objects of many
+    types without knowing about the internal details of those objects. <BR>
+    <BR>
+    <IMG SRC="modgc111.gif" ALIGN="TOP"> <BR>
+    The benefits of polymorphism and encapsulation can be demonstrated
+    by the Shape interface. You can imagine many types of object that
+    provide this interface: circles, rectangles, line segments, and
+    so on. Each of these object types may implement the Draw method
+    in its own way. For example, the rectangle implements Draw to
+    render a rectangle, while the circle implements Draw to render
+    a circle. <BR>
+    <BR>
+    <IMG SRC="modgc112.gif" ALIGN="TOP"> <BR>
+    Each of these shapes can use the most appropriate type of data
+    to define what to draw. The rectangle would probably use two control
+    points to define its drawing area, while the circle might use
+    a center point and radius. Encapsulation keeps this implementation
+    detail hidden from users of the Shape interface. <BR>
+    <BR>
+    <IMG SRC="modgc113.gif"> <BR>
+    An application that uses the Shape interface could call the Draw
+    method on a rectangle Xtra, a circle Xtra, or any other Xtra that
+    implements the Shape interface, and reliably get a rendering of
+    the appropriate shape. <BR>
+    <BR>
+    <BR>
+</DL>
+<h4><A NAME="RTFToC7">Objects and classes</A></h4>
+<DL>
+  <DT>
+  <DD>The previous section referred to a <I>type</I> of object,
+    such as a rectangle object. For a given Xtra, you may want to
+    create any number of objects. For example, an animation program
+    may use several rectangles, each independent of the other. This
+    means you need a way to define the behavior of a rectangle Xtra
+    once, then allow the application to recreate that behavior any
+    number of times. To define a specific type of Xtra object, you
+    define a class. Objects of a specific class are referred to as
+    instances of that class. <BR>
+    <BR>
+    A MOA class implements an interface by providing a method implementation
+    for each method. It's possible for any number of instances to
+    be created from the class, each responding to the methods in its
+    interfaces. The class also defines data, or instance variables,
+    and each instance has its own set of these variables.<BR>
+    <BR>
+    <IMG SRC="modgc114.gif" ALIGN="TOP"> <BR>
+    Instance variables are private, accessible only within the method
+    implementations. The terms <I>object</I> and <I>instance</I> are
+    often used interchangeably throughout this document. <BR>
+    <BR>
+    In practice, some classes are only instantiated once. For example,
+    you may only need one instance of a particular sound filter in
+    SoundEdit. In any case, classes provide a modular way to implement
+    the specific interaction described by an interface. <BR>
+    <BR>
+    <BR>
+</DL>
+<h3><A NAME="RTFToC8">MOA application architecture</A></h3>
+<DL>
+  <DT>
+  <DD>Using interfaces, classes, and objects, the MOA object model
+    provides a modular way to specify interaction between a MOA
+    application and an Xtra. This section explores the general relationship
+    between applications and Xtras. <BR>
+    <BR>
+    <BR>
+</DL>
+<h4><A NAME="RTFToC9">Applications, Xtras, and interfaces</A> </h4>
+<DL>
+  <DT>
+  <DD>All interfaces used between applications and Xtras are defined
+    by Adobe. In a sense, the application forms the base or foundation
+    for the Xtra, the interfaces serve as an intermediate layer, and
+    Xtras are supported by the application and its interfaces.<BR>
+    <BR>
+    <IMG SRC="modgc115.gif" ALIGN="TOP"> <BR>
+    <BR>
+</DL>
+<h5><A NAME="RTFToC10">Xtra and callback Interfaces </A></h5>
+<DL>
+  <DT>
+  <DD>Some MOA interfaces are intended to be implemented by classes
+    in an application, others by classes in an Xtra. The interfaces
+    implemented by an application are referred to as callback interfaces.
+    Those implemented by Xtras are called Xtra interfaces.<BR>
+    <BR>
+    <IMG SRC="modgc116.gif"><BR>
+    <BR>
+    <BR>
+    Callback interfaces are implemented by classes in an application
+    and provided for use by its Xtras. When implementing an Xtra,
+    you are given access to the callback interfaces to get information
+    from the application. Some callback interfaces are general purpose;
+    others are provided for the specific purposes of a particular
+    application. Each application defines and instantiates the classes
+    that implement its callback interfaces.<BR>
+    <BR>
+    Xtra interfaces are intended to be implemented by classes in the
+    Xtra and used by the application. The application creates instances
+    of the classes in the Xtra and uses them to perform behavior specified
+    by the Xtra interface. <BR>
+    <BR>
+    <BR>
+</DL>
+<h4><A NAME="RTFToC11">Lifetime of an Xtra</A></h4>
+<DL>
+  <DT>
+  <DD>The lifetime of an Xtra object is controlled in part by MOA
+    and in part by the specific application it is interacting with.
+    There are five general phases in the lifecycle of a MOA Xtra:
+    startup, registration, instantiation, activation, and release.
+    This section explores these phases in sequence.<BR>
+    <BR>
+    <BR>
+</DL>
+<h5><A NAME="RTFToC12">Startup</A></h5>
+<DL>
+  <DT>
+  <DD>When an application starts up, it checks for Xtras in a couple
+    of standard directories. The precise path to these directories
+    is platform dependent, as listed in the following table:<BR>
+    <BR>
+    <BR>
+    <BR>
+    <B>Macintosh <BR>
+    <BR>
+    </B>&lt;Application folder&gt;:Xtras <BR>
+    <BR>
+    <B>Windows NT/Windows 95<BR>
+    <BR>
+    </B>&lt;Application dir&gt;\Xtras<BR>
+    <BR>
+    In all cases, MOA applications search this directory to a depth
+    of five subdirectories. When it encounters a new Xtra (one that
+    wasn't registered the last time the application started), MOA
+    attempts to register the Xtra.<BR>
+    <BR>
+    <BR>
+</DL>
+<h5><A NAME="RTFToC13">Registration</A></h5>
+<DL>
+  <DT>
+  <DD>When an application finds an Xtra for the first time, it registers
+    it. Registration is provided through a standard Xtra interface, <span class="code">IMoaRegister</span>, with
+    one method, <span class="code">Register()</span>.
+    The purpose of this interface is to enable an application to determine
+    the classes and interfaces implemented by your Xtra. Each Xtra
+    includes this information in its implementation of the <span class="code">IMoaRegister</span> interface. In addition, all MOA applications define specific keys
+    and values to be added to the cache through the <span class="code">IMoaRegister</span> interface. This enables the application to determine what functionality
+    your Xtra provides--and thus, where in its user interface to make
+    your Xtra available to the user. <BR>
+    <BR>
+    <BR>
+</DL>
+<h5><A NAME="RTFToC14">Instantiation</A></h5>
+<DL>
+  <DT>
+  <DD>Once an Xtra has been registered, the application automatically
+    makes it available to the user at appropriate times. Instances
+    of your Xtra classes are often created as the result of the user
+    selecting an item from a menu or manipulating some other user
+    interface feature. For example, in SoundEdit, Xtra objects are
+    created when the user selects their behavior from the menu, and
+    disposed of after the user finishes using them (usually by closing
+    their dialog box). <BR>
+    <BR>
+    In other cases, one Xtra object may create instances of other
+    classes defined by the same Xtra. In Director, for example, a
+    media asset object is created when the user adds a media asset
+    Xtra to the cast. The media asset object, in turn, creates an
+    instance of an associated sprite actor class when the media asset
+    is added to the score. <BR>
+    <BR>
+    Whenever an Xtra object is instantiated, MOA automatically initializes
+    a couple of instance variables belonging to all MOA objects: <span class="code">pCalloc</span> and <span class="code">pCallback</span>. These
+    are set to some standard interfaces within the application. The
+    next section describes in greater detail how an Xtra uses these
+    instance variables. <BR>
+</DL>
+<h5><A NAME="RTFToC15">Activation</A></h5>
+<DL>
+  <DT>
+  <DD>An Adobe application invokes the behavior of your Xtra
+    by calling methods in the Xtra interfaces you've implemented.
+    Some Xtra interface methods may be called by an application as
+    the result of user action. Other methods are called as the internal
+    code of the application performs some behavior in which your Xtra
+    interacts, for example, the animation or event-handling loops. <BR>
+</DL>
+<h5><A NAME="RTFToC16">Release</A></h5>
+<DL>
+  <DT>
+  <DD>As the application uses Xtra objects, it requests interfaces
+    from them, calls methods in those interfaces, then releases them.
+    MOA uses reference counting to determine when an object is in
+    use and when it can be purged from memory. Each time an interface
+    is requested from an object, the reference count for that interface
+    is incremented. Each time an interface is released, the reference
+    count is decremented. When all references to all interfaces of
+    an object have been released, the reference count drops to 0 and
+    the object becomes a target for purging from memory. Note that
+    the object may not be purged immediately--the application will
+    determine when it needs additional memory and purge any unreferenced
+    objects at the appropriate time. <BR>
+    <BR>
+    <BR>
+</DL>
+<h4><A NAME="RTFToC17">Accessing callback and Xtra Interfaces</A> </h4>
+<DL>
+  <DT>
+  <DD>To complete the picture of how applications and Xtras interact
+    through MOA interfaces, this discussion details the ways applications
+    provide interfaces to Xtras and Xtras provide interfaces to applications. <BR>
+</DL>
+<h5><A NAME="RTFToC18">Standard MOA interfaces </A> </h5>
+<DL>
+  <DT>
+  <DD>There are a number of standard interfaces defined by MOA.
+    Among these are several standard callback interfaces intended
+    to be provided by an application for the use of its Xtras. These
+    callback interfaces are:<BR>
+    <BR>
+    <B>Interface Purpose<BR>
+    <BR>
+    </B><span class="code">IMoaCalloc</span> Standard
+    memory allocation and release<BR>
+    <BR>
+    <span class="code">IMoaCallback</span> General
+    access to an application<BR>
+    <BR>
+    <span class="code">IMoaHandle</span> Handle-based
+    memory allocation<BR>
+    <BR>
+    <span class="code">IMoaProgressBox</span> User
+    notification for longer processes<BR>
+    <BR>
+    <span class="code">IMoaStream</span> Access
+    to file and memory buffers<BR>
+    <BR>
+    <span class="code">IMoaPixelAccess</span> Access
+    to bitmap pixel information<BR>
+    <BR>
+    In addition, MOA defines a standard Xtra interface, <span class="code">IMoaRegister</span>.
+    This interface defines a way for Xtras to describe their capabilities
+    to an application, including the classes and interfaces they implement. <BR>
+</DL>
+<h5><A NAME="RTFToC19">The callback object </A> </h5>
+<DL>
+  <DT>
+  <DD>Each MOA-capable application defines a class that represents
+    the top-level access to its capabilities. One instance of this
+    class is created when the application starts; this instance is
+    referred to as the callback object. The callback object is the
+    main way all Xtras get access to the capabilities of an application.
+    The callback object is accessed through the standard MOA instance
+    variable <span class="code">pCallback</span>. <BR>
+</DL>
+<h5><A NAME="RTFToC20">Access to callback interfaces
+  from an Xtra </A></h5>
+<DL>
+  <DT>
+  <DD>An application makes its capabilities available to an Xtra
+    through various callback interfaces. Some of these are provided
+    by the callback object, others are provided by objects of other
+    classes. <BR>
+    <BR>
+    The diagram below shows a number of callback interfaces provided
+    by an application to an Xtra. Some of these are standard interfaces
+    defined by MOA. Some are standard interfaces defined by the application.
+    Others are optional interfaces, supplied by either MOA or the
+    application. <BR>
+    <BR>
+    <IMG SRC="modgc117.gif" ALIGN="MIDDLE"> <BR>
+    This diagram illustrates three ways interfaces are provided by
+    an application for use by an Xtra. From top to bottom, these are: <BR>
+</DL>
+<h6><A NAME="RTFToC21">Using instance variables </A> </h6>
+<DL>
+  <DT>
+  <DD>Each Xtra object has two instance variables provided by MOA
+    that point to interfaces within an application, <span class="code">pCalloc</span> and <span class="code">pCallback</span>. <BR>
+    <BR>
+    The <span class="code">pCalloc</span> instance
+    variable provides the application's <span class="code">IMoaCalloc</span> interface. This interface is used by the Xtra to allocate small
+    chunks of non-relocatable memory, such as those required by its
+    instance variables. <BR>
+    <BR>
+    The <span class="code">pCallback</span> instance
+    variable provides the <span class="code">IMoaCallback</span> interface of the application's callback object. This interface
+    can be considered the main entry point to the application. Through
+    it, the Xtra acquires access to all other interfaces and objects
+    provided by the application. <BR>
+</DL>
+<h6><A NAME="RTFToC22">Calling the QueryInterface()
+  method </A></h6>
+<DL>
+  <DT>
+  <DD>To use other interfaces provided by an application, an Xtra
+    often acquires them from the application's callback object. To
+    do so, it calls the <span class="code">QueryInterface()</span> method on the interface provided by <span class="code">pCallback</span>. <span class="code">QueryInterface()</span> is
+    a standard method of all MOA interfaces, used to acquire other
+    interfaces provided by the same object. Through this method, the
+    Xtra gets access to the application's <span class="code">IMoaHandle</span> interface, used for allocating larger chunks of relocatable memory.
+    The Xtra can also use QueryInterface() to access the &quot;top-level&quot;
+    interface for application-specific functionality. Other general-purpose
+    interfaces provided by calling <span class="code">QueryInterface()</span> on <span class="code">pCallback</span> may include <span class="code">IMoaProgressBox</span>, <span class="code">IMoaStream</span>,
+    and utility interfaces provided by the application. <BR>
+</DL>
+<h6><A NAME="RTFToC23">Calling methods in a callback
+  interface </A></h6>
+<DL>
+  <DT>
+  <DD>The third general way an Xtra acquires interfaces and objects
+    from an application is by calling methods in one of the callback
+    interfaces provided through <span class="code">pCallback</span>.
+    For example, the application's top-level interface may provide
+    methods that return interfaces to other objects--referred to in
+    the diagram as &quot;model objects&quot;--within the application.
+    One example would be an object representing an open document in
+    an application. The interfaces of these model objects in turn
+    may include methods for accessing the interfaces of other objects
+    representing internal details of the application. <BR>
+    <BR>
+    <BR>
+</DL>
+<h5><A NAME="RTFToC24">Access to Xtra interfaces </A></h5>
+<DL>
+  <DT>
+  <DD>A MOA application can get the use of interfaces provided by
+    an Xtra in a couple of ways, as shown in the following diagram.
+    The diagram also illustrates how methods of an Xtra interface
+    may be used to provide callback interfaces from the application
+    to the Xtra. <BR>
+    <BR>
+    <IMG SRC="modgc118.gif" ALIGN="BASELINE"><BR>
+</DL>
+<h6><A NAME="RTFToC25">Calling Register() </A> </h6>
+<DL>
+  <DT>
+  <DD>Before it accesses any other classes or interfaces provided
+    by an Xtra, an application needs to learn the capabilities of
+    the Xtra. The standard Xtra interface <span class="code">IMoaRegister</span> provides the mechanism for this. This interface consists of one
+    method, <span class="code">Register()</span>,
+    invoked by the application's registration process the first time
+    it detects your Xtra. The registry calls your Xtra's <span class="code">Register()</span> method to get some standard information and some application-specific
+    information. Standard information provided by every Xtra includes
+    the classes and interfaces it provides. Application-specific information
+    provided by an Xtra helps the application determine where your
+    Xtra should appear in its menus. When it calls this method, the
+    application provides the callback interfaces <span class="code">IMoaCache</span> and <span class="code">IMoaDict</span> to the
+    Xtra for storing registration information.<BR>
+    <BR>
+    Note that MOA creates an instance of an Xtra object before calling <span class="code">Register()</span> on it.
+    It only does this the first time it encounters the Xtra in the
+    standard Xtras folders. The object is only created so the application
+    can register it; it is usually purged from memory immediately.
+    Subsequently, MOA and the application can use information in the
+    cache to create &quot;real&quot; instances of the Xtra for use
+    within the context of the application. <BR>
+</DL>
+<h6><A NAME="RTFToC26">Calling Xtra interface methods </A></h6>
+<DL>
+  <DT>
+  <DD>After registration, the application knows the classes and
+    interfaces your Xtra provides. It can then create an instance
+    of the class and access the Xtra interfaces it provides. Certain
+    methods in the interface you implement may be passed additional
+    callback interfaces from the application. For example, the hypothetical
+    Xtra interface <span class="code">IMoaHello</span> could include a <span class="code">Hello()</span> method for your object to pass its greeting. One parameter of
+    this method may be an instance of <span class="code">IMoaStream</span>,
+    a MOA callback interface for writing data to streams. Your implementation
+    of <span class="code">Hello()</span> calls methods
+    in <span class="code">IMoaStream</span> to write
+    a greeting from the Xtra to the application. <BR>
+    <BR>
+    The next chapter shows how an Xtra would implement this hypothetical <span class="code">IMoaHello</span> interface,
+    using the various mechanisms described above to provide interfaces
+    to the application and to access interfaces provided by the application.
+</DL>
+<hr width=45% align=left>
+<A HREF = "../copyrite.htm">Copyright &#169; 1995-2007 Adobe Macromedia Software LLC, Inc.</A>
+</BODY>
+</html>

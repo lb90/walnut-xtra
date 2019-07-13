@@ -1,0 +1,139 @@
+<HTML>
+<HEAD>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<TITLE>Tool Xtras</TITLE>
+<link href="../xdk.css" rel="stylesheet" type="text/css">
+</HEAD>
+<BODY>
+
+<A NAME="RTFToC2"></A><A HREF="index.htm">MM Developer's Guide</A><BR>
+<A HREF="../mmref/index.htm">MM Interfaces</A> | <A HREF="../mmref/mmmthndx.htm">MM Methods</A>
+| <A HREF="../mmref/mmtypndx.htm">MM Types and Misc API</A>
+<HR width=45% align=left>
+
+<H4>Director Xtra Development Kit: Multimedia Developer's Guide</H4>
+
+<H3>Tool Xtras</H3>
+
+<span class="heading4">Introduction</span>
+<P>
+A multimedia Tool Xtra provides authors with additional functionality
+in a multimedia authoring application such as Director or Authorware.
+A Tool Xtra registers a display name which appears in the application's
+Xtras menu. When the user selects the item, the Tool Xtra is notified
+and can perform a useful operation, bring up a user dialog, and
+so on.<BR>
+<BR>
+Tools have full access to all the callbacks offered by an application.
+In Director, this includes access to all cast member and score
+data, as well as the current cast and score selections in the
+authoring environment. This allows Xtra writers to create tools
+that operate on the current selection. For example, one tool might
+create an optimized palette for all of the currently selected
+cast members in the active cast. <BR>
+<BR>
+Tools (and other Xtras, for that matter), are free to create new
+modal or modeless windows which may appear in the authoring environment.
+Tools can use the <A HREF="../mudg/index.htm">MUI Xtra API</A>
+to present custom dialogs, alerts, file open and save dialogs,
+and other user interface features (see the MUI documentation for
+information on which application's support the MUI Xtra API).
+<BR>
+<BR>
+<B>Note:</B> Multimedia tool Xtras replace the Director-specific
+tool Xtras supported in the previous release. <BR><br>
+<A NAME="RTFToC4" class="heading4">Implementing
+a Tool Xtra</A>
+<P>
+Tool Xtras are very simple. They should be created with two MOA
+classes, each supporting one of the following interfaces:
+<TABLE width="658" BORDER="2">
+<TR><TD WIDTH=171>Class</TD>
+<TD WIDTH=176>Interface</TD>
+<TD WIDTH=287>Behavior</TD>
+</TR>
+
+<TR><TD WIDTH=171>Registration class</TD>
+<TD WIDTH=176><span class="code">IMoaRegister</span></TD>
+<TD WIDTH=287>Standard MOA registration interface</TD>
+</TR>
+
+<TR><TD WIDTH=171>Tool class</TD>
+<TD WIDTH=176><span class="code">IMoaMmXTool</span></TD>
+<TD WIDTH=287>Tool Xtra interface</TD></TR>
+</TABLE>
+<br>
+As is true with all Xtras, the Tool Xtra may additionally implement
+several other interfaces. The registration class may implement<span class="code">IMoaMmInterrogate</span> and <span class="code">IMoaMmTerminator</span>
+to perform application startup and shutdown allocation and resource
+access. The tool class may implement <span class="code">IMoaInitFromDict</span>
+to perform custom initialization. <BR>
+<br>
+<A NAME="RTFToC5" class="heading5">Creating and disposing of tool Xtras</A>
+
+<P>
+The host application creates an instance of your class supporting
+<A HREF="../mmref/mmxtool.htm">IMoaMmXTool</A>
+the first time it is needed, either to call its <A HREF="../mmref/mmxtool.htm#Invoke" class="code">Invoke()</A>
+method or its <A HREF="../mmref/mmxtool.htm#GetEnabled" class="code">GetEnabled()</A>
+method. Only a single instance for each tool is created; after
+creation, the instance will persist as long as the host app is
+running, and will be released at application shut-down.<BR>
+<BR>
+If you specify your tool as &quot;alwaysEnabled&quot; (see below),
+your code will not be loaded (and instance created) unless the
+item is selected by the user. Otherwise, your instance may be
+created sooner if the application needs to enable/disable your
+item in the user interface.<BR>
+<BR>
+Although there's only one instance of your tool xtra class per
+Xtra menu item, this doesn't mean you're limited to a single window
+for your user interface. This instance is simply used to handle
+selection of your tool. Your tool xtra can choose to create additional
+objects (such as windows) each time it is selected, if you wish.
+Typically, however, tool xtras should either use a modal dialog
+or have a single modeless window which is brought forward when
+the item is selected. Alternatively, the tool xtra can immediately
+execute some function without displaying any UI, if appropriate.</P>
+
+<A NAME="RTFToC6" class="heading5">Registering a tool Xtra</A>
+<P>
+In the <span class="code">Register()</span> method of your <A HREF="../moref/register.htm">IMoaRegister</A>
+implementation, you register the display name and category for
+your Xtra. These registry keys are the same ones used for Sprite
+and Transition Xtras. In addition, you can register a third bit
+of data under the &quot;alwaysEnabled&quot; key. This will indicate
+to the host application that your tool is always enabled as long
+as the application is running; in this case, your <span class="code">GetEnabled()</span>
+method will never get called, and the host application won't have
+to load your code unless your item is selected. Otherwise, your
+code will need to be loaded and your <span class="code">GetEnabled()</span>
+method called whenever the app needs to determine whether or not
+your item needs to be enabled in the user interface.</P>
+
+<A NAME="RTFToC7" class="heading5">Keys for Tool Xtras</A><br><br>
+<TABLE BORDER="2">
+<TR>
+<TD WIDTH=308><A NAME="RTFToC8" class="code">kMoaMmDictKey_DisplayNameString</A></TD>
+<TD WIDTH=573>This key is used to register the name of your Tool as you'd like it to appear in the host application UI. 
+This should be a localized, human-readable C string.</TD>
+</TR>
+<TR>
+<TD WIDTH=308><A NAME="RTFToC9" class="code">kMoaMmDictKey_DisplayCategoryString</A></TD>
+<TD WIDTH=573>This key registers the category of your Tool as you'd like it to appear in the host application UI.
+This should be a localized, human-readable C string.</TD>
+</TR>
+<TR>
+<TD WIDTH=308><A NAME="RTFToC10" class="code">kMoaDrDictKey_AlwaysEnabled</A></TD>
+<TD WIDTH=573>This key registers whether this tool is always enabled. This should be a MoaLong: 
+FALSE (0) if the tool needs to be enabled &amp; disabled dynamically; 
+TRUE (1) if the tool should always be enabled in the UI.
+If TRUE, your IMoaMmXTool::GetEnabled() method will not be called.</TD>
+</TR>
+</TABLE>
+
+<HR width=45% align=left>
+<A HREF = "../copyrite.htm">Copyright &#169; 1995-2008 Adobe Macromedia Software LLC, Inc.</A>
+</BODY>
+
+</HTML>

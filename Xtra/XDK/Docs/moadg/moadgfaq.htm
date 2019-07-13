@@ -1,0 +1,144 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+
+<HEAD>
+<TITLE>Frequently Asked Questions</TITLE>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link href="../xdk.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+<body>
+
+<A HREF="index.htm">MOA Developer's Guide</A><BR>
+<A HREF="../moref/index.htm" >MOA Interfaces</A> | <A HREF="../moref/momthndx.htm" >MOA Methods</A>
+| <A HREF="../moref/motypndx.htm" >MOA Types and Misc API</A>
+
+<HR width=45% align=left>
+
+<h4><A NAME="RTFToC2">Director Xtra Development Kit: MOA Developer's Guide</A></h4>
+
+<h4>Frequently Asked Questions</h4>
+
+<HR width=45% align=left>
+
+<h5><A NAME="RTFToC6" class="heading5">How do I choose a value for a class or interface ID?</A></h5>
+
+<DL>
+<DD>Currently there's only one &quot;safe&quot; way to do it:
+use a utility that generates a random one based on (among other
+things) your machine's Ethernet address and the date/time. Since
+all Ethernet adapters are supposed to have unique IDs, this should
+in theory be safe. Microsoft provides the utilities on Windows
+machines; we wrote a similar one of our own for Macintosh classic. Apple provides a terminal command with OS X. Feel
+free to use any random values you like during development, but
+prior to release, you <B>must</B> get a &quot;real&quot; value
+from such a utility. More <a href="moadgc2.htm#RTFToC5">details</a>.<BR>
+<BR>
+
+</DL>
+
+<h5><A NAME="RTFToC7" class="heading5">I get link errors saying that CLSID_xxx or IID_xxx are missing (or duplicate). What gives?</A></h5>
+
+<DL>
+<DD>The macro DEFINE_GUID normally makes an &quot;extern&quot;
+declaration of the MoaID structure. However, if the macro INITGUID
+is defined, the DEFINE_GUID macro actually declares the identifier.
+So... to make your files link correctly, you need to place #define
+INITGUID at the top of exactly <B>one</B> file, before including
+any header files.<BR>
+<BR>
+
+</DL>
+
+
+<h5><A NAME="RTFToC11" class="heading5">How do I access resources within my Xtra?</A></h5>
+
+<DL>
+<DD>On the Mac, your Xtra may or may not have its resource file
+open at any given time. To avoid unnecessary resource-file openings
+(which would be uncool because it's a slow operation), we've set
+up a way for you to hook in to the possibly-already-open file.
+There are two calls in the <span class="code">PIMoaCallback</span> 
+for doing so, <span class="code">MoaBeginUsingResource()</span> 
+and <span class="code">MoaEndUsingResources()</span>.
+Your Xtra will have a global called <span class="code">gXtraFileRef</span>;
+this is <B>not</B> a resource file reference number, but a magic
+token used to get it for you. To get the resource file reference
+number and make it the topmost in the resource chain, call MoaBeginUsingResources(),
+then use Get1xxx to get your resources. When you are done, call
+MoaEndUsingResource(); this will possibly close the resource file
+(note that the resource file is always opened read-only). You'll
+also have to pass in a scratch variable that's used to save and
+restore the same resource-chain state.<BR>
+<BR>
+A bit of code example:<P>
+<span class="code">XtraResourceCookie myCookie, saveCookie;
+<BR>
+<BR>
+myCookie = This-&gt;pCallback-&gt;lpVtbl-&gt;MoaBeginUsingResources(This-&gt;pCallback,
+gXtraFileRef, &amp;saveCookie);<BR>
+h = Get1NamedResource(...);<BR>
+This-&gt;pCallback-&gt;lpVtbl-&gt;MoaEndUsingResources(This-&gt;pCallback,
+gXtraFileRef, saveCookie);<BR>
+<BR>
+</span>Under Windows, the same rigmarole is used; the main
+difference is that an &quot;XtraResourceCookie&quot; is really
+just an HINSTANCE to your Xtra's DLL.<BR>
+</DL>
+
+<h5><A NAME="RTFToC12" class="heading5">I can't create any instances of my Xtra; I always get an error. What is wrong?</A></h5>
+
+<DL>
+<DD>Likely problem is you didn't export all the necessary functions
+(if you are using CFM or DLL). Or perhaps your Xtra is using a supporting DLL or shared library that isn't available.</DD>
+</DL>
+
+<h5><A NAME="RTFToC13" class="heading5">How do I find the folder where my Xtra is located?</A></h5>
+
+<DL>
+<DD>Macintosh:</DD>
+<dd>
+  <pre class="code"><span class="code">{
+	FSSpec mySpec;
+	MoaError err;
+	PIMoaPathName pMoaFile;
+	MoaChar chXtraFolder[512];
+	err = pObj-&gt;pCallback-&gt;MoaCreateInstance(&amp;CLSID_CMoaPath, &amp;IID_IMoaPathName, (PPMoaVoid)&amp;pMoaFile);
+	err = FSMakeFSSpec( ((FSSpecPtr)gXtraFileRef)-&gt;vRefNum, ((FSSpecPtr)gXtraFileRef)-&gt;parID , &quot;\p&quot;, &amp;mySpec);
+	err = pMoaFile-&gt;InitFromFSSpec(&amp;mySpec);
+	err = pMoaFile-&gt;GetPath(chXtraFolder, 512);
+	err = pMoaFile-&gt;Release();
+ }</span></pre>
+</dd>
+<dd>Windows:</dd>
+<dd class="code">
+  <pre class="code">{
+  	XtraResourceCookie pSaveCookie, pNewCookie = NULL;
+	DWORD dwErr;
+	MoaChar chXtraFolder[MAX_PATH];
+	pNewCookie = pObj-&gt;pCallback-&gt;MoaBeginUsingResources(gXtraFileRef, &amp;pSaveCookie);
+	if (pNewCookie)
+	{
+		dwErr = GetModuleFileName(pNewCookie, chXtraFolder, MAX_PATH);
+		pObj-&gt;pCallback-&gt;MoaEndUsingResources(gXtraFileRef, pSaveCookie);
+		if (dwErr!=0)
+		{
+			int n;
+			int nLen = strlen(chXtraFolder);
+			for (n=nLen; n&gt;0; n--)
+			{
+				if (chXtraFolder[n-1] == '\\')
+					break;
+				else
+					chXtraFolder[n-1] = '\0'; // clear character
+			}
+		}
+	}
+}</pre>
+</dd>
+</DL>
+<hr width=45% align=left>
+<A HREF = "../copyrite.htm">Copyright &#169; 1995-2008 Adobe Macromedia Software LLC, Inc.</A>
+</BODY>
+</html>

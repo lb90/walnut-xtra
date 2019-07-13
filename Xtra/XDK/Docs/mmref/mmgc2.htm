@@ -1,0 +1,169 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>IMoaMmGC2</title>
+<link href="../xdk.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+
+<A HREF="../mmdg/index.htm">MM Developer's Guide</A><BR>
+<A HREF="index.htm" >MM Interfaces</A> | <A HREF="mmmthndx.htm" >MM Methods</A> | <A HREF="mmtypndx.htm">MM Types and Misc API</A><BR>
+<hr width=45% align=left>
+
+<h3>IMoaMmGC2</h3>
+Interface ID: <span class="code">IID_IMoaMmGC2</span><BR>
+  Pointer type: <span class="code">PIMoaMmGC2</span><BR>
+  Inheritance: <A HREF = "../moref/unknown.htm">IMoaUnknown</A> <BR>
+  Header file: <A HREF = "../../include/mmiservc.h">mmiservc.h</A>
+
+
+<DL>
+<DT class="heading4">Constants and Structures</DT>
+<DD>
+<pre class="code">
+typedef MoaUlong	MoaMmXSpriteCapsFlags;
+
+#define kMoaMmXSpriteCapsFlags_None                0
+#define kMoaMmXSpriteCapsFlags_IsStatic            1     /* sprite doesn't want CollectChgs() calls, use InvalSpriteRect() to request update */
+#define kMoaMmXSpriteCapsFlags_AutoTabEnabled      2     /* app handles tab key */
+#define kMoaMmXSpriteCapsFlags_SupportsRotation    0x04
+#define kMoaMmXSpriteCapsFlags_SupportsSkew        0x08
+#define kMoaMmXSpriteCapsFlags_SupportsFlipH       0x10
+#define kMoaMmXSpriteCapsFlags_SupportsFlipV       0x20
+#define kMoaMmXSpriteCapsFlags_SupportsQuad        0x40
+#define kMoaMmXSpriteCapsFlags_SupportsAutoBounds  0x80
+</pre>
+
+<p>When a sprite gets rotated or skewed, its bounding rectangle normally changes to reflect the new maximum X and Y extents of the image on the stage.
+Setting SupportsAutoBounds tells Director that your Xtra is ready for Director to change its bounding box as the sprite is rotated or skewed.
+If you do not set this constant, Director will not adjust the bounding rectangle with the result that the sprite is cropped to the area of the original rectangle.</p>
+
+<pre class="code">
+typedef MoaLong MoaMmBlitState;
+
+/* This is set if the author wants Director to use the quad 
+/  parameter in the MoaMmBlitParams structure to do the Blit.  If
+/  it's not set, the DstRect parameter to the function will be used.
+/  Rotation/skew/flipH/flipV are OUTPUT values only, there are 
+/  ignored for the Blit2 call. */
+
+#define kMoaMmBlit_UseQuadForBlit  1
+
+typedef struct
+{
+     MoaFloat             rotation;
+     MoaFloat             skew;
+     MoaBool              flipH;
+     MoaBool              flipV;
+     MoaFloat             quad[4][2];
+     MoaMmBlitState       flags;
+
+} MoaMmBlitParams;
+typedef MoaMmBlitParams * PMoaMmBlitParams;
+typedef const MoaMmBlitParams * ConstPMoaMmBlitParams;
+
+typedef struct
+{
+     MoaRect                         spriteRect;    /* rect on stage where sprite appears */
+     MoaMmXSpriteImageMode           imageMode;     /* imaged direct or to an offscreen buffer */
+     MoaMmXSpriteFlags               flags;         /* sprite FX flags (see above) */
+     MoaMmInk                        ink;           /* sprite ink mode */
+     MoaMmInkParams                  inkParams;     /* extra params for some inks */
+     MoaMmBlitParams                 blitParams;    /* extra params for Director blit functionality */
+     MoaLong                         aux;           /* reserved */
+} MoaMmXSpriteInfo;
+typedef MoaMmXSpriteInfo *       PMoaMmXSpriteInfo;
+typedef const MoaMmXSpriteInfo * ConstPMoaMmXSpriteInfo;
+</pre>
+</DD>
+</DL>
+
+<DL>
+<DT class="heading4">Description</DT>
+<DD>The <span class="code">IMoaMmGC2</span> interface allows access to alpha channel support and rotation/skew/quad support.</DD>
+</DL>
+
+<h4>Methods</h4>
+
+<DL>
+<DD><A HREF = "#Blit2">Blit2()</A></DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A name = "Blit2">Blit2()</A></h4>
+<DL>
+<DT class="heading5">Syntax</dt>
+<dt class="code">Blit2(ConstPMoaRect <I>pDestRect</I>, struct IMoaMmGC * <I>pSrcGC</I>, ConstPMoaRect <I>pSrcRect</I>, MoaMmInk <I>ink</I>,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ConstPMoaMmInkParams <I>pInkParams</I>, ConstPMoaMmBlitParams <I>pBlitParams</I>, struct IMoaMmGC * <I>pAlphaGC</I>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PMoaVoid <I>nativeClipRegion</I>)</dt>
+</DL>
+
+<DL>
+<dt class="heading5">Parameters</dt>
+<DT class="codearg">pDestRect</dt>
+<dd>represents the area to which to copy</dd>
+<DT class="codearg">pSrcGC</dt>
+<dd>source graphics context</dd>
+<DT class="codearg">pSrcRect</dt>
+<dd>source rectangle to copy from </dd>
+<DT class="codearg">ink</dt>
+<dd>transfer mode to use</dd>
+<DT class="codearg">pInkParams</dt>
+<dd>Optional <span class="code">ConstPMoaMmInkParams</span> specifying ink parameters</dd>
+<DT class="codearg">pBlitParams</dt>
+<dd>A pointer to a <span class="code">MoaMmBlitParam</span> structure that contains relevant information on how to perform the blitting. 
+The rotation/skew/flipH/flipV are <I>output</I> values only. 
+Director passes these out to the Xtra during the image call so that the Xtra can use the values to image. 
+It also passes out a quad parameter, which is the 4 point quad to use to distort the source image. 
+This can be an input parameter for the <span class="code">Blit2()</span> call, depending on the flags setting. 
+If flags has the blit flag <span class="code">kMoaMmBlit_UseQuadForBlit</span> set, the <span class="code">Blit2()</span> call will use the quad. 
+Otherwise, it will use the <span class="code">DstRect</span> value.</dd>
+<DT class="codearg">pAlphaGC</dt>
+<dd>A pointer to an <span class="code">IMoaMmGc</span> interface. 
+This GC should contain the alpha bitmap used for blitting. 
+If there is no alpha bitmap, pass in NULL to the call. 
+The alpha bitmap can be 1, 2, 4, 8, or 32 bits deep. 
+For 8-bit, 0x00 is transparent and 0xFF is opaque with the intermediate values a linear range of transparency settings. 
+The other low-bit bitmaps have the same behavior. 
+The 32-bit bitmap has an alpha value for each color channel so you can perform different alpha on R, G, and B.</dd>
+<DT class="codearg">nativeClipRegion</dt>
+<dd>Macintosh <span class="code">RgnHandle</span> or Windows <span class="code">HRGN</span></dd>
+</DL>
+
+<DL>
+<dt class="heading5">Returns</dt>
+<DT class="code">MoaError</DT>
+</DL>
+
+<DL>
+<dt class="heading5">Description</dt>
+<DD>
+<span class="code">Blit2()</span> is a extension of the <span class="code">Blit()</span> method in the <span class="code">IMoaMmGC()</span> interface.<BR><BR>
+
+If an Xtra is supposed to work in both Director 6 and later versions, 
+it can check the <span class="code">kMoaMmXSpriteFlags_ExtendedInfo</span> flag in the flags parameter of 
+the <span class="code">MoaMmXSpriteInfo</span> structure of the Image call.
+If this flag is set, the <span class="code">MoaMmXSpriteInfo</span> has the <span class="code">MoaMmBlitParams</span> parameter 
+as part of its structure and you can reference this parameter. 
+Also, you can use <span class="code">Blit2()</span> safely if this flag is set.<BR><BR>
+
+The following flags control Director's behavior with imaging an Xtra. 
+These flags should be set appropriately if the Xtra supports the advanced imaging features of Director. 
+If the Xtra has been upgraded to use <span class="code">Blit2()</span>, all the following flags can be set. 
+If the Xtra supports only a subset (Flash asset, for example), set the appropriate flags and Director will not allow some features (like quadding). 
+<span class="code">AutoBounds</span> means that the Xtra wants its bounds to grow as it is rotated or quadded. 
+Turning this off allows the Xtra to image into its fixed rectangle, like a portal view.
+
+<PRE class="code">
+#define kMoaMmXSpriteCapsFlags_SupportsRotation   0x04
+#define kMoaMmXSpriteCapsFlags_SupportsSkew       0x08
+#define kMoaMmXSpriteCapsFlags_SupportsFlipH      0x10
+#define kMoaMmXSpriteCapsFlags_SupportsFlipV      0x20
+#define kMoaMmXSpriteCapsFlags_SupportsQuad       0x40
+#define kMoaMmXSpriteCapsFlags_SupportsAutoBounds 0x80
+</PRE>
+</DL>
+
+<hr width=45% align=left>
+<A HREF = "../copyrite.htm">Copyright &#169; 1995-2008 Adobe Macromedia Software LLC, Inc.</A>
+</body></html>

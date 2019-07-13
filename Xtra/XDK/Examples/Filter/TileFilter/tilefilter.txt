@@ -1,0 +1,83 @@
+-- Director 11.0 View Description List
+-- Copyright 2008 Adobe Macromedia Software LLC, Inc.
+
+[ 	#tilefilter: 
+	[ 
+		#comment: "Test Tile Filter",
+		
+		#symbol: #tilefilter,
+				
+		#propertyDescriptionList:
+		[
+			#stampSize:
+			[
+				#format: #integer,
+				#range: 
+				[
+					#min:16,
+					#max:256
+				],
+				#comment: "Size of stamp"
+			],
+
+			#style:
+			[
+				#format: #integer,
+				#range: 
+				[
+					#min:0,
+					#max:1
+				],
+				#comment: "Style, 0=copy, 1=combine"
+			]
+		],
+
+		#itemDescriptionList:
+		[
+			#stampSizeLabel:
+			[
+				#type :#label,
+				#alignment: #right,
+				#text:"Size:",
+				#comment: "Size of stamp",
+				#left: 0,
+				#top: 146,
+				#right: 48,
+				#bottom: 162
+			],
+
+			#stampSizeField:
+			[
+				#type: #field,
+				#property: #stampSize,
+				#left: 57,
+				#top: 145,
+				#right: 92,
+				#bottom: 164
+			],
+
+			#styleLabel:
+			[
+				#type :#label,
+				#alignment: #right,
+				#text:"Style:",
+				#comment: "Style, 0=copy, 1=combine",
+				#left: 95,
+				#top: 146,
+				#right: 143,
+				#bottom: 162
+			],
+
+			#styleField:
+			[
+				#type: #field,
+				#property: #style,
+				#left: 152,
+				#top: 145,
+				#right: 187,
+				#bottom: 164
+			]
+		]
+	]
+]
+

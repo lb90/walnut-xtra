@@ -1,0 +1,263 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>IMoaDrAssetCallback</title>
+<link href="../xdk.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+
+<A HREF = "../drdg/index.htm">DR Developer's Guide</A><br>
+<A HREF = "index.htm"> DR Interfaces</A> | 
+<A HREF = "drmthndx.htm">DR Methods</A> | 
+<A HREF = "drtypndx.htm">DR Types and Misc API</A>
+<hr width=45% align=left>
+
+<h3><A name = "IMoaDrAssetCallback">IMoaDrAssetCallback</A></h3>
+
+Interface ID: <span class="code">IID_IMoaDrAssetCallback</span><br>
+Pointer type: <span class="code">PIMoaDrAssetCallback</span><br>
+Inheritance: <A HREF = "../mmref/mmprpown.htm" class="code">IMoaMmPropOwner</A><br>
+Header file: <A HREF = "../../include/driservc.h">driservc.h</A>
+
+<h4>Description</h4>
+<DL>
+  <DD>
+    The <span class="code">IMoaDrAssetCallback</span> interface is provided in Director by the class that implements <span class="code">IMoaMmAssetCallback</span>,
+    which is provided by through the asset initialization method <span class="code">IMoaMmXAsset::SetCallback()</span>.
+    To acquire <span class="code">IMoaDrAssetCallback</span>,
+    the asset can call <span class="code">QueryInterface()</span> on <span class="code">IMoaMmAssetCallback</span>. <BR>
+    <BR>
+    This interface provides additional, Director-specific callback
+    services to a media asset. In Director, an asset Xtra has both
+    an external representation, implemented by the Xtra developer,
+    and an internal representation, provided by Director. The Xtra
+    developer defines custom behavior by implementing standard asset
+    Xtra interfaces. This interface provides controlled access to
+    the internal representation of the Xtra provided by Director.</DD>
+</DL>
+
+<h4>Methods</h4>
+<span class="heading5">Property owner</span>
+<DL>
+  <DD><A HREF = "#GetProp">GetProp()</A></DD>
+  <DD><A HREF = "#SetProp">SetProp()</A></DD>
+</DL>
+<span class="heading5">Internal cast member access</span>
+<DL>
+  <DD><A HREF = "#GetCMRef">GetCMRef()</A></DD>
+</DL>
+<span class="heading5">Scripting support</span>
+<DL>
+  <DD><A HREF = "#CallCMHandler">CallCMHandler()</A></DD>
+</DL>
+
+<hr width=45% align=left>
+
+<h4><A NAME="CallCMHandler">CallCMHandler()</A></h4>
+<dl>
+<dt class="heading5">Syntax</dt>
+<dt class="code">CallCMHandler(MoaMmSymbol <em>handlerName</em>, MoaLong <em>nArgs</em>, PMoaMmValue <em>pArgs</em>, PMoaMmValue <em>pResult</em>, MoaBool * <em>pHandled</em>)</dt>
+</dl>
+<dl>
+<dt class="heading5">Parameters</dt>
+<dt class="codearg">handlerName</dt>
+<dd><span class="code">MoaMmSymbol</span> representing the handler to call</dd>
+<dt class="codearg">nArgs</dt>
+<dd>Number of arguments, excluding the Xtra instance in <span class="codearg">pArgs[0]</span></dd>
+<dt class="codearg">pArgs</dt>
+<dd>Array of arguments, with the first valid argument at <span class="codearg">pArgs[1]</span></dd>
+<dt class="codearg">pResult</dt>
+<dd>Pointer to a <span class="code">MoaMmValue</span> to receive the result</dd>
+<dt class="codearg">pHandled</dt>
+<dd>Boolean value indicated if call was processed</dd>
+</dl>
+<dl>
+<dt class="heading5">Returns</dt>
+<dt class="code">MoaError</dt>
+</dl>
+<dl>
+<dt class="heading5">Description</dt>
+<dd>Calls a handler defined in the asset's cast member script. For <span class="code">CallCMHandler()</span>, only
+    the cast member script is checked; the message does not proceed
+    up to the movie or frame level, as it does with the sprite <span class="code">SendMessage()</span> call.<BR>
+    <BR>
+    Caller supplies a symbol for handler to call (<span class="codearg">name</span>),
+    the arguments (<span class="codearg">nArgs</span>, <span class="codearg">pArgs</span>), and
+    a pointer to a <span class="code">MoaMmValue</span> to
+    receive a result, if any, from the handler call.<BR>
+    <BR>
+    Upon return, <span class="codearg">pHandled</span> is set to <span class="code">TRUE</span> if the
+    call was handled, that is the handler existed in the cast member script. 
+	If message was not handled, it silently disappears and <span class="code">FALSE</span> is returned.</dd>
+</dl>
+
+<hr width=45% align=left>
+
+<h4><A NAME="GetCMRef">GetCMRef()</A></h4>
+<dl>
+<dt class="heading5">Syntax</dt>
+<dt class="code">GetCMRef(PMoaDrCMRef <em>pCMRef</em>)</dt>
+</dl>
+<dl>
+<dt class="heading5">Parameters</dt>
+<dt class="codearg">pCMRef</dt>
+<dd>Pointer to a <span class="code">MoaDrCMRef</span> to receive the reference for the cast member associated with your asset</dd>
+</dl>
+<dl>
+<dt class="heading5">Returns</dt>
+<dt class="code">MoaError</dt>
+</dl>
+<dl>
+<dt class="heading5">Description</dt>
+<dd>Gets the cast member reference for the cast member associated
+    with your asset. This lets you determine the Director cast member
+    with your asset is associated. The cast index supplied in this
+    reference is relative to the active movie.</dd>
+</dl>
+
+<hr width=45% align=left>
+
+<h4><A NAME="GetProp">GetProp()</A></h4>
+<dl>
+<dt class="heading5">Syntax</dt>
+<dt class="code">GetProp(MoaMmSymbol <em>symbol</em>, PMoaMmValue <em>pPropValue</em>)</dt>
+</dl>
+<dl>
+<dt class="heading5">Parameters</dt>
+<dt class="codearg">symbol</dt>
+<dd><span class="code">MoaMmSymbol</span> representing the property to get</dd>
+<dt class="codearg">pPropValue</dt>
+<dd>Pointer to a <span class="code">MoaMmValue</span> to receive the property's value</dd>
+</dl>
+<dl>
+<dt class="heading5">Returns</dt>
+<dt class="code">MoaError</dt>
+  <DD>
+    <TABLE BORDER="2">
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=275><span class="code">kMoaErr_NoErr</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=433>Property exists and value was returned </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=275><span class="code">kMoaErr_BadParam</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=433>Invalid <span class="codearg">pPropValue</span> passed in </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=275><span class="code">kMoaMmErr_PropertyNotFound</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=433>Property isn't supported by this class </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=275><span class="code">kMoaMmErr_InternalError</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=433>Property exists but couldn't get due to internal err </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=275><span class="code">kMoaMmErr_NoMemForString</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=433>Couldn't allocate memory for string value data </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=275><span class="code">kMoaErr_OutOfMem</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=433>Couldn't allocate memory for other value data </TD>
+      </TR>
+    </TABLE></DD>
+</dl>
+<dl>
+<dt class="heading5">Description</dt>
+<dd>Gets any property of the cast member associated with your asset.
+    This includes both built-in ones handled by the host application
+    (such as <span class="code">name</span> in Director for cast member name), as well as your own properties.
+	If you retrieve your own properties, it may result in a callback to your
+    own <span class="code">GetProp()</span> method;
+    be careful not to get stuck in a loop.</dd>
+</dl>
+
+<hr width=45% align=left>
+
+<h4><A NAME="SetProp">SetProp()</A></h4>
+<dl>
+<dt class="heading5">Syntax</dt>
+<dt class="code">SetProp(MoaMmSymbol <em>symbol</em>, ConstPMoaMmValue <em>pPropValue</em>)</dt>
+</dl>
+<dl>
+<dt class="heading5">Parameters</dt>
+<dt class="codearg">symbol</dt>
+<dd><span class="code">MoaMmSymbol</span> representing the property to get</dd>
+<dt class="codearg">pPropValue</dt>
+<dd>Pointer to a ConstPMoaMmValue containing the property value</dd>
+</dl>
+<dl>
+<dt class="heading5">Returns</dt>
+<dt class="code">MoaError</dt>
+  <DD>
+    <TABLE BORDER="2">
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=270><span class="code">kMoaErr_NoErr</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=429>Property exists and value was set </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=270><span class="code">kMoaErr_BadParam</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=429>Invalid <span class="codearg">pPropValue</span> passed in </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=270><span class="code">kMoaMmErr_PropertyNotFound</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=429>Property isn't supported by this class </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=270><span class="code">kMoaMmErr_InternalError</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=429>Property exists, value ok, can't set--internal error </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=270><span class="code">kMoaMmErr_NoMemForString</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=429>Can't allocate memory for setting string value data </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=270><span class="code">kMoaErr_OutOfMem</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=429>Can't allocate memory for setting other value data </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=270><span class="code">kMoaMmErr_IntegerExpected</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=429>Type mismatch: integer value expected </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=270><span class="code">kMoaMmErr_SymbolExpected</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=429>Type mismatch: symbol value expected </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=270><span class="code">kMoaMmErr_FloatExpected</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=429>Type mismatch: float value expected </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=270><span class="code">kMoaMmErr_StringExpected</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=429>Type mismatch: string value expected </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=270><span class="code">kMoaMmErr_PointExpected</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=429>Type mismatch: point value expected </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=270><span class="code">kMoaMmErr_RectExpected</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=429>Type mismatch: rect value expected </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=270><span class="code">kMoaMmErr_ValueTypeMismatch</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=429>Type mismatch: other value expected (non-specific) </TD>
+      </TR>
+      <TR>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=270><span class="code">kMoaDrErr_CastMemberExpected</span> </TD>
+        <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=429>Type mismatch: <span class="code">CMRef</span> value expected </TD>
+      </TR>
+    </TABLE>
+</DD>
+</dl>
+<dl>
+<dt class="heading5">Description</dt>
+<dd>Sets any property of the cast member associated with your asset.
+    This includes both built-in ones handled by the host application
+    (such as <span class="code">name</span> in Director
+    for cast member name), as well as your own properties. This may
+    result in a call back to your own <span class="code">SetProp()</span> method; be careful not to get stuck in a loop.</dd>
+</dl>
+
+<hr width=45% align=left>
+<A HREF = "../copyrite.htm">Copyright &#169; 1995-2008 Adobe Macromedia Software LLC, Inc.</A>
+</BODY>
+</html>

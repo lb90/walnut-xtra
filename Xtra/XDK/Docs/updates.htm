@@ -1,0 +1,186 @@
+<html>
+<head>
+<title>Updates to the XDK</title>
+<link href="xdk.css" rel="stylesheet" type="text/css">
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+<BODY>
+<hr align="LEFT" width="45%">
+<span class="heading4">Updates to the Director XDK</span>
+<hr align="LEFT" width="45%">
+<p>This file serves as an index to the changes that were made to all parts of the XDK. 
+All newly defined interfaces have been documented using C++ syntax rather than the C syntax used in the earlier documentation. 
+Thanks to Glenn Picher,
+Peter Vanags, pim, Jake Lamb, Audrey Mbogho, Kraig Mentor, Andrew Edwardson, Mauricio Piacentini, Tab Julius, CL, Laurent 
+Brigaut, Lucas Meijer, David Hooks, Eugene Shoustrov and Antoine Schmitt for XDK suggestions and bug fixes. 
+And thanks to any others from the mailing list mmxdk-l@lyris.macromedia.com whose name should appear here as well.</p>
+<hr>
+<span class="heading4">Changes made for the Director 11.5 XDK</span><br>
+16 November, 2008
+<HR ALIGN="LEFT" WIDTH="45%">
+<span class="heading5">Header file changes</span>
+<ul>
+  <li>Remove some obsolete macros (eg. FAR macros) from many header files</li>
+  <li>Changed constants in dversion.h and elsewhere to eliminate warnings when building on Windows</li>
+  <li>Remove authorware header files and references from muiint.h</li>
+  <li>Delete obsolete <span class="code">MoaDrCharStyleData</span> definition from drtypes.h</li>
+  <li><strong>moaplat.h</strong> use header for Mach-O instead of CFM on Macintosh</li>
+</ul>
+<HR ALIGN="LEFT" WIDTH="45%">
+<span class="heading5">Examples folder changes</span>
+<ul>
+  <li>Macintosh Debug configuration builds for the current architecture; Release configuration builds a universal binary</li>
+  <li>Upgrade of all Director movies to D11 format, and update accompanying html files as well</li>
+  <li>Remove a spurious high-ascii character that appeared in a comment in many source files since it caused problems when
+  reading the source files as unicode text</li>
+  <li>Update the xcconfig files that are used with Xcode so there is a common file for each project instead of having the 
+  information duplicated in both the debug and release xcconfig files.</li>
+  <li>Remove some obsolete code (eg. FAR macros)</li>
+  <li>Fix a couple of coding issues to the moaFile code  in dracscrp.cpp in the DrAccess example due to D11 changes</li>
+  <li>Updated the <a href="../examples/examples.htm">notes</a> to reflect change in development environments </li>
+  <li>Windows projects are all in VC7 format now - with .sln and .vcproj files instead of .dsp and .dsw files</li>
+  <li>Remove Codewarrior project files and libraries since they are not useful for D11 development. (mcp, pch, lib files)</li>
+  <li>Change the windows projects so the final built xtra is placed in a common folder for all projects</li>
+  <li>New <strong>allexamples</strong> master project that can be used to build all the example xtras</li>
+  <li>Remove authorware code from the oval sprite example</li>
+  <li>Updated wackydialog/source/asset/asset.cpp with some windows changes related to unicode</li>
+  <li>Remove some Xcode user specific files that were inadvertently included in the last release</li>
+  <li>Remove allexamples.cpp file that was included in the last release</li>
+  <li>Remove draccess.rsrc and greet.rsrc files since they are not needed.</li>
+</ul>
+<HR ALIGN="LEFT" WIDTH="45%">
+<p class="heading5">Documentation changes</p>
+<ul>
+  <li>Update property tables in <a href="drref/drtypndx.htm">drtypndx.htm</a> to reflect the actual supported properties</li>
+  <li>Correct return value details for AddRef/Release MOA methods in <a href="moref/unknown.htm">unknown.htm</a></li>
+  <li>Update information about <a href="mmdg/mmdgtg.htm#RTFToC9">C strings</a> and <a href="mmdg/mmdgtg.htm#StringsWithNulls">strings with nulls</a> and
+  remove obsolete section about accessing Quickdraw globals</li>
+  <li>Add table of MoaMmValueType values to <a href="mmref/mmtypndx.htm#MoaMmValueType">mmmtypndx.htm</a></li>
+  <li>Clean up some of the spurious &quot;beta cycle&quot; change descriptions that were 
+  included in the previous release of this file</li>
+  <li>Update some method descriptions in <a href="mfref/mffile2.htm">mffile2.htm</a></li>
+  <li>Changed rest of interface method descriptions to use C++ syntax</li>
+  <li>Update readme file to reflect that this XDK is only for Director 11 (and later) development. Add some Xcode debugging tips.</li>
+  <li>Recreate the documentation index</li>
+  <li>Updated notes about the <a href="moref/loadctrl.htm">IMoaXtraLoadControl</a> interface</li>
+  <li>Separate IMuiPropertyPageInstance and IMuiPropertyPageTarget into their own files so they are consistent with the 
+  rest of the documentation.</li>
+  <li>Fixed incorrect description of player property <span class="code">folderName</span> 
+  in <a href="drref/drtypndx.htm#PLAYPROPS">drtypndx.htm</a></li>
+  <li>Update documentation for <span class="code"><a href="mfref/mffile2.htm">IMoaFile2</a></span> interface. 
+  When a partial path name (such as &quot;simple.txt&quot;) is used with the 
+  <a href="mfref/mffile2.htm#SetSpec" class="code">SetSpec</a> method, an incomplete path reference results. 
+  In previous versions of Director this would reference a file next to the
+  Director application.  It is recommended that you use a full path when specifying files with <span class="code">SetSpec</span>.
+  Also indicate which methods are not implemented.</li>
+  <li>Update many files to replace &lt;tt&gt;, &lt;code&gt;, &lt;pre&gt; tags with 
+  consistent css &lt;span=&quot;code&quot;&gt; directives</li>
+  <li>Remove some references to the "common macromedia xtra folder" since this is not supported</li>
+  <li>Remove the description of the <span class="code">mxcf</span> resource for Macintosh as this is not used any more</li>
+  <li>Update file name size limits that appeared in <a href="moref/motypndx.htm#RTFToC42">motypndx.htm</a></li>
+  <li>Cleaned up some odd HTML in many files in the drref folder and a few other files</li>
+</ul>
+<HR ALIGN="LEFT" WIDTH="45%">
+<span class="heading5">Support file changes</span>
+<ul>
+  <li>Removed the entire runtime folder - this was only needed for CFM on Macintosh</li>
+  <li>Removed other tools only needed for older Macintosh development</li>
+</ul>
+<HR>
+<span class="heading4">Changes made for the Director 11 XDK</span><br>
+27 January, 2008
+<p class="heading5">Header file changes</p>
+<ul>
+  <li>Make adjustments to win32/moatyedg.h so it works with UNICODE defined</li>
+  <li>Add HandleDoubleClick method to MuiNotify class definition in muinotif.h</li>
+  <li>Add constants <span class="code">kMuiDialogListSelChanged</span>, 
+  <span class="code">kMuiDialogListDoubleClicked</span> to muiinit.t</li>
+  <li>Add thread safe checks for <span class="code">AddRef()</span> and 
+  <span class="code">Release()</span> in moaxtra.h and in all moatyedg.h files</li>
+  <li>Add <span class="code">kClearMoaMmValue</span> to xmmvalue.h. This is useful for structure inintialization.</li>
+  <li>Increase value of <span class="code">MOA_MAX_FILENAME</span> constant in macMach/moatyedg.h and win32/moatyedg.h</li>
+  <li>Add <span class="code">kMoaMmDictKey_FilterCaps</span>, <span class="code">kMoaMmDictType_FilterCaps</span> and 
+  <span class="code">kMoaMmErr_OperationNotAllowed</span> to mmtypes.h</li>
+  <li>Add new header files for Filters: bmfilters.h and filtercaps.h</li>
+  <li>Adjust IMoaStreamHelper initializer in <strong>xstrmhlp.h</strong> so it does proper byte swapping for intel macintosh</li> 
+  <li>Change method name for <span class="code">MacShowWindow</span> to <span class="code">MacXShowWindow</span> in 
+  <span class="code">IMoaMmUtils</span> and <span class="code">IMoaMmWndMac</span> to avoid conflict with Macintosh system headers. 
+  This change was needed in a few other places as well.</li>
+  <li><strong>driservc.h, moaxtra.h</strong> remove some obsolete macros and comments</li>
+  <li><strong>moaplat.h</strong> use appropriate header for either MachO or CFM</li>
+  <li>New <strong>macMach/moatyedg.h</strong> header file for Mach-O development with Xcode;
+  Make some adjustments to moaplat.h and macMach/moatyedg.h;
+  Change <span class="code">BEGIN_INTERFACE</span> macro in macMach/moatyedg.h</li>
+  <li><strong>driservc.h, drtypes.h, mmtypes.h, moastr2.h, moatry.h, moaxtra.h, xmoaexpt.h, xprgress.h</strong> 
+  header file changes for Mach-O development with Xcode  </li>
+  <li>Update copyright notice to Adobe in header files </li>
+</ul>
+<HR ALIGN="LEFT" WIDTH="45%">
+<span class="heading5">Examples folder changes</span>
+<ul>
+  <li>Provide example filter xtra: <strong><a href="../examples/examples.htm#TileFilter">TileFilter</a></strong> that shows a simple sprite filter</li>
+  <li>New tool example, <strong><a href="../examples/examples.htm#ComputerUser">ComputerUser</a></strong>, 
+  that demonstrates working with unicode text and movie editing</li>
+  <li>Clean up some obsolete code in the skeleton projects</li>
+  <li>Update notify.h and notify.cpp in <strong>Wacky Dialog</strong> with <span class="code">HandleDoubleClick</span> method</li>
+  <li>Use class version value for the internal version in all the example xtras. 
+  This ensures the internal version is updated when the external version is changed.</li>
+  <li>Some windows projects did not have their header files added to project's file list</li>
+  <li>Add project and support files for Xcode versions of all the example projects</li>
+  <li>Update <strong>Wacky Dialog</strong> and <strong>Transition</strong> and <strong>DrAccess</strong> to do appropriate byte swapping on intel</li>
+  <li>Update some macintosh calls in <strong>InkTest</strong> and <strong>DrAccess</strong></li>
+  <li>Update <a href="../examples/examples.htm">example.htm</a> to mention Xcode projects and add proper info about guid generation on OSX</li>
+  <li>Add html "mark of the web" to examples so they play in Windows Internet Explorer without the extra dialog</li>
+  <li>Update copyright notice to Adobe in example source </li>
+</ul>
+<HR ALIGN="LEFT" WIDTH="45%">
+<p class="heading5">Documentation changes</p>
+<ul>
+  <li>Include some documentation about the Filter xtra interface in <a href="mmref/mmxfilter.htm">mmxfilter.htm</a>, 
+  and add some notes in a few <a href="mmdg/mmdgc1.htm">other</a> places</li>
+  <li>Correct errors in description of <span class="code">GetLastFrameIndex</span> and 
+  <span class="code">GetCurFrameIndex</span> in <a href="drref/drscracc.htm">drscracc.htm</a></li>
+  <li>Cleaned up some odd HTML in <a href="drref/drmovie2.htm#CallHandler">drmovie2.htm</a>, 
+  <a href="drref/drscracc.htm">drscracc.htm</a>,
+  <a href="mmref/mmutils2.htm">mmutils2.htm</a> and <a href="drref/drcast.htm">drcast.htm</a></li>
+  <li>New <a href="drdg/index.htm#Unicode">section</a> with a few notes about Unicode strings in Director.</li>
+  <li>Add new constants to event table in Mui <a href="muref/mutypndx.htm#TMuiDialogEvent">documentation</a></li>
+  <li>Update some outdated information in the readme and docs/index files</li>
+  <li>Add correct info about the GUID needed for <a href="drref/drprefs.htm">IMoaDrPreferenceAccess</a> access and 
+  provide notes about what happens when accessing preference values that have not been set.</li>
+  <li>Note that <a href="moref/prgrssbx.htm">IMoaProgressBox</a> is only available in Director Authoring.</li>
+  <li>Add information about <a href="drdg/index.htm#CrossPlatform">cross-platform</a> publishing with Mach-O xtras.</li>
+  <li>Add tip about specifying full path to executable when debugging with Xcode to the <a href="../readme.htm">readme</a> file</li>
+  <li>Note that IMoaDrRTAccess and IMoaDrAlphaData are obsolete - they were last implemented in Director 6.</li>
+  <li>Change <span class="code">MacShowWindow()</span> to 
+  <span class="code">MacXShowWindow()</span> in <a href="mmref/mmwndmac.htm#MacXShowWindow">IMoaMmWndMac</a> 
+  to avoid conflict with Macintosh system headers</li>
+  <li>Fixed typos in <span class="code">CallHandler</span> section in <a href="drref/drmovie.htm#CallHandler">drmovie.htm</a>, 
+  <a href="drref/drmovie2.htm#CallHandler">drmovie2.htm</a>,
+  <a href="mmref/mmvalue.htm#ValueToStringPtr">ValueToStringPtr</a> description, streaming code 
+  <a href="mmdg/mmdgtg.htm#FileStream">snippet</a></li>
+  <li>Updated some incorrect notes about <span class="code">MovieContext</span> in <a href="drref/drmoviex.htm">drmoviex.htm</a></li>
+  <li>Fix broken links: near the bottom of the <a href="../readme.htm">readme</a> file; in mmref/mmimage.h</li>
+  <li>Document what the <a href="mmref/mmlist.htm#CountElements" class="code">CountElements()</a> API returns 
+  for a non-list parameter</li>
+  <li>Describe how to find out if a <span class="code">MoaMmValue</span> references an image object in <a href="mmref/mmvalue.htm#ValueType">mmvalue.htm</a></li>
+  <li>Add missing cast properties link in <a href="drref/drcast.htm">drcast.htm</a> and 
+  add notes about <span class="code">memberCount</span> in the prop description <a href="drref/drtypndx.htm#CASTPROPS">section</a></li>
+  <li>Add a code snippet that shows how to determine the <a href="mmdg/mmdgtg.htm#SoundVolume">sound volume</a></li>
+  <li>Included xdk.css in all html files and removed all the old, scattered font tags so the css settings are used everywhere.
+  You should be able to successfully assign your own favorite fonts by editing the css file.</li>
+  <li>Updated copyright <a href="copyrite.htm">notice</a> date and copyright line to Adobe in all html files</li>
+</ul>
+<HR ALIGN="LEFT" WIDTH="45%">
+<span class="heading5">Support file changes</span>
+<ul>
+  <li>Add updated version of XSupport library for both platforms</li>
+  <li>Add updated version of the SplitFile tool.</li>
+  <li>Add Xcode version of the XSupport library: libXSupport.a</li>
+  <li>Removed special &quot;Save Disabled&quot; versions of Director that were needed with DMX 2004</li>
+</ul>
+<hr>
+<p>Older XDKs are available on the Adobe <a href="http://www.adobe.com/cfusion/exchange/index.cfm">Exchange</a> web site</p>
+<hr>
+<A HREF="copyrite.htm">Copyright &#169; 1995-2008 Adobe Macromedia Software LLC, Inc.</A> 
+</body>
