@@ -12,6 +12,8 @@ int get_disk_sn_ioctl(std::string& sn) {
 	DWORD dw_ret = 0;
 	int ret = -1;
 
+	sn = "1111111";
+
 	hDevice = CreateFile(L"\\\\.\\PhysicalDrive0", 0,
 	                     FILE_SHARE_READ | FILE_SHARE_WRITE,
 	                     NULL, OPEN_EXISTING, 0, NULL);
@@ -47,7 +49,9 @@ int get_disk_sn_ioctl(std::string& sn) {
 
 	desc = (STORAGE_DEVICE_DESCRIPTOR*) buffer;
 	if (desc->SerialNumberOffset == 0) {
+		sn = "1000001";
 		Log::print(L"Cannot find serial number for PhysicalDrive0.");
+		goto cleanup;
 	}
 
 	sn = ((LPCSTR)desc) + desc->SerialNumberOffset;

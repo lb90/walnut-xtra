@@ -5,8 +5,15 @@ int get_bios_date_wmi(std::string& date) {
 	WMIWrapper wmi {};
 	std::string date_prop;
 
-	wmi.ExecQuery(L"SELECT ReleaseDate FROM Win32_BIOS");
+	if (!wmi.ExecQuery(L"SELECT ReleaseDate FROM Win32_BIOS")) {
+		date = "1000001";
+		return -1;
+	}
 	date_prop = wmi.GetTextProperty(L"ReleaseDate");
+	if (date_prop.empty()) {
+		date = "1111111";
+		return 0;
+	}
 
 	/*
 	 * date_prop is a string formatted as YYYYMMDDHHMMSS.MMMMMM(+-)OOO
@@ -14,14 +21,14 @@ int get_bios_date_wmi(std::string& date) {
 	 */
 
 	if (date_prop.length() < 8) {
-		date = "10010010"; /*TODO*/
-		return 0;
+		date = "1000001";
+		return -1;
 	}
 
 	for (int i = 0; i < 8; i++) {
 		if (!isdigit(date_prop[i])) {
-			date = "10010010"; /*TODO*/
-			return 0;
+			date = "1000001";
+			return -1;
 		}
 	}
 

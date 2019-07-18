@@ -64,7 +64,7 @@ bool WMIWrapper::ExecQuery(const std::wstring& query) {
 	    (LPVOID*) &locator);
 	if (FAILED(hr)) {
 		Log::print_error_hr(L"Cannot create WbemLocator COM object (WMI)", hr);
-		return;
+		return false;
 	}
 
 	hr = locator->ConnectServer(
@@ -74,7 +74,7 @@ bool WMIWrapper::ExecQuery(const std::wstring& query) {
 	    &server);
 	if (FAILED(hr)) {
 		Log::print_error_hr(L"Cannot connect to WbemLocator server (WMI)", hr);
-		return;
+		return false;
 	}
 
 	hr = ::CoSetProxyBlanket(
@@ -88,7 +88,7 @@ bool WMIWrapper::ExecQuery(const std::wstring& query) {
         EOAC_NONE);
 	if (FAILED(hr)) {
 		Log::print_error_hr(L"Cannot set WbemLocator proxy blanket (WMI)", hr);
-		return;
+		return false;
 	}
 
 	hr = server->ExecQuery(
@@ -99,7 +99,7 @@ bool WMIWrapper::ExecQuery(const std::wstring& query) {
 		&enumerator);
 	if (FAILED(hr)) {
 		Log::print_error_hr(L"Cannot execute WMI query", hr);
-		return;
+		return false;
 	}
 
 	ULONG ul_ret = 0;
@@ -121,5 +121,5 @@ std::string WMIWrapper::GetTextProperty(const std::wstring& property) {
 	}
 
 	_bstr_t bstr(variant.bstrVal);
-	return bstr;
+	return std::string((LPCSTR)bstr);
 }

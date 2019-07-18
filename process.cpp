@@ -28,4 +28,5 @@ int process(const std::string& argument, std::string& result) {
 	else return ret;
 
 	/*TODO mangle*/
+	return 0;
 }
