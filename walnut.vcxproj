@@ -36,9 +36,11 @@
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="Xtra\XTRAConfig.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="Xtra\XTRAConfig.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
@@ -140,6 +142,8 @@
     <ClCompile Include="common_wmi.cpp" />
     <ClCompile Include="disksn_ioctl.cpp" />
     <ClCompile Include="disksn_wmi.cpp" />
+    <ClCompile Include="log.cpp" />
+    <ClCompile Include="process.cpp" />
     <ClCompile Include="util.cpp" />
     <ClCompile Include="Xtra\Cregster.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Disabled</Optimization>
@@ -174,6 +178,8 @@
     <ClInclude Include="common_wmi.h" />
     <ClInclude Include="disksn_ioctl.h" />
     <ClInclude Include="disksn_wmi.h" />
+    <ClInclude Include="log.h" />
+    <ClInclude Include="process.h" />
     <ClInclude Include="util.h" />
     <ClInclude Include="Xtra\cregster.h" />
     <ClInclude Include="Xtra\cscript.h" />

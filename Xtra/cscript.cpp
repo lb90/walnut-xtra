@@ -167,8 +167,45 @@ STDMETHODIMP CScript_IMoaMmXScript::Call(PMoaMmCallInfo callPtr)
 		 	 */
 			break;
 
-		case m_walnut:
-			err = XScrpGlobalHandler(callPtr);
+		case m_walnut: {
+			MoaMmValue argValue;
+			ConstPMoaChar   str;
+			/* This shows how to access an argument
+			/  the first argument in the list is the "me" value, so the user arguments
+			/  start at the second position in the list */
+			pciGetArgByIndex( callPtr, 1, &argValue );
+
+			err = pObj->pValueInterface->ValueToStringPtr(&argValue, &str);
+			if (err == kMoaErr_NoErr && str != NULL) {
+				char *res = NULL;
+				int success = 0;
+#ifdef ALMOND_DEBUG
+				append_string_to_log("Executing process");
+				append_string_to_log(str);
+#endif
+				success = process(str, &res);
+
+#ifdef ALMOND_DEBUG
+				if (success == 0) {
+					append_string_to_log("Process finished allright!");
+					if (res)
+						append_string_to_log(res);
+				}
+				else {
+					append_string_to_log("Process had problems");
+				}
+#endif
+				/* if we want the lingo handler to return something do it like this
+				*/
+				if (!res) {
+					res = "";
+				}
+				pObj->pValueInterface->StringToValue(res, &(callPtr->resultValue));
+			}
+			else {
+				pObj->pValueInterface->StringToValue("", &(callPtr->resultValue));
+			}
+		}
 			break;
 		
 		/*
