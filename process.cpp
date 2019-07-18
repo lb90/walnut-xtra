@@ -6,6 +6,8 @@
 
 int process(const std::string& argument, std::string& result) {
 	std::string arg = argument;
+	int ret = 0;
+
 	result = "";
 
 	if (arg == "biosdt") {
@@ -23,7 +25,7 @@ int process(const std::string& argument, std::string& result) {
 	else if (arg == "disksn-fast") {
 		get_disk_sn_ioctl(result);
 	}
-	else return 0;
+	else return ret;
 
-
+	/*TODO mangle*/
 }

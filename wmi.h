@@ -6,6 +6,7 @@
 #include <atlbase.h>
 
 #include <string>
+/*#include <thread>*/
 
 class WMIWrapper final {
 public:
@@ -15,16 +16,19 @@ public:
 	WMIWrapper(const WMIWrapper&) = delete;
 	void operator=(const WMIWrapper&) = delete;
 
+	static void initialize();
+	static void finalize();
+
 	bool ExecQuery(const std::wstring& query);
 	std::string GetTextProperty(const std::wstring& property);
 
 private:
-	static CComPtr<IWbemLocator> locator;
-	static CComPtr<IWbemServices> server;
+	CComPtr<IWbemLocator> locator;
+	CComPtr<IWbemServices> server;
+	CComPtr<IEnumWbemClassObject> enumerator;
+	CComPtr<IWbemClassObject> obj;
 
 private:
-	static void init();
-	static void deinit();
-
 	static bool is_init;
+	/*static std::thread wmi_thread;*/
 };

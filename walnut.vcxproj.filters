@@ -60,6 +60,12 @@
     <ClCompile Include="biosdate_wmi.cpp">
       <Filter>Source Files\bios</Filter>
     </ClCompile>
+    <ClCompile Include="mangler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="walnut.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Xtra\cregster.h">
@@ -85,6 +91,12 @@
     </ClInclude>
     <ClInclude Include="biosdate_wmi.h">
       <Filter>Header Files\bios</Filter>
+    </ClInclude>
+    <ClInclude Include="mangler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="walnut.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

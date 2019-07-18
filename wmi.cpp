@@ -1,21 +1,24 @@
 #include "wmi.h"
-#include "util.h"
+#include "log.h"
 
 #include <windows.h>
 
 #pragma comment(lib, "wbemuuid.lib")
 
+/*std::thread WMIWrapper::wmi_thread {};*/
 bool WMIWrapper::is_init = false;
-CComPtr<IWbemLocator> WMIWrapper::locator {};
-CComPtr<IWbemServices> WMIWrapper::server {};
 
-void WMIWrapper::init() {
+void WMIWrapper::initialize() {
 	HRESULT hr = S_OK;
 
 	if (is_init)
 		return;
 
 	hr = ::CoInitializeEx(0, COINIT_MULTITHREADED);
+	if (FAILED(hr) && hr != S_FALSE && hr != RPC_E_CHANGED_MODE) {
+		Log::print_error_hr(L"Cannot initialize COM", hr);
+		return;
+	}
 
 	hr =  ::CoInitializeSecurity(
         NULL,                        // Security descriptor    
@@ -27,6 +30,31 @@ void WMIWrapper::init() {
         NULL,                        // Authentication info
         EOAC_NONE,                   // Additional capabilities of the client or server
         NULL);                       // Reserved
+	if (FAILED(hr) && hr != RPC_E_TOO_LATE) {
+		Log::print_error_hr(L"Cannot set COM security process-wide", hr);
+		return;
+	}
+
+	is_init = true;
+}
+
+void WMIWrapper::finalize() {
+	CoUninitialize();
+
+	is_init = false;
+}
+
+WMIWrapper::WMIWrapper() {
+	if (!is_init)
+		initialize();
+}
+
+WMIWrapper::~WMIWrapper() {
+
+}
+
+bool WMIWrapper::ExecQuery(const std::wstring& query) {
+	HRESULT hr = S_OK;
 
 	hr = ::CoCreateInstance(
 	    CLSID_WbemLocator,
@@ -34,12 +62,20 @@ void WMIWrapper::init() {
 	    CLSCTX_INPROC_SERVER,
 	    IID_IWbemLocator,
 	    (LPVOID*) &locator);
+	if (FAILED(hr)) {
+		Log::print_error_hr(L"Cannot create WbemLocator COM object (WMI)", hr);
+		return;
+	}
 
 	hr = locator->ConnectServer(
 	    L"ROOT\\CIMV2",
 	    NULL, NULL, 0,
 	    NULL, 0, 0,
 	    &server);
+	if (FAILED(hr)) {
+		Log::print_error_hr(L"Cannot connect to WbemLocator server (WMI)", hr);
+		return;
+	}
 
 	hr = ::CoSetProxyBlanket(
 	    server, 
@@ -50,27 +86,40 @@ void WMIWrapper::init() {
         RPC_C_IMP_LEVEL_IMPERSONATE,
         NULL,
         EOAC_NONE);
+	if (FAILED(hr)) {
+		Log::print_error_hr(L"Cannot set WbemLocator proxy blanket (WMI)", hr);
+		return;
+	}
 
-	is_init= true;
-}
+	hr = server->ExecQuery(
+		bstr_t(L"WQL"),
+		bstr_t(query.c_str()),
+		WBEM_FLAG_FORWARD_ONLY | WBEM_FLAG_RETURN_IMMEDIATELY,
+		NULL,
+		&enumerator);
+	if (FAILED(hr)) {
+		Log::print_error_hr(L"Cannot execute WMI query", hr);
+		return;
+	}
 
-void WMIWrapper::deinit() {
-	is_init = false;
-}
+	ULONG ul_ret = 0;
+	hr = enumerator->Next(WBEM_INFINITE, 1, &obj, &ul_ret);
+	if (FAILED(hr)) {
 
-WMIWrapper::WMIWrapper() {
-	if (!is_init)
-		init();
-}
+	}
 
-WMIWrapper::~WMIWrapper() {
-
-}
-
-bool WMIWrapper::ExecQuery(LPCTSTR query) {
 	return true;
 }
 
-std::string WMIWrapper::GetTextProperty(LPCTSTR prop) {
-	return "";
+std::string WMIWrapper::GetTextProperty(const std::wstring& property) {
+	HRESULT hr = S_OK;
+	variant_t variant;
+
+	hr = obj->Get(property.c_str(), 0, &variant, 0, 0);
+	if (FAILED(hr)) {
+
+	}
+
+	_bstr_t bstr(variant.bstrVal);
+	return bstr;
 }

@@ -1,12 +1,12 @@
 #include "biosdate_wmi.h"
-#include "common_wmi.h"
+#include "wmi.h"
 
 int get_bios_date_wmi(std::string& date) {
 	WMIWrapper wmi {};
 	std::string date_prop;
 
-	wmi.execQuery(_T("SELECT ReleaseDate FROM Win32_BIOS"));
-	date_prop = wmi.getTextProp(_T("ReleaseDate"));
+	wmi.ExecQuery(L"SELECT ReleaseDate FROM Win32_BIOS");
+	date_prop = wmi.GetTextProperty(L"ReleaseDate");
 
 	/*
 	 * date_prop is a string formatted as YYYYMMDDHHMMSS.MMMMMM(+-)OOO

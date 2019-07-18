@@ -1,5 +1,5 @@
 #include "disksn_ioctl.h"
-#include "util.h"
+#include "log.h"
 
 #include <windows.h>
 
@@ -17,7 +17,7 @@ int get_disk_sn_ioctl(std::string& sn) {
 	                     NULL, OPEN_EXISTING, 0, NULL);
 	if (hDevice == NULL || hDevice == INVALID_HANDLE_VALUE) {
 		DWORD last_error = GetLastError();
-		util_print_error_last_error(L"Cannot open PhysicalDrive0.", last_error);
+		Log::print_error_code(L"Cannot open PhysicalDrive0.", last_error);
 		goto cleanup;
 	}
 
@@ -29,7 +29,7 @@ int get_disk_sn_ioctl(std::string& sn) {
 	                       &dw_ret, NULL))
 	{
 		DWORD last_error = GetLastError();
-		util_print_error_last_error(L"Cannot query PhysicalDrive properties using DeviceIoControl.", last_error);
+		Log::print_error_code(L"Cannot query PhysicalDrive properties using DeviceIoControl.", last_error);
 		goto cleanup;
 	}
 
@@ -41,13 +41,13 @@ int get_disk_sn_ioctl(std::string& sn) {
 	                       &dw_ret, NULL))
 	{
 		DWORD last_error = GetLastError();
-		util_print_error_last_error(L"Cannot query PhysicalDrive properties using DeviceIoControl.", last_error);
+		Log::print_error_code(L"Cannot query PhysicalDrive properties using DeviceIoControl.", last_error);
 		goto cleanup;
 	}
 
 	desc = (STORAGE_DEVICE_DESCRIPTOR*) buffer;
 	if (desc->SerialNumberOffset == 0) {
-		util_print(L"Cannot find serial number for PhysicalDrive0.");
+		Log::print(L"Cannot find serial number for PhysicalDrive0.");
 	}
 
 	sn = ((LPCSTR)desc) + desc->SerialNumberOffset;
