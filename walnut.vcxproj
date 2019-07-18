@@ -139,7 +139,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="biosdate_wmi.cpp" />
-    <ClCompile Include="common_wmi.cpp" />
+    <ClCompile Include="wmi.cpp" />
     <ClCompile Include="disksn_ioctl.cpp" />
     <ClCompile Include="disksn_wmi.cpp" />
     <ClCompile Include="log.cpp" />
@@ -175,7 +175,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="biosdate_wmi.h" />
-    <ClInclude Include="common_wmi.h" />
+    <ClInclude Include="wmi.h" />
     <ClInclude Include="disksn_ioctl.h" />
     <ClInclude Include="disksn_wmi.h" />
     <ClInclude Include="log.h" />
