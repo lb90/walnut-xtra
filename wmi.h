@@ -15,8 +15,8 @@ public:
 	WMIWrapper(const WMIWrapper&) = delete;
 	void operator=(const WMIWrapper&) = delete;
 
-	bool execQuery(LPCTSTR query);
-	std::string getTextProp(LPCTSTR prop);
+	bool ExecQuery(const std::wstring& query);
+	std::string GetTextProperty(const std::wstring& property);
 
 private:
 	static CComPtr<IWbemLocator> locator;

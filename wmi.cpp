@@ -1,4 +1,4 @@
-#include "common_wmi.h"
+#include "wmi.h"
 #include "util.h"
 
 #include <windows.h>
@@ -67,10 +67,10 @@ WMIWrapper::~WMIWrapper() {
 
 }
 
-bool WMIWrapper::execQuery(LPCTSTR query) {
+bool WMIWrapper::ExecQuery(LPCTSTR query) {
 	return true;
 }
 
-std::string WMIWrapper::getTextProp(LPCTSTR prop) {
+std::string WMIWrapper::GetTextProperty(LPCTSTR prop) {
 	return "";
 }
