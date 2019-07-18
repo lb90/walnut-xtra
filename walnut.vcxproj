@@ -185,6 +185,7 @@
     <ClInclude Include="process.h" />
     <ClInclude Include="Xtra\cregster.h" />
     <ClInclude Include="Xtra\cscript.h" />
+    <ClInclude Include="Xtra\XDK\Include\win32\resource.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

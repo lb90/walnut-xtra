@@ -45,6 +45,8 @@ written permission of Adobe.
 	#include <string.h>
 #endif
 
+#include "../walnut.h"
+
 /*****************************************************************************
  *  CLASS INTERFACE(S)
  *  ------------------
@@ -102,9 +104,7 @@ STDMETHODIMP MoaCreate_CScript(CScript * This)
 {
 	MoaError err = kMoaErr_NoErr;
 	
-	/*
-	 * --> insert additional code -->
-	 */
+	walnut_initialize();
 
 	return(err);
 }
@@ -112,9 +112,7 @@ STDMETHODIMP MoaCreate_CScript(CScript * This)
 /* ----------------------------------------------------- MoaDestroy_CScript */
 STDMETHODIMP_(void) MoaDestroy_CScript(CScript * This)
 {
-	/*
-	 * --> insert additional code -->
-	 */
+	walnut_finalize();
 	
 	return;
 }
