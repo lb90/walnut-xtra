@@ -144,7 +144,6 @@
     <ClCompile Include="disksn_wmi.cpp" />
     <ClCompile Include="log.cpp" />
     <ClCompile Include="process.cpp" />
-    <ClCompile Include="util.cpp" />
     <ClCompile Include="Xtra\Cregster.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Disabled</Optimization>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">WIN32;_DEBUG;_WINDOWS</PreprocessorDefinitions>
@@ -180,7 +179,6 @@
     <ClInclude Include="disksn_wmi.h" />
     <ClInclude Include="log.h" />
     <ClInclude Include="process.h" />
-    <ClInclude Include="util.h" />
     <ClInclude Include="Xtra\cregster.h" />
     <ClInclude Include="Xtra\cscript.h" />
   </ItemGroup>

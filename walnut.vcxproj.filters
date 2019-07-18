@@ -42,9 +42,6 @@
     <ClCompile Include="Xtra\Xtra.cpp">
       <Filter>Source Files\Xtra</Filter>
     </ClCompile>
-    <ClCompile Include="util.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="wmi.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -72,9 +69,6 @@
       <Filter>Header Files\Xtra</Filter>
     </ClInclude>
     <ClInclude Include="wmi.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="util.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="process.h">
