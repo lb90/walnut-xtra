@@ -88,6 +88,7 @@ EXTERN_BEGIN_DEFINE_CLASS_INSTANCE_VARS(CScript)
 	/*
 	 * ---> insert additional variable(s) -->
 	 */ 
+	PIMoaMmValue	pValueInterface;
 EXTERN_END_DEFINE_CLASS_INSTANCE_VARS
 
 /*****************************************************************************
@@ -109,9 +110,9 @@ EXTERN_BEGIN_DEFINE_CLASS_INTERFACE(CScript, IMoaMmXScript)
    // definition of private member functions
    private:
    // PMoaDrCallInfo param is optional, include () if lingo call is to have no params...
-	EXTERN_DEFINE_METHOD(MoaError, XScrpGlobalHandler, (PMoaDrCallInfo))
+	/*EXTERN_DEFINE_METHOD(MoaError, XScrpGlobalHandler, (PMoaDrCallInfo))
 	EXTERN_DEFINE_METHOD(MoaError, XScrpParentHandler, (PMoaDrCallInfo))
-	EXTERN_DEFINE_METHOD(MoaError, XScrpChildHandler, (PMoaDrCallInfo))
+	EXTERN_DEFINE_METHOD(MoaError, XScrpChildHandler, (PMoaDrCallInfo))*/
 EXTERN_END_DEFINE_CLASS_INTERFACE
 
 #ifdef USING_INIT_FROM_DICT

@@ -1,5 +1,6 @@
 #include "disksn_wmi.h"
 #include "wmi.h"
+#include "mangler.h"
 
 int get_disk_sn_wmi(std::string& sn) {
 	WMIWrapper wmi {};
@@ -12,6 +13,8 @@ int get_disk_sn_wmi(std::string& sn) {
 	sn = wmi.GetTextProperty(L"SerialNumber");
 	if (sn.empty())
 		sn = "1111111";
+	else
+		mangle(sn);
 
 	return 0;
 }

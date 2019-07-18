@@ -41,12 +41,12 @@ std::wofstream Log::stream {};
 void Log::initialize() {
 	CRegKey reg_key {};
 	LONG ret = 0;
-	ret = reg_key.Open(HKEY_CURRENT_USER, _T("Software\Walnut"), KEY_READ);
+	ret = reg_key.Open(HKEY_CURRENT_USER, _T("Software\\Walnut"), KEY_READ);
 	if (ret == ERROR_SUCCESS) {
 		WCHAR temp_dir_path[MAX_PATH+2] {};
 		GetTempPath(MAX_PATH+2, temp_dir_path);
 		std::wstring path = temp_dir_path;
-		path += L"\WalnutLog.txt";
+		path += L"\\WalnutLog.txt";
 		stream.open(path, std::ios::app | std::ios::trunc);
 	}
 }

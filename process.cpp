@@ -4,6 +4,8 @@
 #include "disksn_wmi.h"
 #include "disksn_ioctl.h"
 
+#include "log.h"
+
 int process(const std::string& argument, std::string& result) {
 	std::string arg = argument;
 	int ret = 0;
@@ -25,8 +27,10 @@ int process(const std::string& argument, std::string& result) {
 	else if (arg == "disksn-fast") {
 		get_disk_sn_ioctl(result);
 	}
-	else return ret;
+	else {
+		Log::print(L"Argomento non corretto");
+		return -1;
+	}
 
-	/*TODO mangle*/
 	return 0;
 }

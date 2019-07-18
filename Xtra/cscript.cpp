@@ -46,6 +46,7 @@ written permission of Adobe.
 #endif
 
 #include "../walnut.h"
+#include "../process.h"
 
 /*****************************************************************************
  *  CLASS INTERFACE(S)
@@ -105,6 +106,8 @@ STDMETHODIMP MoaCreate_CScript(CScript * This)
 	MoaError err = kMoaErr_NoErr;
 	
 	walnut_initialize();
+
+	This->pCallback->QueryInterface(&IID_IMoaMmValue, (PPMoaVoid) &This->pValueInterface);
 
 	return(err);
 }
@@ -168,6 +171,10 @@ STDMETHODIMP CScript_IMoaMmXScript::Call(PMoaMmCallInfo callPtr)
 		case m_walnut: {
 			MoaMmValue argValue;
 			ConstPMoaChar   str;
+
+			if (!pObj->pValueInterface)
+				return(err);
+
 			/* This shows how to access an argument
 			/  the first argument in the list is the "me" value, so the user arguments
 			/  start at the second position in the list */
@@ -175,30 +182,9 @@ STDMETHODIMP CScript_IMoaMmXScript::Call(PMoaMmCallInfo callPtr)
 
 			err = pObj->pValueInterface->ValueToStringPtr(&argValue, &str);
 			if (err == kMoaErr_NoErr && str != NULL) {
-				char *res = NULL;
-				int success = 0;
-#ifdef ALMOND_DEBUG
-				append_string_to_log("Executing process");
-				append_string_to_log(str);
-#endif
-				success = process(str, &res);
-
-#ifdef ALMOND_DEBUG
-				if (success == 0) {
-					append_string_to_log("Process finished allright!");
-					if (res)
-						append_string_to_log(res);
-				}
-				else {
-					append_string_to_log("Process had problems");
-				}
-#endif
-				/* if we want the lingo handler to return something do it like this
-				*/
-				if (!res) {
-					res = "";
-				}
-				pObj->pValueInterface->StringToValue(res, &(callPtr->resultValue));
+				std::string res;
+				process(str, res);
+				pObj->pValueInterface->StringToValue(res.c_str(), &(callPtr->resultValue));
 			}
 			else {
 				pObj->pValueInterface->StringToValue("", &(callPtr->resultValue));

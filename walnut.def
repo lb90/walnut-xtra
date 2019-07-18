@@ -1,4 +1,4 @@
-LIBRARY   WALNUT
+LIBRARY   WALNUT.X32
 EXPORTS
 			DllGetClassObject	PRIVATE
 			DllGetInterface	PRIVATE
