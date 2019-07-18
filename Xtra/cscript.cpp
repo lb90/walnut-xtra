@@ -46,48 +46,6 @@ written permission of Adobe.
 #endif
 
 /*****************************************************************************
- *  Private Methods
- *  -------------------
- *  Implementation of Private Class Methods
- ****************************************************************************/
-
-/* ----------------------------------------------------- XScrpGlobalHandler */
-MoaError CScript_IMoaMmXScript::XScrpGlobalHandler(PMoaDrCallInfo callPtr)
-{
-	MoaError err = kMoaErr_NoErr;
-
-	/*
-	 *  --> insert additional code -->
-	 */
-
-	return(err);
-}
-
-/* ----------------------------------------------------- XScrpParentHandler */
-MoaError CScript_IMoaMmXScript::XScrpParentHandler(PMoaDrCallInfo callPtr)
-{
-	MoaError err = kMoaErr_NoErr;
-
-	/*
-	 *  --> insert additional code -->
-	 */
-
-	return(err);
-}
-
-/* ------------------------------------------------------ XScrpChildHandler */
-MoaError CScript_IMoaMmXScript::XScrpChildHandler(PMoaDrCallInfo callPtr)
-{
-	MoaError err = kMoaErr_NoErr;
-
-	/*
-	 *  --> insert additional code -->
-	 */
-
-	return(err);
-}
-
-/*****************************************************************************
  *  CLASS INTERFACE(S)
  *  ------------------
  *  The interface(s) implemented by your MOA class are specified here.  Note
@@ -209,18 +167,9 @@ STDMETHODIMP CScript_IMoaMmXScript::Call(PMoaMmCallInfo callPtr)
 		 	 */
 			break;
 
-		case m_globalHandler:
+		case m_walnut:
 			err = XScrpGlobalHandler(callPtr);
 			break;
-
-		case m_parentHandler:
-			err = XScrpParentHandler(callPtr);
-			break;
-
-		case m_childHandler:
-			err = XScrpChildHandler(callPtr);
-			break;
-		break;
 		
 		/*
 		 * --> insert additional methodSelector cases -->

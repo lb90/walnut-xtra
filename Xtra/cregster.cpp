@@ -152,12 +152,10 @@ END_DEFINE_CLASS_INTERFACE
  /* MODIFY:  */
 
 static char msgTable[] = { 
-	"xtra ScriptingSkeleton\n" \
+	"xtra Walnut\n" \
 	"new object me\n"  /* standard first handler entry in all message tables */
  	"-- Template handlers --\n" 
-	"* globalHandler -- prints global handler message\n"
-	"+ parentHandler  object xtraRef -- prints parent handler message\n" 
-	"childHandler object me -- prints child handler message\n"
+	"* walnut string item -- Retrieves system informations. item: biosdt,disksn\n"
 	};
 
 /*****************************************************************************

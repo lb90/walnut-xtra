@@ -139,11 +139,7 @@ EXTERN_END_DEFINE_CLASS_INTERFACE
 enum 
 {
 m_new = 0,						/* standard */
-
-m_globalHandler,						
-m_parentHandler,
-m_childHandler,
-
+m_walnut,
 m_XXXX
 };
 
