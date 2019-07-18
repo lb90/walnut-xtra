@@ -1,4 +1,4 @@
-LIBRARY   WALMUT
+LIBRARY   WALNUT
 EXPORTS
 			DllGetClassObject	PRIVATE
 			DllGetInterface	PRIVATE

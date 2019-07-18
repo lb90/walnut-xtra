@@ -70,7 +70,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="walmut.def">
+    <None Include="walnut.def">
       <Filter>Source Files\Xtra</Filter>
     </None>
   </ItemGroup>

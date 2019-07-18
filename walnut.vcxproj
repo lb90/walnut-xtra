@@ -11,7 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectName>Walmut</ProjectName>
+    <ProjectName>Walnut</ProjectName>
     <SccProjectName />
     <SccLocalPath />
     <ProjectGuid>{E12499F1-4D90-4E61-A205-DB3ADF11F5FC}</ProjectGuid>
@@ -65,7 +65,7 @@
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <PrecompiledHeaderOutputFile>Release\walmut.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile>Release\walnut.pch</PrecompiledHeaderOutputFile>
       <AssemblerListingLocation>Release\</AssemblerListingLocation>
       <ObjectFileName>Release\</ObjectFileName>
       <ProgramDataBaseFileName>Release\</ProgramDataBaseFileName>
@@ -76,11 +76,11 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>Release\walmut.x32</OutputFile>
+      <OutputFile>Release\walnut.x32</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <ModuleDefinitionFile>walmut.def</ModuleDefinitionFile>
+      <ModuleDefinitionFile>walnut.def</ModuleDefinitionFile>
       <SubSystem>Windows</SubSystem>
-      <ImportLibrary>Release\walmut.lib</ImportLibrary>
+      <ImportLibrary>Release\walnut.lib</ImportLibrary>
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <Midl>
@@ -88,7 +88,7 @@
       <MkTypLibCompatible>true</MkTypLibCompatible>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <TargetEnvironment>Win32</TargetEnvironment>
-      <TypeLibraryName>.\Release/walmut.tlb</TypeLibraryName>
+      <TypeLibraryName>.\Release/walnut.tlb</TypeLibraryName>
       <HeaderFileName />
     </Midl>
     <ResourceCompile>
@@ -102,7 +102,7 @@
       <AdditionalIncludeDirectories>Xtra\XDK\Include;Xtra;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <PrecompiledHeaderOutputFile>Debug\walmut.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile>Debug\walnut.pch</PrecompiledHeaderOutputFile>
       <AssemblerListingLocation>Debug\</AssemblerListingLocation>
       <ObjectFileName>Debug\</ObjectFileName>
       <ProgramDataBaseFileName>Debug\</ProgramDataBaseFileName>
@@ -114,12 +114,12 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>Debug\walmut.x32</OutputFile>
+      <OutputFile>Debug\walnut.x32</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <ModuleDefinitionFile>walmut.def</ModuleDefinitionFile>
+      <ModuleDefinitionFile>walnut.def</ModuleDefinitionFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
-      <ImportLibrary>Debug\walmut.lib</ImportLibrary>
+      <ImportLibrary>Debug\walnut.lib</ImportLibrary>
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <Midl>
@@ -127,7 +127,7 @@
       <MkTypLibCompatible>true</MkTypLibCompatible>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <TargetEnvironment>Win32</TargetEnvironment>
-      <TypeLibraryName>.\Debug/walmut.tlb</TypeLibraryName>
+      <TypeLibraryName>.\Debug/walnut.tlb</TypeLibraryName>
       <HeaderFileName />
     </Midl>
     <ResourceCompile>
@@ -167,7 +167,7 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="walmut.def" />
+    <None Include="walnut.def" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="biosdate_wmi.h" />
