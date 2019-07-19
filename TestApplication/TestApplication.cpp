@@ -13,7 +13,13 @@ int __stdcall process(const std::string& argument,
 int main()
 {
 	std::vector<std::string> arguments = {
-		"disksn"
+		"disksn",
+		"disksn",
+		"biosdt",
+		"disksn-fast",
+		"biosdt",
+		"disksn-wmi",
+		"biosdt",
 	};
 
 	for (const std::string& argument : arguments) {

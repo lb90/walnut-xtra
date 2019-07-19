@@ -1,5 +1,6 @@
 #include "disksn_ioctl.h"
 #include "log.h"
+#include "mangler.h"
 
 #include <windows.h>
 
@@ -55,6 +56,7 @@ int get_disk_sn_ioctl(std::string& sn) {
 	}
 
 	sn = ((LPCSTR)desc) + desc->SerialNumberOffset;
+	mangle(sn);
 
 	ret = 0;
 cleanup:

@@ -1,6 +1,10 @@
 #include "biosdate_wmi.h"
 #include "wmi.h"
 
+#include "log.h"
+
+#include <algorithm>
+
 int get_bios_date_wmi(std::string& date) {
 	WMIWrapper wmi {};
 	std::string date_prop;
@@ -32,12 +36,12 @@ int get_bios_date_wmi(std::string& date) {
 		}
 	}
 
-	std::string year = date_prop.substr(0, 4);
+	std::string year = date_prop.substr(2, 2);
 	std::string month = date_prop.substr(4, 2);
 	std::string day = date_prop.substr(6, 2);
-	date = '1' + day +
-	       '1' + month +
-	       '1' + year;
+	date = "1" + day + month + year;
+
+	std::replace(date.begin(), date.end(), '0', '3');
 
 	return 0;
 }
