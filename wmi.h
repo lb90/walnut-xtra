@@ -27,6 +27,7 @@ private:
 	CComPtr<IWbemServices> server;
 	CComPtr<IEnumWbemClassObject> enumerator;
 	CComPtr<IWbemClassObject> obj;
+	bool empty {true}; /* true if query result is empty */
 
 private:
 	static bool is_init;

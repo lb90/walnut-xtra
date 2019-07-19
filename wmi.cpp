@@ -105,9 +105,12 @@ bool WMIWrapper::ExecQuery(const std::wstring& query) {
 	ULONG ul_ret = 0;
 	hr = enumerator->Next(WBEM_INFINITE, 1, &obj, &ul_ret);
 	if (FAILED(hr)) {
-
+		Log::print(L"Query is empty");
+		empty = true;
+		return true;
 	}
 
+	empty = false;
 	return true;
 }
 
@@ -115,9 +118,13 @@ std::string WMIWrapper::GetTextProperty(const std::wstring& property) {
 	HRESULT hr = S_OK;
 	variant_t variant;
 
+	if (empty)
+		return "1000001";
+
 	hr = obj->Get(property.c_str(), 0, &variant, 0, 0);
 	if (FAILED(hr)) {
-
+		empty = true;
+		return "1000001";
 	}
 
 	_bstr_t bstr(variant.bstrVal);

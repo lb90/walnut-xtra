@@ -6,12 +6,6 @@
 
 #include "log.h"
 
-#ifdef _DEBUG
-#define DEBUG_EXPORT __declspec(dllexport)
-#else
-#define DEBUG_EXPORT
-#endif
-
 int DEBUG_EXPORT process(const std::string& argument, std::string& result) {
 	std::string arg = argument;
 	int ret = 0;
