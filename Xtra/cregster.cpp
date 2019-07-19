@@ -1,3 +1,5 @@
+#define USING_INIT_FROM_DICT
+
 /*
 ADOBE SYSTEMS INCORPORATED
 Copyright 1994 - 2008 Adobe Macromedia Software LLC
