@@ -16,5 +16,7 @@ public:
 	static void print_error_code(const std::wstring& str, DWORD code);
 
 private:
+#ifdef _DEBUG
 	static std::wofstream stream;
+#endif
 };

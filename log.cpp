@@ -1,7 +1,9 @@
 #include "log.h"
 
+#ifdef _DEBUG
+
 #include <comdef.h>
-#include <atlbase.h>
+#include <shlobj.h>
 
 #include <iostream>
 
@@ -39,15 +41,31 @@ private:
 std::wofstream Log::stream {};
 
 void Log::initialize() {
-	CRegKey reg_key {};
-	LONG ret = 0;
-	ret = reg_key.Open(HKEY_CURRENT_USER, _T("Software\\Walnut"), KEY_READ);
-	if (ret == ERROR_SUCCESS) {
-		WCHAR temp_dir_path[MAX_PATH+2] {};
-		GetTempPath(MAX_PATH+2, temp_dir_path);
-		std::wstring path = temp_dir_path;
+	PWSTR temp_dir_path = NULL;
+	std::wstring path;
+
+	if (stream)
+		return;
+
+	try {
+		SHGetKnownFolderPath(FOLDERID_RoamingAppData, 0, NULL, &temp_dir_path);
+		path = temp_dir_path;
 		path += L"\\WalnutLog.txt";
-		stream.open(path, std::ios::app | std::ios::trunc);
+
+		std::ios_base::iostate exception_mask;
+		exception_mask = stream.exceptions();
+		exception_mask |= std::ios::failbit;
+		stream.exceptions(exception_mask);
+		stream.open(path, std::ios::app);
+	}
+	catch (std::ios_base::failure& e) {
+		OutputDebugStringA(e.what());
+	}
+	catch (...) {
+	}
+	if (temp_dir_path) {
+		CoTaskMemFree((LPVOID)temp_dir_path);
+		temp_dir_path = NULL;
 	}
 }
 
@@ -64,30 +82,40 @@ void Log::print(const std::wstring& str) {
 void Log::print_error_hr(const std::wstring& str, HRESULT hr) {
 	if (!stream) return;
 
-	std::wcout << str;
+	stream << str;
 	if (FAILED(hr)) {
 		_com_error err(hr);
 
-		std::wcout << L"\n" << L"HRESULT: " << hr;
+		stream << L"\n" << L"HRESULT: " << hr;
 		auto error_description = err.ErrorMessage();
 		if (error_description && wcslen(error_description)) {
-			std::wcout << L"\n" << "Error string: " << error_description;
+			stream << L"\n" << "Error string: " << error_description;
 		}
 	}
-	std::wcout << L"\n";
+	stream << L"\n";
 }
 
 void Log::print_error_code(const std::wstring& str, DWORD code) {
 	if (!stream) return;
 
-	std::wcout << str;
+	stream << str;
 	if (code > 0) {
 		SystemErrorCodeString error_string(code);
 
-		std::wcout << L"\n" << L"Error code: " << code;
+		stream << L"\n" << L"Error code: " << code;
 		if (error_string.IsValid()) {
-			std::wcout << L"\n" << "Error string: " << error_string.Get();
+			stream << L"\n" << "Error string: " << error_string.Get();
 		}
 	}
-	std::wcout << L"\n";
+	stream << L"\n";
 }
+
+#else
+
+void Log::initialize() {}
+void Log::finalize() {}
+void Log::print(const std::wstring& str) {}
+void Log::print_error_hr(const std::wstring& str, HRESULT hr) {}
+void Log::print_error_code(const std::wstring& str, DWORD code) {}
+
+#endif // _DEBUG
