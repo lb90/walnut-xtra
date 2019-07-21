@@ -2,30 +2,23 @@
 #include <string>
 #include <vector>
 
-/*
 __declspec(dllimport)
-int __stdcall process(const std::string& argument,
-                      std::string& result);
-*/
-int __stdcall process(const std::string& argument,
-                      std::string& result);
+int __stdcall walnut_process(const std::string& argument,
+                             std::string& result);
 
 int main()
 {
 	std::vector<std::string> arguments = {
 		"disksn",
-		"disksn",
-		"biosdt",
 		"disksn-fast",
-		"biosdt",
-		"disksn-wmi",
+		"biosdt-wmi",
 		"biosdt",
 	};
 
 	for (const std::string& argument : arguments) {
 		std::string result;
 
-		process(argument, result);
+		walnut_process(argument, result);
 		std::cout << argument << ": " << result << "\n";
 	}
 

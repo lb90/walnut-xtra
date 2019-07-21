@@ -6,7 +6,7 @@
 
 #include "log.h"
 
-int DEBUG_EXPORT process(const std::string& argument, std::string& result) {
+int process(const std::string& argument, std::string& result) {
 	std::string arg = argument;
 	int ret = 0;
 
@@ -34,3 +34,9 @@ int DEBUG_EXPORT process(const std::string& argument, std::string& result) {
 
 	return 0;
 }
+
+#ifdef _DEBUG
+__declspec(dllexport) int __stdcall walnut_process(const std::string& arg, std::string& result) {
+	return process(arg, result);
+}
+#endif

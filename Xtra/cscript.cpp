@@ -117,6 +117,9 @@ STDMETHODIMP MoaCreate_CScript(CScript * This)
 /* ----------------------------------------------------- MoaDestroy_CScript */
 STDMETHODIMP_(void) MoaDestroy_CScript(CScript * This)
 {
+	if (This->pValueInterface)
+		This->pValueInterface->Release();
+
 	walnut_finalize();
 	
 	return;
