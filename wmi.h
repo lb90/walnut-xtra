@@ -11,7 +11,6 @@
 class WMIWrapper final {
 public:
 	WMIWrapper();
-	~WMIWrapper();
 
 	WMIWrapper(const WMIWrapper&) = delete;
 	void operator=(const WMIWrapper&) = delete;
@@ -20,16 +19,16 @@ public:
 	static void finalize();
 
 	bool ExecQuery(const std::wstring& query);
-	std::string GetTextProperty(const std::wstring& property);
+	bool GetTextProperty(const std::wstring& property, std::string& result);
 
 private:
 	CComPtr<IWbemLocator> locator;
 	CComPtr<IWbemServices> server;
 	CComPtr<IEnumWbemClassObject> enumerator;
 	CComPtr<IWbemClassObject> obj;
-	bool empty {true}; /* true if query result is empty */
+	bool query_done {false}; /* true if query was done */
+	bool query_empty {true}; /* true if query result is empty */
 
 private:
 	static bool is_init;
-	/*static std::thread wmi_thread;*/
 };

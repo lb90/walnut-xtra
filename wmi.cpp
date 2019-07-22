@@ -5,7 +5,6 @@
 
 #pragma comment(lib, "wbemuuid.lib")
 
-/*std::thread WMIWrapper::wmi_thread {};*/
 bool WMIWrapper::is_init = false;
 
 void WMIWrapper::initialize() {
@@ -39,18 +38,15 @@ void WMIWrapper::initialize() {
 }
 
 void WMIWrapper::finalize() {
-	CoUninitialize();
-
-	is_init = false;
+	if (is_init) {
+		CoUninitialize();
+		is_init = false;
+	}
 }
 
 WMIWrapper::WMIWrapper() {
 	if (!is_init)
 		initialize();
-}
-
-WMIWrapper::~WMIWrapper() {
-
 }
 
 bool WMIWrapper::ExecQuery(const std::wstring& query) {
@@ -102,31 +98,45 @@ bool WMIWrapper::ExecQuery(const std::wstring& query) {
 		return false;
 	}
 
+	query_done = true;
+
 	ULONG ul_ret = 0;
 	hr = enumerator->Next(WBEM_INFINITE, 1, &obj, &ul_ret);
 	if (FAILED(hr)) {
 		Log::print(L"Query is empty");
-		empty = true;
+		query_empty = true;
 		return true;
 	}
 
-	empty = false;
+	query_empty = false;
 	return true;
 }
 
-std::string WMIWrapper::GetTextProperty(const std::wstring& property) {
+bool WMIWrapper::GetTextProperty(const std::wstring& property, std::string& result) {
 	HRESULT hr = S_OK;
 	variant_t variant;
 
-	if (empty)
-		return "1000001";
+	if (!query_done) {
+#ifdef _DEBUG
+		throw std::runtime_error("WIMWrapper::GetTextProperty() called with no query ready");
+#else
+		result = "1111111";
+		return false;
+#endif
+	}
+
+	if (query_empty) {
+		result = "1000001";
+		return true;
+	}
 
 	hr = obj->Get(property.c_str(), 0, &variant, 0, 0);
 	if (FAILED(hr)) {
-		empty = true;
-		return "1000001";
+		result = "1111111";
+		return false;
 	}
 
 	_bstr_t bstr(variant.bstrVal);
-	return std::string((LPCSTR)bstr);
+	result = (LPCSTR) bstr;
+	return true;
 }

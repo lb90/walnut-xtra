@@ -1,8 +1,88 @@
 #include "mangler.h"
 #include "log.h"
 
+#include <vector>
+#include <algorithm>
+
+typedef unsigned char uchar_t;
+
+void mangle_date(std::string& text) {
+	if (text.length() < 8) {
+		text = "1000001";
+		return;
+	}
+
+	for (int i = 0; i < 8; i++) {
+		if (!isdigit(text[i])) {
+			text = "1000001";
+			return;
+		}
+	}
+
+	std::string year = text.substr(2, 2);
+	std::string month = text.substr(4, 2);
+	std::string day = text.substr(6, 2);
+	text = "1" + day + month + year;
+
+	std::replace(text.begin(), text.end(), '0', '3');
+}
+
+
+uchar_t hex_util_char_to_val(uchar_t c) {
+	if (c >= 48 && c <= 57) /* 0-9 */
+		c = (c - 48);
+	else if (c >= 65 && c <= 70) /* A-F */
+		c = (c - 65) + 10;
+	else if (c >= 97 && c <= 102) /* a-f */
+		c = (c - 97) + 10;
+	else {
+#ifdef _DEBUG
+		throw std::runtime_error("non hex character passed to decoder");
+#else
+		return 48; /* carattere 0 */
+#endif
+	}
+}
+uchar_t decode_two_chars_hex(uchar_t* str) {
+	unsigned val = 16 * hex_util_char_to_val(str[0]) +
+	                    hex_util_char_to_val(str[1]);
+#ifdef _DEBUG
+	if (val > 255)
+		throw std::runtime_error("invalid value");
+#endif
+	return uchar_t(val);
+}
+void detect_and_decode_hex(std::string& text) {
+	uchar_t *c_iter = NULL;
+
+	if (text.length() % 2 != 0)
+		return;
+
+	for (c_iter = (uchar_t*) text.c_str(); *c_iter; ++c_iter) {
+		uchar_t c = *c_iter;
+		if (!((c >= 48 && c <= 57) /* 0-9 */
+			|| (c >= 65 && c <= 70) /* A-F */
+			|| (c >= 97 && c <= 102))) /* a-f */
+			return;
+	}
+
+	std::vector<uchar_t> new_string_buffer;
+	new_string_buffer.reserve(text.length() / 2);
+
+	for (c_iter = (uchar_t*)text.c_str(); *c_iter; c_iter+=2) {
+		new_string_buffer.push_back(decode_two_chars_hex(c_iter));
+	}
+
+	for (uchar_t c : new_string_buffer) {
+		if (! (c >= 20 && c <= 126))
+			return;
+	}
+
+	text = (char*) new_string_buffer.data();
+}
+
 int string_is_ascii(const char *text) {
-  const unsigned char *iter = (const unsigned char*) text;
+  const uchar_t *iter = (const uchar_t*) text;
 
   for (; *iter != 0; iter++)
     if (*iter > 127)
@@ -10,16 +90,15 @@ int string_is_ascii(const char *text) {
 
   return 1;
 }
-
-void mangle(std::string& text) {
+void mangle_serial_number(std::string& text) {
 	if (!string_is_ascii(text.c_str())) {
 		Log::print(L"Stringa fuori dal set ASCII");
 	}
 
 	size_t src_len = strlen(text.c_str());
 	char *dst = (char*) malloc(src_len + 1);
-	const unsigned char *src_iter = (const unsigned char*) text.c_str();
-	unsigned char *dst_iter = (unsigned char*) dst;
+	const uchar_t *src_iter = (const uchar_t*) text.c_str();
+	uchar_t *dst_iter = (uchar_t*) dst;
 
 	if (!dst) {
 		Log::print(L"Impossibile allocare memoria");
