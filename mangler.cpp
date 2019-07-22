@@ -42,8 +42,9 @@ uchar_t hex_util_char_to_val(uchar_t c) {
 		return 48; /* carattere 0 */
 #endif
 	}
+	return c;
 }
-uchar_t decode_two_chars_hex(uchar_t* str) {
+uchar_t decode_two_chars_hex(const uchar_t* str) {
 	unsigned val = 16 * hex_util_char_to_val(str[0]) +
 	                    hex_util_char_to_val(str[1]);
 #ifdef _DEBUG
@@ -53,7 +54,7 @@ uchar_t decode_two_chars_hex(uchar_t* str) {
 	return uchar_t(val);
 }
 bool detect_and_decode_hex(std::string& text) {
-	uchar_t *c_iter = NULL;
+	const uchar_t *c_iter = NULL;
 
 	if (text.length() % 2 != 0)
 		return false;
@@ -70,12 +71,11 @@ bool detect_and_decode_hex(std::string& text) {
 	new_string_buffer.reserve(text.length() / 2);
 
 	for (c_iter = (uchar_t*)text.c_str(); *c_iter; c_iter+=2) {
-		new_string_buffer.push_back(decode_two_chars_hex(c_iter));
-	}
-
-	for (uchar_t c : new_string_buffer) {
-		if (! (c >= 20 && c <= 126))
+		uchar_t c = decode_two_chars_hex(c_iter);
+		if (!(c >= 20 && c <= 126))
 			return false;
+		if (std::isalnum(c))
+			new_string_buffer.push_back(decode_two_chars_hex(c_iter));
 	}
 
 	new_string_buffer.push_back(0); /* terminating character */
