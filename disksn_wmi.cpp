@@ -13,8 +13,8 @@ int get_disk_sn_wmi(std::string& sn) {
 
 	sn = "1000001";
 
-	bool success = wmi.ExecQuery(L"SELECT SerialNumber FROM Win32_PhysicalMedia");
-	if (!success) {
+	bool succeeded = wmi.ExecQuery(L"SELECT SerialNumber FROM Win32_PhysicalMedia");
+	if (!succeeded) {
 		sn = "1000001";
 		return -1;
 	}

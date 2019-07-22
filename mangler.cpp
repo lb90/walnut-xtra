@@ -52,18 +52,18 @@ uchar_t decode_two_chars_hex(uchar_t* str) {
 #endif
 	return uchar_t(val);
 }
-void detect_and_decode_hex(std::string& text) {
+bool detect_and_decode_hex(std::string& text) {
 	uchar_t *c_iter = NULL;
 
 	if (text.length() % 2 != 0)
-		return;
+		return false;
 
 	for (c_iter = (uchar_t*) text.c_str(); *c_iter; ++c_iter) {
 		uchar_t c = *c_iter;
 		if (!((c >= 48 && c <= 57) /* 0-9 */
 			|| (c >= 65 && c <= 70) /* A-F */
 			|| (c >= 97 && c <= 102))) /* a-f */
-			return;
+			return false;
 	}
 
 	std::vector<uchar_t> new_string_buffer;
@@ -75,10 +75,13 @@ void detect_and_decode_hex(std::string& text) {
 
 	for (uchar_t c : new_string_buffer) {
 		if (! (c >= 20 && c <= 126))
-			return;
+			return false;
 	}
 
+	new_string_buffer.push_back(0); /* terminating character */
 	text = (char*) new_string_buffer.data();
+
+	return true;
 }
 
 int string_is_ascii(const char *text) {
