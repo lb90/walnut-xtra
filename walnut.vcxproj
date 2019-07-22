@@ -103,7 +103,7 @@
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>Xtra\XDK\Include;Xtra;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PrecompiledHeaderOutputFile>Debug\walnut.pch</PrecompiledHeaderOutputFile>
       <AssemblerListingLocation>Debug\</AssemblerListingLocation>
       <ObjectFileName>Debug\</ObjectFileName>

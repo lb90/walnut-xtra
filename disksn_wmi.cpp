@@ -18,8 +18,8 @@ int get_disk_sn_wmi(std::string& sn) {
 		sn = "1000001";
 		return -1;
 	}
-	bool got_sn = wmi.GetTextProperty(L"SerialNumber", sn);
-	if (got_sn) {
+	bool found = wmi.GetTextProperty(L"SerialNumber", sn);
+	if (!found) {
 		if (sn.empty()) {
 			sn = "1111111";
 			return 0;

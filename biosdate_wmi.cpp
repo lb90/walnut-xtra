@@ -15,12 +15,13 @@ int get_bios_date_wmi(std::string& date) {
 
 	date = "1000001";
 
-	if (!wmi.ExecQuery(L"SELECT ReleaseDate FROM Win32_BIOS")) {
+	bool success = wmi.ExecQuery(L"SELECT ReleaseDate FROM Win32_BIOS");
+	if (!success) {
 		date = "1000001";
 		return -1;
 	}
-	date = wmi.GetTextProperty(L"ReleaseDate");
-	if (date.empty()) {
+	bool found = wmi.GetTextProperty(L"ReleaseDate", date);
+	if (!found) {
 		date = "1111111";
 		return 0;
 	}
