@@ -1,6 +1,6 @@
 #include "log.h"
 
-#ifdef _DEBUG
+#ifdef WALNUT_ENABLE_LOGGING
 
 #include <comdef.h>
 #include <shlobj.h>
@@ -118,4 +118,4 @@ void Log::print(const std::wstring& str) {}
 void Log::print_error_hr(const std::wstring& str, HRESULT hr) {}
 void Log::print_error_code(const std::wstring& str, DWORD code) {}
 
-#endif // _DEBUG
+#endif // WALNUT_ENABLE_LOGGING

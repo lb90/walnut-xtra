@@ -16,7 +16,7 @@ public:
 	static void print_error_code(const std::wstring& str, DWORD code);
 
 private:
-#ifdef _DEBUG
+#ifdef WALNUT_ENABLE_LOGGING
 	static std::wofstream stream;
 #endif
 };
