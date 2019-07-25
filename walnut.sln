@@ -35,7 +35,6 @@ Global
 		{07DE73D5-62A1-4581-A4E2-5945CFFD66A7}.ReleaseWithLog|x64.ActiveCfg = Release|x64
 		{07DE73D5-62A1-4581-A4E2-5945CFFD66A7}.ReleaseWithLog|x64.Build.0 = Release|x64
 		{07DE73D5-62A1-4581-A4E2-5945CFFD66A7}.ReleaseWithLog|x86.ActiveCfg = Release|Win32
-		{07DE73D5-62A1-4581-A4E2-5945CFFD66A7}.ReleaseWithLog|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

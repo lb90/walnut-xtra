@@ -13,7 +13,7 @@ int get_disk_sn_ioctl(std::string& sn) {
 	DWORD dw_ret = 0;
 	int ret = -1;
 
-	sn = "1111111";
+	sn = "1000001";
 
 	hDevice = CreateFile(L"\\\\.\\PhysicalDrive0", 0,
 	                     FILE_SHARE_READ | FILE_SHARE_WRITE,

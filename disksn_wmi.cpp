@@ -20,10 +20,8 @@ int get_disk_sn_wmi(std::string& sn) {
 	}
 	bool found = wmi.GetTextProperty(L"SerialNumber", sn);
 	if (!found) {
-		if (sn.empty()) {
-			sn = "1111111";
-			return 0;
-		}
+		sn = "1111111";
+		return 0;
 	}
 
 	detect_and_decode_hex(sn);
