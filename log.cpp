@@ -10,7 +10,7 @@
 /* Helper class for RAII */
 class SystemErrorCodeString {
 public:
-	SystemErrorCodeString(DWORD code) {
+	explicit SystemErrorCodeString(DWORD code) {
 		FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER |
 			FORMAT_MESSAGE_FROM_SYSTEM |
 			FORMAT_MESSAGE_IGNORE_INSERTS,

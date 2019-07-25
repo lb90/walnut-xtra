@@ -1,5 +1,6 @@
 #include "wmi.h"
 #include "log.h"
+#include "walnut.h"
 
 #include <windows.h>
 
@@ -120,19 +121,19 @@ bool WMIWrapper::GetTextProperty(const std::wstring& property, std::string& resu
 #ifdef _DEBUG
 		throw std::runtime_error("WIMWrapper::GetTextProperty() called with no query ready");
 #else
-		result = "1111111";
+		result = Walnut::Constants::not_found_string;
 		return false;
 #endif
 	}
 
 	if (query_empty) {
-		result = "1000001";
+		result = Walnut::Constants::not_found_string;
 		return true;
 	}
 
 	hr = obj->Get(property.c_str(), 0, &variant, 0, 0);
 	if (FAILED(hr)) {
-		result = "1111111";
+		result = Walnut::Constants::not_found_string;
 		return false;
 	}
 

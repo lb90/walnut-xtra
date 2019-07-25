@@ -2,12 +2,15 @@
 #include "wmi.h"
 #include "log.h"
 
-void walnut_initialize() {
+std::string Walnut::Constants::illegal_or_failed_string = "1000001";
+std::string Walnut::Constants::not_found_string         = "1111111";
+
+void Walnut::initialize() {
 	Log::initialize();
 	WMIWrapper::initialize();
 }
 
-void walnut_finalize() {
+void Walnut::finalize() {
 	WMIWrapper::finalize();
 	Log::finalize();
 }

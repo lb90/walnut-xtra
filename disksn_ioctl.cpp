@@ -4,11 +4,34 @@
 
 #include <windows.h>
 
+#include <vector>
+
+class HandleWrapper final {
+public:
+	explicit HandleWrapper(HANDLE handle)
+		: handle(handle) {
+	}
+	~HandleWrapper() {
+		if (handle != NULL && handle != INVALID_HANDLE_VALUE) {
+			CloseHandle(handle);
+			handle = NULL;
+		}
+	}
+
+	HandleWrapper(const HandleWrapper&) = delete;
+	void operator=(const HandleWrapper&) = delete;
+	void operator=(const HandleWrapper&) = delete;
+
+	HANDLE get() { return handle; }
+	void set(HANDLE _handle) { handle = _handle; }
+private:
+	HANDLE handle;
+};
+
 int get_disk_sn_ioctl(std::string& sn) {
-	HANDLE hDevice = INVALID_HANDLE_VALUE;
+	HandleWrapper hDevice(INVALID_HANDLE_VALUE);
 	STORAGE_PROPERTY_QUERY spq {};
 	STORAGE_DESCRIPTOR_HEADER sdh {};
-	BYTE *buffer = NULL;
 	STORAGE_DEVICE_DESCRIPTOR *desc = NULL;
 	DWORD dw_ret = 0;
 	int ret = -1;
@@ -36,11 +59,9 @@ int get_disk_sn_ioctl(std::string& sn) {
 		goto cleanup;
 	}
 
-	buffer = new BYTE[sdh.Size];
-	ZeroMemory(buffer, sdh.Size);
-
+	std::vector<BYTE> buffer(sdh.Size, 0);
 	if (!DeviceIoControl(hDevice, IOCTL_STORAGE_QUERY_PROPERTY,
-	                       &spq, sizeof(spq), buffer,sdh.Size,
+	                       &spq, sizeof(spq), buffer.data(), sdh.Size,
 	                       &dw_ret, NULL))
 	{
 		DWORD last_error = GetLastError();
@@ -48,7 +69,7 @@ int get_disk_sn_ioctl(std::string& sn) {
 		goto cleanup;
 	}
 
-	desc = (STORAGE_DEVICE_DESCRIPTOR*) buffer;
+	desc = (STORAGE_DEVICE_DESCRIPTOR*) buffer.data();
 	if (desc->SerialNumberOffset == 0) {
 		sn = "1000001";
 		Log::print(L"Cannot find serial number for PhysicalDrive0.");
@@ -61,9 +82,6 @@ int get_disk_sn_ioctl(std::string& sn) {
 
 	ret = 0;
 cleanup:
-	if (buffer) {
-		delete[] buffer;
-	}
 	if (hDevice != NULL && hDevice != INVALID_HANDLE_VALUE) {
 		CloseHandle(hDevice);
 	}
