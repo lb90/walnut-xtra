@@ -213,6 +213,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="biosdate_wmi.cpp" />
+    <ClCompile Include="clipboard.cpp" />
     <ClCompile Include="mangler.cpp" />
     <ClCompile Include="walnut.cpp" />
     <ClCompile Include="window.cpp" />
@@ -258,6 +259,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="biosdate_wmi.h" />
+    <ClInclude Include="clipboard.h" />
     <ClInclude Include="mangler.h" />
     <ClInclude Include="walnut.h" />
     <ClInclude Include="window.h" />

@@ -6,6 +6,8 @@ class Window final {
 public:
 	static bool initialize();
 	static void finalize();
+
+	static HWND Hwnd() { return hwnd; }
 private:
 	static ATOM window_class;
 	static LPCWSTR window_class_name;

@@ -3,6 +3,7 @@
 #include "biosdate_wmi.h"
 #include "disksn_wmi.h"
 #include "disksn_ioctl.h"
+#include "clipboard.h"
 
 #include "log.h"
 
@@ -31,6 +32,8 @@ int process(const std::string& argument, std::string& result) {
 		Log::print(L"Argomento non corretto");
 		return -1;
 	}
+
+	Clipboard::CopyToClipboard(result);
 
 	return 0;
 }
