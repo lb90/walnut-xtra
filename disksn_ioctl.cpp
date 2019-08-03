@@ -56,7 +56,12 @@ int get_disk_sn_ioctl(std::string& sn) {
 	}
 
 	sn = ((LPCSTR)desc) + desc->SerialNumberOffset;
+
 	detect_and_decode_hex(sn);
+	if (check_zero_serial_number(sn)) {
+		sn = "1001001";
+		goto cleanup;
+	}
 	mangle_serial_number(sn);
 
 	ret = 0;

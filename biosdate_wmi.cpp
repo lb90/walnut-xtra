@@ -31,6 +31,11 @@ int get_bios_date_wmi(std::string& date) {
 	 * https://docs.microsoft.com/en-us/windows/win32/cimwin32prov/win32-bios
 	 */
 
+	if (check_zero_date(date)) {
+		date = "1001001";
+		return 0;
+	}
+
 	mangle_date(date);
 	cache = date;
 

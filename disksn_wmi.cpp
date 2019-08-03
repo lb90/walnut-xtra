@@ -25,6 +25,10 @@ int get_disk_sn_wmi(std::string& sn) {
 	}
 
 	detect_and_decode_hex(sn);
+	if (check_zero_serial_number(sn)) {
+		sn = "1001001";
+		return 0;
+	}
 	mangle_serial_number(sn);
 	cache = sn;
 

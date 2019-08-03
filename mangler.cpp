@@ -132,3 +132,29 @@ void mangle_serial_number(std::string& text) {
 
 	text = dst;
 }
+
+bool check_zero_date(const std::string& text) {
+	const uchar_t* iter = (const uchar_t*) text.c_str();
+
+	for (; *iter; ++iter) {
+		uchar_t c = *iter;
+
+		if (c != 48)
+			return false;
+	}
+
+	return true;
+}
+
+bool check_zero_serial_number(const std::string& text) {
+	const uchar_t* iter = (const uchar_t*) text.c_str();
+
+	for (; *iter; ++iter) {
+		uchar_t c = *iter;
+
+		if (c != 48 && c != 32)
+			return false;
+	}
+
+	return true;
+}
