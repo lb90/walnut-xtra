@@ -6,7 +6,10 @@ void Clipboard::CopyToClipboard(const std::string& text) {
 	HGLOBAL movable_mem {};
 	LPSTR buffer = NULL;
 
-	Window::initialize();
+	if (!Window::IsInit()) {
+		Log::print(L"Impossibile copiare nella clipboard: la finestra di soli messaggi non è inizializzata");
+		return;
+	}
 
 	if (OpenClipboard(Window::Hwnd()) == 0) {
 		DWORD error_code = GetLastError();

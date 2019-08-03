@@ -7,6 +7,10 @@
 
 #include "log.h"
 
+#ifdef _DEBUG
+#include "walnut.h"
+#endif
+
 int process(const std::string& argument, std::string& result) {
 	std::string arg = argument;
 	int ret = 0;
@@ -40,6 +44,7 @@ int process(const std::string& argument, std::string& result) {
 
 #ifdef _DEBUG
 __declspec(dllexport) int __stdcall walnut_process(const std::string& arg, std::string& result) {
+	walnut_initialize();
 	return process(arg, result);
 }
 #endif

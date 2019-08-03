@@ -8,6 +8,7 @@ public:
 	static void finalize();
 
 	static HWND Hwnd() { return hwnd; }
+	static bool IsInit() { return is_init; }
 private:
 	static ATOM window_class;
 	static LPCWSTR window_class_name;
