@@ -44,13 +44,15 @@ void Log::initialize() {
 	PWSTR temp_dir_path = NULL;
 	std::wstring path;
 
-	if (stream)
+	if (stream.is_open())
 		return;
 
 	try {
 		SHGetKnownFolderPath(FOLDERID_RoamingAppData, 0, NULL, &temp_dir_path);
 		path = temp_dir_path;
-		path += L"\\WalnutLog.txt";
+		path += L"\\Walnut";
+		CreateDirectory(path.c_str(), NULL);
+		path += L"\\Log.txt";
 
 		std::ios_base::iostate exception_mask;
 		exception_mask = stream.exceptions();
