@@ -1,26 +1,22 @@
 #include <iostream>
 #include <string>
-#include <vector>
 
 __declspec(dllimport)
-int __stdcall walnut_process(const std::string& argument,
-                             std::string& result);
+void __stdcall test_hazel_get(const std::string& file_name_utf_8,
+                              std::string& ret);
+__declspec(dllimport)
+void __stdcall test_hazel_set(const std::string& file_name_utf_8,
+                              const std::string& mode_string,
+                              std::string& ret);
 
 int main()
 {
-	std::vector<std::string> arguments = {
-		"disksn",
-		"disksn-fast",
-		"biosdt-wmi",
-		"biosdt",
-	};
+	std::string file_name_utf_8 = "C:\\Windows";
+	std::string ret = "";
+	test_hazel_get(file_name_utf_8, ret);
 
-	for (const std::string& argument : arguments) {
-		std::string result;
-
-		walnut_process(argument, result);
-		std::cout << argument << ": " << result << "\n";
-	}
+	std::cout << "Testing Hazel\n\n";
+	std::cout << "Argument: \"" << file_name_utf_8 << "\": " << ret << "\n";
 
 	return 0;
 }
