@@ -47,7 +47,7 @@ written permission of Adobe.
 	#include <string.h>
 #endif
 
-#include "../xtra.h"
+#include "../hazel.h"
 
 /*****************************************************************************
  *  CLASS INTERFACE(S)
@@ -162,8 +162,6 @@ CScript_IMoaNotificationClient::~CScript_IMoaNotificationClient() {}
 /* -------------------------------------------- CScript_IMoaMmXScript::Call */
 STDMETHODIMP CScript_IMoaMmXScript::Call(PMoaMmCallInfo callPtr)
 {
-	MoaError err = kMoaErr_NoErr;
-	
 	switch	( callPtr->methodSelector ) 
 	{
 		case m_new:
@@ -172,36 +170,85 @@ STDMETHODIMP CScript_IMoaMmXScript::Call(PMoaMmCallInfo callPtr)
 		 	 */
 			break;
 
-		case m_walnut: {
-			MoaMmValue argValue;
-			ConstPMoaChar   str;
+		case m_hazpeaget: {
+			MoaMmValue arg_value;
+			ConstPMoaChar arg_c_string;
+			HRESULT hr = kMoaErr_NoErr;
 
 			if (!pObj->pValueInterface)
-				return(err);
+				return kMoaErr_NoErr;
 
 			/* This shows how to access an argument
 			/  the first argument in the list is the "me" value, so the user arguments
 			/  start at the second position in the list */
-			pciGetArgByIndex( callPtr, 1, &argValue );
+			pciGetArgByIndex(callPtr, 1, &arg_value);
 
-			err = pObj->pValueInterface->ValueToStringPtr(&argValue, &str);
-			if (err == kMoaErr_NoErr && str != NULL) {
-				std::string res;
-				process(str, res);
-				pObj->pValueInterface->StringToValue(res.c_str(), &(callPtr->resultValue));
+			hr = pObj->pValueInterface->ValueToStringPtr(&arg_value, &arg_c_string);
+			if (hr == kMoaErr_NoErr && arg_c_string != NULL)
+			{
+				std::string file_name_utf_8 = arg_c_string;
+				std::string ret = "";
+
+				xtra_hazel_get(file_name_utf_8, ret);
+
+				pObj->pValueInterface->StringToValue(ret.c_str(), &(callPtr->resultValue));
 			}
-			else {
+			else
+			{
+				/* There was an error. Return an empty string. */
 				pObj->pValueInterface->StringToValue("", &(callPtr->resultValue));
 			}
-		}
-			break;
+		}	break;
+		case m_hazpeaset: {
+			MoaMmValue arg_value_1;
+			ConstPMoaChar arg_c_string_1 = NULL;
+			MoaMmValue arg_value_2;
+			ConstPMoaChar arg_c_string_2 = NULL;
+			HRESULT hr = kMoaErr_NoErr;
+
+			if (!pObj->pValueInterface)
+				return kMoaErr_NoErr;
+
+			/* This shows how to access an argument
+			/  the first argument in the list is the "me" value, so the user arguments
+			/  start at the second position in the list */
+			pciGetArgByIndex(callPtr, 1, &arg_value_1);
+			hr = pObj->pValueInterface->ValueToStringPtr(&arg_value_1, &arg_c_string_1);
+			if (hr != kMoaErr_NoErr || arg_c_string_1 == NULL)
+			{
+				/* There was an error. Return an empty string. */
+				pObj->pValueInterface->StringToValue("", &(callPtr->resultValue));
+				return kMoaErr_NoErr;
+			}
+
+			pciGetArgByIndex(callPtr, 2, &arg_value_2);
+			hr = pObj->pValueInterface->ValueToStringPtr(&arg_value_2, &arg_c_string_2);
+			if (hr != kMoaErr_NoErr || arg_c_string_2 == NULL)
+			{
+				/* There was an error. Return an empty string. */
+				pObj->pValueInterface->StringToValue("", &(callPtr->resultValue));
+				return kMoaErr_NoErr;
+			}
+
+			std::string file_name_utf_8 = arg_c_string_1;
+			std::string mode_string = arg_c_string_2;
+			std::string ret = "";
+
+			xtra_hazel_set(file_name_utf_8, mode_string, ret);
+
+			pObj->pValueInterface->StringToValue(ret.c_str(), &(callPtr->resultValue));
+		}	break;
 		
 		/*
 		 * --> insert additional methodSelector cases -->
 		 */
+
+		default:
+			return kMoaErr_FuncNotFound;
+			break;
 	}
 
-	return(err);
+	return kMoaErr_NoErr; /* 0L, same as kMoaStatus_OK */
 }
 
 #ifdef USING_INIT_FROM_DICT

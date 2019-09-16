@@ -30,13 +30,10 @@
     <ClCompile Include="Xtra\Xtra.cpp">
       <Filter>Source Files\Xtra</Filter>
     </ClCompile>
-    <ClCompile Include="process.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="log.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="xtra.cpp">
+    <ClCompile Include="hazel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -47,16 +44,13 @@
     <ClInclude Include="Xtra\cscript.h">
       <Filter>Header Files\Xtra</Filter>
     </ClInclude>
-    <ClInclude Include="process.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="log.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Xtra\XDK\Include\win32\resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="xtra.h">
+    <ClInclude Include="hazel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

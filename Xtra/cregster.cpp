@@ -154,10 +154,11 @@ END_DEFINE_CLASS_INTERFACE
  /* MODIFY:  */
 
 static char msgTable[] = { 
-	"xtra Walnut\n" \
+	"xtra Hazel\n" \
 	"new object me\n"  /* standard first handler entry in all message tables */
  	"-- Template handlers --\n" 
-	"* walnut string item -- Retrieves system informations. item: biosdt,disksn\n"
+	"* HazPeaGet string path -- Retrieves file attributes informations. path: path to the file.\n"
+	"* HazPeaSet string path, string mode -- Sets file attributes. path: path to the file. mode: attributes to set.\n"
 	};
 
 /*****************************************************************************

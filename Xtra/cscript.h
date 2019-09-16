@@ -74,8 +74,8 @@ written permission of Adobe.
  *	The following line will produce a pre-compiler error if not replaced with
  *	a valid CLSID.
  ****************************************************************************/ 
-// {92657658-64DD-4625-921E-A6B89B30EE20}
-DEFINE_GUID(CLSID(CScript), 0x92657658, 0x64dd, 0x4625, 0x92, 0x1e, 0xa6, 0xb8, 0x9b, 0x30, 0xee, 0x20);
+ // {1898B2DF-BCDC-4EB3-B085-0A68926C8C21}
+DEFINE_GUID(CLSID(CScript), 0x1898b2df, 0xbcdc, 0x4eb3, 0xb0, 0x85, 0xa, 0x68, 0x92, 0x6c, 0x8c, 0x21);
 
 /*****************************************************************************
  *  CLASS INSTANCE VARIABLES
@@ -140,7 +140,8 @@ EXTERN_END_DEFINE_CLASS_INTERFACE
 enum 
 {
 m_new = 0,						/* standard */
-m_walnut,
+m_hazpeaget,
+m_hazpeaset,
 m_XXXX
 };
 

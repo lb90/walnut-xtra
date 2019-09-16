@@ -76,8 +76,8 @@ written permission of Adobe.
  *	The following line will produce a pre-compiler error if not replaced with
  *	a valid CLSID.
  ****************************************************************************/ 
-// {1B1E0883-451B-4278-98CC-026BB1B37698}
-DEFINE_GUID(CLSID(CRegister), 0x1b1e0883, 0x451b, 0x4278, 0x98, 0xcc, 0x2, 0x6b, 0xb1, 0xb3, 0x76, 0x98);
+ // {37B19D5B-1B8B-44BA-832D-B1858F73F60F}
+DEFINE_GUID(CLSID(CRegister), 0x37b19d5b, 0x1b8b, 0x44ba, 0x83, 0x2d, 0xb1, 0x85, 0x8f, 0x73, 0xf6, 0xf);
 
 /*****************************************************************************
  *  CLASS INSTANCE VARIABLES

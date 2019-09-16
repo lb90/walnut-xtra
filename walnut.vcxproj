@@ -212,9 +212,8 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="xtra.cpp" />
+    <ClCompile Include="hazel.cpp" />
     <ClCompile Include="log.cpp" />
-    <ClCompile Include="process.cpp" />
     <ClCompile Include="Xtra\Cregster.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Disabled</Optimization>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">WIN32;_DEBUG;_WINDOWS</PreprocessorDefinitions>
@@ -251,9 +250,8 @@
     <None Include="walnut.def" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="xtra.h" />
+    <ClInclude Include="hazel.h" />
     <ClInclude Include="log.h" />
-    <ClInclude Include="process.h" />
     <ClInclude Include="Xtra\cregster.h" />
     <ClInclude Include="Xtra\cscript.h" />
     <ClInclude Include="Xtra\XDK\Include\win32\resource.h" />
