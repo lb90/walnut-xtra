@@ -19,18 +19,6 @@
     <Filter Include="Header Files\Xtra">
       <UniqueIdentifier>{b507766f-e00d-4a9e-b7a3-209f5aa7eb39}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\bios">
-      <UniqueIdentifier>{c16568c7-c72e-4132-83d6-68bda6e3df53}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\bios">
-      <UniqueIdentifier>{41f1af79-0645-4dc6-afff-95421e2f23d7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\disk">
-      <UniqueIdentifier>{0212cf47-a073-4c25-8c84-55f98d22c5ee}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\disk">
-      <UniqueIdentifier>{89fe7573-286b-4acc-94f0-747235118bf5}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Xtra\Cregster.cpp">
@@ -42,34 +30,13 @@
     <ClCompile Include="Xtra\Xtra.cpp">
       <Filter>Source Files\Xtra</Filter>
     </ClCompile>
-    <ClCompile Include="wmi.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="process.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="log.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="disksn_ioctl.cpp">
-      <Filter>Source Files\disk</Filter>
-    </ClCompile>
-    <ClCompile Include="disksn_wmi.cpp">
-      <Filter>Source Files\disk</Filter>
-    </ClCompile>
-    <ClCompile Include="biosdate_wmi.cpp">
-      <Filter>Source Files\bios</Filter>
-    </ClCompile>
-    <ClCompile Include="mangler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="walnut.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="window.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="clipboard.cpp">
+    <ClCompile Include="xtra.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -80,37 +47,16 @@
     <ClInclude Include="Xtra\cscript.h">
       <Filter>Header Files\Xtra</Filter>
     </ClInclude>
-    <ClInclude Include="wmi.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="process.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="log.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="disksn_ioctl.h">
-      <Filter>Header Files\disk</Filter>
-    </ClInclude>
-    <ClInclude Include="disksn_wmi.h">
-      <Filter>Header Files\disk</Filter>
-    </ClInclude>
-    <ClInclude Include="biosdate_wmi.h">
-      <Filter>Header Files\bios</Filter>
-    </ClInclude>
-    <ClInclude Include="mangler.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="walnut.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Xtra\XDK\Include\win32\resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="window.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="clipboard.h">
+    <ClInclude Include="xtra.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

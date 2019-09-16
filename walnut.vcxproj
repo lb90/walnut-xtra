@@ -212,14 +212,7 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="biosdate_wmi.cpp" />
-    <ClCompile Include="clipboard.cpp" />
-    <ClCompile Include="mangler.cpp" />
-    <ClCompile Include="walnut.cpp" />
-    <ClCompile Include="window.cpp" />
-    <ClCompile Include="wmi.cpp" />
-    <ClCompile Include="disksn_ioctl.cpp" />
-    <ClCompile Include="disksn_wmi.cpp" />
+    <ClCompile Include="xtra.cpp" />
     <ClCompile Include="log.cpp" />
     <ClCompile Include="process.cpp" />
     <ClCompile Include="Xtra\Cregster.cpp">
@@ -258,14 +251,7 @@
     <None Include="walnut.def" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="biosdate_wmi.h" />
-    <ClInclude Include="clipboard.h" />
-    <ClInclude Include="mangler.h" />
-    <ClInclude Include="walnut.h" />
-    <ClInclude Include="window.h" />
-    <ClInclude Include="wmi.h" />
-    <ClInclude Include="disksn_ioctl.h" />
-    <ClInclude Include="disksn_wmi.h" />
+    <ClInclude Include="xtra.h" />
     <ClInclude Include="log.h" />
     <ClInclude Include="process.h" />
     <ClInclude Include="Xtra\cregster.h" />

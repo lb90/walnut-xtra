@@ -47,8 +47,7 @@ written permission of Adobe.
 	#include <string.h>
 #endif
 
-#include "../walnut.h"
-#include "../process.h"
+#include "../xtra.h"
 
 /*****************************************************************************
  *  CLASS INTERFACE(S)
@@ -107,7 +106,7 @@ STDMETHODIMP MoaCreate_CScript(CScript * This)
 {
 	MoaError err = kMoaErr_NoErr;
 	
-	walnut_initialize();
+	xtra_initialize();
 
 	This->pCallback->QueryInterface(&IID_IMoaMmValue, (PPMoaVoid) &This->pValueInterface);
 
@@ -120,7 +119,7 @@ STDMETHODIMP_(void) MoaDestroy_CScript(CScript * This)
 	if (This->pValueInterface)
 		This->pValueInterface->Release();
 
-	walnut_finalize();
+	xtra_finalize();
 	
 	return;
 }
