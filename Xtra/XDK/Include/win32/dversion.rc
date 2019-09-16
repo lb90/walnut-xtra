@@ -30,13 +30,13 @@ BEGIN
     BEGIN
         BLOCK "040904b0"
         BEGIN
-            VALUE "CompanyName", "Walnut Xtra"
+            VALUE "CompanyName", "Hazel Xtra"
             VALUE "FileDescription", "Director Xtra"
             VALUE "FileVersion", "11.1"
-            VALUE "InternalName", "Walnut"
-            VALUE "LegalCopyright", "Walnut"
-            VALUE "OriginalFilename", "Walnut.x32"
-            VALUE "ProductName", "Walnut Xtra"
+            VALUE "InternalName", "Hazel"
+            VALUE "LegalCopyright", "Hazel"
+            VALUE "OriginalFilename", "Hazel.x32"
+            VALUE "ProductName", "Hazel Xtra"
             VALUE "ProductVersion", "11.1"
         END
     END

@@ -55,7 +55,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="walnut.def">
+    <None Include="hazel.def">
       <Filter>Source Files\Xtra</Filter>
     </None>
   </ItemGroup>

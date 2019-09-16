@@ -157,7 +157,7 @@
     <ClCompile Include="TestApplication.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\walnut.vcxproj">
+    <ProjectReference Include="..\hazel.vcxproj">
       <Project>{e12499f1-4d90-4e61-a205-db3adf11f5fc}</Project>
     </ProjectReference>
   </ItemGroup>

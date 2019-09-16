@@ -1,6 +1,6 @@
 #include "log.h"
 
-#ifdef WALNUT_ENABLE_LOGGING
+#ifdef HAZEL_ENABLE_LOGGING
 
 #include <comdef.h>
 #include <shlobj.h>
@@ -50,9 +50,9 @@ void Log::initialize() {
 	try {
 		SHGetKnownFolderPath(FOLDERID_RoamingAppData, 0, NULL, &temp_dir_path);
 		path = temp_dir_path;
-		path += L"\\Walnut";
+		path += L"\\Hazel";
 		CreateDirectory(path.c_str(), NULL);
-		path += L"\\Log.txt";
+		path += L"\\HazelLog.txt";
 
 		std::ios_base::iostate exception_mask;
 		exception_mask = stream.exceptions();
@@ -120,4 +120,4 @@ void Log::print(const std::wstring& str) {}
 void Log::print_error_hr(const std::wstring& str, HRESULT hr) {}
 void Log::print_error_code(const std::wstring& str, DWORD code) {}
 
-#endif // WALNUT_ENABLE_LOGGING
+#endif // HAZEL_ENABLE_LOGGING
