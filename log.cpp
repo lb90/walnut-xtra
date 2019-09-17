@@ -11,12 +11,12 @@
 class SystemErrorCodeString {
 public:
 	SystemErrorCodeString(DWORD code) {
-		FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER |
+		FormatMessageW(FORMAT_MESSAGE_ALLOCATE_BUFFER |
 			FORMAT_MESSAGE_FROM_SYSTEM |
 			FORMAT_MESSAGE_IGNORE_INSERTS,
 			NULL, code,
 			MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-			(LPTSTR)string, 0, NULL);
+			(LPWSTR)&string, 0, NULL);
 	}
 	~SystemErrorCodeString() {
 		if (string) {
@@ -28,7 +28,7 @@ public:
 	void operator=(const SystemErrorCodeString&) = delete;
 
 	bool IsValid() {
-		return string && wcslen((wchar_t*)string);
+		return (string && wcslen((wchar_t*) string));
 	}
 	LPCWSTR Get() {
 		return (LPCWSTR) string;

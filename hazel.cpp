@@ -68,14 +68,23 @@ void xtra_hazel_set(const std::string& file_name_utf_8,
 	}
 
 	DWORD new_attributes = attributes;
-	if (mode_string.find('r') != std::string::npos)
-		new_attributes |= FILE_ATTRIBUTE_READONLY;
-	if (mode_string.find('a') != std::string::npos)
-		new_attributes |= FILE_ATTRIBUTE_ARCHIVE;
-	if (mode_string.find('h') != std::string::npos)
-		new_attributes |= FILE_ATTRIBUTE_HIDDEN;
-	if (mode_string.find('s') != std::string::npos)
-		new_attributes |= FILE_ATTRIBUTE_SYSTEM;
+	if (mode_string.empty()) {
+		/* Se la mode_string è vuota togli tutti gli attributi */
+		new_attributes &= ~(FILE_ATTRIBUTE_READONLY
+		                    | FILE_ATTRIBUTE_ARCHIVE
+		                    | FILE_ATTRIBUTE_HIDDEN
+		                    | FILE_ATTRIBUTE_SYSTEM);
+	}
+	else {
+		if (mode_string.find('r') != std::string::npos)
+			new_attributes |= FILE_ATTRIBUTE_READONLY;
+		if (mode_string.find('a') != std::string::npos)
+			new_attributes |= FILE_ATTRIBUTE_ARCHIVE;
+		if (mode_string.find('h') != std::string::npos)
+			new_attributes |= FILE_ATTRIBUTE_HIDDEN;
+		if (mode_string.find('s') != std::string::npos)
+			new_attributes |= FILE_ATTRIBUTE_SYSTEM;
+	}
 	if (SetFileAttributesW(file_name_utf_16.c_str(), new_attributes) == 0) {
 		DWORD error_code = GetLastError();
 		Log::print_error_code(L"Errore durante le scrittura degli attributi del file", error_code);
@@ -100,7 +109,7 @@ void __stdcall test_hazel_get(const std::string& file_name_utf_8,
 __declspec(dllexport)
 void __stdcall test_hazel_set(const std::string& file_name_utf_8,
                               const std::string& mode_string,
-                              std::string& ret)
+                              int& ret)
 {
 	xtra_initialize();
 	xtra_hazel_set(file_name_utf_8, mode_string, ret);

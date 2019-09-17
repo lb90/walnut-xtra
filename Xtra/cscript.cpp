@@ -236,7 +236,7 @@ STDMETHODIMP CScript_IMoaMmXScript::Call(PMoaMmCallInfo callPtr)
 
 			xtra_hazel_set(file_name_utf_8, mode_string, ret);
 
-			pObj->pValueInterface->IntegerToValue(ret, &(callPtr->resultValue))
+			pObj->pValueInterface->IntegerToValue(ret, &(callPtr->resultValue));
 		}	break;
 		
 		/*
