@@ -214,6 +214,7 @@
   <ItemGroup>
     <ClCompile Include="hazel.cpp" />
     <ClCompile Include="log.cpp" />
+    <ClCompile Include="util.cpp" />
     <ClCompile Include="Xtra\Cregster.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Disabled</Optimization>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">WIN32;_DEBUG;_WINDOWS</PreprocessorDefinitions>
@@ -252,6 +253,7 @@
   <ItemGroup>
     <ClInclude Include="hazel.h" />
     <ClInclude Include="log.h" />
+    <ClInclude Include="util.h" />
     <ClInclude Include="Xtra\cregster.h" />
     <ClInclude Include="Xtra\cscript.h" />
     <ClInclude Include="Xtra\XDK\Include\win32\resource.h" />

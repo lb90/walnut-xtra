@@ -232,11 +232,11 @@ STDMETHODIMP CScript_IMoaMmXScript::Call(PMoaMmCallInfo callPtr)
 
 			std::string file_name_utf_8 = arg_c_string_1;
 			std::string mode_string = arg_c_string_2;
-			std::string ret = "";
+			int ret = 0;
 
 			xtra_hazel_set(file_name_utf_8, mode_string, ret);
 
-			pObj->pValueInterface->StringToValue(ret.c_str(), &(callPtr->resultValue));
+			pObj->pValueInterface->IntegerToValue(ret, &(callPtr->resultValue))
 		}	break;
 		
 		/*
