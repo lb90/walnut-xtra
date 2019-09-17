@@ -8,9 +8,6 @@ void xtra_initialize() {
 	Log::initialize();
 }
 
-/*TODO:
-  Soggetto alle stesse limitazioni riportate in xtra_hazel_set()
-*/
 void xtra_hazel_get(const std::string& file_name_utf_8,
                     std::string& ret)
 {
@@ -37,19 +34,6 @@ void xtra_hazel_get(const std::string& file_name_utf_8,
 		ret += "s";
 }
 
-/*TODO:
-1) Non supporta path oltre il limite di MAX_PATH. Per farlo funzionare oltre
-   questo limite è possibile:
-   a) Usare Windows 10 Anniversary Update o successivi e abilitare il supporto
-	  a percorsi lunghi nel registro di sistema
-   b) Passare, da Lingo, un path con "\\?\" preposto. Ad esempio:
-	  HazPeaSet("\\?\C:\Documents And Settings\Users"", "h")
-	  Notare che in questo modo il normale processing dei percorsi di Windows
-	  non viene eseguito e perciò non è possibile usare percorsi relativi,
-	  forward slash '/' e altro.
-2) L'uso di GetFileAttributes e SetFileAttributes è soggetto a race condition.
-   Per ovviare a questo è possibile usare CreateFile e GetFileInformationByHandle.
-*/
 void xtra_hazel_set(const std::string& file_name_utf_8,
                     const std::string& mode_string,
                     int& ret)
