@@ -72,8 +72,3 @@ std::string utf_16_to_utf_8(const std::wstring& string_utf_16) {
 	std::string string_utf_8 = buffer.data();
 	return string_utf_8;
 }
-
-bool is_all_ascii(const std::string& string_) {
-	#error "implement me!"
-	return true;
-}
