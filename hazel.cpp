@@ -24,14 +24,8 @@ void xtra_hazel_get(const std::string& file_name_utf_8,
 		return;
 	}
 
-	if (attributes & FILE_ATTRIBUTE_READONLY)
-		ret += "r";
-	if (attributes & FILE_ATTRIBUTE_ARCHIVE)
-		ret += "a";
-	if (attributes & FILE_ATTRIBUTE_HIDDEN)
-		ret += "h";
-	if (attributes & FILE_ATTRIBUTE_SYSTEM)
-		ret += "s";
+	ret += (attributes & FILE_ATTRIBUTE_READONLY) ? "r" : "w";
+	ret += (attributes & FILE_ATTRIBUTE_HIDDEN) ? "h" : "v";
 }
 
 void xtra_hazel_set(const std::string& file_name_utf_8,
@@ -55,19 +49,19 @@ void xtra_hazel_set(const std::string& file_name_utf_8,
 	if (mode_string.empty()) {
 		/* Se la mode_string è vuota togli tutti gli attributi */
 		new_attributes &= ~(FILE_ATTRIBUTE_READONLY
-		                    | FILE_ATTRIBUTE_ARCHIVE
-		                    | FILE_ATTRIBUTE_HIDDEN
-		                    | FILE_ATTRIBUTE_SYSTEM);
+		                    | FILE_ATTRIBUTE_HIDDEN);
 	}
 	else {
-		if (mode_string.find('r') != std::string::npos)
-			new_attributes |= FILE_ATTRIBUTE_READONLY;
-		if (mode_string.find('a') != std::string::npos)
-			new_attributes |= FILE_ATTRIBUTE_ARCHIVE;
-		if (mode_string.find('h') != std::string::npos)
-			new_attributes |= FILE_ATTRIBUTE_HIDDEN;
-		if (mode_string.find('s') != std::string::npos)
-			new_attributes |= FILE_ATTRIBUTE_SYSTEM;
+		for (char a : mode_string) {
+			if (a == 'r')
+				new_attributes |= FILE_ATTRIBUTE_READONLY;
+			else if (a == 'w')
+				new_attributes &= ~FILE_ATTRIBUTE_READONLY;
+			else if (a == 'h')
+				new_attributes |= FILE_ATTRIBUTE_HIDDEN;
+			else if (a == 'v')
+				new_attributes &= ~FILE_ATTRIBUTE_HIDDEN;
+		}
 	}
 	if (SetFileAttributesW(file_name_utf_16.c_str(), new_attributes) == 0) {
 		DWORD error_code = GetLastError();
