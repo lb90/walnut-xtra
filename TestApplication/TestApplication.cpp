@@ -10,82 +10,88 @@ void __stdcall test_hazel_set(const std::string& file_name_utf_8,
                               int& ret);
 
 void test_attributes() {
-	std::string file_name_utf_8;
-	std::string get_ret;
-	std::string mode_string;
-	int set_ret = 0;
+	const std::string path = "C:\\Users\\luca9\\testo.txt";
+	std::string get;
+	int set = 0;
+	std::string original_attributes;
 
 	std::cout << "Testing Hazel\n\n";
 
-	file_name_utf_8 = "C:\\Users\\luca9\\testo.txt";
+	test_hazel_get(path, get);
+	original_attributes = get;
 
-	/* Leggi gli attributi iniziali */
-	test_hazel_get(file_name_utf_8, get_ret);
+	test_hazel_set(path, "rahs", set);
 
-	std::string original_attributes = get_ret;
+	test_hazel_get(path, get);
 
-	/* Prova a settare tutti e quattro gli attributi in una sola chiamata */
-	mode_string = "rahs";
-	test_hazel_set(file_name_utf_8, mode_string, set_ret);
+	test_hazel_set(path, "", set);
 
-	/* Leggi gli attributi per verificare la precedente operazione Set */
-	test_hazel_get(file_name_utf_8, get_ret);
+	test_hazel_get(path, get);
 
-	/* Prova a chiamare Set con una stringa vuota (rimuove tutti e quattro gli attributi) */
-	mode_string = "";
-	test_hazel_set(file_name_utf_8, mode_string, set_ret);
+	test_hazel_set(path, original_attributes, set);
 
-	/* Leggi gli attributi per verificare la precedente operazione Set */
-	test_hazel_get(file_name_utf_8, get_ret);
-
-	/* Setta gli attributi originali */
-	mode_string = original_attributes;
-	test_hazel_set(file_name_utf_8, mode_string, set_ret);
-
-	/* Verifica con un Get */
-	test_hazel_get(file_name_utf_8, get_ret);
+	test_hazel_get(path, get);
 }
 
 void test_file_locking() {
-	std::string file_name;
+	const std::string path = "C:\\Users\\luca9\\testo.txt";
 	std::string get;
 	std::string mode;
 	int set = 0;
 
 	test_hazel_get("C:\\Windows\\System32\\Kernel32.dll", get);
 
-	test_hazel_set("C:\\Users\\luca9\\testo.txt", "rhl", set);
+	test_hazel_set(path, "rhl", set);
 
-	test_hazel_get("C:\\Users\\luca9\\testo.txt", get);
+	test_hazel_get(path, get);
 
-	test_hazel_set("C:\\Users\\luca9\\testo.txt", "wvs", set);
+	test_hazel_set(path, "wvs", set);
 
-	test_hazel_get("C:\\Users\\luca9\\testo.txt", get);
+	test_hazel_get(path, get);
 }
 
 void test_file_locking_advanced() {
-	std::string file_name;
+	const std::string path = "C:\\Users\\luca9\\testo.txt";
 	std::string get;
-	std::string mode;
 	int set = 0;
 
-	test_hazel_set("C:\\Users\\luca9\\testo.txt", "l", set);
+	test_hazel_set(path, "l", set);
 
-	test_hazel_get("C:\\Users\\luca9\\testo.txt", get);
+	test_hazel_get(path, get);
 
-	test_hazel_set("C:\\Users\\luca9\\testo.txt", "l", set);
+	test_hazel_set(path, "l", set);
 
-	test_hazel_get("C:\\Users\\luca9\\testo.txt", get);
+	test_hazel_get(path, get);
 
-	test_hazel_set("C:\\Users\\luca9\\testo.txt", "s", set);
+	test_hazel_set(path, "s", set);
 
-	test_hazel_get("C:\\Users\\luca9\\testo.txt", get);
+	test_hazel_get(path, get);
 }
+
+void test_file_locking2() {
+	const std::string path = "C:\\Users\\luca9\\testo.txt";
+	std::string get;
+	int set = 0;
+
+	test_hazel_set(path, "r", set);
+	test_hazel_get(path, get);
+
+	test_hazel_set(path, "l", set);
+	test_hazel_get(path, get);
+
+	test_hazel_set(path, "s", set);
+	test_hazel_get(path, get);
+
+	test_hazel_set(path, "w", set);
+	test_hazel_get(path, get);
+}
+
 
 int main()
 {
 	test_file_locking();
 	test_file_locking_advanced();
+	test_file_locking2();
 
 	/* Fine */
 	return 0;

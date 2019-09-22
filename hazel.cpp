@@ -41,9 +41,8 @@ void xtra_hazel_get(const std::string& file_name_utf_8,
 	ret += (attributes & FILE_ATTRIBUTE_READONLY) ? 'r' : 'w';
 	ret += (attributes & FILE_ATTRIBUTE_HIDDEN) ? 'h' : 'v';
 
-	/* Non proprio corretto */
 	HANDLE handle_file = CreateFileW(file_name_utf_16.c_str(),
-	                                 GENERIC_READ | GENERIC_WRITE,
+	                                 DELETE,
 	                                 FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,
 	                                 NULL, /* NULL security attributes */
 	                                 OPEN_EXISTING,
@@ -51,13 +50,11 @@ void xtra_hazel_get(const std::string& file_name_utf_8,
 	                                 NULL);
 	if (handle_file == INVALID_HANDLE_VALUE) {
 		DWORD error_code = GetLastError();
-		/* Non proprio corretto */
 		ret += (error_code == ERROR_SHARING_VIOLATION) ? 'l' : 's';
 	}
 	else {
-		CloseHandle(handle_file);
-		handle_file = INVALID_HANDLE_VALUE;
 		ret += 's';
+		CloseHandle(handle_file);
 	}
 }
 
@@ -188,9 +185,8 @@ void xtra_hazel_set(const std::string& file_name_utf_8,
 		}
 		else {
 			EnterCriticalSection(&file_lock_handles_lock);
-			for (std::vector<HANDLE>::iterator it = file_lock_handles.begin();
-				it != file_lock_handles.end();
-				++it)
+			std::vector<HANDLE>::iterator it = file_lock_handles.begin();
+			while (it != file_lock_handles.end())
 			{
 				BY_HANDLE_FILE_INFORMATION bhfi2{};
 				if (GetFileInformationByHandle(*it, &bhfi2)) {
@@ -199,8 +195,11 @@ void xtra_hazel_set(const std::string& file_name_utf_8,
 						 && (bhfi.dwVolumeSerialNumber == bhfi2.dwVolumeSerialNumber) )
 					{
 						CloseHandle(*it);
+						file_lock_handles.erase(it);
+						break;
 					}
 				}
+				++it;
 			}
 			LeaveCriticalSection(&file_lock_handles_lock);
 		}
