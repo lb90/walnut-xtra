@@ -51,6 +51,8 @@ written permission of Adobe.
 	#include <string.h>
 #endif
 
+#include "driservc.h"
+
 /*****************************************************************************
  *  CONFIGURATION DEFINE(S)
  *  -----------------------
@@ -89,6 +91,7 @@ EXTERN_BEGIN_DEFINE_CLASS_INSTANCE_VARS(CScript)
 	 * ---> insert additional variable(s) -->
 	 */ 
 	PIMoaMmValue	pValueInterface;
+	PIMoaDrPlayer	pDrPlayer;
 EXTERN_END_DEFINE_CLASS_INSTANCE_VARS
 
 /*****************************************************************************

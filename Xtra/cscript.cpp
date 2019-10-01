@@ -49,6 +49,8 @@ written permission of Adobe.
 
 #include "../hazel.h"
 
+#include <vector>
+
 /*****************************************************************************
  *  CLASS INTERFACE(S)
  *  ------------------
@@ -109,6 +111,7 @@ STDMETHODIMP MoaCreate_CScript(CScript * This)
 	xtra_initialize();
 
 	This->pCallback->QueryInterface(&IID_IMoaMmValue, (PPMoaVoid) &This->pValueInterface);
+	This->pCallback->QueryInterface(&IID_IMoaDrPlayer, (PPMoaVoid)& This->pDrPlayer);
 
 	return(err);
 }
@@ -116,6 +119,8 @@ STDMETHODIMP MoaCreate_CScript(CScript * This)
 /* ----------------------------------------------------- MoaDestroy_CScript */
 STDMETHODIMP_(void) MoaDestroy_CScript(CScript * This)
 {
+	if (This->pDrPlayer)
+		This->pDrPlayer->Release();
 	if (This->pValueInterface)
 		This->pValueInterface->Release();
 
@@ -178,27 +183,36 @@ STDMETHODIMP CScript_IMoaMmXScript::Call(PMoaMmCallInfo callPtr)
 			if (!pObj->pValueInterface)
 				return kMoaErr_NoErr;
 
-			/* This shows how to access an argument
-			/  the first argument in the list is the "me" value, so the user arguments
-			/  start at the second position in the list */
 			pciGetArgByIndex(callPtr, 1, &arg_value);
 
 			hr = pObj->pValueInterface->ValueToStringPtr(&arg_value, &arg_c_string);
-			if (hr == kMoaErr_NoErr && arg_c_string != NULL)
-			{
-				std::string file_name_utf_8 = arg_c_string;
-				std::string ret = "";
-
-				xtra_hazel_get(file_name_utf_8, ret);
-
-				pObj->pValueInterface->StringToValue(ret.c_str(), &(callPtr->resultValue));
-			}
-			else
-			{
+			if (hr != kMoaErr_NoErr || arg_c_string == NULL) {
 				/* There was an error. Return an empty string. */
 				pObj->pValueInterface->StringToValue("", &(callPtr->resultValue));
+				return kMoaErr_NoErr;
 			}
-		}	break;
+
+			std::vector<char> direcotor_resolved_path(4096, 0);
+			if (pObj->pDrPlayer) {
+				hr = pObj->pDrPlayer->ResolveFileName(arg_c_string,
+				                                      direcotor_resolved_path.data(),
+				                                      direcotor_resolved_path.size());
+				if (hr != kMoaErr_NoErr) {
+					direcotor_resolved_path.front() = 0;
+				}
+				/* be safe */
+				direcotor_resolved_path.back() = 0;
+			}
+
+			std::string file_name_utf_8 = (direcotor_resolved_path[0] != 0) ?
+			                               direcotor_resolved_path.data() : arg_c_string;
+			std::string ret = "";
+
+			xtra_hazel_get(file_name_utf_8, ret);
+
+			pObj->pValueInterface->StringToValue(ret.c_str(), &(callPtr->resultValue));
+		}
+		break;
 		case m_hazpeaset: {
 			MoaMmValue arg_value_1;
 			ConstPMoaChar arg_c_string_1 = NULL;
@@ -209,9 +223,6 @@ STDMETHODIMP CScript_IMoaMmXScript::Call(PMoaMmCallInfo callPtr)
 			if (!pObj->pValueInterface)
 				return kMoaErr_NoErr;
 
-			/* This shows how to access an argument
-			/  the first argument in the list is the "me" value, so the user arguments
-			/  start at the second position in the list */
 			pciGetArgByIndex(callPtr, 1, &arg_value_1);
 			hr = pObj->pValueInterface->ValueToStringPtr(&arg_value_1, &arg_c_string_1);
 			if (hr != kMoaErr_NoErr || arg_c_string_1 == NULL)
@@ -230,7 +241,20 @@ STDMETHODIMP CScript_IMoaMmXScript::Call(PMoaMmCallInfo callPtr)
 				return kMoaErr_NoErr;
 			}
 
-			std::string file_name_utf_8 = arg_c_string_1;
+			std::vector<char> direcotor_resolved_path(4096, 0);
+			if (pObj->pDrPlayer) {
+				hr = pObj->pDrPlayer->ResolveFileName(arg_c_string_1,
+				                                      direcotor_resolved_path.data(),
+				                                      direcotor_resolved_path.size());
+				if (hr != kMoaErr_NoErr) {
+					direcotor_resolved_path.front() = 0;
+				}
+				/* be safe */
+				direcotor_resolved_path.back() = 0;
+			}
+
+			std::string file_name_utf_8 = (direcotor_resolved_path[0] != 0)?
+			                               direcotor_resolved_path.data() : arg_c_string_1;
 			std::string mode_string = arg_c_string_2;
 			int ret = 0;
 
